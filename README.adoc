@@ -1,0 +1,35 @@
+# DosPlatformGame
+
+## Quick Build Instructions
+
+The build system is designed for Linux.
+You might get it to build using Windows or MacOS, but YMMV.
+
+. Download the repository.
+. Run the script *build.sh*
+
+That's it.
+The directory *release* now contains the game.
+
+To run the game in dosbox use the script *run_game.sh*.
+
+## Build System
+
+The game targets 16bit DOS.
+It is written in C++.
+The https://en.wikipedia.org/wiki/Watcom_C/C%2B%2B[Open Watcom] compiler is used to build the game.
+
+### Used Tools
+
+[options=header]
+|====
+| Tool | URI
+| Open Watcom | http://openwatcom.org/
+| GNU Make | https://www.gnu.org/software/make/
+| cJSON | https://github.com/DaveGamble/cJSON
+| Rad Tracker | https://www.3eality.com/Public/Releases/RAD/DOS/1.1a/
+| LibreSprite | https://github.com/LibreSprite/LibreSprite
+| Tiled | https://www.mapeditor.org/
+| UPX | https://upx.github.io/
+| Docker | https://www.docker.com/
+|====

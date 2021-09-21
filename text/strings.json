@@ -1,0 +1,14 @@
+{
+    "1": {
+        "en": "Welcome stranger!\nThis is the World of Apples. Please feel free to collect as many as you like. But beware of the slight dimensional instability in the metallic looking room. Too many apples may throw off the cosmic balance...\nUp to 10 apples should be fine, though.\n\n   <Press jump to continue>",
+        "de": "Willkommen Fremder!\nDies ist die Apfelwelt. Nimm dir so viele \u00c4pfel wie du willst. Nimm dich aber vor dem metallenen Raum in Acht. Die Realit\u00e4t ist dort etwas geschw\u00e4cht. Zu viele \u00c4pfel k\u00f6nnten zu Problemen f\u00fchren...\nBis zu 10 \u00c4pfel sollten jedoch OK sein.\n\n  <Springen zum Fortsetzen>"
+    },
+    "2": {
+        "en": "Apples: %3d",
+        "de": "\u00c4pfel: %3d"
+    },
+    "3": {
+        "en": "Build date: %s\nhttps://github.com/TerrySoba/TandyGame\n\nThanks for playing :)\n",
+        "de": "Build Datum: %s\nhttps://github.com/TerrySoba/TandyGame\n\nDanke f\u00fcrs Spielen :)\n"
+    }
+}

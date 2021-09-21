@@ -1,0 +1,13 @@
+*.obj
+*.o
+*.exe
+*.lnk
+*.lst
+compiler
+release/
+.qmake.stash
+.vscode/
+TextCompiler/build
+*.err
+source/version.h
+Png2Tga/build

@@ -1,0 +1,31 @@
+[sdl]
+fullscreen=false
+fulldouble=false
+fullresolution=original
+windowresolution=2560x1440
+output=openglnb
+
+[dosbox]
+machine=vgaonly
+
+[render]
+frameskip=0
+aspect=true
+scaler=none
+
+[cpu]
+core=auto
+cputype=8086
+cycles=fixed 60000
+cycleup=10
+cycledown=20
+
+[autoexec]
+# Lines in this section will be run at startup.
+# You can put your MOUNT lines here.
+
+mount c .
+c:
+source\gametest
+pause
+exit
