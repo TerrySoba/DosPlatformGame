@@ -8,7 +8,7 @@
         "de": "\u00c4pfel: %3d"
     },
     "3": {
-        "en": "Build date: %s\nhttps://github.com/TerrySoba/TandyGame\n\nThanks for playing :)\n",
-        "de": "Build Datum: %s\nhttps://github.com/TerrySoba/TandyGame\n\nDanke f\u00fcrs Spielen :)\n"
+        "en": "Build date: %s\nhttps://github.com/TerrySoba/DosPlatformGame\n\nThanks for playing :)\n",
+        "de": "Build-Datum: %s\nhttps://github.com/TerrySoba/DosPlatformGame\n\nDanke f\u00fcrs Spielen :)\n"
     }
 }
