@@ -11,3 +11,5 @@ TextCompiler/build
 *.err
 source/version.h
 Png2Tga/build
+build/
+*.zip
