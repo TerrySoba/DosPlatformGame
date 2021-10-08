@@ -4,7 +4,7 @@ set -e
 
 # ./create_docker_image.sh
 
-rm source/*.o source/*.exe
+rm -f source/*.o source/*.exe
 
 # docker run --user $(id -u):$(id -g) -v `pwd`/source/:/build open_watcom &&
 ./ci_build.sh
