@@ -1,0 +1,35 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+jobs: # basic units of work in a run
+  build: # runs not using Workflows must have a `build` job as entry point
+    docker: # run the steps with Docker
+      - image: ubuntu:20.04
+
+    steps: # steps that comprise the `build` job
+      - checkout # check out source code to working directory
+      - run: DEBIAN_FRONTEND=noninteractive apt update && apt upgrade -y
+      - run: DEBIAN_FRONTEND=noninteractive apt install -y software-properties-common upx make nasm zip
+      - run: ./build.sh
+      - store_artifacts:
+          path: game.zip
+      - persist_to_workspace:
+          root: .
+          paths:
+            - game.zip
+  publish:
+    docker:
+      - image: cibuilds/github:0.10
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: "Publish Release on GitHub"
+          command: ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete RollingRelease game.zip
+
+workflows:
+  build_and_publish:
+    jobs:
+      - build
+      - publish:
+          requires:
+            - build
