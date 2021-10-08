@@ -11,11 +11,11 @@ jobs: # basic units of work in a run
       - run: DEBIAN_FRONTEND=noninteractive apt install -y software-properties-common upx make nasm zip
       - run: ./build.sh
       - store_artifacts:
-          path: game.zip
+          path: zip/game.zip
       - persist_to_workspace:
           root: .
           paths:
-            - game.zip
+            - zip
   publish:
     docker:
       - image: cibuilds/github:0.10
@@ -24,7 +24,7 @@ jobs: # basic units of work in a run
           at: .
       - run:
           name: "Publish Release on GitHub"
-          command: ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete RollingRelease game.zip
+          command: ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete RollingRelease ./zip
 
 workflows:
   build_and_publish:

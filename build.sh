@@ -14,7 +14,9 @@ cat source/distfiles.txt | xargs -I FILENAME cp source/FILENAME release
 # append git hash to readme.txt
 echo `git rev-parse HEAD` >> release/readme.txt
 
-rm -f game.zip
-zip -r game.zip release
+mkdir -p zip
+
+rm -f zip/game.zip
+zip -r zip/game.zip release
 
 
