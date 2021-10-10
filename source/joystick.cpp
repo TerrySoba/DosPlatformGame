@@ -21,6 +21,7 @@ RawJoystickState readJoystickRaw()
     uint8_t buttons = 0;
     uint16_t x1 = 0;
     uint16_t y1 = 0;
+    uint16_t dummy = 0;
 
     // The joystick is read by writing a byte of data to port 0x201, the actual
     // value does not matter.
@@ -34,24 +35,36 @@ RawJoystickState readJoystickRaw()
 
     __asm{cli} // disable interrupts
     outp(0x201, 1); // start analogue joystick value acquisition
-    uint16_t counter = 0;
-    for(counter = 0; counter < 0xffff; ++counter)
+    for(uint16_t counter = 0xffff; counter > 0; --counter)
     {
         buttons = inp(0x201); // read current joystick status
 
-        // The single "&" operator in the next two lines is intentional to
-        // prevent short-circuit operation of "&&"" operator.
-        // This would change the timing and would skew the results.
-        if (((buttons & 1) == 0) & x1 == 0) x1 = counter; // check if x-axis has finished
-        if (((buttons & 2) == 0) & y1 == 0) y1 = counter; // check if y-axis has finished
-        if (x1 != 0 && y1 != 0) break;
+        switch(buttons & 3)
+        {
+            case 2: // x1 is done
+                if (x1 == 0) x1 = counter;
+                break;
+            case 1: // y1 is done
+                if (y1 == 0) y1 = counter;
+                break;
+            case 0: // x1 and y1 are done
+                if (x1 == 0) x1 = counter;
+                if (y1 == 0) y1 = counter;
+                goto done;
+            case 3: // neither x1 nor y1 are done
+                if (dummy == 0) dummy = counter; // this line is required to have correct timing
+                break;
+        }
     }
+
+    done:
+
     __asm{sti} // re-enable interrupts
 
     RawJoystickState status;
     status.buttons = buttons;
-    status.x1 = x1;
-    status.y1 = y1;
+    status.x1 = 0xffff - x1;
+    status.y1 = 0xffff - y1;
     status.x2 = 0;
     status.y2 = 0;
 
@@ -124,7 +137,7 @@ void calibrateJoystick()
     setCursor(0,0);
     puts("Calibrate Joystick");
     setCursor(1,0);
-    puts("������������������");
+    puts("------------------");
     setCursor(19,0);
     puts("Press \"Q\" on keyboard to disable joystick support.");
     setCursor(20,0);
