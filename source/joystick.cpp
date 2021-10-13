@@ -35,11 +35,9 @@ RawJoystickState readJoystickRaw()
 
     __asm{cli} // disable interrupts
     outp(0x201, 1); // start analogue joystick value acquisition
-    for(uint16_t counter = 0xffff; counter > 0; --counter)
+    for(uint16_t counter = 0; counter < 0xffff; ++counter)
     {
-        buttons = inp(0x201); // read current joystick status
-
-        switch(buttons & 3)
+        switch(inp(0x201) & 3)
         {
             case 2: // x1 is done
                 if (x1 == 0) x1 = counter;
@@ -58,13 +56,13 @@ RawJoystickState readJoystickRaw()
     }
 
     done:
-
+    buttons = inp(0x201); // read current joystick status
     __asm{sti} // re-enable interrupts
 
     RawJoystickState status;
     status.buttons = buttons;
-    status.x1 = 0xffff - x1;
-    status.y1 = 0xffff - y1;
+    status.x1 = x1;
+    status.y1 = y1;
     status.x2 = 0;
     status.y2 = 0;
 
