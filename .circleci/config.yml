@@ -8,7 +8,7 @@ jobs: # basic units of work in a run
     steps: # steps that comprise the `build` job
       - checkout # check out source code to working directory
       - run: DEBIAN_FRONTEND=noninteractive apt update && apt upgrade -y
-      - run: DEBIAN_FRONTEND=noninteractive apt install -y software-properties-common upx make nasm zip
+      - run: DEBIAN_FRONTEND=noninteractive apt install -y software-properties-common upx make nasm zip git
       - run: ./build.sh
       - store_artifacts:
           path: zip/game.zip
