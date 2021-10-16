@@ -1,5 +1,8 @@
 # DosPlatformGame
 
+## CI Status
+image:https://circleci.com/gh/TerrySoba/DosPlatformGame.svg?style=svg["CircleCI", link="https://circleci.com/gh/TerrySoba/DosPlatformGame"]
+
 ## Quick Build Instructions
 
 The build system is designed for Linux.
