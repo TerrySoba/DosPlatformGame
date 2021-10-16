@@ -5,8 +5,27 @@
 The build system is designed for Linux.
 You might get it to build using Windows or MacOS, but YMMV.
 
+. Install required dependencies. On Ubuntu 20.04 the following command line may be used:
++
+[source,bash]
+----
+sudo apt install -y software-properties-common upx make nasm zip
+----
 . Download the repository.
++
+[source,bash]
+----
+git clone https://github.com/TerrySoba/DosPlatformGame.git
+
+----
 . Run the script *build.sh*
++
+[source,bash]
+----
+cd DosPlatformGame
+./build.sh
+----
+
 
 That's it.
 The directory *release* now contains the game.
@@ -31,5 +50,5 @@ The https://en.wikipedia.org/wiki/Watcom_C/C%2B%2B[Open Watcom] compiler is used
 | LibreSprite | https://github.com/LibreSprite/LibreSprite
 | Tiled | https://www.mapeditor.org/
 | UPX | https://upx.github.io/
-| Docker | https://www.docker.com/
+| Docker (optional) | https://www.docker.com/
 |====
