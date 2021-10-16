@@ -63,14 +63,14 @@ int main(int argc, char* argv[])
 
 		Game game(gfx, tiles, animations, "%02x%02x", level);
 
-		while (!s_keyAlt)
-		{
-			gfx->clear();
-			Text t(I18N::getString(1).c_str(), 30);
-			gfx->draw(t, 10,10);
-			gfx->vsync();
-			gfx->drawScreen();
-		}
+		// while (!s_keyAlt)
+		// {
+		// 	gfx->clear();
+		// 	Text t(I18N::getString(1).c_str(), 30);
+		// 	gfx->draw(t, 10,10);
+		// 	gfx->vsync();
+		// 	gfx->drawScreen();
+		// }
 
 		while (!s_keyEsc)
     	{	

@@ -141,8 +141,11 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
     m_vgaGfx->clear();
 
     
-    snprintf(buf.data(), buf.size(), "Build date: %s", BUILD_DATE);
-    Text t(buf.data());
+    // snprintf(buf.data(), buf.size(), "Build date: %s", BUILD_DATE);
+
+    TinyString levelString = I18N::getString((m_levelNumber.y << 6) + m_levelNumber.x);
+    //  TinyString levelString = I18N::getString(100 + m_levelNumber.x);
+    Text t(levelString.c_str());
     m_vgaGfx->drawBackground(t, 50, 193);
     drawAppleCount();
 

@@ -463,6 +463,15 @@ char characterSS[] = {
      0,  0,  0,  0,  0,
 };
 
+char characterApostrophe[] = { 
+     0, 15,  0,  0,  0,
+     0, 15,  0,  0,  0,
+     0,  0,  0,  0,  0,
+     0,  0,  0,  0,  0,
+     0,  0,  0,  0,  0,
+     0,  0,  0,  0,  0,
+};
+
 char characterUnknown[] = { 
     15, 15, 15, 15,  0,
     15,  0,  0, 15,  0,
@@ -486,7 +495,7 @@ char* alphabet[] = {
     character4, character5, character6, character7, character8, character9,
     characterExclamationmark, characterColon, characterPlus, characterMinus,
     characterPercent, characterLower, characterGreater, characterAe,
-    characterOe, characterUe, characterSS, characterUnknown,
+    characterOe, characterUe, characterSS, characterApostrophe, characterUnknown,
 };
 
 int getCharacterIndex(char ch)
@@ -544,9 +553,10 @@ int getCharacterIndex(char ch)
         case '\x99': case '\x94': return 48; // O umlaut in CP437
         case '\x9A': case '\x81': return 49; // U umlaut in CP437
         case '\xE1': return 50; // sharp S in CP437
+        case '\x27': return 51; // ' in CP437
     }
 
-    return 51;
+    return 52;
 }
 
 

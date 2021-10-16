@@ -10,5 +10,65 @@
     "3": {
         "en": "Build date: %s\nhttps://github.com/TerrySoba/DosPlatformGame\n\nThanks for playing :)\n",
         "de": "Build-Datum: %s\nhttps://github.com/TerrySoba/DosPlatformGame\n\nDanke f\u00fcrs Spielen :)\n"
+    },
+    "65": {
+        "en": "Welcome to the game!",
+        "de": "Willkommen im Spiel!"
+    },
+    "66": {
+        "en": "Is that apple floating?",
+        "de": "Schwebt dieser Apfel etwa?"
+    },
+    "67": {
+        "en": "Beware of the hole in the ground!",
+        "de": "Achte auf das Loch im Boden!"
+    },
+    "68": {
+        "en": "Who are these guys?",
+        "de": "Was sind das denn für Gestalten?"
+    },
+    "69": {
+        "en": "Labyrinth",
+        "de": "Labyrinth"
+    },
+    "70": {
+        "en": "Mystery metal boxes",
+        "de": "Mysteriöse Metallkisten"
+    },
+    "129": {
+        "en": "Underground stream",
+        "de": "Unterirdischer Fluss"
+    },
+    "130": {
+        "en": "Waterfall",
+        "de": "Wasserfall"
+    },
+    "131": {
+        "en": "Careful now!",
+        "de": "Sei vorsichtig!"
+    },
+    "132": {
+        "en": "A step up",
+        "de": "Aufwärts!"
+    },
+    "133": {
+        "en": "A bridge in the sky",
+        "de": "Eine Brücke in der Luft"
+    },
+    "193": {
+        "en": "Way back",
+        "de": "Rückweg"
+    },
+    "194": {
+        "en": "It's all about the timing",
+        "de": "Es kommt auf das Timing an"
+    },
+    "195": {
+        "en": "One way street",
+        "de": "Einbahnstraße"
+    },
+    "196": {
+        "en": "Dead end",
+        "de": "Sackgasse"
     }
 }
