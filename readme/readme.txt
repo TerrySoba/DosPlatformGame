@@ -12,7 +12,7 @@ System Requirements
 
 Website
 -------
-https://terrysoba.github.io/DosPlatformGame/
+https://github.com/TerrySoba/DosPlatformGame
 
 
 Git Revision
