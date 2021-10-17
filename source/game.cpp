@@ -13,6 +13,7 @@
 #include "game_save.h"
 #include "text.h"
 #include "i18n.h"
+#include "tile_definitions.h"
 
 #include <stdio.h>
 
@@ -56,7 +57,7 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
     Level level(levelBg.c_str(), levelCol.c_str(), m_tiles, 16, 16, -8, -8);
     m_animations.actorAnimation->useTag("LoopR");
 
-    m_vgaGfx->drawBackground(level, -8, -8);
+    
 
     int16_t actorPosX, actorPosY;
     if (m_physics.get() == 0 || useSpawnPoint == UseSpawnPoint::YES)
@@ -131,7 +132,30 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
     actor.jumpFrame = 1;
     m_player = m_physics->addActor(actor);
 
-    m_physics->setWalls(level.getWalls());
+
+    tnd::vector<Rectangle> walls = level.getWalls();
+    tnd::vector<Rectangle> ghostWalls = level.getGhostWalls();
+
+    // add ghost blocks to walls if enough guffins have been collected
+    if (m_collectedGuffins.size() >= 10)
+    {
+        // add ghost blocks as normal walls
+        for (int i = 0; i < ghostWalls.size(); ++i)
+        {
+            walls.push_back(ghostWalls[i]);
+        }
+
+        tnd::vector<uint8_t>& mapData = level.getMapData();
+        // increment the visible tiles gfx of the ghost blocks by one
+        for (int i = 0; i < mapData.size(); ++i)
+        {
+            if (mapData[i] == GFX_TILE_GHOST_GROUND) {
+                ++mapData[i];
+            }
+        }
+    }
+
+    m_physics->setWalls(walls);
     m_physics->setDeath(level.getDeath());
     m_physics->setFallThrough(level.getFallThrough());
     m_physics->setGuffins(m_guffins);
@@ -141,6 +165,8 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
     m_vgaGfx->clear();
 
     
+    m_vgaGfx->drawBackground(level, -8, -8);
+
     // snprintf(buf.data(), buf.size(), "Build date: %s", BUILD_DATE);
 
     TinyString levelString = I18N::getString((m_levelNumber.y << 6) + m_levelNumber.x);

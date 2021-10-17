@@ -36,6 +36,13 @@ Level::Level(const char* mapFilename, const char* groundFilename, shared_ptr<Ima
             m_walls[i] += offset * 16;
         }
 
+        m_ghostWalls = detectLines(bg, HORIZONTAL, TILE_GHOST_GROUND);
+        for (int i = 0; i < m_ghostWalls.size(); ++i)
+        {
+            m_ghostWalls[i].scale(tileWidth * 16, tileHeight * 16);
+            m_ghostWalls[i] += offset * 16;
+        }
+
         m_death = detectLines(bg, HORIZONTAL, TILE_DEATH);
         for (int i = 0; i < m_death.size(); ++i)
         {
