@@ -167,14 +167,19 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
     
     m_vgaGfx->drawBackground(level, -8, -8);
 
-    // snprintf(buf.data(), buf.size(), "Build date: %s", BUILD_DATE);
+    tnd::vector<Rectangle> message1 = level.getMessageBox1();
+    if (message1.size() > 0)
+    {
+        Rectangle& textRect = message1[0];        
+        TinyString message = I18N::getString(5000);
+        Text t(message.c_str(), textRect.width / 5);
+        m_vgaGfx->drawBackground(t, textRect.x, textRect.y);
+    }
 
     TinyString levelString = I18N::getString((m_levelNumber.y << 6) + m_levelNumber.x);
-    //  TinyString levelString = I18N::getString(100 + m_levelNumber.x);
     Text t(levelString.c_str());
     m_vgaGfx->drawBackground(t, 50, 193);
     drawAppleCount();
-
 
     // auto save current state
     GameState state;

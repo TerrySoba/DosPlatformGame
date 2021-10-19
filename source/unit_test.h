@@ -19,7 +19,7 @@ extern TestResult s_currentTestResult;
 std::map<std::string, TestFunctionPtr>& getTests();
 
 // returns true on success, false if at least one test failed
-bool runTests();
+bool runTests(const char* filter);
 
 #define xstr(s) str(s)
 #define str(s) #s

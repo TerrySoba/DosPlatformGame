@@ -1,5 +1,4 @@
 #include "physics.h"
-#include "log.h"
 
 #include <stdlib.h>
 

@@ -74,5 +74,9 @@
     "196": {
         "en": "Dead end",
         "de": "Sackgasse"
+    },
+    "5000": {
+        "en": "Unfortunately the game ends here as it is not finished, yet. Thank you for playing!",
+        "de": "Leider ist das Spiel hier zu Ende, das es noch nicht fertig ist. Vielen Dank für's Spielen!"
     }
 }

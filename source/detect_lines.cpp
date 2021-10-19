@@ -69,3 +69,54 @@ tnd::vector<Rectangle> detectLines(CsvReader<uint8_t>& reader, Direction directi
 
     return rectangles;
 }
+
+
+/**
+ * This functions searches for a rectangle in the given data.
+ * 
+ * NOTE:
+ *   This function makes the assumption that there actually is one rectangle or
+ *   no rectangle in the given data. If there are mutiple rectangles in the
+ *   data or if there are shapes that are not rectangles it will produce
+ *   incorrect results.
+ */
+tnd::vector<Rectangle> findSingleRectangle(const uint8_t data[], int dataWidth, int dataHeight, uint8_t rectangleIndex)
+{
+    tnd::vector<Rectangle> ret;
+
+    if (!data) {
+        return ret;
+    }
+
+    int firstX = -1;
+    int firstY = -1;
+    int lastX = -1;
+    int lastY = -1;
+
+    for (int y = 0; y < dataHeight; ++y)
+    {
+        for (int x = 0; x < dataWidth; ++x)
+        {
+            if (data[y * dataWidth + x] == rectangleIndex)
+            {
+                if (firstX == -1 && firstY == -1)
+                {
+                    firstX = x;
+                    firstY = y;
+                }
+                lastX = x;
+                lastY = y;
+            }
+        }
+    }
+
+    if ((firstX != -1) && 
+        (firstY != -1) &&
+        (lastX != -1) && 
+        (lastY != -1))
+    {
+        ret.push_back(Rectangle(firstX, firstY, lastX - firstX + 1, lastY - firstY + 1));
+    }
+
+    return ret;
+}

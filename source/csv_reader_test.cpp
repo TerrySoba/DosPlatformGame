@@ -59,3 +59,59 @@ TEST(LineDetectorTest)
     ASSERT_TRUE(verticalLines[1] == Rectangle(1, 1, 1, 1));
     ASSERT_TRUE(verticalLines[2] == Rectangle(3, 1, 1, 2));
 }
+
+
+
+TEST(RectangleDetectorTestInvalidData)
+{
+    tnd::vector<Rectangle> foundRects = findSingleRectangle(NULL, 1,2,3);
+    ASSERT_TRUE(foundRects.size() == 0);
+}
+
+TEST(RectangleDetectorTest1)
+{
+    uint8_t data[] =
+        { 0,0,0,0,0,0,
+          0,1,1,1,0,0,
+          0,1,1,1,0,0,
+          0,0,0,0,0,0 };
+
+    tnd::vector<Rectangle> foundRects = findSingleRectangle(data, 6, 4, 1);
+    ASSERT_TRUE(foundRects.size() == 1);
+    ASSERT_TRUE(foundRects[0].x == 1);
+    ASSERT_TRUE(foundRects[0].y == 1);
+    ASSERT_TRUE(foundRects[0].width == 3);
+    ASSERT_TRUE(foundRects[0].height == 2);
+
+    foundRects = findSingleRectangle(data, 6, 4, 2);
+    ASSERT_TRUE(foundRects.size() == 0);
+}
+
+
+TEST(RectangleDetectorTest2)
+{
+    uint8_t data[] =
+        { 0,0,0,0,0,0,0,0,0,0,0,0,
+          0,0,0,0,2,2,2,2,2,2,0,0,
+          0,1,1,1,2,2,2,2,2,2,0,0,
+          0,1,1,1,2,2,2,2,2,2,0,0,
+          0,0,0,0,2,2,2,2,2,2,0,0,
+          0,0,0,0,0,0,0,0,0,0,0,0,};
+
+    tnd::vector<Rectangle> foundRects = findSingleRectangle(data, 12, 6, 2);
+    ASSERT_TRUE(foundRects.size() == 1);
+    ASSERT_TRUE(foundRects[0].x == 4);
+    ASSERT_TRUE(foundRects[0].y == 1);
+    ASSERT_TRUE(foundRects[0].width == 6);
+    ASSERT_TRUE(foundRects[0].height == 4);
+
+    foundRects = findSingleRectangle(data, 12, 6, 1);
+    ASSERT_TRUE(foundRects.size() == 1);
+    ASSERT_TRUE(foundRects[0].x == 1);
+    ASSERT_TRUE(foundRects[0].y == 2);
+    ASSERT_TRUE(foundRects[0].width == 3);
+    ASSERT_TRUE(foundRects[0].height == 2);
+
+    foundRects = findSingleRectangle(data, 12, 6, 3);
+    ASSERT_TRUE(foundRects.size() == 0);
+}

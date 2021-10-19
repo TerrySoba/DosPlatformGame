@@ -1,7 +1,6 @@
 #include "animation.h"
 #include "json.h"
 #include "exception.h"
-#include "log.h"
 
 #include <stdio.h>
 #include <string.h>

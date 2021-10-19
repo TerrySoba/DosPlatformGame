@@ -1,7 +1,6 @@
 #include "compiled_sprite.h"
 
 #include "tga_image.h"
-#include "log.h"
 
 #include <string.h>
 

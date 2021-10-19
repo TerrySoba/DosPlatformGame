@@ -76,6 +76,13 @@ Level::Level(const char* mapFilename, const char* groundFilename, shared_ptr<Ima
             m_guffins[i] += offset * 16;
         }
 
+        m_messageBox1 = findSingleRectangle(bg.data().data(), bg.width(), bg.height(), TILE_MESSAGE_1);
+        for (int i = 0; i < m_messageBox1.size(); ++i)
+        {
+             m_messageBox1[i].scale(tileWidth, tileHeight);
+             m_messageBox1[i] += offset;
+        }
+
         for (int x = 0; x < bg.width(); ++x)
         {
             for (int y = 0; y < bg.height(); ++y)
