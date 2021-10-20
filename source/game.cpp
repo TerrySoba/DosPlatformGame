@@ -14,6 +14,7 @@
 #include "text.h"
 #include "i18n.h"
 #include "tile_definitions.h"
+#include "fire_ball.h"
 
 #include <stdio.h>
 
@@ -97,6 +98,16 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
         m_enemies.push_back(shared_ptr<Enemy>(new Enemy(enemyRectangles[i], m_animations.enemyAnimation)));
     }
 
+
+    // now load fireball if it exists
+    m_fireBall.reset();
+    tnd::vector<Rectangle> fireBall = level.getFireBall();
+    if (fireBall.size() > 0)
+    {
+        m_fireBall = shared_ptr<FireBall>(new FireBall(fireBall[0], m_animations.fireBallAnimation));
+    }
+
+
     m_guffins.clear();
     m_guffins = level.getMacGuffins();
 
@@ -137,7 +148,7 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
     tnd::vector<Rectangle> ghostWalls = level.getGhostWalls();
 
     // add ghost blocks to walls if enough guffins have been collected
-    if (m_collectedGuffins.size() >= 10)
+    if (m_collectedGuffins.size() >= 0)
     {
         // add ghost blocks as normal walls
         for (int i = 0; i < ghostWalls.size(); ++i)
@@ -146,7 +157,9 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
         }
 
         tnd::vector<uint8_t>& mapData = level.getMapData();
+
         // increment the visible tiles gfx of the ghost blocks by one
+        // this makes the transparent blocks into solid blocks
         for (int i = 0; i < mapData.size(); ++i)
         {
             if (mapData[i] == GFX_TILE_GHOST_GROUND) {
@@ -248,6 +261,16 @@ void Game::drawFrame()
         m_vgaGfx->draw(*m_animations.enemyAnimation, SUBPIXEL_TO_PIXEL(enemy.x), SUBPIXEL_TO_PIXEL(enemy.y));
     }
 
+
+    if (m_fireBall.get())
+    {
+        m_fireBall->walk();
+        Rectangle enemy = m_fireBall->getPos();
+        enemyDeath.push_back(enemy);
+        m_vgaGfx->draw(*m_animations.fireBallAnimation, SUBPIXEL_TO_PIXEL(enemy.x), SUBPIXEL_TO_PIXEL(enemy.y));
+    }
+
+
     for (int i = 0; i < m_guffins.size(); ++i)
     {
         Rectangle& guffin = m_guffins[i];
@@ -297,7 +320,7 @@ void Game::drawFrame()
     {
         m_animations.actorAnimation->nextFrame();
         m_animations.enemyAnimation->nextFrame();
-        
+        m_animations.fireBallAnimation->nextFrame();
     }
 
     if (m_frames % 16 == 0) m_animations.guffinAnimation->nextFrame();

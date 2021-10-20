@@ -83,6 +83,13 @@ Level::Level(const char* mapFilename, const char* groundFilename, shared_ptr<Ima
              m_messageBox1[i] += offset;
         }
 
+        m_fireBall = findSingleRectangle(bg.data().data(), bg.width(), bg.height(), TILE_FIRE_BALL);
+        for (int i = 0; i < m_fireBall.size(); ++i)
+        {
+             m_fireBall[i].scale(tileWidth * 16, tileHeight * 16);
+             m_fireBall[i] += offset * 16;
+        }
+
         for (int x = 0; x < bg.width(); ++x)
         {
             for (int y = 0; y < bg.height(); ++y)

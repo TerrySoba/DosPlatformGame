@@ -56,10 +56,11 @@ int main(int argc, char* argv[])
 		shared_ptr<Animation> enemy(new Animation("enemy.jsn", "enemy.tga"));
 		shared_ptr<Animation> guffin(new Animation("guffin.jsn", "guffin.tga"));
 		shared_ptr<Animation> guy(new Animation("guy.jsn", "guy.tga"));
+		shared_ptr<Animation> fireBall(new Animation("fire.jsn", "fire.tga"));
 
 		shared_ptr<VgaGfx> gfx(new VgaGfx);
 
-		GameAnimations animations = {guy, enemy, guffin};
+		GameAnimations animations = {guy, enemy, guffin, fireBall};
 
 		Game game(gfx, tiles, animations, "%02x%02x", level);
 

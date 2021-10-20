@@ -10,6 +10,8 @@ game.exe
 ../images/guffin.tga
 ../images/guffin.jsn
 ../images/guyframe.tga
+../images/fire.tga
+../images/fire.jsn
 ../levels/0101_bg.csv
 ../levels/0101_col.csv
 ../levels/0102_bg.csv

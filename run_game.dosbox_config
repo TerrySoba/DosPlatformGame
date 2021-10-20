@@ -8,7 +8,6 @@ output=openglnb
 [dosbox]
 machine=vgaonly
 vertical retrace poll debug line=false
-
 [render]
 frameskip=0
 aspect=true
@@ -31,6 +30,6 @@ joysticktype=auto
 mount c release
 c:
 @echo If game does not run lower number in next line to free memory!
-loadfix -150 game --level 1 1
+loadfix -100 game --level 7 1
 pause
 exit

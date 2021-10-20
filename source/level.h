@@ -28,6 +28,7 @@ public:
     virtual tnd::vector<Rectangle> getEnemies() { return m_enemies; }
     virtual tnd::vector<Rectangle> getMacGuffins() { return m_guffins; }
     virtual tnd::vector<Rectangle> getMessageBox1() { return m_messageBox1; }
+    virtual tnd::vector<Rectangle> getFireBall() { return m_fireBall; }
 
 
     virtual Point getSpawnPoint() { return m_spawn; };
@@ -52,6 +53,7 @@ private:
     tnd::vector<Rectangle> m_enemies;
     tnd::vector<Rectangle> m_guffins;
     tnd::vector<Rectangle> m_messageBox1;
+    tnd::vector<Rectangle> m_fireBall;
     Point m_spawn;
 };
 

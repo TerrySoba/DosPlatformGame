@@ -7,6 +7,7 @@
 #include "tiny_string.h"
 #include "actor_animation_controller.h"
 #include "enemy.h"
+#include "fire_ball.h"
 
 // forward declarations
 class VgaGfx;
@@ -40,6 +41,7 @@ struct GameAnimations
 	shared_ptr<Animation> actorAnimation;
 	shared_ptr<Animation> enemyAnimation;
 	shared_ptr<Animation> guffinAnimation;
+	shared_ptr<Animation> fireBallAnimation;
 };
 
 
@@ -70,6 +72,7 @@ private:
 	shared_ptr<ImageBase> m_tiles;
 	GameAnimations m_animations;
 	tnd::vector<shared_ptr<Enemy> > m_enemies;
+	shared_ptr<FireBall> m_fireBall;
 	tnd::vector<Rectangle> m_guffins;
     shared_ptr<Physics> m_physics;
     long int m_frames;
