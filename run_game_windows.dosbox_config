@@ -1,0 +1,35 @@
+[sdl]
+fullscreen=false
+fulldouble=false
+fullresolution=original
+# windowresolution=2560x1440
+output=openglnb
+
+[dosbox]
+machine=vgaonly
+vertical retrace poll debug line=false
+[render]
+frameskip=0
+aspect=true
+scaler=none
+
+[cpu]
+core=auto
+cputype=8086
+cycles=fixed 30000
+cycleup=10
+cycledown=20
+
+[joystick]
+joysticktype=auto
+
+[autoexec]
+# Lines in this section will be run at startup.
+# You can put your MOUNT lines here.
+
+mount c release
+c:
+@echo If game does not run lower number in next line to free memory!
+loadfix -100 game --level 7 1
+pause
+exit
