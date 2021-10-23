@@ -44,4 +44,8 @@ game.exe
 ../levels/0601_col.csv
 ../levels/0701_bg.csv
 ../levels/0701_col.csv
+../levels/0801_bg.csv
+../levels/0801_col.csv
+../levels/0901_bg.csv
+../levels/0901_col.csv
 ../readme/readme.txt

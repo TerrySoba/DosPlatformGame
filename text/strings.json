@@ -39,6 +39,14 @@
         "en": "On to unknown lands...",
         "de": "Auf zu unbekannten Ländern..."
     },
+    "72": {
+        "en": "Welcome to the City!",
+        "de": "Willkommen in der Stadt!"
+    },
+    "73": {
+        "en": "That's hot!",
+        "de": "Achtung, Heiß!"
+    },
     "129": {
         "en": "Underground stream",
         "de": "Unterirdischer Fluss"
@@ -76,7 +84,7 @@
         "de": "Sackgasse"
     },
     "5000": {
-        "en": "Unfortunately the game ends here as it is not finished, yet. Thank you for playing!",
-        "de": "Leider ist das Spiel hier zu Ende, das es noch nicht fertig ist. Vielen Dank für's Spielen!"
+        "en": "This is the dark city. People have been known to disappear in this forsaken land. Please be careful!",
+        "de": "Dies ist die Dunkle Stadt. Es sollen hier schon Leute verschwunden sein. Sei vorsichtig!"
     }
 }
