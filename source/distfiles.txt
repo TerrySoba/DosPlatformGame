@@ -49,3 +49,5 @@ game.exe
 ../levels/0901_bg.csv
 ../levels/0901_col.csv
 ../readme/readme.txt
+../scripts/game_de.bat
+../scripts/game_en.bat

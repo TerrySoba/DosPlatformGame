@@ -148,7 +148,7 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
     tnd::vector<Rectangle> ghostWalls = level.getGhostWalls();
 
     // add ghost blocks to walls if enough guffins have been collected
-    if (m_collectedGuffins.size() >= 0)
+    if (m_collectedGuffins.size() >= 10)
     {
         // add ghost blocks as normal walls
         for (int i = 0; i < ghostWalls.size(); ++i)

@@ -17,79 +17,109 @@
 #include <stdio.h>
 
 
-LevelNumber parseCommandline(int argc, char* argv[])
+enum Language {
+    LANGUAGE_ENGLISH,
+    LANGUAGE_GERMAN,
+};
+
+struct CommandLineParametes {
+    LevelNumber level;
+    Language language;
+};
+
+
+CommandLineParametes parseCommandline(int argc, char* argv[])
 {
-	LevelNumber level = {1, 1};
+    CommandLineParametes params;
+    params.language = LANGUAGE_ENGLISH;
+    LevelNumber level = {1, 1};
 
-	for (int i = 1; i < argc; ++i)
-	{
-		if (strcmp("--level", argv[i]) == 0 && i+2 < argc)
-		{
-			int16_t levelX, levelY;
-			sscanf(argv[i+1], "%d", &levelX);
-			sscanf(argv[i+2], "%d", &levelY);
-			i+=2;
+    for (int i = 1; i < argc; ++i)
+    {
+        if (strcmp("--level", argv[i]) == 0 && i+2 < argc)
+        {
+            int16_t levelX, levelY;
+            sscanf(argv[i+1], "%d", &levelX);
+            sscanf(argv[i+2], "%d", &levelY);
+            i+=2;
 
-			level.x = levelX;
-			level.y = levelY;
-		}		
-	}
+            level.x = levelX;
+            level.y = levelY;
+        }
+        if (strcmp("--english", argv[i]) == 0)	
+        {
+            params.language = LANGUAGE_ENGLISH;
+        }
+        if (strcmp("--german", argv[i]) == 0)	
+        {
+            params.language = LANGUAGE_GERMAN;
+        }
+    }
 
-	return level;
+    params.level = level;
+    return params;
 }
 
 
 int main(int argc, char* argv[])
 {
-	LevelNumber level = parseCommandline(argc, argv);
-	calibrateJoystick();
-	
-	try
-	{
-		I18N::loadTranslations("strings.en");
+    CommandLineParametes params = parseCommandline(argc, argv);
+    calibrateJoystick();
+    
+    try
+    {
+        switch(params.language)
+        {
+            case LANGUAGE_GERMAN:
+                I18N::loadTranslations("strings.de");
+                break;
+            case LANGUAGE_ENGLISH:
+            default:
+                I18N::loadTranslations("strings.en");
+        }
 
-		RadPlayer music("CELT.RAD");
-		Keyboard keyboard;
+        RadPlayer music("CELT.RAD");
+        Keyboard keyboard;
 
-		shared_ptr<ImageBase> tiles(new TgaImage("tiles.tga"));
-		
-		shared_ptr<Animation> enemy(new Animation("enemy.jsn", "enemy.tga"));
-		shared_ptr<Animation> guffin(new Animation("guffin.jsn", "guffin.tga"));
-		shared_ptr<Animation> guy(new Animation("guy.jsn", "guy.tga"));
-		shared_ptr<Animation> fireBall(new Animation("fire.jsn", "fire.tga"));
+        shared_ptr<ImageBase> tiles(new TgaImage("tiles.tga"));
+        
+        shared_ptr<Animation> enemy(new Animation("enemy.jsn", "enemy.tga"));
+        shared_ptr<Animation> guffin(new Animation("guffin.jsn", "guffin.tga"));
+        shared_ptr<Animation> guy(new Animation("guy.jsn", "guy.tga"));
+        shared_ptr<Animation> fireBall(new Animation("fire.jsn", "fire.tga"));
 
-		shared_ptr<VgaGfx> gfx(new VgaGfx);
+        shared_ptr<VgaGfx> gfx(new VgaGfx);
 
-		GameAnimations animations = {guy, enemy, guffin, fireBall};
+        GameAnimations animations = {guy, enemy, guffin, fireBall};
 
-		Game game(gfx, tiles, animations, "%02x%02x", level);
+        Game game(gfx, tiles, animations, "%02x%02x", params.level);
 
-		// while (!s_keyAlt)
-		// {
-		// 	gfx->clear();
-		// 	Text t(I18N::getString(1).c_str(), 30);
-		// 	gfx->draw(t, 10,10);
-		// 	gfx->vsync();
-		// 	gfx->drawScreen();
-		// }
+        // while (!s_keyAlt)
+        // {
+        // 	gfx->clear();
+        // 	Text t(I18N::getString(1).c_str(), 30);
+        // 	gfx->draw(t, 10,10);
+        // 	gfx->vsync();
+        // 	gfx->drawScreen();
+        // }
 
-		while (!s_keyEsc)
-    	{	
-			game.drawFrame();
-		}
-	}
-	catch(const Exception& e)
-	{
-		fprintf(stderr, "Exception: %s\n", e.what());
-		return 1;
-	}
-	catch(...)
-	{
-		fprintf(stderr, "Unknown exception.");
-		return 1;
-	}
+        while (!s_keyEsc)
+        {	
+            game.drawFrame();
+        }
+    }
+    catch(const Exception& e)
+    {
+        fprintf(stderr, "Exception: %s\n", e.what());
+        return 1;
+    }
+    catch(...)
+    {
+        fprintf(stderr, "Unknown exception.");
+        return 1;
+    }
 
-	printf(I18N::getString(3).c_str(), BUILD_DATE);
+    printf(I18N::getString(3).c_str(), BUILD_DATE);
 
-	return 0;
+    return 0;
 }

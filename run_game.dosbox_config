@@ -30,6 +30,6 @@ joysticktype=auto
 mount c release
 c:
 @echo If game does not run lower number in next line to free memory!
-loadfix -100 game --level 9 1
+loadfix -100 game --level 1 1 --german
 pause
 exit
