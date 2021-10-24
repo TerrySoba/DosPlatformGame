@@ -23,6 +23,17 @@ cycledown=20
 [joystick]
 joysticktype=auto
 
+
+[sblaster]
+sbtype  = sbpro2
+sbbase  = 220
+irq     = 7
+dma     = 1
+hdma    = 5
+sbmixer = true
+oplmode = auto
+oplemu  = default
+
 [autoexec]
 # Lines in this section will be run at startup.
 # You can put your MOUNT lines here.

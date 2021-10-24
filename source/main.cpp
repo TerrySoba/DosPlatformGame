@@ -11,6 +11,7 @@
 #include "joystick.h"
 #include "text.h"
 #include "i18n.h"
+#include "soundblaster.h"
 
 #include "exception.h"
 
@@ -63,6 +64,18 @@ CommandLineParametes parseCommandline(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
+    // SbConfig sbConfig;
+    // if (sb_detect(sbConfig))
+    // {
+    //     printf("Found Soundblaster: base:0x%x irq:%d dma:%d type:%d\n", sbConfig.base, sbConfig.irq, sbConfig.dma, sbConfig.type);
+    // }
+    // else
+    // {
+    //     puts("Sound off!\n");
+    // }
+
+    // return 0;
+
     CommandLineParametes params = parseCommandline(argc, argv);
     calibrateJoystick();
     
