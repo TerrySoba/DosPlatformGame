@@ -13,6 +13,12 @@ enum SoundblasterType {
     SOUNDBLASTER_16 = 6,
 };
 
+struct SbVersion
+{
+    uint8_t major;
+    uint8_t minor;
+};
+
 
 /**
  * Code adapted from https://gist.github.com/root42/7e2be31d755d89eb0cf0350ad066c53c
@@ -34,8 +40,12 @@ public:
 
     void singlePlay(const char* fileName);
 
+    SbVersion getDspVersion();
+
+
 private: // methods
     void writeDsp(uint8_t command);
+    uint8_t readDsp();
     void initIrq();
     void deinitIrq();
     void assignDmaBuffer();
@@ -58,7 +68,6 @@ private: // member variables
     uint16_t m_dmaPage;
     uint16_t m_dmaOffset;
     uint16_t m_toBePlayed;
-    
 };
 
 #endif

@@ -12,10 +12,15 @@
 #define SB_READ_DATA_STATUS 0xE
 #define SB_WRITE_DATA 0xC
 
+#define SB_GET_DSP_VERSION_NUMBER 0xE1
+
 #define SB_ENABLE_SPEAKER 0xD1
 #define SB_DISABLE_SPEAKER 0xD3
 #define SB_SET_PLAYBACK_FREQUENCY 0x40
 #define SB_SINGLE_CYCLE_PLAYBACK 0x14
+
+#define SB_SINGLE_CYCLE_PLAYBACK_ADPCM_2BIT_REF 0x17
+
 
 #define MASK_REGISTER 0x0A
 #define MODE_REGISTER 0x0B
@@ -23,6 +28,8 @@
 #define DMA_CHANNEL_0 0x87
 #define DMA_CHANNEL_1 0x83
 #define DMA_CHANNEL_3 0x82
+
+
 
 
 static uint16_t SoundBlaster::s_base; /* default 220h */
@@ -110,9 +117,14 @@ SbConfig parseBlasterString()
 
 void SoundBlaster::writeDsp(uint8_t command)
 {
-    while ((inp(s_base + SB_WRITE_DATA) & 0x80) == 0x80)
-        ;
+    while ((inp(s_base + SB_WRITE_DATA) & 0x80) == 0x80);
     outp(s_base + SB_WRITE_DATA, command);
+}
+
+uint8_t SoundBlaster::readDsp()
+{
+    while ((inp(s_base + SB_READ_DATA_STATUS) & 0x80) != 0x80);
+    return inp(s_base + SB_READ_DATA);
 }
 
 bool isHighIrq(uint8_t irq)
@@ -137,6 +149,7 @@ uint8_t highIrqToVector(uint8_t irq)
 
 void __interrupt SoundBlaster::sbIrqHandler()
 {
+    __asm { cli }
     inp(s_base + SB_READ_DATA_STATUS);
     outp(0x20, 0x20); // satisfy PIC
     if (isHighIrq(s_irq)) {
@@ -144,6 +157,7 @@ void __interrupt SoundBlaster::sbIrqHandler()
     }
 
     s_playing = 0;
+    __asm { sti }
 }
 
 void SoundBlaster::initIrq()
@@ -205,6 +219,7 @@ void SoundBlaster::assignDmaBuffer()
 void SoundBlaster::singleCyclePlayback()
 {
     s_playing = true;
+
     // program the DMA controller
     outp(MASK_REGISTER, 4 | s_dma);
     outp(MSB_LSB_FLIP_FLOP, 0);
@@ -246,14 +261,22 @@ void SoundBlaster::singlePlay(const char* fileName)
     fread(m_dmaBuffer, 1, fileSize, rawFile);
     writeDsp(SB_SET_PLAYBACK_FREQUENCY);
     writeDsp(256 - 1000000 / 11000);
-    m_toBePlayed = fileSize;
-
-    printf("file: %d\n", fileSize);
+    m_toBePlayed = fileSize - 1;
 
     singleCyclePlayback();
-
     while (s_playing);
 }
+
+SbVersion SoundBlaster::getDspVersion()
+{
+    writeDsp(SB_GET_DSP_VERSION_NUMBER);
+    // while(inp(s_base + SB_READ_DATA_STATUS) & 0x80 != 0x80);
+    SbVersion version;
+    version.major = readDsp();// inp(s_base + SB_READ_DATA);
+    version.minor = readDsp();// inp(s_base + SB_READ_DATA);
+    return version;
+}
+
 
 SoundBlaster::SoundBlaster()
 {

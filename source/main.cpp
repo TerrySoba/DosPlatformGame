@@ -12,6 +12,7 @@
 #include "text.h"
 #include "i18n.h"
 #include "soundblaster.h"
+#include <dos.h>
 
 #include "exception.h"
 
@@ -75,6 +76,24 @@ int main(int argc, char* argv[])
     // }
 
     // return 0;
+
+    // {
+    // SoundBlaster sb;
+
+    
+
+    // if (sb.soundBlasterFound()) {
+
+    //     SbVersion version = sb.getDspVersion();
+    //     printf("DSP:%d.%d\n", version.major, version.minor);
+
+    //     sb.singlePlay("STEPS.RAW");
+    //     sb.singlePlay("STEPS.RAW");
+    //     sb.singlePlay("STEPS.RAW");
+    //     sb.singlePlay("STEPS.RAW");
+    //     sb.singlePlay("STEPS.RAW");
+    // }
+    // }
 
     CommandLineParametes params = parseCommandline(argc, argv);
     calibrateJoystick();

@@ -51,3 +51,4 @@ game.exe
 ../readme/readme.txt
 ../scripts/game_de.bat
 ../scripts/game_en.bat
+../sound/steps.raw
