@@ -65,41 +65,18 @@ CommandLineParametes parseCommandline(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
-    // SbConfig sbConfig;
-    // if (sb_detect(sbConfig))
-    // {
-    //     printf("Found Soundblaster: base:0x%x irq:%d dma:%d type:%d\n", sbConfig.base, sbConfig.irq, sbConfig.dma, sbConfig.type);
-    // }
-    // else
-    // {
-    //     puts("Sound off!\n");
-    // }
-
-    // return 0;
-
-    // {
-    // SoundBlaster sb;
-
-    
-
-    // if (sb.soundBlasterFound()) {
-
-    //     SbVersion version = sb.getDspVersion();
-    //     printf("DSP:%d.%d\n", version.major, version.minor);
-
-    //     sb.singlePlay("STEPS.RAW");
-    //     sb.singlePlay("STEPS.RAW");
-    //     sb.singlePlay("STEPS.RAW");
-    //     sb.singlePlay("STEPS.RAW");
-    //     sb.singlePlay("STEPS.RAW");
-    // }
-    // }
-
-    CommandLineParametes params = parseCommandline(argc, argv);
-    calibrateJoystick();
-    
     try
     {
+        SoundBlaster sb;
+        
+        if (sb.soundBlasterFound()) {
+            SbSample steps = SoundBlaster::loadRawSample("STEPS.RAW", 11000);
+            sb.singlePlay(steps);
+        }
+ 
+        CommandLineParametes params = parseCommandline(argc, argv);
+        calibrateJoystick();
+        
         switch(params.language)
         {
             case LANGUAGE_GERMAN:

@@ -19,6 +19,13 @@ struct SbVersion
     uint8_t minor;
 };
 
+struct SbSample
+{
+    uint16_t length;
+    uint8_t* data;
+    uint8_t timeConstant; // Transfer time constant = 256 - 1000000 / frequency
+};
+
 
 /**
  * Code adapted from https://gist.github.com/root42/7e2be31d755d89eb0cf0350ad066c53c
@@ -38,7 +45,13 @@ public:
     uint8_t getDMA() { return s_dma; }
     uint8_t getType() { return s_type; }
 
+    bool isPlaying() { return s_playing; }
+
     void singlePlay(const char* fileName);
+    void singlePlay(const SbSample& sample);
+
+    static SbSample loadRawSample(const char* filename, uint16_t sampleRate /* in Hz */);
+
 
     SbVersion getDspVersion();
 

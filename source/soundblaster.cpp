@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <malloc.h>
 #include <string.h>
+#include "exception.h"
 
 #define SB_RESET 0x6
 #define SB_READ_DATA 0xA
@@ -18,9 +19,6 @@
 #define SB_DISABLE_SPEAKER 0xD3
 #define SB_SET_PLAYBACK_FREQUENCY 0x40
 #define SB_SINGLE_CYCLE_PLAYBACK 0x14
-
-#define SB_SINGLE_CYCLE_PLAYBACK_ADPCM_2BIT_REF 0x17
-
 
 #define MASK_REGISTER 0x0A
 #define MODE_REGISTER 0x0B
@@ -267,6 +265,49 @@ void SoundBlaster::singlePlay(const char* fileName)
     while (s_playing);
 }
 
+void SoundBlaster::singlePlay(const SbSample& sample)
+{
+    writeDsp(SB_SET_PLAYBACK_FREQUENCY);
+    writeDsp(sample.timeConstant);
+
+    uint32_t linearAddress = FP_SEG(sample.data);
+    linearAddress = (linearAddress << 4) + FP_OFF(sample.data);
+
+    uint16_t dmaPage = linearAddress >> 16;
+    uint16_t dmaOffset = linearAddress & 0xFFFF;
+    uint16_t toBePlayed = sample.length - 1;
+
+    s_playing = true;
+
+    // program the DMA controller
+    outp(MASK_REGISTER, 4 | s_dma);
+    outp(MSB_LSB_FLIP_FLOP, 0);
+    outp(MODE_REGISTER, 0x48 | s_dma);
+    outp(s_dma << 1, dmaOffset & 0xFF);
+    outp(s_dma << 1, dmaOffset >> 8);
+    switch (s_dma)
+    {
+    case 0:
+        outp(DMA_CHANNEL_0, dmaPage);
+        break;
+    case 1:
+        outp(DMA_CHANNEL_1, dmaPage);
+        break;
+    case 3:
+        outp(DMA_CHANNEL_3, dmaPage);
+        break;
+    }
+    outp((s_dma << 1) + 1, toBePlayed & 0xFF);
+    outp((s_dma << 1) + 1, toBePlayed >> 8);
+    outp(MASK_REGISTER, s_dma);
+    writeDsp(SB_SINGLE_CYCLE_PLAYBACK);
+    writeDsp(toBePlayed & 0xFF);
+    writeDsp(toBePlayed >> 8);
+
+
+    // while (s_playing);
+}
+
 SbVersion SoundBlaster::getDspVersion()
 {
     writeDsp(SB_GET_DSP_VERSION_NUMBER);
@@ -280,6 +321,8 @@ SbVersion SoundBlaster::getDspVersion()
 
 SoundBlaster::SoundBlaster()
 {
+    s_playing = false;
+
     SbConfig config = parseBlasterString();
     s_base = config.base;
     s_irq = config.irq;
@@ -292,7 +335,7 @@ SoundBlaster::SoundBlaster()
 
     if (m_sbFound) {
         initIrq();
-        assignDmaBuffer();
+        // assignDmaBuffer();
         writeDsp(SB_ENABLE_SPEAKER);
     }
 }
@@ -305,4 +348,25 @@ SoundBlaster::~SoundBlaster()
         free(m_dmaBuffer);
         deinitIrq();
     }
+}
+
+SbSample SoundBlaster::loadRawSample(const char* filename, uint16_t sampleRate /* in Hz */)
+{
+    FILE *rawFile;
+    int fileSize;
+    rawFile = fopen(filename, "rb");
+    if (!rawFile)
+    {
+        throw Exception("Could not open file: ", filename);
+    }
+    fseek(rawFile, 0L, SEEK_END);
+    fileSize = ftell(rawFile);
+    fseek(rawFile, 0L, SEEK_SET);
+    SbSample sample;
+    sample.length = fileSize;
+    sample.data = (uint8_t*)malloc(sample.length);
+    fread(sample.data, 1, sample.length, rawFile);
+    sample.timeConstant = 256 - 1000000 / 11000;
+
+    return sample;
 }
