@@ -52,3 +52,5 @@ game.exe
 ../scripts/game_de.bat
 ../scripts/game_en.bat
 ../sound/steps.raw
+../sound/steps.voc
+../sound/steps2.voc

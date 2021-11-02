@@ -70,8 +70,10 @@ int main(int argc, char* argv[])
         SoundBlaster sb;
         
         if (sb.soundBlasterFound()) {
-            SbSample steps = SoundBlaster::loadRawSample("STEPS.RAW", 11000);
+            // SbSample steps = SoundBlaster::loadRawSample("STEPS.RAW", 11000);
+            SbSample steps = SoundBlaster::loadVocFile("STEPS2.VOC");
             sb.singlePlay(steps);
+            while (sb.isPlaying());
         }
  
         CommandLineParametes params = parseCommandline(argc, argv);
@@ -87,7 +89,7 @@ int main(int argc, char* argv[])
                 I18N::loadTranslations("strings.en");
         }
 
-        RadPlayer music("CELT.RAD");
+        // RadPlayer music("CELT.RAD");
         Keyboard keyboard;
 
         shared_ptr<ImageBase> tiles(new TgaImage("tiles.tga"));

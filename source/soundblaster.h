@@ -19,11 +19,20 @@ struct SbVersion
     uint8_t minor;
 };
 
+enum PackMethod
+{
+    PCM_8BIT = 0,
+    ADPCM_4BIT = 1,
+    ADPCM_3BIT = 2,
+    ADPCM_2BIT = 3,
+};
+
 struct SbSample
 {
     uint16_t length;
     uint8_t* data;
     uint8_t timeConstant; // Transfer time constant = 256 - 1000000 / frequency
+    PackMethod packMethod;
 };
 
 
@@ -51,6 +60,7 @@ public:
     void singlePlay(const SbSample& sample);
 
     static SbSample loadRawSample(const char* filename, uint16_t sampleRate /* in Hz */);
+    static SbSample loadVocFile(const char* filename);
 
 
     SbVersion getDspVersion();

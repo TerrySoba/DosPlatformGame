@@ -20,6 +20,12 @@
 #define SB_SET_PLAYBACK_FREQUENCY 0x40
 #define SB_SINGLE_CYCLE_PLAYBACK 0x14
 
+
+#define SB_SINGLE_CYCLE_PLAYBACK_ADPCM_4BIT 0x75
+#define SB_SINGLE_CYCLE_PLAYBACK_ADPCM_3BIT 0x77
+#define SB_SINGLE_CYCLE_PLAYBACK_ADPCM_2BIT 0x17
+
+
 #define MASK_REGISTER 0x0A
 #define MODE_REGISTER 0x0B
 #define MSB_LSB_FLIP_FLOP 0x0C
@@ -300,7 +306,24 @@ void SoundBlaster::singlePlay(const SbSample& sample)
     outp((s_dma << 1) + 1, toBePlayed & 0xFF);
     outp((s_dma << 1) + 1, toBePlayed >> 8);
     outp(MASK_REGISTER, s_dma);
-    writeDsp(SB_SINGLE_CYCLE_PLAYBACK);
+
+    switch(sample.packMethod)
+    {
+        case ADPCM_4BIT:
+            writeDsp(SB_SINGLE_CYCLE_PLAYBACK_ADPCM_4BIT);
+            break;
+        case ADPCM_3BIT:
+            writeDsp(SB_SINGLE_CYCLE_PLAYBACK_ADPCM_3BIT);
+            break;
+        case ADPCM_2BIT:
+            writeDsp(SB_SINGLE_CYCLE_PLAYBACK_ADPCM_2BIT);
+            break;
+        case PCM_8BIT: // fallthrough
+        default:
+            writeDsp(SB_SINGLE_CYCLE_PLAYBACK);
+            break;
+    }
+
     writeDsp(toBePlayed & 0xFF);
     writeDsp(toBePlayed >> 8);
 
@@ -367,6 +390,79 @@ SbSample SoundBlaster::loadRawSample(const char* filename, uint16_t sampleRate /
     sample.data = (uint8_t*)malloc(sample.length);
     fread(sample.data, 1, sample.length, rawFile);
     sample.timeConstant = 256 - 1000000 / 11000;
+    sample.packMethod = PCM_8BIT;
+
+    return sample;
+}
+
+const char* VOC_FILE_ID = "Creative Voice File\x1a\x1a\x00";
+const int VOC_FILE_ID_LENGTH = 22;
+
+
+SbSample SoundBlaster::loadVocFile(const char* filename)
+{
+    FILE *rawFile =  rawFile = fopen(filename, "rb");
+    if (!rawFile)
+    {
+        throw Exception("Could not open file: ", filename);
+    }
+
+    char buffer[VOC_FILE_ID_LENGTH];
+
+    fread(buffer, 1, VOC_FILE_ID_LENGTH, rawFile);
+
+    if (strncmp(buffer, VOC_FILE_ID, VOC_FILE_ID_LENGTH) != 0)
+    {
+        throw Exception("Invalid File ID.");
+    }
+
+    uint16_t version;
+    fread(&version, 1, sizeof(uint16_t), rawFile);
+
+    printf("Version: 0x%x : %d.%d\n", version , (version >> 8) & 0xff, version & 0xff);
+
+    uint16_t versionCheck;
+    fread(&versionCheck, 1, sizeof(uint16_t), rawFile);
+
+    printf("Version: %x\n", versionCheck);
+
+    if (~version + 0x1234 != versionCheck)
+    {
+        throw Exception("Validation failure.");
+    }
+
+
+    SbSample sample;
+
+    while (!feof(rawFile))
+    {
+        uint8_t type;
+        fread(&type, 1, 1, rawFile);
+        switch(type)
+        {
+            case 0: // end of file
+                break;
+            case 1: // sample data
+                {
+                    uint32_t length = 0;
+                    fread(&length, 1, 3, rawFile); // size is just 3 bytes
+                    length -= 2; // for some reason size is 2 bytes bigger than actual sample count
+                    printf("len: %d\n", length);
+                    uint8_t timeConstant;
+                    fread(&timeConstant, 1, 1, rawFile);
+                    uint8_t packMethod;
+                    fread(&packMethod, 1, 1, rawFile);
+                    sample.length = length;
+                    sample.packMethod = (PackMethod)packMethod;
+                    sample.timeConstant = timeConstant;
+                    sample.data = (uint8_t*)malloc(sample.length);
+                    fread(sample.data, 1, sample.length, rawFile);
+                }
+                break;
+            default:
+                throw Exception("Unsupported block type");
+        }
+    }
 
     return sample;
 }
