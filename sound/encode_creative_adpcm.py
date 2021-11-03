@@ -91,15 +91,19 @@ if __name__ == "__main__":
     print(args)
     raw = loadFile(args.input)
 
-    # version = 0x0aff
-    # versionCheck = 0x1234
+    major = 1
+    minor = 10
+
+    version = minor + (major << 8)
+    versionCheck = 0x1234
 
     compressed = createAdpcm4BitFromRaw(raw)
 
     timeConstant = round(256 - 1000000 / args.frequency)
 
-    vocHeader = b"Creative Voice File" + struct.pack("bbbbbbb", 0x1a, 0x1a, 0x00, 0x0a, 0x01, 0x29, 0x11) # , version) #, (~version + versionCheck))
+    vocHeader = b"Creative Voice File" + struct.pack("bbb", 0x1a, 0x1a, 0x00)
+    versionBlock = struct.pack("HH", version, (~version + versionCheck))
     sampleHeader = b"\x01" + struct.pack("I", len(compressed) + 2)[:3] + struct.pack("BB", timeConstant, 1)
     endheader = b"\x00"
 
-    storeFile(args.output, vocHeader + sampleHeader + compressed + endheader)
+    storeFile(args.output, vocHeader + versionBlock + sampleHeader + compressed + endheader)
