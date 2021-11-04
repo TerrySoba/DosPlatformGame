@@ -58,8 +58,6 @@ def createAdpcm4BitFromRaw(raw):
         decoders = []
         diffs = []
 
-        # print(sample)
-
         for i in range(16):
             decoderCopy = copy.deepcopy(decoder)
             diff = abs(decoderCopy.decodeNibble(i) - sample)
@@ -71,7 +69,6 @@ def createAdpcm4BitFromRaw(raw):
 
         decoder = decoders[idx]
         result.append(idx)
-        # print(idx)
             
     binaryResult = []
 
@@ -82,13 +79,13 @@ def createAdpcm4BitFromRaw(raw):
     return struct.pack("B", raw[0]) + bytes(binaryResult)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Convert raw 8bit unsigned sound files to Creative ADPCM')
+    parser = argparse.ArgumentParser(description='Convert raw 8bit unsigned sound files to Creative ADPCM compressed VOC files.')
     parser.add_argument('input', help='The input raw audio file (8bit unsigned)')
-    parser.add_argument('output', help='The ADPCM encoded audio file')
     parser.add_argument('frequency', type=int, help="The frequency of the sound in Hz, e.g. 11000")
+    parser.add_argument('output', help='The ADPCM encoded VOC file')
+    
 
     args = parser.parse_args()
-    print(args)
     raw = loadFile(args.input)
 
     major = 1
@@ -101,9 +98,9 @@ if __name__ == "__main__":
 
     timeConstant = round(256 - 1000000 / args.frequency)
 
-    vocHeader = b"Creative Voice File" + struct.pack("bbb", 0x1a, 0x1a, 0x00)
-    versionBlock = struct.pack("HH", version, (~version + versionCheck))
-    sampleHeader = b"\x01" + struct.pack("I", len(compressed) + 2)[:3] + struct.pack("BB", timeConstant, 1)
+    vocHeader = b"Creative Voice File" + struct.pack("<bbb", 0x1a, 0x1a, 0x00)
+    versionBlock = struct.pack("<HH", version, (~version + versionCheck))
+    sampleHeader = b"\x01" + struct.pack("<I", len(compressed) + 2)[:3] + struct.pack("<BB", timeConstant, 1)
     endheader = b"\x00"
 
     storeFile(args.output, vocHeader + versionBlock + sampleHeader + compressed + endheader)
