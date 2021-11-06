@@ -67,15 +67,6 @@ int main(int argc, char* argv[])
 {
     try
     {
-        SoundBlaster sb;
-        
-        if (sb.soundBlasterFound()) {
-            // SbSample steps = SoundBlaster::loadRawSample("STEPS.RAW", 11000);
-            SbSample steps = SoundBlaster::loadVocFile("STEPS2.VOC");
-            sb.singlePlay(steps);
-            while (sb.isPlaying());
-        }
- 
         CommandLineParametes params = parseCommandline(argc, argv);
         calibrateJoystick();
         
@@ -89,7 +80,7 @@ int main(int argc, char* argv[])
                 I18N::loadTranslations("strings.en");
         }
 
-        // RadPlayer music("CELT.RAD");
+        RadPlayer music("CELT.RAD");
         Keyboard keyboard;
 
         shared_ptr<ImageBase> tiles(new TgaImage("tiles.tga"));
@@ -104,15 +95,6 @@ int main(int argc, char* argv[])
         GameAnimations animations = {guy, enemy, guffin, fireBall};
 
         Game game(gfx, tiles, animations, "%02x%02x", params.level);
-
-        // while (!s_keyAlt)
-        // {
-        // 	gfx->clear();
-        // 	Text t(I18N::getString(1).c_str(), 30);
-        // 	gfx->draw(t, 10,10);
-        // 	gfx->vsync();
-        // 	gfx->drawScreen();
-        // }
 
         while (!s_keyEsc)
         {	
