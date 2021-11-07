@@ -35,8 +35,11 @@ void storeFile(const std::string& filename, const std::vector<uint8_t>& data)
     fclose(fp);
 }
 
-
-#define clamp(n, smallest, largest) std::max(smallest, std::min(n, largest))
+template<typename T1, typename T2, typename T3>
+auto clamp(T1 value, T2 smallest, T3 largest)
+{
+    return std::max(smallest, std::min(value, largest));
+}
 
 std::vector<std::vector<uint8_t>> scaleMap = {
     {0, 1, 2, 3, 4, 5, 6, 7},

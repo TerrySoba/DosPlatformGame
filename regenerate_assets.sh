@@ -8,7 +8,7 @@ tiled_path=~/Downloads/Tiled-1.5.0-x86_64.AppImage
 # build png to tga converter
 mkdir -p Png2Tga/build
 pushd Png2Tga/build
-cmake ..
+cmake .. -DCMAKE_BUILD_TYPE=Release
 make
 popd
 png2tga=Png2Tga/build/Png2Tga
@@ -29,7 +29,7 @@ $textcompiler text/strings.json text/strings
 # build AdpcmEncoder
 mkdir -p AdpcmEncoder/build
 pushd AdpcmEncoder/build
-cmake ..
+cmake .. -DCMAKE_BUILD_TYPE=Release
 make
 popd
 wav2adpcm=AdpcmEncoder/wav2adpcm.sh
