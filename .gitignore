@@ -11,5 +11,7 @@ TextCompiler/build
 *.err
 source/version.h
 Png2Tga/build
+AdpcmEncoder/build
 build/
+sound/attic
 *.zip

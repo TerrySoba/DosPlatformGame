@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
         
         if (sb.soundBlasterFound()) {
             // SbSample steps = SoundBlaster::loadRawSample("STEPS.RAW", 11000);
-            SbSample steps = SoundBlaster::loadVocFile("STEPS2.VOC");
+            SbSample steps = SoundBlaster::loadVocFile("DEATH.VOC");
             sb.singlePlay(steps);
             while (sb.isPlaying());
         }

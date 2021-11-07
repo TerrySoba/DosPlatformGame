@@ -1,0 +1,2 @@
+project(adpcm_encoder)
+add_executable(adpcm_encoder encode_creative_adpcm_c.cpp)

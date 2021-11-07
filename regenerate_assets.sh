@@ -26,6 +26,22 @@ textcompiler=TextCompiler/build/TextCompiler
 $textcompiler text/strings.json text/strings
 
 
+# build AdpcmEncoder
+mkdir -p AdpcmEncoder/build
+pushd AdpcmEncoder/build
+cmake ..
+make
+popd
+wav2adpcm=AdpcmEncoder/wav2adpcm.sh
+
+# now convert wav sounds to adpcm compressed voc files
+for wavfile in sound/*.wav
+do
+    echo Converting $wavfile
+    $wav2adpcm "$wavfile" 11000 sound/`basename $wavfile .wav`.voc
+done
+
+
 convertImage () {
     local pngfile=$1
     directory=`dirname $pngfile`
@@ -51,4 +67,7 @@ generateCsv () {
 }
 
 # now convert tiled maps to csv
-for tmxfile in levels/*.tmx; do generateCsv "$tmxfile"; done
+for tmxfile in levels/*.tmx;
+do
+    generateCsv "$tmxfile"
+done
