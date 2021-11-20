@@ -7,7 +7,7 @@ The encoder can be used to encode raw unsigned 8bit audio files to Creative ADPC
 
 Example usage:
 ~~~bash
-python3 encode_creative_adpcm.py input.raw 11000 output.voc
+adpcm_encoder input.raw 11000 output.voc
 ~~~
 This will encode the file **input.raw** into a Creative ADPCM encoded VOC file with 11kHz.
 

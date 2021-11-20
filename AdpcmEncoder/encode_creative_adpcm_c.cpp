@@ -41,44 +41,65 @@ auto clamp(T1 value, T2 smallest, T3 largest)
     return std::max(smallest, std::min(value, largest));
 }
 
-std::vector<std::vector<uint8_t>> scaleMap = {
-    {0, 1, 2, 3, 4, 5, 6, 7},
-    {1, 3, 5, 7, 9, 11, 13, 15},
-    {2, 6, 10, 14, 18, 22, 26, 30},
-    {4, 12, 20, 28, 36, 44, 52, 60}};
-
-std::vector<std::vector<int8_t>> adjustMap = {
-    {0, 0, 0, 0, 0, 1, 1, 1},
-    {-1, 0, 0, 0, 0, 1, 1, 1},
-    {-1, 0, 0, 0, 0, 1, 1, 1},
-    {-1, 0, 0, 0, 0, 0, 0, 0}};
-
+/**
+ * This class is a decoder for 4bit Creative ADPCM
+ * 
+ * Sources:
+ *  https://github.com/schlae/sb-firmware/blob/master/sbv202.asm
+ *  https://github.com/joncampbell123/dosbox-x/blob/master/src/hardware/sblaster.cpp
+ *  https://wiki.multimedia.cx/index.php/Creative_8_bits_ADPCM
+ */
 class CreativeAdpcmDecoder4Bit
 {
 public:
     CreativeAdpcmDecoder4Bit(uint8_t firstValue) :
-        m_reference(firstValue),
-        m_scale(0)
+        m_accumulator(1),                           // initialize accumulator to 1
+        m_previous(firstValue)
     {}
 
+    /**
+     * Decode a nibble (4 bits) of data and return the 8bit data.
+     * 
+     * @param nibble The 4bits to be decoded. Value must be smaller than 16.
+     */
     uint8_t decodeNibble(uint8_t nibble)
     {
-        uint8_t negativeBit = nibble & (1 << 3);
-        uint8_t sample = nibble & ((1 << 3) - 1);
+        int sign = (nibble & 8)?-1:1;               // Input is just 4 bytes (a nibble), so the 4th bit is the sign bit
+        uint8_t data = nibble & 7;                  // The lower 3 bits are the sample data
+        uint8_t delta = 
+            (data * m_accumulator) +
+            (m_accumulator / 2);                    // Scale sample data using accumulator value
+        int result = m_previous + (sign * delta);   // Calculate the next value
+        m_previous = clamp(result, 0, 255);         // Limit value to 0..255
 
-        int sign = negativeBit ? -1 : 1;
-        int ref = m_reference + (sign * scaleMap[m_scale][sample]);
-        m_reference = clamp(ref, 0, 255);
-        m_scale = m_scale + adjustMap[m_scale][sample];
+        if ((data == 0) && (m_accumulator > 1))     // If input value is 0, and accumulator is
+            m_accumulator /= 2;                     // larger than 1, then halve accumulator.
+        if ((data >= 5) && (m_accumulator < 8))     // If input value larger than 5, and accumulator is
+            m_accumulator *= 2;                     // lower than 1, then double accumulator.
 
-        return m_reference;
+        return m_previous;
     }
 
 private:
-    uint8_t m_reference;
-    uint8_t m_scale;
+    uint8_t m_accumulator;
+    uint8_t m_previous;
 };
 
+/**
+ * Encodes the given sequence of unsigned 8bit values to 4bit ADPCM.
+ * The first 8bit value is stored "as is", but the following values are
+ * compressed to 4bit values. This almost halves the size.
+ * 
+ * The encoder uses an ADPCM decoder and tries every possible input
+ * until it get the output that most closely matches the input value.
+ * As there are only 16 possible input values to try with 4 bits
+ * this is not impossibly slow.
+ * 
+ * This encoder seems to produce good results that sound similar to
+ * the results that VOCEDIT 2 produces. It might of course be possible
+ * to produce a better encoder, but as this encoder is good enough for
+ * my purposes I have not tried.
+ */
 std::vector<uint8_t> createAdpcm4BitFromRaw(const std::vector<uint8_t>& raw)
 {
     CreativeAdpcmDecoder4Bit decoder(raw[0]);
