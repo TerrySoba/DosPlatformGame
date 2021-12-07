@@ -64,7 +64,7 @@ public:
      */
     uint8_t decodeNibble(uint8_t nibble)
     {
-        int sign = (nibble & 8)?-1:1;               // Input is just 4 bytes (a nibble), so the 4th bit is the sign bit
+        int sign = (nibble & 8)?-1:1;               // Input is just 4 bits (a nibble), so the 4th bit is the sign bit
         uint8_t data = nibble & 7;                  // The lower 3 bits are the sample data
         uint8_t delta = 
             (data * m_accumulator) +
@@ -75,7 +75,7 @@ public:
         if ((data == 0) && (m_accumulator > 1))     // If input value is 0, and accumulator is
             m_accumulator /= 2;                     // larger than 1, then halve accumulator.
         if ((data >= 5) && (m_accumulator < 8))     // If input value larger than 5, and accumulator is
-            m_accumulator *= 2;                     // lower than 1, then double accumulator.
+            m_accumulator *= 2;                     // lower than 8, then double accumulator.
 
         return m_previous;
     }
