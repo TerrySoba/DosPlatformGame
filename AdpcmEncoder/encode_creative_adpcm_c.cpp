@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <vector>
 #include <string>
@@ -17,7 +18,7 @@ std::vector<uint8_t> loadFile(const std::string& filename)
     size_t fileSize = ftell(fp);
     fseek(fp, 0L, SEEK_SET);
     std::vector<uint8_t> data(fileSize);
-    fread(data.data(), 1, fileSize, fp);
+    fread(&data[0], 1, fileSize, fp);
     fclose(fp);
     return data;
 }
@@ -30,16 +31,14 @@ void storeFile(const std::string& filename, const std::vector<uint8_t>& data)
         throw std::runtime_error("Could not open file: " +  filename);
     }
 
-    fwrite(data.data(), data.size(), 1, fp);
+    fwrite(&data[0], data.size(), 1, fp);
 
     fclose(fp);
 }
 
-template<typename T1, typename T2, typename T3>
-auto clamp(T1 value, T2 smallest, T3 largest)
-{
-    return std::max(smallest, std::min(value, largest));
-}
+#define clamp(value, smallest, largest) \
+    std::max((smallest), std::min((value), (largest)))
+
 
 /**
  * This class is a decoder for 4bit Creative ADPCM
@@ -168,12 +167,21 @@ enum VocSampleFormat
     VOC_FORMAT_ADPCM_2BIT = 3,
 };
 
+
+int intRound(double x)
+{
+    if (x < 0.0)
+        return (int)(x - 0.5);
+    else
+        return (int)(x + 0.5);
+}
+
 std::vector<uint8_t> createVocFile(
     uint32_t frequency,
     const std::vector<uint8_t>& sampleData,
     VocSampleFormat sampleFormat)
 {
-    uint8_t timeConstant = std::round(256 - 1000000.0 / frequency);
+    uint8_t timeConstant = intRound(256 - 1000000.0 / frequency);
 
     std::string vocHeader = "Creative Voice File\x1a";
 
@@ -213,12 +221,12 @@ int main(int argc, char* argv[])
         if (argc != 4)
         {
             printf("Usage %s: <input> <frequency> <output>\n", argv[0]);
-            exit(1);
+            return 1;
         }
 
-        auto raw = loadFile(argv[1]);
-        auto compressed = createAdpcm4BitFromRaw(raw);
-        auto vocData = createVocFile(atoi(argv[2]), compressed, VOC_FORMAT_ADPCM_4BIT);
+        std::vector<uint8_t> raw = loadFile(argv[1]);
+        std::vector<uint8_t> compressed = createAdpcm4BitFromRaw(raw);
+        std::vector<uint8_t> vocData = createVocFile(atoi(argv[2]), compressed, VOC_FORMAT_ADPCM_4BIT);
 
         storeFile(argv[3], vocData);
 
