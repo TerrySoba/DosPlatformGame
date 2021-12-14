@@ -57,6 +57,7 @@ for pngfile in images/*.png; do  convertImage "$pngfile" & done
 cp images/enemy.json images/enemy.jsn
 cp images/guffin.json images/guffin.jsn
 cp images/fire.json images/fire.jsn
+cp images/arrow2.json images/arrow2.jsn
 
 generateCsv () {
     local tmxfile=$1

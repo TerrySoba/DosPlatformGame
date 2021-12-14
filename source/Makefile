@@ -12,16 +12,24 @@ objects_test = \
 	physics_test.o csv_reader_test.o tga_image_test.o json_test.o shared_ptr_test.o \
 	blit_test.o vector_test.o rectangle_test.o tiny_string_test.o animation_test.o \
 	text_layout_test.o i18n_test.o
+
+
+title_screen = \
+    title.o vgagfx.o image.o tga_image.o exception.o rectangle.o keyboard.o \
+	tiny_string.o animation.o cJSON.o json.o compiled_sprite.o
+
+
 # coptions = -0 -ml -xs -onatx -oh -oi+ -ei -zp8 -fpi87
 # coptions = -0 -ml -xs -onatx -oh -ol -ol+ -ox
 coptions = -ml -oneatx -xs -zp4 -0
 
 dest     = game.exe
 test     = gametest.exe
+title    = title.exe
 
 BUILD_DATE=`date -R`
 
-all: $(dest) $(test)
+all: $(dest) $(test) $(title)
 
 $(dest): _$(dest)
 	upx -9 --ultra-brute -f --8086 -o$(dest) _$(dest)
@@ -99,3 +107,9 @@ $(test): $(objects_test)
 	echo "SYSTEM DOS" >> gametest.lnk
 	echo "FILE   {$(objects_test)}" >> gametest.lnk
 	wlink  @gametest.lnk
+
+$(title): $(title_screen)
+	echo "NAME   $@" > title.lnk
+	echo "SYSTEM DOS" >> title.lnk
+	echo "FILE   {$(title_screen)}" >> title.lnk
+	wlink  @title.lnk

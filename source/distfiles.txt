@@ -1,4 +1,5 @@
 game.exe
+title.exe
 ../text/strings.en
 ../text/strings.de
 ../music/CELT.RAD
@@ -12,6 +13,9 @@ game.exe
 ../images/guyframe.tga
 ../images/fire.tga
 ../images/fire.jsn
+../images/title.tga
+../images/arrow2.tga
+../images/arrow2.jsn
 ../levels/0101_bg.csv
 ../levels/0101_col.csv
 ../levels/0102_bg.csv
