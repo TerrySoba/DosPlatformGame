@@ -20,10 +20,14 @@
 #define SB_SET_PLAYBACK_FREQUENCY 0x40
 #define SB_SINGLE_CYCLE_PLAYBACK 0x14
 
-
 #define SB_SINGLE_CYCLE_PLAYBACK_ADPCM_4BIT 0x75
+#define SB_SINGLE_CYCLE_PLAYBACK_ADPCM_4BIT_NO_REF_BYTE 0x74
+
 #define SB_SINGLE_CYCLE_PLAYBACK_ADPCM_3BIT 0x77
+#define SB_SINGLE_CYCLE_PLAYBACK_ADPCM_3BIT_NO_REF_BYTE 0x76
+
 #define SB_SINGLE_CYCLE_PLAYBACK_ADPCM_2BIT 0x17
+#define SB_SINGLE_CYCLE_PLAYBACK_ADPCM_2BIT_NO_REF_BYTE 0x16
 
 
 #define MASK_REGISTER 0x0A
@@ -41,6 +45,9 @@ static uint8_t SoundBlaster::s_irq; /* default 7 */
 static uint8_t SoundBlaster::s_dma; /* default 1 */
 static SoundblasterType SoundBlaster::s_type;
 static volatile bool SoundBlaster::s_playing;
+static uint8_t __far * SoundBlaster::s_nextDmaData;
+static uint32_t SoundBlaster::s_nextDmaSize;
+static uint8_t SoundBlaster::s_nextPlaybackCommand;
 
 
 bool reset_dsp(uint16_t port)
@@ -151,18 +158,7 @@ uint8_t highIrqToVector(uint8_t irq)
     }
 }
 
-void __interrupt SoundBlaster::sbIrqHandler()
-{
-    __asm { cli }
-    inp(s_base + SB_READ_DATA_STATUS);
-    outp(0x20, 0x20); // satisfy PIC
-    if (isHighIrq(s_irq)) {
-        outp(0xA0, 0x20);
-    }
 
-    s_playing = 0;
-    __asm { sti }
-}
 
 void SoundBlaster::initIrq()
 {
@@ -202,73 +198,72 @@ void SoundBlaster::deinitIrq()
     }
 }
 
-void SoundBlaster::assignDmaBuffer()
-{
-    uint8_t* tmpBuf;
-    uint32_t linearAddress;
-    uint16_t page1, page2;
-    
-    tmpBuf = (uint8_t*)_fmalloc(32768);
-    linearAddress = FP_SEG(tmpBuf);
-    linearAddress = (linearAddress << 4) + FP_OFF(tmpBuf);
-    page1 = linearAddress >> 16;
-    page2 = (linearAddress + 32767) >> 16;
+struct DmaChunk {
+    // curent DMA chunk
+    uint16_t dmaPage;
+    uint16_t dmaOffset;
+    uint16_t toBePlayed;
 
-    m_dmaBuffer = tmpBuf;
-    m_dmaPage = linearAddress >> 16;
-    m_dmaOffset = linearAddress & 0xFFFF;
+    // next DMA chunk
+    uint32_t restLen;
+    uint8_t __far* restData;
+};
+
+
+#define min(x,y) ((x) < (y))?(x):(y)
+
+
+DmaChunk calcDmaChunk(uint8_t __far* data, uint32_t len)
+{
+    DmaChunk chunk;
+
+    uint32_t linearAddress = FP_SEG(data);
+    linearAddress = (linearAddress << 4) + FP_OFF(data);
+
+    chunk.dmaPage = linearAddress >> 16;
+    chunk.dmaOffset = linearAddress & 0xFFFF;
+    uint16_t maxSize = 0xffff - chunk.dmaOffset;
+    chunk.toBePlayed = min(len, maxSize);
+    chunk.restLen = len - (chunk.toBePlayed);
+    chunk.restData = data + chunk.toBePlayed + 1;
+    chunk.toBePlayed -= 1; // this is required by DMA, size must be size - 1
+    return chunk;
 }
 
-
-void SoundBlaster::singleCyclePlayback()
+void SoundBlaster::singlePlayData(uint8_t __far * data, uint32_t length, uint8_t playCommand)
 {
+    DmaChunk chunk = calcDmaChunk(data, length);
+
+    s_nextDmaData = chunk.restData;
+    s_nextDmaSize = chunk.restLen;
+
     s_playing = true;
 
     // program the DMA controller
     outp(MASK_REGISTER, 4 | s_dma);
     outp(MSB_LSB_FLIP_FLOP, 0);
     outp(MODE_REGISTER, 0x48 | s_dma);
-    outp(s_dma << 1, m_dmaOffset & 0xFF);
-    outp(s_dma << 1, m_dmaOffset >> 8);
+    outp(s_dma << 1, chunk.dmaOffset & 0xFF);
+    outp(s_dma << 1, chunk.dmaOffset >> 8);
     switch (s_dma)
     {
     case 0:
-        outp(DMA_CHANNEL_0, m_dmaPage);
+        outp(DMA_CHANNEL_0, chunk.dmaPage);
         break;
     case 1:
-        outp(DMA_CHANNEL_1, m_dmaPage);
+        outp(DMA_CHANNEL_1, chunk.dmaPage);
         break;
     case 3:
-        outp(DMA_CHANNEL_3, m_dmaPage);
+        outp(DMA_CHANNEL_3, chunk.dmaPage);
         break;
     }
-    outp((s_dma << 1) + 1, m_toBePlayed & 0xFF);
-    outp((s_dma << 1) + 1, m_toBePlayed >> 8);
+    outp((s_dma << 1) + 1, chunk.toBePlayed & 0xFF);
+    outp((s_dma << 1) + 1, chunk.toBePlayed >> 8);
     outp(MASK_REGISTER, s_dma);
-    writeDsp(SB_SINGLE_CYCLE_PLAYBACK);
-    writeDsp(m_toBePlayed & 0xFF);
-    writeDsp(m_toBePlayed >> 8);
-    m_toBePlayed = 0;
-}
 
-
-void SoundBlaster::singlePlay(const char* fileName)
-{
-    FILE *rawFile;
-    int fileSize;
-
-    memset(m_dmaBuffer, 0, 32768);
-    rawFile = fopen(fileName, "rb");
-    fseek(rawFile, 0L, SEEK_END);
-    fileSize = ftell(rawFile);
-    fseek(rawFile, 0L, SEEK_SET);
-    fread(m_dmaBuffer, 1, fileSize, rawFile);
-    writeDsp(SB_SET_PLAYBACK_FREQUENCY);
-    writeDsp(256 - 1000000 / 11000);
-    m_toBePlayed = fileSize - 1;
-
-    singleCyclePlayback();
-    while (s_playing);
+    writeDsp(playCommand);
+    writeDsp(chunk.toBePlayed & 0xFF);
+    writeDsp(chunk.toBePlayed >> 8);
 }
 
 void SoundBlaster::singlePlay(const SbSample& sample)
@@ -276,59 +271,29 @@ void SoundBlaster::singlePlay(const SbSample& sample)
     writeDsp(SB_SET_PLAYBACK_FREQUENCY);
     writeDsp(sample.timeConstant);
 
-    uint32_t linearAddress = FP_SEG(sample.data);
-    linearAddress = (linearAddress << 4) + FP_OFF(sample.data);
-
-    uint16_t dmaPage = linearAddress >> 16;
-    uint16_t dmaOffset = linearAddress & 0xFFFF;
-    uint16_t toBePlayed = sample.length - 1;
-
-    s_playing = true;
-
-    // program the DMA controller
-    outp(MASK_REGISTER, 4 | s_dma);
-    outp(MSB_LSB_FLIP_FLOP, 0);
-    outp(MODE_REGISTER, 0x48 | s_dma);
-    outp(s_dma << 1, dmaOffset & 0xFF);
-    outp(s_dma << 1, dmaOffset >> 8);
-    switch (s_dma)
-    {
-    case 0:
-        outp(DMA_CHANNEL_0, dmaPage);
-        break;
-    case 1:
-        outp(DMA_CHANNEL_1, dmaPage);
-        break;
-    case 3:
-        outp(DMA_CHANNEL_3, dmaPage);
-        break;
-    }
-    outp((s_dma << 1) + 1, toBePlayed & 0xFF);
-    outp((s_dma << 1) + 1, toBePlayed >> 8);
-    outp(MASK_REGISTER, s_dma);
-
+    uint8_t playCommand;
     switch(sample.packMethod)
     {
         case ADPCM_4BIT:
-            writeDsp(SB_SINGLE_CYCLE_PLAYBACK_ADPCM_4BIT);
+            playCommand = SB_SINGLE_CYCLE_PLAYBACK_ADPCM_4BIT;
+            s_nextPlaybackCommand = SB_SINGLE_CYCLE_PLAYBACK_ADPCM_4BIT_NO_REF_BYTE;
             break;
         case ADPCM_3BIT:
-            writeDsp(SB_SINGLE_CYCLE_PLAYBACK_ADPCM_3BIT);
+            playCommand = SB_SINGLE_CYCLE_PLAYBACK_ADPCM_3BIT;
+            s_nextPlaybackCommand = SB_SINGLE_CYCLE_PLAYBACK_ADPCM_3BIT_NO_REF_BYTE;
             break;
         case ADPCM_2BIT:
-            writeDsp(SB_SINGLE_CYCLE_PLAYBACK_ADPCM_2BIT);
+            playCommand = SB_SINGLE_CYCLE_PLAYBACK_ADPCM_2BIT;
+            s_nextPlaybackCommand = SB_SINGLE_CYCLE_PLAYBACK_ADPCM_2BIT_NO_REF_BYTE;
             break;
         case PCM_8BIT: // fallthrough
         default:
-            writeDsp(SB_SINGLE_CYCLE_PLAYBACK);
+            playCommand = SB_SINGLE_CYCLE_PLAYBACK;
+            s_nextPlaybackCommand = SB_SINGLE_CYCLE_PLAYBACK;
             break;
     }
 
-    writeDsp(toBePlayed & 0xFF);
-    writeDsp(toBePlayed >> 8);
-
-
-    // while (s_playing);
+    singlePlayData(sample.data, sample.length, playCommand);
 }
 
 SbVersion SoundBlaster::getDspVersion()
@@ -358,7 +323,6 @@ SoundBlaster::SoundBlaster()
 
     if (m_sbFound) {
         initIrq();
-        // assignDmaBuffer();
         writeDsp(SB_ENABLE_SPEAKER);
     }
 }
@@ -368,7 +332,6 @@ SoundBlaster::~SoundBlaster()
 {
     if (m_sbFound) {
         writeDsp(SB_DISABLE_SPEAKER);
-        free(m_dmaBuffer);
         deinitIrq();
     }
 }
@@ -418,13 +381,8 @@ SbSample SoundBlaster::loadVocFile(const char* filename)
 
     uint16_t version;
     fread(&version, 1, sizeof(uint16_t), rawFile);
-
-    printf("Version: 0x%x : %d.%d\n", version , (version >> 8) & 0xff, version & 0xff);
-
     uint16_t versionCheck;
     fread(&versionCheck, 1, sizeof(uint16_t), rawFile);
-
-    printf("Version: %x\n", versionCheck);
 
     if (~version + 0x1234 != versionCheck)
     {
@@ -447,7 +405,6 @@ SbSample SoundBlaster::loadVocFile(const char* filename)
                     uint32_t length = 0;
                     fread(&length, 1, 3, rawFile); // size is just 3 bytes
                     length -= 2; // for some reason size is 2 bytes bigger than actual sample count
-                    printf("len: %d\n", length);
                     uint8_t timeConstant;
                     fread(&timeConstant, 1, 1, rawFile);
                     uint8_t packMethod;
@@ -465,4 +422,26 @@ SbSample SoundBlaster::loadVocFile(const char* filename)
     }
 
     return sample;
+}
+
+
+void __interrupt SoundBlaster::sbIrqHandler()
+{
+    __asm { cli }
+    inp(s_base + SB_READ_DATA_STATUS);
+    outp(0x20, 0x20); // satisfy PIC
+    if (isHighIrq(s_irq)) {
+        outp(0xA0, 0x20);
+    }
+
+    if (s_nextDmaSize > 0) // continue playback
+    {
+        singlePlayData(s_nextDmaData, s_nextDmaSize, s_nextPlaybackCommand);
+    }
+    else
+    {
+        s_playing = 0;
+    }
+
+    __asm { sti }
 }

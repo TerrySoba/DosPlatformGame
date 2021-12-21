@@ -11,7 +11,7 @@
 #include "joystick.h"
 #include "text.h"
 #include "i18n.h"
-#include "soundblaster.h"
+#include "sound_controller.h"
 #include <dos.h>
 
 #include "exception.h"
@@ -67,15 +67,11 @@ int main(int argc, char* argv[])
 {
     try
     {
-        SoundBlaster sb;
-        
-        if (sb.soundBlasterFound()) {
-            // SbSample steps = SoundBlaster::loadRawSample("STEPS.RAW", 11000);
-            SbSample steps = SoundBlaster::loadVocFile("DEATH.VOC");
-            sb.singlePlay(steps);
-            while (sb.isPlaying());
-        }
- 
+        SoundController sound;
+
+        sound.playDeathSound();
+
+
         CommandLineParametes params = parseCommandline(argc, argv);
         calibrateJoystick();
         

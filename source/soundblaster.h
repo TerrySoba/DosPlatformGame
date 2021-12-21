@@ -29,7 +29,7 @@ enum PackMethod
 
 struct SbSample
 {
-    uint16_t length;
+    uint32_t length;
     uint8_t* data;
     uint8_t timeConstant; // Transfer time constant = 256 - 1000000 / frequency
     PackMethod packMethod;
@@ -44,6 +44,16 @@ struct SbSample
 class SoundBlaster
 {
 public:
+    /**
+     * Initializes the sound blaster.
+     * 
+     * After initializing you should check if a sound blaster was found using
+     * the soundBlasterFound() method. Only call other methods if the
+     * method soundBlasterFound() returns true.
+     * 
+     * CAUTION: You may only create one instance of this class. Unfortunately
+     *          this class is NOT reentrant.
+     */
     SoundBlaster();
     ~SoundBlaster();
 
@@ -56,7 +66,6 @@ public:
 
     bool isPlaying() { return s_playing; }
 
-    void singlePlay(const char* fileName);
     void singlePlay(const SbSample& sample);
 
     static SbSample loadRawSample(const char* filename, uint16_t sampleRate /* in Hz */);
@@ -67,12 +76,12 @@ public:
 
 
 private: // methods
-    void writeDsp(uint8_t command);
-    uint8_t readDsp();
+    static void writeDsp(uint8_t command);
+    static uint8_t readDsp();
     void initIrq();
     void deinitIrq();
-    void assignDmaBuffer();
-    void singleCyclePlayback();
+
+    static void singlePlayData(uint8_t __far * data, uint32_t size, uint8_t playCommand);
 
     static void __interrupt sbIrqHandler();
 
@@ -87,10 +96,10 @@ private: // member variables
 
     void __interrupt (*m_oldIrq)();
 
-    uint8_t* m_dmaBuffer;
-    uint16_t m_dmaPage;
-    uint16_t m_dmaOffset;
-    uint16_t m_toBePlayed;
+    // next DMA chunk
+    static uint8_t __far *s_nextDmaData;
+    static uint32_t s_nextDmaSize;
+    static uint8_t s_nextPlaybackCommand; // SB_SINGLE_CYCLE_PLAYBACK, SB_SINGLE_CYCLE_PLAYBACK_ADPCM_4BIT_NO_REF_BYTE, etc...
 };
 
 #endif

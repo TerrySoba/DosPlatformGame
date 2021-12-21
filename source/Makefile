@@ -4,7 +4,7 @@ objects_game_lib = \
     json.o cJSON.o level.o blit.o detect_lines.o exception.o \
 	rectangle.o tiny_string.o game.o compiled_sprite.o \
 	joystick.o enemy.o game_save.o text.o i18n.o fire_ball.o \
-	soundblaster.o
+	soundblaster.o sound_controller.o
 objects_game = \
 	main.o $(objects_game_lib)
 objects_test = \
@@ -73,6 +73,7 @@ i18n.o: i18n.h
 i18n_test.o: i18n.h
 fire_ball.o: vector.h shared_ptr.h rectangle.h animation.h
 soundblaster.o: soundblaster.h
+sound_controller.o: sound_controller.h soundblaster.h
 
 cJSON.o: 3rd_party/cJSON/cJSON.h
 	wpp $(coptions) 3rd_party/cJSON/cJSON.c

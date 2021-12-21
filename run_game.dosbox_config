@@ -42,9 +42,7 @@ mount c release
 c:
 @echo If game does not run lower number in next line to free memory!
 rem loadfix -100 title --german
-rem loadfix -100 game --level 8 1 --german
-
-game_en.bat
+loadfix -100 game --level 8 1 --german
 
 rem pause
 rem exit
