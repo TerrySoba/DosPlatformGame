@@ -12,6 +12,11 @@ public:
     void playWalkSound();
     void playDeathSound();
 
+    bool isPlaying()
+    {
+        return m_sb.isPlaying();
+    }
+
 private:
     SoundBlaster m_sb;
     bool m_sbFound;

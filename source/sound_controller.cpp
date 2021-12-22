@@ -10,7 +10,7 @@ SoundController::SoundController()
 
 void SoundController::playJumpSound()
 {
-    if (m_sbFound)
+    if (m_sbFound && !m_sb.isPlaying())
     {
         m_sb.singlePlay(m_jumpSound);
     }
@@ -26,7 +26,7 @@ void SoundController::playWalkSound()
 
 void SoundController::playDeathSound()
 {
-    if (m_sbFound)
+    if (m_sbFound && !m_sb.isPlaying())
     {
         m_sb.singlePlay(m_deathSound);
     }

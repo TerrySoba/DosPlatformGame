@@ -67,6 +67,16 @@ int main(int argc, char* argv[])
 {
     try
     {
+        shared_ptr<SoundController> sound(new SoundController);
+
+        // sound->playDeathSound();
+        // // while(sound->isPlaying());
+        // delay(300);
+        // sound->playDeathSound();
+        // while(sound->isPlaying());
+        // return 0;
+
+
         CommandLineParametes params = parseCommandline(argc, argv);
         calibrateJoystick();
         
@@ -80,7 +90,7 @@ int main(int argc, char* argv[])
                 I18N::loadTranslations("strings.en");
         }
 
-        // RadPlayer music("CELT.RAD");
+        
         Keyboard keyboard;
 
         shared_ptr<ImageBase> tiles(new TgaImage("tiles.tga"));
@@ -91,7 +101,8 @@ int main(int argc, char* argv[])
         shared_ptr<Animation> fireBall(new Animation("fire.jsn", "fire.tga"));
 
         shared_ptr<VgaGfx> gfx(new VgaGfx);
-        shared_ptr<SoundController> sound(new SoundController);
+        
+        // RadPlayer music("CELT.RAD");
 
         GameAnimations animations = {guy, enemy, guffin, fireBall};
 
