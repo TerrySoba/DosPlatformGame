@@ -8,6 +8,7 @@
 #include "actor_animation_controller.h"
 #include "enemy.h"
 #include "fire_ball.h"
+#include "sound_controller.h"
 
 // forward declarations
 class VgaGfx;
@@ -55,7 +56,13 @@ struct CollectedGuffin
 class Game : public PhysicsCallback
 {
 public:
-	Game(shared_ptr<VgaGfx> vgaGfx, shared_ptr<ImageBase> tiles, GameAnimations animations, const char* levelBasename, LevelNumber startLevel);
+	Game(
+	    shared_ptr<VgaGfx> vgaGfx,
+		shared_ptr<SoundController> sound, 
+		shared_ptr<ImageBase> tiles,
+		GameAnimations animations,
+		const char* levelBasename,
+		LevelNumber startLevel);
 
 	void loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useSpawnPoint);
     void drawFrame();
@@ -84,6 +91,7 @@ private:
 	bool m_lastButtonPressed;
 	tnd::vector<CollectedGuffin> m_collectedGuffins;
 	TinyString m_appleString;
+	shared_ptr<SoundController> m_sound;
 };
 
 

@@ -18,11 +18,12 @@
 
 #include <stdio.h>
 
-Game::Game(shared_ptr<VgaGfx> vgaGfx, shared_ptr<ImageBase> tiles,
+Game::Game(shared_ptr<VgaGfx> vgaGfx, shared_ptr<SoundController> sound, 
+           shared_ptr<ImageBase> tiles,
            GameAnimations animations,
            const char* levelBasename, LevelNumber startLevel) :
     m_vgaGfx(vgaGfx), m_tiles(tiles), m_animations(animations), m_frames(0), m_levelBasename(levelBasename),
-    m_animationController(animations.actorAnimation), m_lastButtonPressed(false)
+    m_animationController(animations.actorAnimation), m_lastButtonPressed(false), m_sound(sound)
 {
     m_nextLevel.x = -1;
     m_nextLevel.y = -1;
@@ -132,7 +133,7 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
 
 
     m_physics.reset(); // reset first, so we do not have two instances of physics at once
-    m_physics = shared_ptr<Physics>(new Physics(this));
+    m_physics = shared_ptr<Physics>(new Physics(this, m_sound));
     Actor actor;
     actor.rect.x = actorPosX;
     actor.rect.y = actorPosY;
@@ -291,17 +292,20 @@ void Game::drawFrame()
     if (s_keyRight || joystick & JOY_RIGHT)
     {
         m_physics->setActorSpeedX(m_player, 16);
+        m_sound->playWalkSound();
     }
     
     if (s_keyLeft || joystick & JOY_LEFT)
     {
         m_physics->setActorSpeedX(m_player, -16);
+        m_sound->playWalkSound();
     }
 
     bool buttonPressed = s_keyAlt || joystick & JOY_BUTTON_1;
     if (buttonPressed && !m_lastButtonPressed)
     {
         m_physics->startActorJump(m_player);
+        m_sound->playJumpSound();
     }
     m_lastButtonPressed = buttonPressed;
 

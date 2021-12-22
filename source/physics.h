@@ -3,7 +3,9 @@
 
 #include "rectangle.h"
 #include "physics_event.h"
+#include "sound_controller.h"
 
+#include "shared_ptr.h"
 #include "vector.h"
 #include <stdint.h>
 
@@ -45,7 +47,7 @@ enum IntersectionType
 class Physics
 {
 public:
-    Physics(PhysicsCallback* callback);
+    Physics(PhysicsCallback* callback, shared_ptr<SoundController> sound);
     int addActor(const Actor& rect);
     void setActor(int index, const Actor& rect);
     void getActorPos(int index, int16_t& x, int16_t& y);
@@ -87,6 +89,7 @@ public:
     Point m_spawn;
     tnd::vector<Actor> m_actors;
     PhysicsCallback* m_callback;
+    shared_ptr<SoundController> m_sound;
 };
 
 #endif

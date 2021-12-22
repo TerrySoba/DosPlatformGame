@@ -2,8 +2,8 @@
 
 #include <stdlib.h>
 
-Physics::Physics(PhysicsCallback* callback) :
-    m_callback(callback)
+Physics::Physics(PhysicsCallback* callback, shared_ptr<SoundController> sound) :
+    m_callback(callback), m_sound(sound)
 {
     m_rightLevelTransition = Rectangle(316, 0, 4, 200);
     m_rightLevelTransition *= 16;
@@ -182,6 +182,7 @@ void Physics::calc()
                 actor.rect.y = m_spawn.y;
                 actor.dx = 0;
                 actor.dy = 0;
+                m_sound->playDeathSound();
             }
         }
 
@@ -194,6 +195,7 @@ void Physics::calc()
                 actor.rect.y = m_spawn.y;
                 actor.dx = 0;
                 actor.dy = 0;
+                m_sound->playDeathSound();
             }
         }
 

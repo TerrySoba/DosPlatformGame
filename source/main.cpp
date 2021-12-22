@@ -67,11 +67,6 @@ int main(int argc, char* argv[])
 {
     try
     {
-        SoundController sound;
-
-        sound.playDeathSound();
-
-
         CommandLineParametes params = parseCommandline(argc, argv);
         calibrateJoystick();
         
@@ -96,10 +91,11 @@ int main(int argc, char* argv[])
         shared_ptr<Animation> fireBall(new Animation("fire.jsn", "fire.tga"));
 
         shared_ptr<VgaGfx> gfx(new VgaGfx);
+        shared_ptr<SoundController> sound(new SoundController);
 
         GameAnimations animations = {guy, enemy, guffin, fireBall};
 
-        Game game(gfx, tiles, animations, "%02x%02x", params.level);
+        Game game(gfx, sound, tiles, animations, "%02x%02x", params.level);
 
         // while (!s_keyAlt)
         // {

@@ -55,5 +55,6 @@ title.exe
 ../readme/readme.txt
 ../scripts/game_de.bat
 ../scripts/game_en.bat
+../sound/jump.voc
 ../sound/death.voc
 ../sound/steps.voc
