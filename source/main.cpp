@@ -69,14 +69,6 @@ int main(int argc, char* argv[])
     {
         shared_ptr<SoundController> sound(new SoundController);
 
-        // sound->playDeathSound();
-        // // while(sound->isPlaying());
-        // delay(300);
-        // sound->playDeathSound();
-        // while(sound->isPlaying());
-        // return 0;
-
-
         CommandLineParametes params = parseCommandline(argc, argv);
         calibrateJoystick();
         
