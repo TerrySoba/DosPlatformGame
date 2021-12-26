@@ -23,7 +23,7 @@ private:
     SbSample m_jumpSound;
     SbSample m_walkSound;
     SbSample m_deathSound;
-
+    uint16_t m_soundPriority;
 };
 
 
