@@ -58,3 +58,4 @@ title.exe
 ../sound/jump.voc
 ../sound/death.voc
 ../sound/steps.voc
+../sound/stand.voc

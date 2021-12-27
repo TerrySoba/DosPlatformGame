@@ -11,6 +11,7 @@ public:
     void playJumpSound();
     void playWalkSound();
     void playDeathSound();
+    void playStandSound();
 
     bool isPlaying()
     {
@@ -23,6 +24,7 @@ private:
     SbSample m_jumpSound;
     SbSample m_walkSound;
     SbSample m_deathSound;
+    SbSample m_standSound;
     uint16_t m_soundPriority;
 };
 

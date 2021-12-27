@@ -8,6 +8,7 @@ SoundController::SoundController() :
     m_jumpSound = m_sb.loadVocFile("JUMP.VOC");
     m_deathSound = m_sb.loadVocFile("DEATH.VOC");
     m_walkSound = m_sb.loadVocFile("STEPS.VOC");
+    m_standSound = m_sb.loadVocFile("STAND.VOC");
 }
 
 
@@ -18,9 +19,9 @@ void SoundController::playJumpSound()
 {
     if (m_sbFound)
     {
-        if (priority(2))
+        if (priority(3))
         {
-            m_soundPriority = 2;
+            m_soundPriority = 3;
             m_sb.singlePlay(m_jumpSound);
         }
     }
@@ -38,11 +39,23 @@ void SoundController::playWalkSound()
     }
 }
 
+void SoundController::playStandSound()
+{
+    if (m_sbFound)
+    {
+        if (priority(2))
+        {
+            m_soundPriority = 2;
+            m_sb.singlePlay(m_standSound);
+        }
+    }
+}
+
 void SoundController::playDeathSound()
 {
     if (m_sbFound)
     {
-        m_soundPriority = 3;
+        m_soundPriority = 4;
         m_sb.singlePlay(m_deathSound);
     }
 }

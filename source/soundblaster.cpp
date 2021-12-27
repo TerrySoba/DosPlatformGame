@@ -212,7 +212,7 @@ struct DmaChunk {
 };
 
 
-#define min(x,y) ((x) < (y))?(x):(y)
+#define min(x,y) (((x) < (y))?(x):(y))
 
 
 DmaChunk calcDmaChunk(uint8_t __far* data, uint32_t len)
@@ -303,6 +303,15 @@ void SoundBlaster::singlePlay(const SbSample& sample)
     }
 
     singlePlayData(sample.data, sample.length, playCommand);
+}
+
+
+void SoundBlaster::stopPlayback()
+{
+    if (s_playing)
+    {
+        writeDsp(SB_PAUSE_DMA);
+    }
 }
 
 SbVersion SoundBlaster::getDspVersion()

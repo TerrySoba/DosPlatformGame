@@ -34,13 +34,16 @@ all: $(dest) $(test) $(title)
 $(dest): _$(dest)
 	upx -9 --ultra-brute -f --8086 -o$(dest) _$(dest)
 
+$(title): _$(title)
+	upx -9 --ultra-brute -f --8086 -o$(title) _$(title)
+
 main.o: vgagfx.h image.h animation.h keyboard.h rad_player.h version.h physics.h json.h level.h blit.h joystick.h
 vgagfx.o: image_base.h animation.h rectangle.h font_data.h drawable.h
-image.o: image_base.h
+image.o: image.h image_base.h
 animation.o: image.h drawable.h image_base.h
-keyboard.o:
+keyboard.o: keyboard.h
 rad_player.o: timer.h
-timer.o: 
+timer.o: timer.h
 physics.o: rectangle.h
 test_main.o: unit_test.h
 unit_test.o: unit_test.h
@@ -81,6 +84,10 @@ cJSON.o: 3rd_party/cJSON/cJSON.h
 %.o : %.cpp
 	wpp $(coptions) $<
 
+# soundblaster.o : soundblaster.cpp
+# 	wpp $(coptions) soundblaster.cpp
+# 	wdis soundblaster.o > soundblaster.asm
+
 #compiled_sprite.o : compiled_sprite.cpp
 #	wpp $(coptions) compiled_sprite.cpp
 #	wdis compiled_sprite.o
@@ -109,7 +116,7 @@ $(test): $(objects_test)
 	echo "FILE   {$(objects_test)}" >> gametest.lnk
 	wlink  @gametest.lnk
 
-$(title): $(title_screen)
+_$(title): $(title_screen)
 	echo "NAME   $@" > title.lnk
 	echo "SYSTEM DOS" >> title.lnk
 	echo "FILE   {$(title_screen)}" >> title.lnk

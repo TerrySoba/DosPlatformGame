@@ -4,6 +4,8 @@
 #include "animation.h"
 #include "shared_ptr.h"
 
+#include "sound_controller.h"
+
 #include <stdlib.h>
 
 enum AnimationEnum
@@ -33,14 +35,15 @@ enum HorizontalDirection
 class ActorAnimationController
 {
 public:
-    ActorAnimationController(shared_ptr<Animation> actorAnimation) :
+    ActorAnimationController(shared_ptr<Animation> actorAnimation, shared_ptr<SoundController> sound) :
         m_actorAnimation(actorAnimation),
         m_lastX(0),
         m_lastY(0),
         m_activeAnimation(ANIM_INITIAL),
         m_lastDirection(DIR_DOWN),
         m_lastHDir(DIR_RIGHT),
-        m_airFrames(0)
+        m_airFrames(0),
+        m_sound(sound)
     {
     }
     
@@ -110,15 +113,19 @@ public:
             {
             case ANIM_WALK_RIGHT:
                 m_actorAnimation->useTag("WalkR");
+                m_sound->playWalkSound();
                 break;
             case ANIM_WALK_LEFT:
                 m_actorAnimation->useTag("WalkL");
+                m_sound->playWalkSound();
                 break;
             case ANIM_STAND_RIGHT:
                 m_actorAnimation->useTag("StandR");
+                m_sound->playStandSound();
                 break;
             case ANIM_STAND_LEFT:
                 m_actorAnimation->useTag("StandL");
+                m_sound->playStandSound();
                 break;
             case ANIM_JUMP_RIGHT:
                 m_actorAnimation->useTag("JumpR");
@@ -139,6 +146,7 @@ private:
     VerticalDirection m_lastDirection;
     HorizontalDirection m_lastHDir;
     int m_airFrames;
+    shared_ptr<SoundController> m_sound;
 };
 
 #endif

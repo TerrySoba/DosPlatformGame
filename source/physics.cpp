@@ -218,7 +218,11 @@ void Physics::startActorJump(int index)
 {
     Actor& actor = m_actors[index];
     // if (actor.jumpFrame == 0) actor.jumpFrame = 1;
-    if (actor.isOnGround) actor.dy = -64;
+    if (actor.isOnGround)
+    {
+        m_sound->playJumpSound();
+        actor.dy = -64;
+    }
 }
 
 void Physics::stopActorJump(int index)
