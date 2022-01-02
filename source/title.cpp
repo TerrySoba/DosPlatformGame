@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
     {
         Keyboard keys;
         VgaGfx vga;
-        Animation arrow("arrow2.jsn", "arrow2.tga", true);
+        Animation arrow("arrow2.ani", "arrow2.tga", true);
         TgaImage image("title.tga");
 
         vga.setBackground(image);

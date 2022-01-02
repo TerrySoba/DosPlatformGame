@@ -41,8 +41,8 @@ oplemu  = default
 mount c release
 c:
 @echo If game does not run lower number in next line to free memory!
-rem loadfix -100 title --german
-loadfix -90 game --level 1 1 --english
+rem loadfix -150 title --german
+loadfix -150 game --level 1 1 --english
 
 rem pause
 rem exit

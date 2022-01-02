@@ -42,49 +42,70 @@ private:
 };
 
 
-Animation::Animation(const char* jsonFilename, const char* tgaFilename, bool transparent) :
+Animation::Animation(const char* animFilename, const char* tgaFilename, bool transparent) :
     m_transparent(transparent)
 {
     TgaImage image(tgaFilename);
-    Filename filename(jsonFilename);
-    Json json(filename);
-    JsonValue value = json.getRoot();
-    if (!value.isObject())
+    
+    FILE* fp = fopen(animFilename, "rb");
+    if (!fp)
     {
-        throw Exception("Invalid json file: ", jsonFilename);
+        throw Exception("Could not open animation: ", animFilename);
     }
 
-    JsonValue frames = value.at("frames");
-
-    for (int i = 0; i < frames.size(); ++i)
+    char header[5];
+    header[4] = 0;
+    fread(header, 4, 1, fp);
+    if (strcmp("ANIM", header) != 0)
     {
-        JsonValue frame = frames.at(i).at("frame");
-        int x = frame.at("x").toInt();
-        int y = frame.at("y").toInt();
-        int w = frame.at("w").toInt();
-        int h = frame.at("h").toInt();
+        throw Exception("File header incorrect: ", animFilename);
+    }
 
-        int duration = frames.at(i).at("duration").toInt();
+    uint16_t frameNumber;
+    fread(&frameNumber, sizeof(uint16_t), 1, fp);
 
-        Frame f = {
-            x, y, w, h, duration
-        };
+    for (uint16_t i = 0; i < frameNumber; ++i)
+    {
+        Frame f;
+
+        fread(&f.x, sizeof(uint16_t), 1, fp);
+        fread(&f.y, sizeof(uint16_t), 1, fp);
+        fread(&f.width, sizeof(uint16_t), 1, fp);
+        fread(&f.height, sizeof(uint16_t), 1, fp);
 
         m_frames.push_back(f);
-        FrameImage frameImage(image, x, y, w, h);
+        FrameImage frameImage(image, f.x, f.y, f.width, f.height);
         m_frameSprites.push_back(CompiledSprite::compileSprite(frameImage, 320));
     }
 
-    JsonValue tags = value.at("meta").at("frameTags");
-    for (int i = 0; i < tags.size(); ++i)
+    uint16_t tagNumber;
+    fread(&tagNumber, sizeof(uint16_t), 1, fp);
+
+    for (uint16_t i = 0; i < tagNumber; ++i)
     {
-        JsonValue tag = tags.at(i);
-        FrameTag frameTag; //(, , tag.at("name").toString().c_str());
-        frameTag.startFrame = tag.at("from").toInt();
-        frameTag.endFrame = tag.at("to").toInt();
-        frameTag.name = tag.at("name").toString(); //.c_str();
+        FrameTag frameTag;
+
+        fread(&frameTag.startFrame, sizeof(uint16_t), 1, fp);
+        fread(&frameTag.endFrame, sizeof(uint16_t), 1, fp);
+
+        uint16_t nameLen;
+        fread(&nameLen, sizeof(uint16_t), 1, fp);
+
+        char str[64];
+        if (nameLen > 63)
+        {
+            throw Exception("tag name is too long:", animFilename);
+        }
+
+        fread(str, 1, nameLen, fp);
+        str[nameLen] = 0;
+
+        frameTag.name = str;
+
         m_tags.push_back(frameTag);
     }
+
+    fclose(fp);
 
     m_minFrame = 0;
     m_maxFrame = m_frames.size() - 1;

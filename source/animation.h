@@ -15,7 +15,6 @@ struct Frame
 {
     int16_t x,y;
     int16_t width, height;
-    int16_t duration; // in milliseconds
 };
 
 struct FrameTag
@@ -54,5 +53,20 @@ private:
     int m_maxFrame;
     bool m_transparent;
 };
+
+/// Animation file format
+// header: "ANIM" (4bytes)
+// frames: uint16_t
+//   frame x:      uint16_t
+//   frame y:      uint16_t
+//   frame width:  uint16_t
+//   frame height: uint16_t
+// tag count: uint16_t
+//   start frame: uint16_t
+//   end frame:   uint16_t
+//   tag name length: uint16_t
+//   tag name: length bytes
+
+
 
 #endif

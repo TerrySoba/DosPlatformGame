@@ -87,10 +87,10 @@ int main(int argc, char* argv[])
 
         shared_ptr<ImageBase> tiles(new TgaImage("tiles.tga"));
         
-        shared_ptr<Animation> enemy(new Animation("enemy.jsn", "enemy.tga"));
-        shared_ptr<Animation> guffin(new Animation("guffin.jsn", "guffin.tga"));
-        shared_ptr<Animation> guy(new Animation("guy.jsn", "guy.tga"));
-        shared_ptr<Animation> fireBall(new Animation("fire.jsn", "fire.tga"));
+        shared_ptr<Animation> enemy(new Animation("enemy.ani", "enemy.tga"));
+        shared_ptr<Animation> guffin(new Animation("guffin.ani", "guffin.tga"));
+        shared_ptr<Animation> guy(new Animation("guy.ani", "guy.tga"));
+        shared_ptr<Animation> fireBall(new Animation("fire.ani", "fire.tga"));
 
         shared_ptr<VgaGfx> gfx(new VgaGfx);
         

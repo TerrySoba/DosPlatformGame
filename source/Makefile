@@ -1,7 +1,7 @@
 objects_game_lib = \
     vgagfx.o image.o animation.o keyboard.o rad_player.o \
     rad_player_asm.o timer.o physics.o tga_image.o \
-    json.o cJSON.o level.o blit.o detect_lines.o exception.o \
+    level.o blit.o detect_lines.o exception.o \
 	rectangle.o tiny_string.o game.o compiled_sprite.o \
 	joystick.o enemy.o game_save.o text.o i18n.o fire_ball.o \
 	soundblaster.o sound_controller.o
@@ -9,14 +9,14 @@ objects_game = \
 	main.o $(objects_game_lib)
 objects_test = \
     $(objects_game_lib) test_main.o unit_test.o \
-	physics_test.o csv_reader_test.o tga_image_test.o json_test.o shared_ptr_test.o \
+	physics_test.o csv_reader_test.o tga_image_test.o shared_ptr_test.o \
 	blit_test.o vector_test.o rectangle_test.o tiny_string_test.o animation_test.o \
 	text_layout_test.o i18n_test.o
 
 
 title_screen = \
     title.o vgagfx.o image.o tga_image.o exception.o rectangle.o keyboard.o \
-	tiny_string.o animation.o cJSON.o json.o compiled_sprite.o
+	tiny_string.o animation.o compiled_sprite.o
 
 
 # coptions = -0 -ml -xs -onatx -oh -oi+ -ei -zp8 -fpi87
@@ -37,7 +37,7 @@ $(dest): _$(dest)
 $(title): _$(title)
 	upx -9 --ultra-brute -f --8086 -o$(title) _$(title)
 
-main.o: vgagfx.h image.h animation.h keyboard.h rad_player.h version.h physics.h json.h level.h blit.h joystick.h
+main.o: vgagfx.h image.h animation.h keyboard.h rad_player.h version.h physics.h level.h blit.h joystick.h
 vgagfx.o: image_base.h animation.h rectangle.h font_data.h drawable.h
 image.o: image.h image_base.h
 animation.o: image.h drawable.h image_base.h
@@ -52,8 +52,6 @@ csv_reader_test.o: unit_test.h csv_reader.h
 csv_reader.o: csv_reader.h
 tga_image.o: tga_image.h
 tga_image_test.o: tga_image.h unit_test.h
-json.o: json.h
-json_test.o: json.h
 shared_ptr_test.o: shared_ptr.h
 level.o: level.h image_base.h csv_reader.h drawable.h blit.h detect_lines.h
 blit.o: rectangle.h image_base.h
@@ -77,9 +75,6 @@ i18n_test.o: i18n.h
 fire_ball.o: vector.h shared_ptr.h rectangle.h animation.h
 soundblaster.o: soundblaster.h
 sound_controller.o: sound_controller.h soundblaster.h
-
-cJSON.o: 3rd_party/cJSON/cJSON.h
-	wpp $(coptions) 3rd_party/cJSON/cJSON.c
 
 %.o : %.cpp
 	wpp $(coptions) $<

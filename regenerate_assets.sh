@@ -51,13 +51,18 @@ convertImage () {
 }
 
 # now convert png images to tga
-for pngfile in images/*.png; do  convertImage "$pngfile" & done
+for pngfile in images/*.png; do  convertImage "$pngfile" ; done
 
-# cp images/guy.json images/guy.jsn
-cp images/enemy.json images/enemy.jsn
-cp images/guffin.json images/guffin.jsn
-cp images/fire.json images/fire.jsn
-cp images/arrow2.json images/arrow2.jsn
+convertAnimation () {
+    local jsonfile=$1
+    directory=`dirname $jsonfile`
+    filename=`basename $jsonfile .json`
+    echo Converting animation \"${directory}/${filename}.json\" to .ani
+    python3 AnimationTool/animation_tool.py ${directory}/${filename}.json ${directory}/${filename}.ani
+}
+
+# now animations
+for jsonfile in images/*.json; do  convertAnimation "$jsonfile" ; done
 
 generateCsv () {
     local tmxfile=$1
