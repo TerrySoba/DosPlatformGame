@@ -6,6 +6,9 @@
 #include <stdexcept>
 #include <algorithm>
 #include <math.h>
+#include <map>
+
+#include "command_line_parser.h"
 
 std::vector<uint8_t> loadFile(const std::string& filename)
 {
@@ -214,21 +217,59 @@ std::vector<uint8_t> createVocFile(
     return out;
 }
 
+
+std::map <std::string, VocSampleFormat> compressionFormats =
+{
+    {"PCM", VOC_FORMAT_PCM_8BIT},
+    {"ADPCM4", VOC_FORMAT_ADPCM_4BIT},
+};
+
 int main(int argc, char* argv[])
 {
     try
     {
-        if (argc != 4)
+        clp::CommandLineParser parser(
+            "Program to convert raw sound files into VOC files including ADPCM compression.\n"
+            "Compression formats:\n"
+            "  PCM    - unsigned integer 8-bit per sample\n"
+            "  ADPCM4 - ADPCM 4-bit per sample\n");
+        parser.addParameter("input", "i", "Name of the input file", clp::ParameterRequired::yes);
+        parser.addParameter("frequency", "f", "Frequency of input file in hertz", clp::ParameterRequired::yes);
+        parser.addParameter("output", "o", "Name of the output file", clp::ParameterRequired::yes);
+        parser.addParameter("compression", "c", "Compression to be used. Options: PCM, ADPCM4", clp::ParameterRequired::no, "ADPCM4");
+
+        parser.parse(argc, argv);
+
+        VocSampleFormat format;
+        try {
+            format = compressionFormats.at(parser.getValue<std::string>("compression"));
+        }
+        catch (...)
         {
-            printf("Usage %s: <input> <frequency> <output>\n", argv[0]);
+            printf("invalid compression format\n");
             return 1;
         }
 
-        std::vector<uint8_t> raw = loadFile(argv[1]);
-        std::vector<uint8_t> compressed = createAdpcm4BitFromRaw(raw);
-        std::vector<uint8_t> vocData = createVocFile(atoi(argv[2]), compressed, VOC_FORMAT_ADPCM_4BIT);
+        std::vector<uint8_t> sampleData;
 
-        storeFile(argv[3], vocData);
+        switch(format)
+        {
+            case VOC_FORMAT_ADPCM_4BIT:
+            {
+                std::vector<uint8_t> raw = loadFile(parser.getValue<std::string>("input"));
+                sampleData = createAdpcm4BitFromRaw(raw);
+                break;
+            }
+            case VOC_FORMAT_PCM_8BIT:
+            {
+                sampleData = loadFile(parser.getValue<std::string>("input"));
+                break;
+            }
+        }
+
+        std::vector<uint8_t> vocData = createVocFile(parser.getValue<uint32_t>("frequency"), sampleData, format);
+
+        storeFile(parser.getValue<std::string>("output"), vocData);
 
         return 0;
     }
