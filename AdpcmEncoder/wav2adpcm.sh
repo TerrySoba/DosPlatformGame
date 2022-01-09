@@ -38,5 +38,5 @@ temp_filename=$(tempfile)
 #   -t raw                  Create raw file
 # Why disable dithering? If dithering is enabled, then silent parts become very noisy.
 sox $input -b 8 -e unsigned-integer -D -r $frequency -c 1 -t raw $temp_filename
-$SCRIPTDIR/build/adpcm_encoder -i $temp_filename -f $frequency -o $output -c ADPCM4
+$SCRIPTDIR/build/adpcm_encoder -i $temp_filename -f $frequency -o $output -c PCM
 rm $temp_filename

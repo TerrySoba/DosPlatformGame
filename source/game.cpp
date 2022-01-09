@@ -232,6 +232,7 @@ void Game::collectApple(Point point)
 
     if (index >= 0) m_guffins.erase(index);
     m_physics->setGuffins(m_guffins);
+    m_sound->playGuffinSound();
 }
 
 void Game::drawFrame()

@@ -59,3 +59,4 @@ title.exe
 ../sound/death.voc
 ../sound/steps.voc
 ../sound/stand.voc
+../sound/guffin.voc

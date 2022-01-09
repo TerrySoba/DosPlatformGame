@@ -9,6 +9,7 @@ SoundController::SoundController() :
     m_deathSound = m_sb.loadVocFile("DEATH.VOC");
     m_walkSound = m_sb.loadVocFile("STEPS.VOC");
     m_standSound = m_sb.loadVocFile("STAND.VOC");
+    m_guffinSound = m_sb.loadVocFile("GUFFIN.VOC");
 }
 
 
@@ -50,6 +51,17 @@ void SoundController::playStandSound()
         }
     }
 }
+
+
+void SoundController::playGuffinSound()
+{
+    if (m_sbFound)
+    {
+        m_soundPriority = 4;
+        m_sb.singlePlay(m_guffinSound);
+    }
+}
+
 
 void SoundController::playDeathSound()
 {
