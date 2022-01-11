@@ -2,8 +2,6 @@
 
 set -e
 
-# set this to the location of tiled
-tiled_path=~/Downloads/Tiled-1.5.0-x86_64.AppImage
 
 # build png to tga converter
 mkdir -p Png2Tga/build
@@ -69,7 +67,7 @@ generateCsv () {
     directory=`dirname $tmxfile`
     filename=`basename $tmxfile .tmx`
     echo Converting level \"${directory}/${filename}.tmx\" to CSV
-    $tiled_path ${directory}/${filename}.tmx --export-map ${directory}/${filename}.csv
+    python3 AnimationTool/map_tool.py ${directory}/${filename}.tmx
 }
 
 # now convert tiled maps to csv
