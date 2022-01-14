@@ -5,13 +5,12 @@
 #include "drawable.h"
 #include "shared_ptr.h"
 #include "rectangle.h"
-
 #include "vector.h"
 
 class Level : public Drawable
 {
 public:
-    Level(const char* mapFilename, const char* groundFilename, shared_ptr<ImageBase> tilesImage,
+    Level(const char* mapFilename, shared_ptr<ImageBase> tilesImage,
           int16_t tileWidth, int16_t tileHeight,
           int16_t offsetX, int16_t offsetY);
 
@@ -46,6 +45,7 @@ private:
     int16_t m_mapWidth;   // number of tiles in horizontal direction
     int16_t m_mapHeight;  // number of tiles in vertical direction
     tnd::vector<uint8_t> m_mapData;
+
     tnd::vector<Rectangle> m_walls;
     tnd::vector<Rectangle> m_ghostWalls;
     tnd::vector<Rectangle> m_death;

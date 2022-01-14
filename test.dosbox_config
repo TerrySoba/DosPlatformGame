@@ -26,6 +26,6 @@ cycledown=20
 
 mount c .
 c:
-source\gametest --filter=RectangleDetectorTest
+source\gametest --filter=LevelTest
 pause
 exit

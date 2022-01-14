@@ -30,7 +30,7 @@ class DataMapper:
 
     def mapValue(self, value):
         if value == 0:
-            return -1
+            return 0
         for index in range(len(self.firstgids) - 1):
             if value >= self.firstgids[index] and value < self.firstgids[index+1]:
                 return value - self.firstgids[index]
@@ -43,8 +43,6 @@ if __name__ == "__main__":
 
     data = readFile(sys.argv[1])
     root = ET.fromstring(data)
-    # root = tree.getroot()
-    # print(root.tag, root.attrib)
 
     tilesetElements = root.findall("./tileset")
     tilesets = []
@@ -77,11 +75,25 @@ if __name__ == "__main__":
     base_name = os.path.splitext(sys.argv[1])[0]
 
 
-    for layer in layers:
-        filename = "{}_{}.csv".format(base_name, layer.name)
-        with open(filename, "w") as f:
-            for y in range(layer.height):
-                f.write(",".join([str(val) for val in layer.data[layer.width * y : layer.width * (y+1)]]) + "\n")
+    layerTypeMap = {
+        "bg" : 1,
+        "col" : 2
+    }
 
 
+    with open(base_name + ".map", "wb") as map_file:
+        map_file.write("MAP".encode("ascii"))           # map header
+        map_file.write(struct.pack("<H", len(layers)))  # no. of layers
+
+        for layer in layers:
+            layerData = bytearray()
+            layerData += struct.pack("<H", layer.width)
+            layerData += struct.pack("<H", layer.height)
+            layerData += bytes(bytearray(layer.data))
+            map_file.write(struct.pack("B", layerTypeMap[layer.name]))  # layer type
+            map_file.write(struct.pack("<H", len(layerData)))           # size of layer
+            map_file.write(layerData)
+            print("id:{} w:{} h:{}".format(layerTypeMap[layer.name], layer.width, layer.height))
+
+        
     

@@ -1,43 +1,55 @@
 #include "detect_lines.h"
 
 
-typedef uint8_t (*CsvGetterPtr)(CsvReader<uint8_t>& reader, int x, int y);
-
-uint8_t getCsvEntry(CsvReader<uint8_t>& reader, int x, int y)
+class MapData
 {
-    return reader.get(x,y);
-}
+public:
+    MapData(const uint8_t* data, int dataWidth, int dataHeight, bool swap) :
+        m_data(data), m_width(dataWidth), m_height(dataHeight), m_swap(swap)
+    {
+    }
 
-uint8_t getCsvEntrySwapped(CsvReader<uint8_t>& reader, int x, int y)
-{
-    return reader.get(y,x);
-}
+    uint8_t get(int x, int y)
+    {
+        return m_swap ? 
+                    m_data[m_width * x + y]:
+                    m_data[m_width * y + x];
+    }
 
-tnd::vector<Rectangle> detectLines(CsvReader<uint8_t>& reader, Direction direction, uint8_t lineIndex)
+    int width()
+    {
+        return m_swap ? 
+                    m_height :
+                    m_width;
+    }
+
+    int height()
+    {
+        return m_swap ? 
+                    m_width :
+                    m_height;
+    }
+
+private:
+    const uint8_t* m_data;
+    int m_width;
+    int m_height;
+    bool m_swap;
+};
+
+
+tnd::vector<Rectangle> detectLines(const uint8_t data[], int dataWidth, int dataHeight, Direction direction, uint8_t lineIndex)
 {
     tnd::vector<Rectangle> rectangles;
 
-    int width;
-    int height;
-    CsvGetterPtr get;
+    MapData map(data, dataWidth, dataHeight, direction == VERTICAL);
 
-    if (direction == HORIZONTAL)
-    {
-        width = reader.width();
-        height = reader.height();
-        get = getCsvEntry;
-    } else {
-        width = reader.height();
-        height = reader.width();
-        get = getCsvEntrySwapped;
-    }
-
-    for (int y = 0; y < height; ++y)
+    for (int y = 0; y < map.height(); ++y)
     {
         int lineStart = -1;
-        for (int x = 0; x < width; ++x)
+        for (int x = 0; x < map.width(); ++x)
         {
-            if (get(reader,x,y) == lineIndex)
+            if (map.get(x,y) == lineIndex)
             {
                 if (lineStart == -1) lineStart = x;
             }
@@ -52,7 +64,7 @@ tnd::vector<Rectangle> detectLines(CsvReader<uint8_t>& reader, Direction directi
         }
         if (lineStart != -1)
         {
-            rectangles.push_back(Rectangle(lineStart, y, width - lineStart, 1));
+            rectangles.push_back(Rectangle(lineStart, y, map.width() - lineStart, 1));
             lineStart = -1;
         }
     }

@@ -9,9 +9,9 @@ objects_game = \
 	main.o $(objects_game_lib)
 objects_test = \
     $(objects_game_lib) test_main.o unit_test.o \
-	physics_test.o csv_reader_test.o tga_image_test.o shared_ptr_test.o \
+	physics_test.o tga_image_test.o shared_ptr_test.o \
 	blit_test.o vector_test.o rectangle_test.o tiny_string_test.o animation_test.o \
-	text_layout_test.o i18n_test.o
+	text_layout_test.o i18n_test.o level_test.o
 
 
 title_screen = \
@@ -48,14 +48,13 @@ physics.o: rectangle.h
 test_main.o: unit_test.h
 unit_test.o: unit_test.h
 physics_test.o: unit_test.h physics.h
-csv_reader_test.o: unit_test.h csv_reader.h 
-csv_reader.o: csv_reader.h
 tga_image.o: tga_image.h
 tga_image_test.o: tga_image.h unit_test.h
 shared_ptr_test.o: shared_ptr.h
-level.o: level.h image_base.h csv_reader.h drawable.h blit.h detect_lines.h
+level.o: level.h image_base.h drawable.h blit.h detect_lines.h
+level_test.o: level.h
 blit.o: rectangle.h image_base.h
-detect_lines.o: detect_lines.h rectangle.h csv_reader.h
+detect_lines.o: detect_lines.h rectangle.h
 exception.o: exception.h
 vector_test.o: vector.h unit_test.h
 rectangle.o: rectangle.h 

@@ -53,13 +53,10 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
 
     sprintf(buf.data(), m_levelBasename.c_str(), m_levelNumber.x, m_levelNumber.y);
 
-    TinyString levelBg = TinyString(buf.data() + TinyString("_bg.csv"));
-    TinyString levelCol = TinyString(buf.data() + TinyString("_col.csv"));
+    TinyString levelMap = TinyString(buf.data() + TinyString(".map"));
 
-    Level level(levelBg.c_str(), levelCol.c_str(), m_tiles, 16, 16, -8, -8);
+    Level level(levelMap.c_str(), m_tiles, 16, 16, -8, -8);
     m_animations.actorAnimation->useTag("LoopR");
-
-    
 
     int16_t actorPosX, actorPosY;
     if (m_physics.get() == 0 || useSpawnPoint == UseSpawnPoint::YES)
