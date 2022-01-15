@@ -7,6 +7,24 @@
 #include "rectangle.h"
 #include "vector.h"
 
+struct MessageBox
+{
+    MessageBox() :
+        textId(0), x(0), y(0), w(0), h(0)
+    {}
+
+    MessageBox(uint16_t _textId, uint16_t _x, uint16_t _y, uint16_t _w, uint16_t _h) :
+        textId(_textId), x(_x), y(_y), w(_w), h(_h)
+    {}
+
+    uint16_t textId;
+    uint16_t x;
+    uint16_t y;
+    uint16_t w;
+    uint16_t h;
+};
+
+
 class Level : public Drawable
 {
 public:
@@ -26,8 +44,8 @@ public:
     virtual tnd::vector<Rectangle> getFallThrough() { return m_fallThrough; }
     virtual tnd::vector<Rectangle> getEnemies() { return m_enemies; }
     virtual tnd::vector<Rectangle> getMacGuffins() { return m_guffins; }
-    virtual tnd::vector<Rectangle> getMessageBox1() { return m_messageBox1; }
-    virtual tnd::vector<Rectangle> getFireBall() { return m_fireBall; }
+    virtual tnd::vector<MessageBox> getMessageBoxes() { return m_messageBoxes; }
+    virtual tnd::vector<Rectangle> getFireBalls() { return m_fireBalls; }
 
 
     virtual Point getSpawnPoint() { return m_spawn; };
@@ -52,8 +70,8 @@ private:
     tnd::vector<Rectangle> m_fallThrough;
     tnd::vector<Rectangle> m_enemies;
     tnd::vector<Rectangle> m_guffins;
-    tnd::vector<Rectangle> m_messageBox1;
-    tnd::vector<Rectangle> m_fireBall;
+    tnd::vector<MessageBox> m_messageBoxes;
+    tnd::vector<Rectangle> m_fireBalls;
     Point m_spawn;
 };
 

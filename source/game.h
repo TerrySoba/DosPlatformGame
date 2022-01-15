@@ -79,7 +79,7 @@ private:
 	shared_ptr<ImageBase> m_tiles;
 	GameAnimations m_animations;
 	tnd::vector<shared_ptr<Enemy> > m_enemies;
-	shared_ptr<FireBall> m_fireBall;
+	tnd::vector<shared_ptr<FireBall> > m_fireBalls;
 	tnd::vector<Rectangle> m_guffins;
     shared_ptr<Physics> m_physics;
     long int m_frames;

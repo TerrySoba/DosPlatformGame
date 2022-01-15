@@ -24,6 +24,17 @@ class Layer:
         self.height = height
         self.data = data
 
+class ObjectLayer:
+    def __init__(self, name, type, text_id, x, y, w, h):
+        self.name = name
+        self.type = type
+        if text_id is not None:
+            self.text_id = int(text_id)
+        self.x = round(float(x))
+        self.y = round(float(y))
+        self.w = round(float(w))
+        self.h = round(float(h))
+
 class DataMapper:
     def __init__(self, firstgids):
         self.firstgids = sorted(firstgids)
@@ -70,20 +81,54 @@ if __name__ == "__main__":
         layer = Layer(id, name, width, height, data)
         layers.append(layer)
 
-    
+
+    objectElements = root.findall("./objectgroup/object")
+
+    objectLayers = []
+
+    for objectElement in objectElements:
+        property = objectElement.find("./properties/property[@name='string_id']")
+        try:
+            textId = property.attrib["value"]
+        except:
+            textId = None
+
+        objectLayers.append(ObjectLayer(
+            objectElement.attrib["name"],
+            objectElement.attrib["type"],
+            textId,
+            objectElement.attrib["x"],
+            objectElement.attrib["y"],
+            objectElement.attrib["width"],
+            objectElement.attrib["height"]))
+
     # output filename
     base_name = os.path.splitext(sys.argv[1])[0]
 
 
     layerTypeMap = {
-        "bg" : 1,
-        "col" : 2
+        "bg"       : 1, 
+        "col"      : 2,
+        "text"     : 3,
+        "fireball" : 4,
     }
 
 
     with open(base_name + ".map", "wb") as map_file:
         map_file.write("MAP".encode("ascii"))           # map header
-        map_file.write(struct.pack("<H", len(layers)))  # no. of layers
+        map_file.write(struct.pack("<H", len(layers) + len(objectLayers)))  # no. of layers
+
+        for objectLayer in objectLayers:
+            layerData = bytearray()
+            if objectLayer.type == "text":
+                layerData += struct.pack("<H", objectLayer.text_id)
+            layerData += struct.pack("<H", objectLayer.x)
+            layerData += struct.pack("<H", objectLayer.y)
+            layerData += struct.pack("<H", objectLayer.w)
+            layerData += struct.pack("<H", objectLayer.h)
+            map_file.write(struct.pack("B", layerTypeMap[objectLayer.type]))  # layer type
+            map_file.write(struct.pack("<H", len(layerData)))       # size of layer
+            map_file.write(layerData)
 
         for layer in layers:
             layerData = bytearray()
@@ -93,7 +138,7 @@ if __name__ == "__main__":
             map_file.write(struct.pack("B", layerTypeMap[layer.name]))  # layer type
             map_file.write(struct.pack("<H", len(layerData)))           # size of layer
             map_file.write(layerData)
-            print("id:{} w:{} h:{}".format(layerTypeMap[layer.name], layer.width, layer.height))
+
 
         
     

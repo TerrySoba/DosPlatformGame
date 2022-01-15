@@ -97,12 +97,12 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
     }
 
 
-    // now load fireball if it exists
-    m_fireBall.reset();
-    tnd::vector<Rectangle> fireBall = level.getFireBall();
-    if (fireBall.size() > 0)
+    // now load fireballs if any exist
+    m_fireBalls.clear();
+    tnd::vector<Rectangle> fireBalls = level.getFireBalls();
+    for (int i = 0; i < fireBalls.size(); ++i)
     {
-        m_fireBall = shared_ptr<FireBall>(new FireBall(fireBall[0], m_animations.fireBallAnimation));
+        m_fireBalls.push_back(shared_ptr<FireBall>(new FireBall(fireBalls[i], m_animations.fireBallAnimation)));
     }
 
 
@@ -178,13 +178,12 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
     
     m_vgaGfx->drawBackground(level, -8, -8);
 
-    tnd::vector<Rectangle> message1 = level.getMessageBox1();
-    if (message1.size() > 0)
-    {
-        Rectangle& textRect = message1[0];        
-        TinyString message = I18N::getString(5000);
-        Text t(message.c_str(), textRect.width / 5);
-        m_vgaGfx->drawBackground(t, textRect.x, textRect.y);
+    tnd::vector<MessageBox> messageBoxes = level.getMessageBoxes();
+    for (int i = 0; i < messageBoxes.size(); ++i) {
+        MessageBox& messageBox = messageBoxes[i];
+        TinyString message = I18N::getString(messageBox.textId);
+        Text t(message.c_str(), messageBox.w / 5);
+        m_vgaGfx->drawBackground(t, messageBox.x, messageBox.y);
     }
 
     TinyString levelString = I18N::getString((m_levelNumber.y << 6) + m_levelNumber.x);
@@ -260,15 +259,13 @@ void Game::drawFrame()
         m_vgaGfx->draw(*m_animations.enemyAnimation, SUBPIXEL_TO_PIXEL(enemy.x), SUBPIXEL_TO_PIXEL(enemy.y));
     }
 
-
-    if (m_fireBall.get())
+    for (int i = 0; i < m_fireBalls.size(); ++i)
     {
-        m_fireBall->walk();
-        Rectangle enemy = m_fireBall->getPos();
+        m_fireBalls[i]->walk();
+        Rectangle enemy = m_fireBalls[i]->getPos();
         enemyDeath.push_back(enemy);
         m_vgaGfx->draw(*m_animations.fireBallAnimation, SUBPIXEL_TO_PIXEL(enemy.x), SUBPIXEL_TO_PIXEL(enemy.y));
     }
-
 
     for (int i = 0; i < m_guffins.size(); ++i)
     {

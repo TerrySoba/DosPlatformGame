@@ -15,8 +15,10 @@ Level::~Level()
 
 enum LayerType
 {
-    LAYER_BG = 1,
-    LAYER_COL = 2
+    LAYER_BG       = 1,
+    LAYER_COL      = 2,
+    LAYER_TEXT     = 3,
+    LAYER_FIREBALL = 4,
 };
 
 
@@ -62,8 +64,6 @@ Level::Level(const char* mapFilename, shared_ptr<ImageBase> tilesImage,
 
         uint16_t layerWidth, layerHeight;
 
-        
-
         switch(layerType)
         {
             case LAYER_BG:
@@ -86,6 +86,29 @@ Level::Level(const char* mapFilename, shared_ptr<ImageBase> tilesImage,
                 collisionData = layerData;
                 collisionWidth = layerWidth;
                 collisionHeight = layerHeight;
+                break;
+            }
+            case LAYER_TEXT:
+            {
+                uint16_t textId,x,y,w,h;
+                fread(&textId, sizeof(textId), 1, fp);
+                fread(&x, sizeof(x), 1, fp);
+                fread(&y, sizeof(y), 1, fp);
+                fread(&w, sizeof(w), 1, fp);
+                fread(&h, sizeof(h), 1, fp);
+                m_messageBoxes.push_back(MessageBox(textId, x+offsetX, y+offsetY, w, h));
+                break;
+            }
+            case LAYER_FIREBALL:
+            {
+                uint16_t x,y,w,h;
+                fread(&x, sizeof(x), 1, fp);
+                fread(&y, sizeof(y), 1, fp);
+                fread(&w, sizeof(w), 1, fp);
+                fread(&h, sizeof(h), 1, fp);
+                Rectangle rect(x+offsetX, y+offsetY, w, h);
+                rect *= 16;
+                m_fireBalls.push_back(rect);
                 break;
             }
             default: // skip unknown layers
@@ -145,20 +168,6 @@ Level::Level(const char* mapFilename, shared_ptr<ImageBase> tilesImage,
         {
             m_guffins[i].scale(tileWidth * 16, tileHeight * 16);
             m_guffins[i] += offset * 16;
-        }
-
-        m_messageBox1 = findSingleRectangle(collisionData.data(), collisionWidth, collisionHeight, TILE_MESSAGE_1);
-        for (int i = 0; i < m_messageBox1.size(); ++i)
-        {
-             m_messageBox1[i].scale(tileWidth, tileHeight);
-             m_messageBox1[i] += offset;
-        }
-
-        m_fireBall = findSingleRectangle(collisionData.data(), collisionWidth, collisionHeight, TILE_FIRE_BALL);
-        for (int i = 0; i < m_fireBall.size(); ++i)
-        {
-             m_fireBall[i].scale(tileWidth * 16, tileHeight * 16);
-             m_fireBall[i] += offset * 16;
         }
 
         for (int x = 0; x < collisionWidth; ++x)
