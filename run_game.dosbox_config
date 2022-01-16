@@ -42,7 +42,7 @@ mount c release
 c:
 @echo If game does not run lower number in next line to free memory!
 rem loadfix -150 title --german
-loadfix -170 game --level 1 1 --english
+loadfix -170 game --level 1 1 --german
 
 rem pause
 exit

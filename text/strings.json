@@ -1,7 +1,7 @@
 {
     "1": {
-        "en": "Welcome stranger!\nThis is the World of Apples. Please feel free to collect as many as you like. But beware of the slight dimensional instability in the metallic looking room. Too many apples may throw off the cosmic balance...\nUp to 10 apples should be fine, though.\n\n   <Press jump to continue>",
-        "de": "Willkommen Fremder!\nDies ist die Apfelwelt. Nimm dir so viele \u00c4pfel wie du willst. Nimm dich aber vor dem metallenen Raum in Acht. Die Realit\u00e4t ist dort etwas geschw\u00e4cht. Zu viele \u00c4pfel k\u00f6nnten zu Problemen f\u00fchren...\nBis zu 10 \u00c4pfel sollten jedoch OK sein.\n\n  <Springen zum Fortsetzen>"
+        "en": "Welcome stranger!\nPlease collect as many apples as you like. But beware of the dimensional instability in the metallic looking room. More than 9 apples may make something strange happen...",
+        "de": "Willkommen Fremder!\nNimm dir so viele Äpfel wie du willst. Nimm dich aber vor der Anomalie im metallenen Raum in Acht. Mehr als 9 Äpfel könnten dazu führen, dass seltsame Dinge geschehen..."
     },
     "2": {
         "en": "Apples: %3d",
@@ -10,6 +10,10 @@
     "3": {
         "en": "Build date: %s\nhttps://github.com/TerrySoba/DosPlatformGame\n\nThanks for playing :)\n",
         "de": "Build-Datum: %s\nhttps://github.com/TerrySoba/DosPlatformGame\n\nDanke f\u00fcrs Spielen :)\n"
+    },
+    "4": {
+        "en": "This is the dark city. People have been known to disappear in this forsaken land. Please be careful!",
+        "de": "Dies ist die Dunkle Stadt. Es sollen hier schon Leute verschwunden sein. Sei vorsichtig!"
     },
     "65": {
         "en": "Welcome to the game!",
@@ -82,9 +86,6 @@
     "196": {
         "en": "Dead end",
         "de": "Sackgasse"
-    },
-    "5000": {
-        "en": "This is the dark city. People have been known to disappear in this forsaken land. Please be careful!",
-        "de": "Dies ist die Dunkle Stadt. Es sollen hier schon Leute verschwunden sein. Sei vorsichtig!"
     }
+
 }

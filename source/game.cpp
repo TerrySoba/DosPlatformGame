@@ -182,12 +182,12 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
     for (int i = 0; i < messageBoxes.size(); ++i) {
         MessageBox& messageBox = messageBoxes[i];
         TinyString message = I18N::getString(messageBox.textId);
-        Text t(message.c_str(), messageBox.w / 5);
+        Text t(message.c_str(), messageBox.w / 5, true);
         m_vgaGfx->drawBackground(t, messageBox.x, messageBox.y);
     }
 
     TinyString levelString = I18N::getString((m_levelNumber.y << 6) + m_levelNumber.x);
-    Text t(levelString.c_str());
+    Text t(levelString.c_str(), 0, false);
     m_vgaGfx->drawBackground(t, 50, 193);
     drawAppleCount();
 

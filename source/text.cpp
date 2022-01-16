@@ -50,7 +50,8 @@ tnd::vector<TinyString> formatString(const char* str, int lineWidth)
 }
 
 
-Text::Text(const char* str, int lineWidth)
+Text::Text(const char* str, int lineWidth, bool transparentBackground) :
+    m_transparentBackground(transparentBackground)
 {
     if (lineWidth == 0)
     {
@@ -77,6 +78,21 @@ int16_t Text::height() const
     return m_height;
 }
 
+
+void transparentCopy(char* dest, char* src, size_t size, char transparentColor)
+{
+    for (int i = 0; i < size; ++i)
+    {
+        
+        if (*src != transparentColor)
+        {
+            *dest = *src;
+        }
+        ++dest;
+        ++src;
+    }
+}
+
 void Text::draw(char* target, int16_t targetWidth, int16_t targetHeight, int16_t targetX, int16_t targetY) const
 {
     for (int line = 0; line < m_text.size(); ++line)
@@ -88,7 +104,14 @@ void Text::draw(char* target, int16_t targetWidth, int16_t targetHeight, int16_t
             char* charImg = alphabet[getCharacterIndex(data[i])];
             for (int16_t y = 0; y < CHAR_HEIGHT; ++y)
             {
-                memcpy(target + targetWidth * (targetY + y + line * CHAR_HEIGHT) + targetX + i * CHAR_WIDTH, charImg + CHAR_WIDTH * y, CHAR_WIDTH);
+                if (m_transparentBackground)
+                {
+                    transparentCopy(target + targetWidth * (targetY + y + line * CHAR_HEIGHT) + targetX + i * CHAR_WIDTH, charImg + CHAR_WIDTH * y, CHAR_WIDTH, 0);
+                }
+                else
+                {
+                    memcpy(target + targetWidth * (targetY + y + line * CHAR_HEIGHT) + targetX + i * CHAR_WIDTH, charImg + CHAR_WIDTH * y, CHAR_WIDTH);
+                }
             }
         }
     }

@@ -8,7 +8,7 @@
 class Text : public Drawable
 {
 public:
-    Text(const char* str, int lineWidth = 0);
+    Text(const char* str, int lineWidth = 0, bool transparentBackground = false);
 
     virtual int16_t width() const;
     virtual int16_t height() const;
@@ -18,6 +18,7 @@ private:
     tnd::vector<TinyString> m_text;
     int16_t m_width;
     int16_t m_height;
+    bool m_transparentBackground;
 };
 
 
