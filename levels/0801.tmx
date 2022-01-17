@@ -22,7 +22,7 @@
  <objectgroup id="3" name="obj">
   <object id="11" name="Dark City Text" type="text" x="68" y="29.6667" width="126" height="42.6667">
    <properties>
-    <property name="string_id" type="int" value="5000"/>
+    <property name="string_id" type="int" value="4"/>
    </properties>
   </object>
  </objectgroup>
