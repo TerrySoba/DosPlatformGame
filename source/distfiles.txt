@@ -34,6 +34,12 @@ title.exe
 ../levels/0701.map
 ../levels/0801.map
 ../levels/0901.map
+../levels/0A01.map
+../levels/0B01.map
+../levels/0B02.map
+../levels/0B03.map
+../levels/0B04.map
+../levels/0A04.map
 ../readme/readme.txt
 ../scripts/game_de.bat
 ../scripts/game_en.bat

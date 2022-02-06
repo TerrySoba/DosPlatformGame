@@ -19,7 +19,7 @@
 103,123,103,123,103,103,123,103,103,103,123,103,123,103,103,103,103,123,103,103,103
 </data>
  </layer>
- <layer id="2" name="col" width="21" height="13" visible="0">
+ <layer id="2" name="col" width="21" height="13">
   <data encoding="csv">
 242,242,242,242,242,242,242,242,241,241,241,241,241,241,241,241,241,242,242,242,242,
 242,241,241,241,241,241,241,242,241,241,241,241,241,241,241,241,241,242,241,241,241,
@@ -36,7 +36,7 @@
 0,0,0,241,241,241,241,241,241,241,241,241,241,241,241,241,241,241,241,241,241
 </data>
  </layer>
- <objectgroup id="3" name="obj" visible="0">
+ <objectgroup id="3" name="obj">
   <object id="12" name="IntroText" type="text" x="131.833" y="19.75" width="136.166" height="55.8334">
    <properties>
     <property name="string_id" type="int" value="1"/>

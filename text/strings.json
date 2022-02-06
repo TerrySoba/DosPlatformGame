@@ -15,6 +15,14 @@
         "en": "This is the dark city. People have been known to disappear in this forsaken land. Please be careful!",
         "de": "Dies ist die Dunkle Stadt. Es sollen hier schon Leute verschwunden sein. Sei vorsichtig!"
     },
+    "5": {
+        "en": "This is the mysterious Artifact. It is at the center of the Dark City.\n\nThe way seems to end here. How will you go on?",
+        "de": "Dies ist das misteriöse Artefakt. Es bildet das Zentrum der Dunklen Stadt.\n\nDer Weg scheint hier zu enden. Wie kommst du jetzt weiter?"
+    },
+    "6": {
+        "en": "We are hungry down here. 20 apples!",
+        "de": "Wir sind hier unten hungrig. 20 Äpfel!"
+    },
     "65": {
         "en": "Welcome to the game!",
         "de": "Willkommen im Spiel!"
@@ -50,6 +58,10 @@
     "73": {
         "en": "That's hot!",
         "de": "Achtung, Heiß!"
+    },
+    "75": {
+        "en": "Behold the Artifact!",
+        "de": "Blick auf das Artefakt"
     },
     "129": {
         "en": "Underground stream",
