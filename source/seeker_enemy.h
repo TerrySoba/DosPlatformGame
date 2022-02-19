@@ -5,6 +5,12 @@
 #include "animation.h"
 #include "shared_ptr.h"
 
+enum WalkingDirection
+{
+    WALK_RIGHT,
+    WALK_LEFT
+};
+
 class SeekerEnemy
 {
 public:
@@ -21,6 +27,9 @@ private:
     int8_t m_walkSpeed;
     int m_posX;
     int m_posY;
+
+    WalkingDirection m_oldDirection;
+    WalkingDirection m_direction;
 };
 
 

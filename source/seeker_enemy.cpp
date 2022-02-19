@@ -1,7 +1,7 @@
 #include "seeker_enemy.h"
 
 SeekerEnemy::SeekerEnemy(Rectangle enemyWalkArea, shared_ptr<Animation> animation) :
-    m_enemyWalkArea(enemyWalkArea), m_animation(animation), m_walkSpeed(10)
+    m_enemyWalkArea(enemyWalkArea), m_animation(animation), m_walkSpeed(10), m_oldDirection(WALK_RIGHT), m_direction(WALK_RIGHT)
 {
     m_posX = enemyWalkArea.x;
     m_posY = enemyWalkArea.y + enemyWalkArea.height - animation->height() * 16;
@@ -14,13 +14,18 @@ SeekerEnemy::~SeekerEnemy()
 
 void SeekerEnemy::walk(const Rectangle& playerPos)
 {
+    m_oldDirection = m_direction;
+    
+
     if (m_posX < playerPos.x)
     {
         m_posX += m_walkSpeed;
+        m_direction = WALK_RIGHT;
     }
     else if (m_posX > playerPos.x)
     {
         m_posX -= m_walkSpeed;
+        m_direction = WALK_LEFT;
     }
 
 
@@ -34,6 +39,18 @@ void SeekerEnemy::walk(const Rectangle& playerPos)
         m_posX = m_enemyWalkArea.x + m_enemyWalkArea.width - m_animation->width() * 16;
     }
 
+    if (m_oldDirection != m_direction)
+    {
+        switch (m_direction)
+        {
+        case WALK_LEFT:
+            m_animation->useTag("WalkL");
+            break;
+        case WALK_RIGHT:
+            m_animation->useTag("WalkR");
+            break;
+        }
+    }
 
 }
 
