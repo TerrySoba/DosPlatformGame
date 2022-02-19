@@ -42,6 +42,7 @@ struct GameAnimations
 {
 	shared_ptr<Animation> actorAnimation;
 	shared_ptr<Animation> enemyAnimation;
+	shared_ptr<Animation> seekerEnemyAnimation;
 	shared_ptr<Animation> guffinAnimation;
 	shared_ptr<Animation> fireBallAnimation;
 };

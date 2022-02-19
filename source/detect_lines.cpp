@@ -65,7 +65,6 @@ tnd::vector<Rectangle> detectLines(const uint8_t data[], int dataWidth, int data
         if (lineStart != -1)
         {
             rectangles.push_back(Rectangle(lineStart, y, map.width() - lineStart, 1));
-            lineStart = -1;
         }
     }
 

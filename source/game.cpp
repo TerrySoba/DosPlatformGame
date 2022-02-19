@@ -17,8 +17,6 @@
 #include "fire_ball.h"
 #include "seeker_enemy.h"
 
-#include "log.h"
-
 #include <stdio.h>
 
 Game::Game(shared_ptr<VgaGfx> vgaGfx, shared_ptr<SoundController> sound, 
@@ -104,7 +102,7 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
     tnd::vector<Rectangle> seekerEnemyRectangles = level.getSeekerEnemies();
     for (int i = 0; i < seekerEnemyRectangles.size(); ++i)
     {
-        m_seekerEnemies.push_back(shared_ptr<SeekerEnemy>(new SeekerEnemy(seekerEnemyRectangles[i], m_animations.enemyAnimation)));
+        m_seekerEnemies.push_back(shared_ptr<SeekerEnemy>(new SeekerEnemy(seekerEnemyRectangles[i], m_animations.seekerEnemyAnimation)));
     }
 
 
@@ -276,9 +274,9 @@ void Game::drawFrame()
         Rectangle enemy = m_seekerEnemies[i]->getPos();
         enemyDeath.push_back(enemy);
 
-        LOG_ENTRY("x:%d y:%d", enemy.x, enemy.y);
+        // LOG_ENTRY("x:%d y:%d", enemy.x, enemy.y);
 
-        m_vgaGfx->draw(*m_animations.enemyAnimation, SUBPIXEL_TO_PIXEL(enemy.x), SUBPIXEL_TO_PIXEL(enemy.y));
+        m_vgaGfx->draw(*m_animations.seekerEnemyAnimation, SUBPIXEL_TO_PIXEL(enemy.x), SUBPIXEL_TO_PIXEL(enemy.y));
     }
 
     for (int i = 0; i < m_fireBalls.size(); ++i)
@@ -338,6 +336,7 @@ void Game::drawFrame()
     {
         m_animations.actorAnimation->nextFrame();
         m_animations.enemyAnimation->nextFrame();
+        m_animations.seekerEnemyAnimation->nextFrame();
         m_animations.fireBallAnimation->nextFrame();
     }
 

@@ -3,7 +3,6 @@
 #include "detect_lines.h"
 #include "tile_definitions.h"
 #include "exception.h"
-#include "log.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -121,8 +120,6 @@ Level::Level(const char* mapFilename, shared_ptr<ImageBase> tilesImage,
                 fread(&w, sizeof(w), 1, fp);
                 fread(&h, sizeof(h), 1, fp);
                 Rectangle rect(x+offsetX, y+offsetY, w, h);
-
-                LOG_ENTRY("x:%d y:%d w:%d h:%d", x,y,w,h);
 
                 rect *= 16;
                 m_seekerEnemies.push_back(rect);

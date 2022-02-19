@@ -88,6 +88,7 @@ int main(int argc, char* argv[])
         shared_ptr<ImageBase> tiles(new TgaImage("tiles.tga"));
         
         shared_ptr<Animation> enemy(new Animation("enemy.ani", "enemy.tga"));
+        shared_ptr<Animation> seekerEnemy(new Animation("enemy2.ani", "enemy2.tga"));
         shared_ptr<Animation> guffin(new Animation("guffin.ani", "guffin.tga"));
         shared_ptr<Animation> guy(new Animation("guy.ani", "guy.tga"));
         shared_ptr<Animation> fireBall(new Animation("fire.ani", "fire.tga"));
@@ -96,7 +97,7 @@ int main(int argc, char* argv[])
         
         RadPlayer music("CELT.RAD");
 
-        GameAnimations animations = {guy, enemy, guffin, fireBall};
+        GameAnimations animations = {guy, enemy, seekerEnemy, guffin, fireBall};
 
         Game game(gfx, sound, tiles, animations, "%02x%02x", params.level);
 

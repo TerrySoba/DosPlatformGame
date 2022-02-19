@@ -8,6 +8,8 @@ title.exe
 ../images/guy.ani
 ../images/enemy.tga
 ../images/enemy.ani
+../images/enemy2.tga
+../images/enemy2.ani
 ../images/guffin.tga
 ../images/guffin.ani
 ../images/guyframe.tga
