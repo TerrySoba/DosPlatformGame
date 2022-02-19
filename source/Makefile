@@ -4,7 +4,7 @@ objects_game_lib = \
     level.o blit.o detect_lines.o exception.o \
 	rectangle.o tiny_string.o game.o compiled_sprite.o \
 	joystick.o enemy.o game_save.o text.o i18n.o fire_ball.o \
-	soundblaster.o sound_controller.o
+	soundblaster.o sound_controller.o seeker_enemy.o
 objects_game = \
 	main.o $(objects_game_lib)
 objects_test = \
@@ -74,6 +74,8 @@ i18n_test.o: i18n.h
 fire_ball.o: vector.h shared_ptr.h rectangle.h animation.h
 soundblaster.o: soundblaster.h
 sound_controller.o: sound_controller.h soundblaster.h
+seeker_enemy.o: seeker_enemy.h shared_ptr.h animation.h rectangle.h
+
 
 %.o : %.cpp
 	wpp $(coptions) $<

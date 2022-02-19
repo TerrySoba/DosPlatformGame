@@ -106,11 +106,13 @@ if __name__ == "__main__":
     base_name = os.path.splitext(sys.argv[1])[0]
 
 
+    # This map needs to be kept in sync with the enum in level.cpp
     layerTypeMap = {
         "bg"       : 1, 
         "col"      : 2,
         "text"     : 3,
         "fireball" : 4,
+        "seeker"   : 5,
     }
 
 
@@ -126,9 +128,14 @@ if __name__ == "__main__":
             layerData += struct.pack("<H", objectLayer.y)
             layerData += struct.pack("<H", objectLayer.w)
             layerData += struct.pack("<H", objectLayer.h)
-            map_file.write(struct.pack("B", layerTypeMap[objectLayer.type]))  # layer type
-            map_file.write(struct.pack("<H", len(layerData)))       # size of layer
-            map_file.write(layerData)
+            try:
+                map_file.write(struct.pack("B", layerTypeMap[objectLayer.type]))  # layer type
+                map_file.write(struct.pack("<H", len(layerData)))       # size of layer
+                map_file.write(layerData)
+            except KeyError as e:
+                print("WARNING: Found unknown object layer type {}.".format(e))
+                pass
+
 
         for layer in layers:
             layerData = bytearray()

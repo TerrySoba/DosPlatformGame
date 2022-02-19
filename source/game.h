@@ -15,6 +15,7 @@ class VgaGfx;
 class ImageBase;
 class Animation;
 class CompiledSprite;
+class SeekerEnemy;
 
 namespace UseSpawnPoint
 {
@@ -79,6 +80,7 @@ private:
 	shared_ptr<ImageBase> m_tiles;
 	GameAnimations m_animations;
 	tnd::vector<shared_ptr<Enemy> > m_enemies;
+	tnd::vector<shared_ptr<SeekerEnemy> > m_seekerEnemies;
 	tnd::vector<shared_ptr<FireBall> > m_fireBalls;
 	tnd::vector<Rectangle> m_guffins;
     shared_ptr<Physics> m_physics;

@@ -3,6 +3,7 @@
 #include "detect_lines.h"
 #include "tile_definitions.h"
 #include "exception.h"
+#include "log.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -12,13 +13,14 @@ Level::~Level()
 {
 }
 
-
+// This enum needs to be kept in sync with the map in map_tool.py
 enum LayerType
 {
     LAYER_BG       = 1,
     LAYER_COL      = 2,
     LAYER_TEXT     = 3,
     LAYER_FIREBALL = 4,
+    LAYER_SEEKER   = 5,
 };
 
 
@@ -109,6 +111,21 @@ Level::Level(const char* mapFilename, shared_ptr<ImageBase> tilesImage,
                 Rectangle rect(x+offsetX, y+offsetY, w, h);
                 rect *= 16;
                 m_fireBalls.push_back(rect);
+                break;
+            }
+            case LAYER_SEEKER:
+            {
+                uint16_t x,y,w,h;
+                fread(&x, sizeof(x), 1, fp);
+                fread(&y, sizeof(y), 1, fp);
+                fread(&w, sizeof(w), 1, fp);
+                fread(&h, sizeof(h), 1, fp);
+                Rectangle rect(x+offsetX, y+offsetY, w, h);
+
+                LOG_ENTRY("x:%d y:%d w:%d h:%d", x,y,w,h);
+
+                rect *= 16;
+                m_seekerEnemies.push_back(rect);
                 break;
             }
             default: // skip unknown layers

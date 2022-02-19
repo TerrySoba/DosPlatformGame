@@ -15,6 +15,9 @@
 #include "i18n.h"
 #include "tile_definitions.h"
 #include "fire_ball.h"
+#include "seeker_enemy.h"
+
+#include "log.h"
 
 #include <stdio.h>
 
@@ -94,6 +97,14 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
     for (int i = 0; i < enemyRectangles.size(); ++i)
     {
         m_enemies.push_back(shared_ptr<Enemy>(new Enemy(enemyRectangles[i], m_animations.enemyAnimation)));
+    }
+
+    // now load seeker enemies
+    m_seekerEnemies.clear();
+    tnd::vector<Rectangle> seekerEnemyRectangles = level.getSeekerEnemies();
+    for (int i = 0; i < seekerEnemyRectangles.size(); ++i)
+    {
+        m_seekerEnemies.push_back(shared_ptr<SeekerEnemy>(new SeekerEnemy(seekerEnemyRectangles[i], m_animations.enemyAnimation)));
     }
 
 
@@ -256,6 +267,17 @@ void Game::drawFrame()
         m_enemies[i]->walk();
         Rectangle enemy = m_enemies[i]->getPos();
         enemyDeath.push_back(enemy);
+        m_vgaGfx->draw(*m_animations.enemyAnimation, SUBPIXEL_TO_PIXEL(enemy.x), SUBPIXEL_TO_PIXEL(enemy.y));
+    }
+
+    for (int i = 0; i < m_seekerEnemies.size(); ++i)
+    {
+        m_seekerEnemies[i]->walk(Rectangle(playerX, playerY, 1, 1));
+        Rectangle enemy = m_seekerEnemies[i]->getPos();
+        enemyDeath.push_back(enemy);
+
+        LOG_ENTRY("x:%d y:%d", enemy.x, enemy.y);
+
         m_vgaGfx->draw(*m_animations.enemyAnimation, SUBPIXEL_TO_PIXEL(enemy.x), SUBPIXEL_TO_PIXEL(enemy.y));
     }
 
