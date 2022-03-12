@@ -102,23 +102,40 @@ if __name__ == "__main__":
             objectElement.attrib["width"],
             objectElement.attrib["height"]))
 
+
+    # read guffin_gate property
+    guffinGate = None
+    guffinGateElement = root.find("./properties/property[@name='guffin_gate']")
+
+    if guffinGateElement is not None:
+        try:
+            guffinGate = int(guffinGateElement.attrib["value"])
+        except:
+            pass
+
     # output filename
     base_name = os.path.splitext(sys.argv[1])[0]
 
 
     # This map needs to be kept in sync with the enum in level.cpp
     layerTypeMap = {
-        "bg"       : 1, 
-        "col"      : 2,
-        "text"     : 3,
-        "fireball" : 4,
-        "seeker"   : 5,
+        "bg"          : 1, 
+        "col"         : 2,
+        "text"        : 3,
+        "fireball"    : 4,
+        "seeker"      : 5,
+        "guffin_gate" : 6,
     }
 
 
     with open(base_name + ".map", "wb") as map_file:
         map_file.write("MAP".encode("ascii"))           # map header
-        map_file.write(struct.pack("<H", len(layers) + len(objectLayers)))  # no. of layers
+
+        layerCount = len(layers) + len(objectLayers)
+        if guffinGate is not None:
+            layerCount = layerCount + 1
+
+        map_file.write(struct.pack("<H", layerCount))  # no. of layers
 
         for objectLayer in objectLayers:
             layerData = bytearray()
@@ -147,5 +164,11 @@ if __name__ == "__main__":
             map_file.write(layerData)
 
 
-        
+        if guffinGate is not None:
+            layerData = bytearray()
+            layerData += struct.pack("<H", guffinGate)
+            map_file.write(struct.pack("B", layerTypeMap["guffin_gate"]))  # layer type
+            map_file.write(struct.pack("<H", len(layerData)))           # size of layer
+            map_file.write(layerData)
+
     

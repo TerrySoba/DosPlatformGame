@@ -54,6 +54,8 @@ public:
 
     virtual tnd::vector<uint8_t>& getMapData() { return m_mapData; }
 
+    virtual uint16_t getGuffinGate() { return m_guffinGate; }
+
 private:
     shared_ptr<ImageBase> m_tilesImage;
     int16_t m_tileWidth;  // width of a single tile in pixles
@@ -75,6 +77,7 @@ private:
     tnd::vector<Rectangle> m_fireBalls;
     tnd::vector<Rectangle> m_seekerEnemies;
     Point m_spawn;
+    uint16_t m_guffinGate;
 };
 
 #endif

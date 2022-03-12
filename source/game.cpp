@@ -155,7 +155,7 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
     tnd::vector<Rectangle> ghostWalls = level.getGhostWalls();
 
     // add ghost blocks to walls if enough guffins have been collected
-    if (m_collectedGuffins.size() >= 10)
+    if (m_collectedGuffins.size() >= level.getGuffinGate())
     {
         // add ghost blocks as normal walls
         for (int i = 0; i < ghostWalls.size(); ++i)
@@ -169,7 +169,7 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
         // this makes the transparent blocks into solid blocks
         for (int i = 0; i < mapData.size(); ++i)
         {
-            if (mapData[i] == GFX_TILE_GHOST_GROUND) {
+            if (mapData[i] == GFX_TILE_GHOST_GROUND_1 || mapData[i] == GFX_TILE_GHOST_GROUND_2) {
                 ++mapData[i];
             }
         }

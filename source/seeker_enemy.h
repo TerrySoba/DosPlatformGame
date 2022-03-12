@@ -30,6 +30,7 @@ private:
 
     WalkingDirection m_oldDirection;
     WalkingDirection m_direction;
+    bool m_firstLoop;
 };
 
 

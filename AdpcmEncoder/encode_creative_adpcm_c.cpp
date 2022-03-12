@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <math.h>
 #include <map>
+#include <limits>
 
 #include "command_line_parser.h"
 

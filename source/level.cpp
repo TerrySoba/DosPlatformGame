@@ -20,6 +20,7 @@ enum LayerType
     LAYER_TEXT     = 3,
     LAYER_FIREBALL = 4,
     LAYER_SEEKER   = 5,
+    LAYER_GUFFIN_GATE = 6,
 };
 
 
@@ -30,7 +31,8 @@ Level::Level(const char* mapFilename, shared_ptr<ImageBase> tilesImage,
     m_tileWidth(tileWidth),
     m_tileHeight(tileHeight),
     m_offsetX(offsetX),
-    m_offsetY(offsetY)
+    m_offsetY(offsetY),
+    m_guffinGate(10)
 {
     FILE* fp = fopen(mapFilename, "rb");
     if (!fp)
@@ -53,8 +55,8 @@ Level::Level(const char* mapFilename, shared_ptr<ImageBase> tilesImage,
     fread(&layerCount, sizeof(layerCount), 1, fp);
 
     tnd::vector<uint8_t> collisionData;
-    uint16_t collisionWidth;
-    uint16_t collisionHeight;
+    uint16_t collisionWidth = 0;
+    uint16_t collisionHeight = 0;
 
     for (int i = 0; i < layerCount; ++i)
     {
@@ -125,6 +127,11 @@ Level::Level(const char* mapFilename, shared_ptr<ImageBase> tilesImage,
                 m_seekerEnemies.push_back(rect);
                 break;
             }
+            case LAYER_GUFFIN_GATE:
+            {
+                fread(&m_guffinGate, sizeof(m_guffinGate), 1, fp);
+                break;
+            }
             default: // skip unknown layers
                 fseek(fp, layerDataSize, SEEK_CUR);
         }
@@ -133,6 +140,7 @@ Level::Level(const char* mapFilename, shared_ptr<ImageBase> tilesImage,
 
     fclose(fp);
 
+    if (collisionData.size() > 0)
     {
 
         Point offset(m_offsetX, m_offsetY);

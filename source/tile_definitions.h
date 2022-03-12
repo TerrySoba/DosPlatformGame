@@ -13,7 +13,8 @@ enum
 
 enum
 {
-    GFX_TILE_GHOST_GROUND = 7, 
+    GFX_TILE_GHOST_GROUND_1 = 7,
+    GFX_TILE_GHOST_GROUND_2 = 97,
 };
 
 
