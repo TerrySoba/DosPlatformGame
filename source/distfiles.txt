@@ -40,6 +40,7 @@ title.exe
 ../levels/0804.map
 ../levels/0901.map
 ../levels/0902.map
+../levels/0903.map
 ../levels/0904.map
 ../levels/0A01.map
 ../levels/0B01.map
