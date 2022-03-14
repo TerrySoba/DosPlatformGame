@@ -20,8 +20,12 @@
         "de": "Dies ist das misteriöse Artefakt. Es bildet das Zentrum der Dunklen Stadt.\n\nDer Weg scheint hier zu enden. Wie kommst du jetzt weiter?"
     },
     "6": {
-        "en": "We are hungry down here. 20 apples!",
-        "de": "Wir sind hier unten hungrig. 20 Äpfel!"
+        "en": "We are hungry down here. 15 apples!",
+        "de": "Wir sind hier unten hungrig. 15 Äpfel!"
+    },
+    "7": {
+        "en": "Unfortunately this is currently the end of the game. When the game is finished you will be able to explore the world further and hopefully discover the secret of the artifact.\n\nTo be continued!",
+        "de": "Leider ist dies aktuell das Ende des Spiels. Wenn das Spiel fertig ist wirst du die Welt weiter erkunden können und hoffentlich das Geheimnis des Artefakts ergründen können.\n\nFortsetzung folgt!"
     },
     "65": {
         "en": "Welcome to the game!",
