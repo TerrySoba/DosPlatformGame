@@ -63,6 +63,10 @@
         "en": "That's hot!",
         "de": "Achtung, Heiß!"
     },
+    "74": {
+        "en": "Coulmns of fire",
+        "de": "Feuersäulen"
+    },
     "75": {
         "en": "Behold the Artifact!",
         "de": "Blick auf das Artefakt"
@@ -87,6 +91,10 @@
         "en": "A bridge in the sky",
         "de": "Eine Brücke in der Luft"
     },
+    "139": {
+        "en": "Going down!",
+        "de": "Auf dem Weg nach unten"
+    },
     "193": {
         "en": "Way back",
         "de": "Rückweg"
@@ -102,6 +110,46 @@
     "196": {
         "en": "Dead end",
         "de": "Sackgasse"
+    },
+    "137": {
+        "en": "More bridge pillars",
+        "de": "Noch mehr Brückenpfeiler"
+    },
+    "136": {
+        "en": "Bridge pillars",
+        "de": "Brückenpfeiler"
+    },
+    "200": {
+        "en": "Access Tunnel",
+        "de": "Zugangstunnel"
+    },
+    "201": {
+        "en": "Ahhhhhh!!!!!11eleven",
+        "de": "Ahhhhhh!!!!!11elf"
+    },
+    "203": {
+        "en": "Is this the bottom?",
+        "de": "Ist dies die Talsohle?"
+    },
+    "264": {
+        "en": "Up or down?",
+        "de": "Auf oder Ab?"
+    },
+    "265": {
+        "en": "Can you make that jump?",
+        "de": "Schaffst du den Sprung?"
+    },
+    "266": {
+        "en": "A new danger",
+        "de": "Eine neue Gefahr"
+    },
+    "267": {
+        "en": "Tribute of apples",
+        "de": "Apfeltribut"
+    },
+    "268": {
+        "en": "To Be Continued",
+        "de": "Fortsetzung Folgt"
     }
 
 }
