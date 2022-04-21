@@ -49,7 +49,7 @@ class DataMapper:
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: {} <input json> <output anim>".format(sys.argv[0]))
+        print("Usage: {} <input tmx file>".format(sys.argv[0]))
         sys.exit()
 
     data = readFile(sys.argv[1])
