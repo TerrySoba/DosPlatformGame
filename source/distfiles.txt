@@ -27,9 +27,13 @@ title.exe
 ../levels/0301.map
 ../levels/0302.map
 ../levels/0303.map
+../levels/0304.map
+../levels/0305.map
 ../levels/0401.map
 ../levels/0402.map
 ../levels/0403.map
+../levels/0404.map
+../levels/0405.map
 ../levels/0501.map
 ../levels/0502.map
 ../levels/0504.map
