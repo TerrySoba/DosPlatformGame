@@ -68,7 +68,6 @@ title.exe
 ../levels/0B04.map
 ../levels/0C03.map
 ../levels/0C04.map
-../levels/0C0C.map
 ../levels/0D02.map
 ../levels/0D03.map
 ../readme/readme.txt

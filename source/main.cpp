@@ -27,6 +27,7 @@ enum Language {
 struct CommandLineParametes {
     LevelNumber level;
     Language language;
+    bool dumpLevelImages; // if set to true the game will dump each map as a graphics image
 };
 
 
@@ -35,6 +36,7 @@ CommandLineParametes parseCommandline(int argc, char* argv[])
     CommandLineParametes params;
     params.language = LANGUAGE_ENGLISH;
     LevelNumber level = {1, 1};
+    params.dumpLevelImages = false;
 
     for (int i = 1; i < argc; ++i)
     {
@@ -52,9 +54,13 @@ CommandLineParametes parseCommandline(int argc, char* argv[])
         {
             params.language = LANGUAGE_ENGLISH;
         }
-        if (strcmp("--german", argv[i]) == 0)	
+        if (strcmp("--german", argv[i]) == 0)
         {
             params.language = LANGUAGE_GERMAN;
+        }
+        if (strcmp("--dump-level-images", argv[i]) == 0)
+        {
+            params.dumpLevelImages = true;
         }
     }
 
@@ -101,10 +107,32 @@ int main(int argc, char* argv[])
 
         Game game(gfx, sound, tiles, animations, "%02x%02x", params.level);
 
-        while (!s_keyEsc)
-        {	
-            game.drawFrame();
+        if (params.dumpLevelImages)
+        {
+            for (int x = 0; x < 16; ++x)
+            {
+                for (int y = 0; y < 16; ++y)
+                {
+                    LevelNumber level = {x,y};
+                    try {
+                        game.loadLevel(level, UseSpawnPoint::NO);
+                        game.drawFrame();
+                        char filename[16];
+                        sprintf(filename, "%02x%02x.tga", x, y);
+                        gfx->saveAsTgaImage(filename);
+                    } catch (...)
+                    {}
+                }
+            }
         }
+        else
+        {
+            while (!s_keyEsc)
+            {	
+                game.drawFrame();
+            }
+        }
+        
     }
     catch(const Exception& e)
     {
