@@ -25,6 +25,8 @@ public:
 
 	void clear();
 	
+	void saveAsTgaImage(const char* filename);
+
 private:
 	char* m_backgroundImage;
 	char* m_screenBuffer;
