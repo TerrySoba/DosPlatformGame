@@ -46,11 +46,13 @@ title.exe
 ../levels/0502.map
 ../levels/0504.map
 ../levels/0505.map
+../levels/0506.map
 ../levels/0601.map
 ../levels/0602.map
 ../levels/0603.map
 ../levels/0604.map
 ../levels/0605.map
+../levels/0606.map
 ../levels/0701.map
 ../levels/0801.map
 ../levels/0802.map
