@@ -28,7 +28,8 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Install dependencies
         run: |
-          DEBIAN_FRONTEND=noninteractive sudo apt update && apt upgrade -y
+          DEBIAN_FRONTEND=noninteractive sudo apt update
+          DEBIAN_FRONTEND=noninteractive sudo apt upgrade -y
           DEBIAN_FRONTEND=noninteractive sudo apt install -y software-properties-common upx make nasm zip git
 
       # Runs a single command using the runners shell
