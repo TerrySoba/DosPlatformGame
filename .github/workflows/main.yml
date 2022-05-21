@@ -35,3 +35,10 @@ jobs:
       # Runs a single command using the runners shell
       - name: Build
         run: ./build.sh
+
+      # Now store built game as artifact
+      - name: Archive build result
+        uses: actions/upload-artifact@v3
+        with:
+          name: game-zip
+          path: zip/game.zip
