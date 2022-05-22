@@ -13,4 +13,4 @@ runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - stuff
+    - ${{ inputs.build-dir }}
