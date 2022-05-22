@@ -1,0 +1,16 @@
+# action.yml
+name: 'Open Watcom Build'
+description: 'Build using Open Watcom Compiler'
+inputs:
+  build-dir:  # id of input
+    description: 'Where to build'
+    required: true
+    default: '/build'
+outputs:
+  time: # id of output
+    description: 'The time we greeted you'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - sh -c "echo gnaa ${{ inputs.build-dir }}"
