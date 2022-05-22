@@ -4,6 +4,7 @@ RUN apk add --update \
     make \
     nasm \
     upx \
+    zip \
   && rm -rf /var/cache/apk/*
 
 # ADD opwatcom.tar.xz /opt

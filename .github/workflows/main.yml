@@ -31,19 +31,19 @@ jobs:
           build-dir: ${GITHUB_WORKSPACE}/source
 
       # Runs a set of commands using the runners shell
-      - name: Install dependencies
-        run: |
-          DEBIAN_FRONTEND=noninteractive sudo apt update
-          DEBIAN_FRONTEND=noninteractive sudo apt upgrade -y
-          DEBIAN_FRONTEND=noninteractive sudo apt install -y software-properties-common upx make nasm zip git
+      #- name: Install dependencies
+      #  run: |
+      #    DEBIAN_FRONTEND=noninteractive sudo apt update
+      #    DEBIAN_FRONTEND=noninteractive sudo apt upgrade -y
+      #    DEBIAN_FRONTEND=noninteractive sudo apt install -y software-properties-common upx make nasm zip git
 
       # Runs a single command using the runners shell
-      - name: Build
-        run: ./build.sh
+      #- name: Build
+      #  run: ./build.sh
 
       # Now store built game as artifact
-      - name: Archive build result
-        uses: actions/upload-artifact@v3
-        with:
-          name: game-zip
-          path: zip/game.zip
+      #- name: Archive build result
+      #  uses: actions/upload-artifact@v3
+      #  with:
+      #    name: game-zip
+      #    path: zip/game.zip
