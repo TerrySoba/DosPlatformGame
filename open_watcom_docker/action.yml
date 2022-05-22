@@ -13,4 +13,4 @@ runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - sh -c "echo gnaa ${{ inputs.build-dir }}"
+    - stuff

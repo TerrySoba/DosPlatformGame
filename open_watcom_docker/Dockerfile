@@ -1,4 +1,4 @@
-FROM alpine:3.10.1
+FROM alpine:3.15
 
 RUN apk add --update \
     make \
@@ -14,4 +14,8 @@ ENV PATH=$WATCOM/binl:$PATH
 ENV EDPATH=$WATCOM/eddat
 ENV INCLUDE=$WATCOM/h
 
-CMD cd /build && make -j16
+ADD build.sh /build.sh
+
+# CMD cd /build && make -j16
+# CMD ["sh", "-c"]
+ENTRYPOINT ["/build.sh"]

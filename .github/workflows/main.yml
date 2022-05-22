@@ -25,6 +25,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
+      # Call open watcom build
       - uses: ./open_watcom_docker
         with:
           build-dir: test345
