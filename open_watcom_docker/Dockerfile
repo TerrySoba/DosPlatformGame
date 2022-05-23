@@ -7,7 +7,6 @@ RUN apk add --update \
     zip \
   && rm -rf /var/cache/apk/*
 
-# ADD opwatcom.tar.xz /opt
 ADD open_watcom.tar.gz .
 
 ENV WATCOM=/opt/opwatcom
@@ -15,8 +14,6 @@ ENV PATH=$WATCOM/binl:$PATH
 ENV EDPATH=$WATCOM/eddat
 ENV INCLUDE=$WATCOM/h
 
-ADD build.sh /build.sh
+COPY open_watcom_build.sh /open_watcom_build.sh
 
-# CMD cd /build && make -j16
-# CMD ["sh", "-c"]
-ENTRYPOINT ["/build.sh"]
+ENTRYPOINT ["/open_watcom_build.sh"]

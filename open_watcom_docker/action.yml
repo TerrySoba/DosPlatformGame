@@ -5,7 +5,7 @@ inputs:
   build-dir:  # id of input
     description: 'Where to build'
     required: true
-    default: '/build'
+    default: 'source'
 outputs:
   time: # id of output
     description: 'The time we greeted you'
