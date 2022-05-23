@@ -28,7 +28,7 @@ jobs:
       # Call open watcom build
       - uses: ./open_watcom_docker
         with:
-          build-dir: ${GITHUB_WORKSPACE}/source
+          build-dir: source
 
       # Runs a set of commands using the runners shell
       #- name: Install dependencies
