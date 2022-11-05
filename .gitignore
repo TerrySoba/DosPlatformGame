@@ -3,6 +3,7 @@
 *.exe
 *.lnk
 *.lst
+*.d
 compiler
 release/
 .qmake.stash

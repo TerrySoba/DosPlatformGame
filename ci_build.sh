@@ -17,4 +17,4 @@ export INCLUDE=$WATCOM/h
 
 cd $BASE_DIR/source
 
-make -j8
+make -j5

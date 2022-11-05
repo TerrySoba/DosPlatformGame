@@ -2,7 +2,7 @@
 fullscreen=false
 fulldouble=false
 fullresolution=original
-windowresolution=2560x1440
+windowresolution=960x720
 output=openglnb
 
 [dosbox]
