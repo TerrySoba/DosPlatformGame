@@ -60,6 +60,8 @@ rad_player_asm.o: 3rd_party/rad_tracker/c_interface.asm 3rd_party/rad_tracker/pl
 
 FORCE:
 
+main.o: version.h
+
 version.h: FORCE
 	echo \#define BUILD_DATE \"$(BUILD_DATE)\" > version.h
 
