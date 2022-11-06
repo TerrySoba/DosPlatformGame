@@ -19,15 +19,15 @@ then
 fi
 
 
-# PYTHON_EXECUTABLE=python3
-PYTHON_EXECUTABLE=pypy3
+PYTHON_EXECUTABLE=python3
+# PYTHON_EXECUTABLE=pypy3
 
 
 input=$1
 frequency=$2
 output=$3
 
-temp_filename=$(tempfile)
+temp_filename=$(mktemp /tmp/adpcm_tmp.XXXXXX)
 
 # used sox options:
 #   -b 8                    Use 8bit sample size

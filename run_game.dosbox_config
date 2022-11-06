@@ -2,7 +2,7 @@
 fullscreen=false
 fulldouble=false
 fullresolution=original
-windowresolution=2560x1440
+windowresolution=960x720
 output=openglnb
 
 [dosbox]
@@ -44,5 +44,5 @@ c:
 rem loadfix -150 title --german
 loadfix -170 game --level 1 1 --german
 
-rem pause
+pause
 exit

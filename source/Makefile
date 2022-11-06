@@ -21,7 +21,7 @@ title_screen = \
 
 # coptions = -0 -ml -xs -onatx -oh -oi+ -ei -zp8 -fpi87
 # coptions = -0 -ml -xs -onatx -oh -ol -ol+ -ox
-coptions = -ml -oneatx -xs -zp4 -0
+coptions = -ml -oneatx -xs -zp4 -0 -ad
 
 dest     = game.exe
 test     = gametest.exe
@@ -37,48 +37,11 @@ $(dest): _$(dest)
 $(title): _$(title)
 	upx -9 --ultra-brute -f --8086 -o$(title) _$(title)
 
-main.o: vgagfx.h image.h animation.h keyboard.h rad_player.h version.h physics.h level.h blit.h joystick.h
-vgagfx.o: image_base.h animation.h rectangle.h font_data.h drawable.h
-image.o: image.h image_base.h
-animation.o: image.h drawable.h image_base.h
-keyboard.o: keyboard.h
-rad_player.o: timer.h
-timer.o: timer.h
-physics.o: rectangle.h
-test_main.o: unit_test.h
-unit_test.o: unit_test.h
-physics_test.o: unit_test.h physics.h
-tga_image.o: tga_image.h
-tga_image_test.o: tga_image.h unit_test.h
-shared_ptr_test.o: shared_ptr.h
-level.o: level.h image_base.h drawable.h blit.h detect_lines.h
-level_test.o: level.h
-blit.o: rectangle.h image_base.h
-detect_lines.o: detect_lines.h rectangle.h
-exception.o: exception.h
-vector_test.o: vector.h unit_test.h
-rectangle.o: rectangle.h 
-tiny_string.o: tiny_string.h
-rectangle_test.o: rectangle.h unit_test.h
-game.o: game.h shared_ptr.h level.h animation.h physics.h vgagfx.h keyboard.h actor_animation_controller.h compiled_sprite.h
-tiny_string_test.o: tiny_string.h
-animation_test.o: animation.h unit_test.h
-compiled_sprite.o: compiled_sprite.h drawable.h
-joystick.o: joystick.h
-enemy.o: enemy.h
-game_save.o: game_save.h physics.h game.h
-text_layout_test.o: text_layout.h unit_test.h
-text.o: text.h drawable.h font_data.h
-i18n.o: i18n.h
-i18n_test.o: i18n.h
-fire_ball.o: vector.h shared_ptr.h rectangle.h animation.h
-soundblaster.o: soundblaster.h
-sound_controller.o: sound_controller.h soundblaster.h
-seeker_enemy.o: seeker_enemy.h shared_ptr.h animation.h rectangle.h
-
 
 %.o : %.cpp
 	wpp $(coptions) $<
+
+-include *.d
 
 # soundblaster.o : soundblaster.cpp
 # 	wpp $(coptions) soundblaster.cpp
@@ -96,6 +59,8 @@ rad_player_asm.o: 3rd_party/rad_tracker/c_interface.asm 3rd_party/rad_tracker/pl
 	nasm -f obj -i 3rd_party/rad_tracker  3rd_party/rad_tracker/c_interface.asm -o rad_player_asm.o -DRAD_NO_DEFAULT_PLAYER
 
 FORCE:
+
+main.o: version.h
 
 version.h: FORCE
 	echo \#define BUILD_DATE \"$(BUILD_DATE)\" > version.h
