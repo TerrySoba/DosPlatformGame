@@ -44,5 +44,5 @@ c:
 rem loadfix -150 title --german
 loadfix -170 game --level 1 1 --german
 
-rem pause
+pause
 exit

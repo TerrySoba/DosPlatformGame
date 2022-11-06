@@ -18,6 +18,7 @@ void saveGameState(const GameState& gameState, const char* filename)
     fwrite(&gameState.level.y, sizeof(gameState.level.y), 1, fp);
     fwrite(&gameState.spawnPoint.x, sizeof(gameState.spawnPoint.x), 1, fp);
     fwrite(&gameState.spawnPoint.y, sizeof(gameState.spawnPoint.x), 1, fp);
+    fwrite(&gameState.jetpackCollected, sizeof(gameState.jetpackCollected), 1, fp);
 
     size_t collectedCount = gameState.colectedGuffins.size();
     fwrite(&collectedCount, sizeof(collectedCount), 1, fp);
@@ -56,7 +57,7 @@ bool loadGameState(GameState& gameState, const char* filename)
     fread(&gameState.level.y, sizeof(gameState.level.y), 1, fp);
     fread(&gameState.spawnPoint.x, sizeof(gameState.spawnPoint.x), 1, fp);
     fread(&gameState.spawnPoint.y, sizeof(gameState.spawnPoint.y), 1, fp);
-
+    fread(&gameState.jetpackCollected, sizeof(gameState.jetpackCollected), 1, fp);
 
     size_t collectedCount;
     fread(&collectedCount, sizeof(collectedCount), 1, fp);
