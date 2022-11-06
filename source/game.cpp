@@ -147,7 +147,6 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
     actor.rect.height = PIXEL_TO_SUBPIXEL(m_animations.actorAnimation->height());
     actor.dx = 0;
     actor.dy = 0;
-    actor.jumpFrame = 1;
     m_player = m_physics->addActor(actor);
 
 
@@ -321,6 +320,10 @@ void Game::drawFrame()
     }
     m_lastButtonPressed = buttonPressed;
 
+    if (buttonPressed)
+    {
+        m_physics->activateJetpack(m_player);
+    }
 
     if (s_keyDown || joystick & JOY_DOWN)
     {

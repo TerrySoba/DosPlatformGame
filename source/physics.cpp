@@ -2,6 +2,16 @@
 
 #include <stdlib.h>
 
+int16_t JETPACK_THRUST_TABLE[] = {
+    1,1,2,2,2,3,3,3,3,3,
+    1,1,1,1,1,3,4,5,4,5,
+    3,3,2,2,5,5,1,1,4,4,
+    5,5,5,5,5,5,5,5,5,5,
+};
+
+#define JETPACK_THRUST_TABLE_SIZE 40
+
+
 Physics::Physics(PhysicsCallback* callback, shared_ptr<SoundController> sound) :
     m_callback(callback), m_sound(sound)
 {
@@ -162,6 +172,7 @@ void Physics::calc()
                             actor.rect.y = wall.y - actor.rect.height;
                             actor.dy = 0;
                             actor.isOnGround = true;
+                            actor.jetpackFrames = JETPACK_THRUST_TABLE_SIZE - 1; // reload jetpack after touching ground
                         }
                         break;
                     case INTERSECTION_BOTTOM:
@@ -209,21 +220,44 @@ void Physics::calc()
             }
         }
 
-        actor.dy += 3;
-        if (actor.dy > 32) actor.dy = 32;
+        actor.dy += 3; // gravity
+        if (actor.dy > 32) actor.dy = 32; // cap max speed of actor
+        if (actor.jetpackLockoutFrames > 0)
+        {
+            actor.jetpackLockoutFrames -= 1;
+        }
     }
 }
+
+
+
+
 
 void Physics::startActorJump(int index)
 {
     Actor& actor = m_actors[index];
-    // if (actor.jumpFrame == 0) actor.jumpFrame = 1;
-    if (actor.isOnGround)
+    if (actor.isOnGround) // normal jump
     {
         m_sound->playJumpSound();
         actor.dy = -64;
+        actor.jetpackLockoutFrames = 20;
+    }
+    
+}
+
+void Physics::activateJetpack(int index)
+{
+    Actor& actor = m_actors[index];
+    if (!actor.isOnGround)
+    {
+        if (actor.jetpackFrames > 0 && actor.jetpackLockoutFrames == 0)
+        {
+            actor.jetpackFrames -= 1;
+            actor.dy -= JETPACK_THRUST_TABLE[JETPACK_THRUST_TABLE_SIZE - 1 - actor.jetpackFrames];
+        }
     }
 }
+
 
 void Physics::stopActorJump(int index)
 {

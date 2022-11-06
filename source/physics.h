@@ -19,19 +19,20 @@
 struct Actor
 {
     Actor() :
-        jumpFrame(0),
         dx(0), dy(0), isOnGround(false),
-        isDucking(false), isFallingThrough(false)
+        isDucking(false), isFallingThrough(false),
+        jetpackFrames(0), jetpackLockoutFrames(0)
     {
     }
 
 
     Rectangle rect;
     int16_t dx, dy;
-    int16_t jumpFrame;
     bool isOnGround;
     bool isDucking;
     bool isFallingThrough;
+    uint16_t jetpackFrames; // frames that the jetpack may be activated
+    uint16_t jetpackLockoutFrames; // lock out jetpack for a ceratain amount of frames after jump
 };
 
 enum IntersectionType
@@ -56,6 +57,7 @@ public:
     void setActorDuck(int index, bool isDucking);
     void startActorJump(int index);
     void stopActorJump(int index);
+    void activateJetpack(int index);
 
     void setWalls(const tnd::vector<Rectangle>& walls);
     void setDeath(const tnd::vector<Rectangle>& death);
