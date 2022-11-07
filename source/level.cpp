@@ -192,6 +192,13 @@ Level::Level(const char* mapFilename, shared_ptr<ImageBase> tilesImage,
             m_guffins[i] += offset * 16;
         }
 
+        m_jetPacks = detectLines(collisionData.data(), collisionWidth, collisionHeight, HORIZONTAL, TILE_JET_PACK);
+        for (int i = 0; i < m_jetPacks.size(); ++i)
+        {
+            m_jetPacks[i].scale(tileWidth * 16, tileHeight * 16);
+            m_jetPacks[i] += offset * 16;
+        }
+
         for (int x = 0; x < collisionWidth; ++x)
         {
             for (int y = 0; y < collisionHeight; ++y)

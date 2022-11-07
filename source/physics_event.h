@@ -16,7 +16,8 @@ class PhysicsCallback
 {
 public:
     virtual void levelTransition(LevelTransition transition) = 0;
-    virtual void collectApple(Point point);
+    virtual void collectApple(Point point) = 0;
+    virtual void collectJetPack(Point point) = 0;
 };
 
 #endif

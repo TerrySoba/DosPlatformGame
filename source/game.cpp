@@ -24,7 +24,8 @@ Game::Game(shared_ptr<VgaGfx> vgaGfx, shared_ptr<SoundController> sound,
            GameAnimations animations,
            const char* levelBasename, LevelNumber startLevel) :
     m_vgaGfx(vgaGfx), m_tiles(tiles), m_animations(animations), m_frames(0), m_levelBasename(levelBasename),
-    m_animationController(animations.actorAnimation, sound), m_lastButtonPressed(false), m_sound(sound)
+    m_animationController(animations.actorAnimation, sound), m_lastButtonPressed(false), m_sound(sound),
+    m_jetpackCollected(0)
 {
     m_nextLevel.x = -1;
     m_nextLevel.y = -1;
@@ -35,8 +36,9 @@ Game::Game(shared_ptr<VgaGfx> vgaGfx, shared_ptr<SoundController> sound,
     GameState state;
     if (loadGameState(state, "game.sav"))
     {
-        loadLevel(state.level, UseSpawnPoint::NO);
         m_collectedGuffins = state.colectedGuffins;
+        m_jetpackCollected = state.jetpackCollected;
+        loadLevel(state.level, UseSpawnPoint::NO);   
         m_physics->setSpawnPoint(state.spawnPoint);
         drawAppleCount();
     }
@@ -118,6 +120,13 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
     m_guffins.clear();
     m_guffins = level.getMacGuffins();
 
+
+    m_jetPacks.clear();
+    if (m_jetpackCollected == 0) // only load jetpack elements if it has not been collected yet
+    {
+        m_jetPacks = level.getJetPacks();
+    }
+
     // remove already collected guffins
     for (int n = 0; n < m_collectedGuffins.size(); ++n)
     {
@@ -178,6 +187,7 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
     m_physics->setDeath(level.getDeath());
     m_physics->setFallThrough(level.getFallThrough());
     m_physics->setGuffins(m_guffins);
+    m_physics->setJetPacks(m_jetPacks);
     
     m_physics->setSpawnPoint(Point(actorPosX, actorPosY));
 
@@ -204,6 +214,7 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
     state.level = m_levelNumber;
     state.spawnPoint = Point(actorPosX, actorPosY);
     state.colectedGuffins = m_collectedGuffins;
+    state.jetpackCollected = m_jetpackCollected;
     saveGameState(state, "game.sav");
 }
 
@@ -236,6 +247,27 @@ void Game::collectApple(Point point)
 
     if (index >= 0) m_guffins.erase(index);
     m_physics->setGuffins(m_guffins);
+    m_sound->playGuffinSound();
+}
+
+void Game::collectJetPack(Point point)
+{
+    // set jetpack collected flag in game state
+    m_jetpackCollected = 1;
+
+    // remove colected jetPack from jetPack list
+    int index = -1;
+    for (int i = 0; i < m_jetPacks.size(); ++i)
+    {
+        Rectangle& jetPack = m_jetPacks[i];
+        if (jetPack.x == point.x && jetPack.y == point.y)
+        {
+            index = i;
+        }
+    }
+
+    if (index >= 0) m_jetPacks.erase(index);
+    m_physics->setJetPacks(m_jetPacks);
     m_sound->playGuffinSound();
 }
 
@@ -292,6 +324,13 @@ void Game::drawFrame()
         m_vgaGfx->draw(*m_animations.guffinAnimation, SUBPIXEL_TO_PIXEL(guffin.x), SUBPIXEL_TO_PIXEL(guffin.y));
     }
 
+    for (int i = 0; i < m_jetPacks.size(); ++i)
+    {
+        Rectangle& jetPack = m_jetPacks[i];
+        m_vgaGfx->draw(*m_animations.jetPackAnimation, SUBPIXEL_TO_PIXEL(jetPack.x), SUBPIXEL_TO_PIXEL(jetPack.y));
+    }
+
+
     m_vgaGfx->draw(*m_animations.actorAnimation, SUBPIXEL_TO_PIXEL(playerX), SUBPIXEL_TO_PIXEL(playerY));
 
     m_vgaGfx->drawScreen();
@@ -320,7 +359,7 @@ void Game::drawFrame()
     }
     m_lastButtonPressed = buttonPressed;
 
-    if (buttonPressed)
+    if (buttonPressed && m_jetpackCollected > 0)
     {
         m_physics->activateJetpack(m_player);
     }
@@ -341,9 +380,13 @@ void Game::drawFrame()
         m_animations.enemyAnimation->nextFrame();
         m_animations.seekerEnemyAnimation->nextFrame();
         m_animations.fireBallAnimation->nextFrame();
+        m_animations.jetPackAnimation->nextFrame();
     }
 
-    if (m_frames % 16 == 0) m_animations.guffinAnimation->nextFrame();
+    if (m_frames % 16 == 0)
+    {
+        m_animations.guffinAnimation->nextFrame();
+    }
 
     m_physics->calc();
 }

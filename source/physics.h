@@ -64,6 +64,7 @@ public:
     void setEnemyDeath(const tnd::vector<Rectangle>& death);
     void setFallThrough(const tnd::vector<Rectangle>& fallThrough);
     void setGuffins(const tnd::vector<Rectangle>& guffins);
+    void setJetPacks(const tnd::vector<Rectangle>& jetPacks);
     void setSpawnPoint(const Point& point);
 
 
@@ -84,6 +85,7 @@ public:
     tnd::vector<Rectangle> m_enemyDeath;
     tnd::vector<Rectangle> m_fallThrough;
     tnd::vector<Rectangle> m_guffins;
+    tnd::vector<Rectangle> m_jetPacks;
     Rectangle m_rightLevelTransition;
     Rectangle m_leftLevelTransition;
     Rectangle m_bottomLevelTransition;

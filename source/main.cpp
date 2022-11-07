@@ -98,12 +98,13 @@ int main(int argc, char* argv[])
         shared_ptr<Animation> guffin(new Animation("guffin.ani", "guffin.tga"));
         shared_ptr<Animation> guy(new Animation("guy.ani", "guy.tga"));
         shared_ptr<Animation> fireBall(new Animation("fire.ani", "fire.tga"));
+        shared_ptr<Animation> jetPack(new Animation("jet.ani", "jet.tga"));
 
         shared_ptr<VgaGfx> gfx(new VgaGfx);
         
         RadPlayer music("CELT.RAD");
 
-        GameAnimations animations = {guy, enemy, seekerEnemy, guffin, fireBall};
+        GameAnimations animations = {guy, enemy, seekerEnemy, guffin, fireBall, jetPack};
 
         Game game(gfx, sound, tiles, animations, "%02x%02x", params.level);
 

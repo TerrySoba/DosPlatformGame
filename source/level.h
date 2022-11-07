@@ -45,6 +45,7 @@ public:
     virtual tnd::vector<Rectangle> getEnemies() { return m_enemies; }
     virtual tnd::vector<Rectangle> getSeekerEnemies() { return m_seekerEnemies; }
     virtual tnd::vector<Rectangle> getMacGuffins() { return m_guffins; }
+    virtual tnd::vector<Rectangle> getJetPacks() { return m_jetPacks; }
     virtual tnd::vector<MessageBox> getMessageBoxes() { return m_messageBoxes; }
     virtual tnd::vector<Rectangle> getFireBalls() { return m_fireBalls; }
 
@@ -73,6 +74,7 @@ private:
     tnd::vector<Rectangle> m_fallThrough;
     tnd::vector<Rectangle> m_enemies;
     tnd::vector<Rectangle> m_guffins;
+    tnd::vector<Rectangle> m_jetPacks;
     tnd::vector<MessageBox> m_messageBoxes;
     tnd::vector<Rectangle> m_fireBalls;
     tnd::vector<Rectangle> m_seekerEnemies;

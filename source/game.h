@@ -45,6 +45,7 @@ struct GameAnimations
 	shared_ptr<Animation> seekerEnemyAnimation;
 	shared_ptr<Animation> guffinAnimation;
 	shared_ptr<Animation> fireBallAnimation;
+	shared_ptr<Animation> jetPackAnimation;
 };
 
 
@@ -72,6 +73,7 @@ public:
 	// PhysicsCallback interface
 	virtual void levelTransition(LevelTransition transition);
 	virtual void collectApple(Point point);
+	virtual void collectJetPack(Point point);
 
 private:
 	virtual void drawAppleCount();
@@ -84,6 +86,7 @@ private:
 	tnd::vector<shared_ptr<SeekerEnemy> > m_seekerEnemies;
 	tnd::vector<shared_ptr<FireBall> > m_fireBalls;
 	tnd::vector<Rectangle> m_guffins;
+	tnd::vector<Rectangle> m_jetPacks;
     shared_ptr<Physics> m_physics;
     long int m_frames;
     int m_player;
@@ -95,6 +98,7 @@ private:
 	tnd::vector<CollectedGuffin> m_collectedGuffins;
 	TinyString m_appleString;
 	shared_ptr<SoundController> m_sound;
+	uint8_t m_jetpackCollected; // 0 == no jetpack, 1 == jetpack collected
 };
 
 

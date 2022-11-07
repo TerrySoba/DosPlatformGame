@@ -61,6 +61,11 @@ void Physics::setGuffins(const tnd::vector<Rectangle>& guffins)
     m_guffins = guffins;
 }
 
+void Physics::setJetPacks(const tnd::vector<Rectangle>& jetPacks)
+{
+    m_jetPacks = jetPacks;
+}
+
 void Physics::setSpawnPoint(const Point& point)
 {
     m_spawn = point;
@@ -217,6 +222,15 @@ void Physics::calc()
             if (intersectRect(guffin, actor.rect))
             {
                 m_callback->collectApple(Point(guffin.x, guffin.y));
+            }
+        }
+
+        for (int n = 0; n < m_jetPacks.size(); ++n)
+        {
+            Rectangle& jetPack = m_jetPacks[n];
+            if (intersectRect(jetPack, actor.rect))
+            {
+                m_callback->collectJetPack(Point(jetPack.x, jetPack.y));
             }
         }
 

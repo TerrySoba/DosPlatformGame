@@ -18,6 +18,8 @@ title.exe
 ../images/title.tga
 ../images/arrow2.tga
 ../images/arrow2.ani
+../images/jet.tga
+../images/jet.ani
 ../levels/0101.map
 ../levels/0102.map
 ../levels/0103.map

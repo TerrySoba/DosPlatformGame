@@ -8,7 +8,8 @@ enum
     TILE_FALL_THROUGH = 4,
     TILE_ENEMY = 5,
     TILE_MAC_GUFFIN = 6,
-    TILE_GHOST_GROUND = 7,    // this block is untouchable until 10 guffins have been collected, then it becomes like a ground tile
+    TILE_GHOST_GROUND = 7,    // this block is untouchable until enough guffins have been collected, then it becomes like a ground tile
+    TILE_JET_PACK = 8,
 };
 
 enum
