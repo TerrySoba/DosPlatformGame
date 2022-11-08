@@ -27,6 +27,10 @@
         "en": "Unfortunately this is currently the end of the game. When the game is finished you will be able to explore the world further and hopefully discover the secret of the artifact.\n\nTo be continued!",
         "de": "Leider ist dies aktuell das Ende des Spiels. Wenn das Spiel fertig ist wirst du die Welt weiter erkunden können und hoffentlich das Geheimnis des Artefakts ergründen können.\n\nFortsetzung folgt!"
     },
+    "8": {
+        "en": "A mysterious object. What might happen when you collect it?",
+        "de": "Ein mystriöses Objekt. Was könnte wohl passieren wenn du es einsammelst?"
+    },
     "65": {
         "en": "Welcome to the game!",
         "de": "Willkommen im Spiel!"

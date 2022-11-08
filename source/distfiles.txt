@@ -74,6 +74,7 @@ title.exe
 ../levels/0C04.map
 ../levels/0D02.map
 ../levels/0D03.map
+../levels/0D04.map
 ../readme/readme.txt
 ../scripts/game_de.bat
 ../scripts/game_en.bat
