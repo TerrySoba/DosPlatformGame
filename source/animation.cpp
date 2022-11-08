@@ -1,5 +1,4 @@
 #include "animation.h"
-#include "json.h"
 #include "exception.h"
 
 #include <stdio.h>
