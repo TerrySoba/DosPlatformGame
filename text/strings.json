@@ -16,8 +16,8 @@
         "de": "Dies ist die Dunkle Stadt. Es sollen hier schon Leute verschwunden sein. Sei vorsichtig!"
     },
     "5": {
-        "en": "This is the mysterious Artifact. It is at the center of the Dark City.\n\nThe way seems to end here. How will you go on?",
-        "de": "Dies ist das misteriöse Artefakt. Es bildet das Zentrum der Dunklen Stadt.\n\nDer Weg scheint hier zu enden. Wie kommst du jetzt weiter?"
+        "en": "I am the guardian of the great artifact. Below you may find a means to enter.",
+        "de": "Ich bin der Hüter des großen Artefakts. Unten findest du vielleicht einen Weg hinein."
     },
     "6": {
         "en": "We are hungry down here. 15 apples!",
@@ -30,6 +30,10 @@
     "8": {
         "en": "A mysterious object. What might happen when you collect it?",
         "de": "Ein mystriöses Objekt. Was könnte wohl passieren wenn du es einsammelst?"
+    },
+    "9": {
+        "en": "Entrance SIGMA is blocked because of repair work. Use route XI up above to enter facility.",
+        "de": "Eingang SIGMA ist aufgrund von Reparaturarbeiten gesperrt. Benutzen Sie den Eingang XI oberhalb dieses Raumes."
     },
     "65": {
         "en": "Welcome to the game!",
@@ -158,6 +162,10 @@
     "269": {
         "en": "Uplifting",
         "de": "Erhebend"
+    },
+    "270": {
+        "en": "Redecoration?",
+        "de": "Renovierung?"
     }
 
 }
