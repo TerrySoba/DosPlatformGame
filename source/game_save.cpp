@@ -17,7 +17,7 @@ void saveGameState(const GameState& gameState, const char* filename)
     fwrite(&gameState.level.x, sizeof(gameState.level.x), 1, fp);
     fwrite(&gameState.level.y, sizeof(gameState.level.y), 1, fp);
     fwrite(&gameState.spawnPoint.x, sizeof(gameState.spawnPoint.x), 1, fp);
-    fwrite(&gameState.spawnPoint.y, sizeof(gameState.spawnPoint.x), 1, fp);
+    fwrite(&gameState.spawnPoint.y, sizeof(gameState.spawnPoint.y), 1, fp);
     fwrite(&gameState.jetpackCollected, sizeof(gameState.jetpackCollected), 1, fp);
 
     size_t collectedCount = gameState.colectedGuffins.size();

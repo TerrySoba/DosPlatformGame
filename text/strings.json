@@ -35,6 +35,10 @@
         "en": "Entrance SIGMA is blocked because of repair work. Use route XI up above to enter facility.",
         "de": "Eingang SIGMA ist aufgrund von Reparaturarbeiten gesperrt. Benutzen Sie den Eingang XI oberhalb dieses Raumes."
     },
+    "10": {
+        "en": "You may have escaped the dark city, but you may have to return...",
+        "de": "Zwar bist du der Dunklen Stadt entkommen, doch wirst du bestimmt wiederkommen..."
+    },
     "65": {
         "en": "Welcome to the game!",
         "de": "Willkommen im Spiel!"
@@ -98,6 +102,10 @@
     "133": {
         "en": "A bridge in the sky",
         "de": "Eine Brücke in der Luft"
+    },
+    "135": {
+        "en": "Light and Shadow",
+        "de": "Licht und Schatten"
     },
     "139": {
         "en": "Going down!",
