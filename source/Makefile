@@ -23,13 +23,17 @@ title_screen = \
 # coptions = -0 -ml -xs -onatx -oh -ol -ol+ -ox
 coptions = -ml -oneatx -xs -zp4 -0 -ad
 
-dest     = game.exe
+coptions_launcher = -ms -oneatx -xd -zp4 -0 -ad -os
+
+dest     = game2.exe
 test     = gametest.exe
 title    = title.exe
+launcher = game.exe
+
 
 BUILD_DATE=`date -R`
 
-all: $(dest) $(test) $(title)
+all: $(dest) $(test) $(title) $(launcher)
 
 $(dest): _$(dest)
 	upx -9 --ultra-brute -f --8086 -o$(dest) _$(dest)
@@ -42,6 +46,11 @@ $(title): _$(title)
 	wpp $(coptions) $<
 
 -include *.d
+
+
+launcher.o: launcher.cpp
+	wpp $(coptions_launcher) launcher.cpp
+	wdis launcher.o > launcher.asm
 
 # soundblaster.o : soundblaster.cpp
 # 	wpp $(coptions) soundblaster.cpp
@@ -82,3 +91,9 @@ _$(title): $(title_screen)
 	echo "SYSTEM DOS" >> title.lnk
 	echo "FILE   {$(title_screen)}" >> title.lnk
 	wlink  @title.lnk
+
+$(launcher): launcher.o
+	echo "NAME   $@" > launcher.lnk
+	echo "SYSTEM DOS" >> launcher.lnk
+	echo "FILE   {launcher.o}" >> launcher.lnk
+	wlink  @launcher.lnk

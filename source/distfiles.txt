@@ -1,4 +1,5 @@
 game.exe
+game2.exe
 title.exe
 ../text/strings.en
 ../text/strings.de
@@ -16,6 +17,7 @@ title.exe
 ../images/fire.tga
 ../images/fire.ani
 ../images/title.tga
+../images/pyramid.tga
 ../images/arrow2.tga
 ../images/arrow2.ani
 ../images/jet.tga

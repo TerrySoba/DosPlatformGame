@@ -5,6 +5,7 @@
 #include "animation.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <exception>
 #include <string.h>
 
@@ -20,15 +21,22 @@ enum TitleState
     STATE_EXIT_SELECTED,
 };
 
+enum ExitCode
+{
+    EXIT_CODE_NONE = 0,
+    EXIT_CODE_START_GAME = 1,
+    EXIT_CODE_QUIT = 2
+};
 
-#define START_GAME_POS_X 150
-#define START_GAME_POS_Y 124
 
-#define DELETE_SAVE_POS_X 150
-#define DELETE_SAVE_POS_Y 144
+#define START_GAME_POS_X 182
+#define START_GAME_POS_Y 88
 
-#define EXIT_POS_X 150
-#define EXIT_POS_Y 164
+#define DELETE_SAVE_POS_X 182
+#define DELETE_SAVE_POS_Y 108
+
+#define EXIT_POS_X 182
+#define EXIT_POS_Y 128
 
 
 void deleteSavegame()
@@ -44,7 +52,7 @@ int main(int argc, char* argv[])
         Keyboard keys;
         VgaGfx vga;
         Animation arrow("arrow2.ani", "arrow2.tga", true);
-        TgaImage image("title.tga");
+        TgaImage image("pyramid.tga");
 
         vga.setBackground(image);
 
@@ -62,7 +70,9 @@ int main(int argc, char* argv[])
 
         uint8_t counter = 0;
 
-        while (true)
+        ExitCode exitCode = EXIT_CODE_NONE;
+
+        while (exitCode == EXIT_CODE_NONE)
         {
             up = s_keyUp;
             down = s_keyDown;
@@ -73,7 +83,12 @@ int main(int argc, char* argv[])
 
 
             if (counter++ & 4)
+            {
                 arrow.nextFrame();
+            }
+
+            int actionButton = s_keySpace || s_keyAlt;
+            int exitButton = s_keyEsc;
 
             switch(state)
             {
@@ -86,12 +101,16 @@ int main(int argc, char* argv[])
                     arrowY = START_GAME_POS_Y;
                     if (up && !lastUp) state = STATE_EXIT;
                     if (down && !lastDown) state = STATE_DELETE_SAVEGAME;
-                    if (s_keySpace) state = STATE_START_GAME_SELECTED;
+                    if (actionButton) state = STATE_START_GAME_SELECTED;
                     break;
                 case STATE_START_GAME_SELECTED:
                     arrowX += arrowSpeed;
                     arrowSpeed *= 1.1;
-                    if (arrowX > 320) return 0;
+                    if (arrowX > 320)
+                    {
+                        // return 0;
+                        exitCode = EXIT_CODE_START_GAME;
+                    }
                     break;
                 case STATE_DELETE_SAVEGAME:
                     arrowSpeed = 1;
@@ -99,7 +118,7 @@ int main(int argc, char* argv[])
                     arrowY = DELETE_SAVE_POS_Y;
                     if (up && !lastUp) state = STATE_START_GAME;
                     if (down && !lastDown) state = STATE_EXIT;
-                    if (s_keySpace) {
+                    if (actionButton) {
                         deleteSavegame();
                         state = STATE_DELETE_SAVEGAME_SELECTED;
                     }
@@ -107,7 +126,10 @@ int main(int argc, char* argv[])
                 case STATE_DELETE_SAVEGAME_SELECTED:
                     arrowX += arrowSpeed;
                     arrowSpeed *= 1.1;
-                    if (arrowX > 320) state = STATE_DELETE_SAVEGAME;
+                    if (arrowX > 320)
+                    {
+                        state = STATE_DELETE_SAVEGAME;
+                    }
                     break;
                 case STATE_EXIT:
                     arrowSpeed = 1;
@@ -115,12 +137,15 @@ int main(int argc, char* argv[])
                     arrowY = EXIT_POS_Y;
                     if (up && !lastUp) state = STATE_DELETE_SAVEGAME;
                     if (down && !lastDown) state = STATE_START_GAME;
-                    if (s_keySpace) state = STATE_EXIT_SELECTED;
+                    if (actionButton) state = STATE_EXIT_SELECTED;
                     break;
                 case STATE_EXIT_SELECTED:
                     arrowX += arrowSpeed;
                     arrowSpeed *= 1.1;
-                    if (arrowX > 320) return 1;
+                    if (arrowX > 320)
+                    {
+                        return 0;
+                    }
                     break;
                 default:
                     state = STATE_INIT;
@@ -129,7 +154,11 @@ int main(int argc, char* argv[])
 
             lastDown = down;
             lastUp = up;
+
+            if (exitButton) exitCode = EXIT_CODE_QUIT;
         }
+
+        return exitCode;
     }
     catch(const std::exception& e)
     {
