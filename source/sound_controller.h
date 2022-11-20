@@ -11,6 +11,7 @@ public:
     void playJumpSound();
     void playWalkSound();
     void playGuffinSound();
+    void playJetpackSound();
     void playDeathSound();
     void playStandSound();
 
@@ -27,6 +28,7 @@ private:
     SbSample m_deathSound;
     SbSample m_standSound;
     SbSample m_guffinSound;
+    SbSample m_jetpackSound;
     uint16_t m_soundPriority;
 };
 

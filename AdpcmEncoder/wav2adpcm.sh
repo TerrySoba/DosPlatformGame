@@ -18,14 +18,11 @@ then
     exit
 fi
 
-
-PYTHON_EXECUTABLE=python3
-# PYTHON_EXECUTABLE=pypy3
-
-
 input=$1
 frequency=$2
-output=$3
+format=$3
+output=$4
+
 
 temp_filename=$(mktemp /tmp/adpcm_tmp.XXXXXX)
 
@@ -38,5 +35,5 @@ temp_filename=$(mktemp /tmp/adpcm_tmp.XXXXXX)
 #   -t raw                  Create raw file
 # Why disable dithering? If dithering is enabled, then silent parts become very noisy.
 sox $input -b 8 -e unsigned-integer -D -r $frequency -c 1 -t raw $temp_filename
-$SCRIPTDIR/build/adpcm_encoder -i $temp_filename -f $frequency -o $output -c PCM
+$SCRIPTDIR/build/adpcm_encoder -i $temp_filename -f $frequency -o $output -c $format # ADPCM4
 rm $temp_filename

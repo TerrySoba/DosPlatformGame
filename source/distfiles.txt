@@ -92,3 +92,4 @@ title.exe
 ../sound/steps.voc
 ../sound/stand.voc
 ../sound/guffin.voc
+../sound/jetpack.voc

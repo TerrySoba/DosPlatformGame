@@ -19,10 +19,10 @@ fallocate -l $DISK_720_BYTES image_720k.img
 fallocate -l $DISK_1200_BYTES image_1200.img
 fallocate -l $DISK_1440_BYTES image_1440k.img
 
-mformat -i image_360k.img -v game
-mformat -i image_720k.img -v game
-mformat -i image_1200.img -v game
-mformat -i image_1440k.img -v game
+mformat -i image_360k.img -v game -N 31415926
+mformat -i image_720k.img -v game -N 31415926
+mformat -i image_1200.img -v game -N 31415926
+mformat -i image_1440k.img -v game -N 31415926
 
 mcopy -i image_360k.img release ::game
 mcopy -i image_720k.img release ::game

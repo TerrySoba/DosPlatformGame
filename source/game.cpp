@@ -268,7 +268,7 @@ void Game::collectJetPack(Point point)
 
     if (index >= 0) m_jetPacks.erase(index);
     m_physics->setJetPacks(m_jetPacks);
-    m_sound->playGuffinSound();
+    m_sound->playJetpackSound();
 }
 
 void Game::drawFrame()
