@@ -2,7 +2,7 @@
 fullscreen=false
 fulldouble=false
 fullresolution=original
-windowresolution=960x720
+windowresolution=3000x2000
 output=openglnb
 
 [dosbox]
@@ -42,7 +42,9 @@ mount c release
 c:
 @echo If game does not run lower number in next line to free memory!
 rem loadfix -150 title --german
-loadfix -170 game --level 1 1 --german
+rem loadfix -100 game --level 9 5 --german
+rem loadfix -150 game --level 1 1 
+loadfix -150 game2 --level 1 1
 
 pause
 exit
