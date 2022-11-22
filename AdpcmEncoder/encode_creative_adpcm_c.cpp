@@ -88,56 +88,95 @@ private:
     uint8_t m_previous;
 };
 
+uint64_t getNthNibble(int n, uint64_t value)
+{
+    return (0xf & (value >> (4 * n)));
+}
+
+
+constexpr uint64_t constPow(uint64_t val, uint64_t exp)
+{
+    uint64_t res = 1;
+    while (exp-- > 0)
+    {
+        res *= val;
+    }
+
+    return res;
+}
+
+
 /**
  * Encodes the given sequence of unsigned 8bit values to 4bit ADPCM.
  * The first 8bit value is stored "as is", but the following values are
  * compressed to 4bit values. This almost halves the size.
  * 
  * The encoder uses an ADPCM decoder and tries every possible input
- * until it get the output that most closely matches the input value.
- * As there are only 16 possible input values to try with 4 bits
- * this is not impossibly slow.
- * 
- * This encoder seems to produce good results that sound similar to
- * the results that VOCEDIT 2 produces. It might of course be possible
- * to produce a better encoder, but as this encoder is good enough for
- * my purposes I have not tried.
+ * until it gets the output that most closely matches the input value.
+ * The parameter combinedNibbles controlls the number of nibbles
+ * that are combined. Each additional nibble muliplies the runtime
+ * by 16. A value between 3 and 4 produces good results.
+ * Increasing the number further does not add much quality improvements,
+ * but drastically increases the runtime, so 4 is the default.
  */
-std::vector<uint8_t> createAdpcm4BitFromRaw(const std::vector<uint8_t>& raw)
+std::vector<uint8_t> createAdpcm4BitFromRaw(const std::vector<uint8_t>& raw, uint64_t combinedNibbles = 4)
 {
-    CreativeAdpcmDecoder4Bit decoder(raw[0]);
-    std::vector<uint8_t> result(raw.size() - 1);
+    // uint64_t squaredSum = 0u;
 
-    for (int i = 1; i < raw.size(); ++i)
+    CreativeAdpcmDecoder4Bit decoder(raw[0]);
+    
+    std::vector<uint64_t> result(raw.size() / combinedNibbles);
+
+    for (int i = 1; i < raw.size() / combinedNibbles; ++i)
     {
-        int bestIndex = 0;
-        int bestDiff = std::numeric_limits<int>::max();
+        uint64_t bestIndex = 0;
+        uint64_t bestDiff = std::numeric_limits<uint64_t>::max();
 
         CreativeAdpcmDecoder4Bit bestDecoder(0);
 
         // try every possible input for the decoder
-        for (uint8_t n = 0; n < 16; ++n)
+        for (uint64_t n = 0; n < constPow(16, combinedNibbles); ++n)
         {
             CreativeAdpcmDecoder4Bit decoderCopy = decoder;
-            int diff = std::abs(decoderCopy.decodeNibble(n) - raw[i]);
- 
-            if (diff < bestDiff)
+            uint64_t diffSum = 0;
+            for (int nib = 0; nib < combinedNibbles; ++nib)
             {
-                bestDiff = diff;
+                int diff = std::abs(decoderCopy.decodeNibble(getNthNibble(nib, n)) - raw[i*combinedNibbles + nib]);
+                diffSum += diff * diff;
+            }
+ 
+            if (diffSum < bestDiff)
+            {
+                bestDiff = diffSum;
                 bestIndex = n;
                 bestDecoder = decoderCopy;
             }
         }
-        decoder = bestDecoder;
+        decoder = bestDecoder; 
         result[i-1] = bestIndex;
+        // squaredSum += bestDiff;
+
+
+        if (i % 100 == 0) printf("%d\n", i);
     }
 
-    std::vector<uint8_t> binaryResult(result.size() / 2);
+    // printf("sum: %ld\n", squaredSum);
+
+    std::vector<uint8_t> nibbles(result.size() * combinedNibbles);
+    for (int i = 0; i < result.size(); ++i)
+    {
+        for (int nib = 0; nib < combinedNibbles; ++nib)
+        {
+            nibbles[i * combinedNibbles + nib] = getNthNibble(nib, result[i]);
+        }
+    }
+
+    std::vector<uint8_t> binaryResult(nibbles.size() / 2);
 
     // merge nibbles into bytes
-    for (int n = 0; n < result.size() / 2; ++n)
+    for (int n = 0; n < nibbles.size() / 2; ++n)
     {
-        binaryResult[n] = ((result[2 * n] << 4) + (result[2 * n + 1]));
+        binaryResult[n] = ((nibbles[2 * n] << 4) + (nibbles[2 * n + 1]));
     }
 
     binaryResult.insert(binaryResult.begin(), raw[0]);

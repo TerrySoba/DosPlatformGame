@@ -1,3 +1,8 @@
+cmake_minimum_required(VERSION 3.9)
 project(adpcm_encoder)
 set(CMAKE_CXX_STANDARD 20)
 add_executable(adpcm_encoder encode_creative_adpcm_c.cpp)
+#find_package(OpenMP)
+#if(OpenMP_CXX_FOUND)
+#    target_link_libraries(adpcm_encoder PUBLIC OpenMP::OpenMP_CXX)
+#endif()
