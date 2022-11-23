@@ -9,6 +9,8 @@
 #include <map>
 #include <limits>
 
+// #include <omp.h>
+
 #include "command_line_parser.h"
 
 std::vector<uint8_t> loadFile(const std::string& filename)
@@ -106,6 +108,13 @@ constexpr uint64_t constPow(uint64_t val, uint64_t exp)
 }
 
 
+struct Best
+{
+    uint64_t bestIndex = 0;
+    uint64_t bestDiff = std::numeric_limits<uint64_t>::max();
+    CreativeAdpcmDecoder4Bit bestDecoder = CreativeAdpcmDecoder4Bit(0);
+};
+
 /**
  * Encodes the given sequence of unsigned 8bit values to 4bit ADPCM.
  * The first 8bit value is stored "as is", but the following values are
@@ -119,9 +128,10 @@ constexpr uint64_t constPow(uint64_t val, uint64_t exp)
  * Increasing the number further does not add much quality improvements,
  * but drastically increases the runtime, so 4 is the default.
  */
-std::vector<uint8_t> createAdpcm4BitFromRaw(const std::vector<uint8_t>& raw, uint64_t combinedNibbles = 4)
+#if 0
+std::vector<uint8_t> createAdpcm4BitFromRawOpenMP(const std::vector<uint8_t>& raw, uint64_t combinedNibbles = 5)
 {
-    // uint64_t squaredSum = 0u;
+    uint64_t squaredSum = 0u;
 
     CreativeAdpcmDecoder4Bit decoder(raw[0]);
     
@@ -129,10 +139,103 @@ std::vector<uint8_t> createAdpcm4BitFromRaw(const std::vector<uint8_t>& raw, uin
 
     for (int i = 1; i < raw.size() / combinedNibbles; ++i)
     {
+        std::vector<Best> bestResults(omp_get_max_threads());
+
+        // try every possible input for the decoder
+        #pragma omp parallel for
+        for (uint64_t n = 0; n < constPow(16, combinedNibbles); ++n)
+        {
+            CreativeAdpcmDecoder4Bit decoderCopy = decoder;
+            uint64_t diffSum = 0;
+            for (int nib = 0; nib < combinedNibbles; ++nib)
+            {
+                int diff = std::abs(decoderCopy.decodeNibble(getNthNibble(nib, n)) - raw[i*combinedNibbles + nib]);
+                diffSum += diff * diff;
+            }
+ 
+            auto& best = bestResults.at(omp_get_thread_num());
+
+            if (diffSum < best.bestDiff)
+            {
+                best.bestDiff = diffSum;
+                best.bestIndex = n;
+                best.bestDecoder = decoderCopy;
+            }
+        }
+
+        // now merge results from threads
         uint64_t bestIndex = 0;
         uint64_t bestDiff = std::numeric_limits<uint64_t>::max();
-
         CreativeAdpcmDecoder4Bit bestDecoder(0);
+        for (auto& best : bestResults)
+        {
+            // printf("diff: %d\n", best.bestDiff);
+            if (best.bestDiff < bestDiff)
+            {
+                bestDiff = best.bestDiff;
+                bestIndex = best.bestIndex;
+                bestDecoder = best.bestDecoder;
+            }
+        }
+
+
+        decoder = bestDecoder; 
+        result[i-1] = bestIndex;
+        squaredSum += bestDiff;
+
+
+        if (i % 10 == 0) printf("%d\n", i);
+    }
+
+    printf("sum: %ld\n", squaredSum);
+
+    std::vector<uint8_t> nibbles(result.size() * combinedNibbles);
+    for (int i = 0; i < result.size(); ++i)
+    {
+        for (int nib = 0; nib < combinedNibbles; ++nib)
+        {
+            nibbles[i * combinedNibbles + nib] = getNthNibble(nib, result[i]);
+        }
+    }
+
+    std::vector<uint8_t> binaryResult(nibbles.size() / 2);
+
+    // merge nibbles into bytes
+    for (int n = 0; n < nibbles.size() / 2; ++n)
+    {
+        binaryResult[n] = ((nibbles[2 * n] << 4) + (nibbles[2 * n + 1]));
+    }
+
+    binaryResult.insert(binaryResult.begin(), raw[0]);
+
+    return binaryResult;
+}
+#endif
+
+/**
+ * Encodes the given sequence of unsigned 8bit values to 4bit ADPCM.
+ * The first 8bit value is stored "as is", but the following values are
+ * compressed to 4bit values. This almost halves the size.
+ * 
+ * The encoder uses an ADPCM decoder and tries every possible input
+ * until it gets the output that most closely matches the input value.
+ * The parameter combinedNibbles controlls the number of nibbles
+ * that are combined. Each additional nibble muliplies the runtime
+ * by 16. A value between 3 and 4 produces good results.
+ * Increasing the number further does not add much quality improvements,
+ * but drastically increases the runtime, so 4 is the default.
+ */
+std::vector<uint8_t> createAdpcm4BitFromRaw(const std::vector<uint8_t>& raw, uint64_t combinedNibbles = 5)
+{
+    uint64_t squaredSum = 0u;
+
+    CreativeAdpcmDecoder4Bit decoder(raw[0]);
+    
+    std::vector<uint64_t> result(raw.size() / combinedNibbles);
+
+    for (int i = 1; i < raw.size() / combinedNibbles; ++i)
+    {
+        Best bestResults;
 
         // try every possible input for the decoder
         for (uint64_t n = 0; n < constPow(16, combinedNibbles); ++n)
@@ -145,22 +248,23 @@ std::vector<uint8_t> createAdpcm4BitFromRaw(const std::vector<uint8_t>& raw, uin
                 diffSum += diff * diff;
             }
  
-            if (diffSum < bestDiff)
+            if (diffSum < bestResults.bestDiff)
             {
-                bestDiff = diffSum;
-                bestIndex = n;
-                bestDecoder = decoderCopy;
+                bestResults.bestDiff = diffSum;
+                bestResults.bestIndex = n;
+                bestResults.bestDecoder = decoderCopy;
             }
         }
-        decoder = bestDecoder; 
-        result[i-1] = bestIndex;
-        // squaredSum += bestDiff;
+
+        decoder = bestResults.bestDecoder; 
+        result[i-1] = bestResults.bestIndex;
+        squaredSum += bestResults.bestDiff;
 
 
-        if (i % 100 == 0) printf("%d\n", i);
+        if (i % 10 == 0) printf("%d\n", i);
     }
 
-    // printf("sum: %ld\n", squaredSum);
+    printf("sum: %ld\n", squaredSum);
 
     std::vector<uint8_t> nibbles(result.size() * combinedNibbles);
     for (int i = 0; i < result.size(); ++i)
