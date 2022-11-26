@@ -301,45 +301,84 @@ struct Path
     }
 };
 
+void fillEmptyList(std::list<Path>& emptyList, size_t historySize, size_t elementCount)
+{
+    for (int i = 0; i < elementCount; ++i)
+    {
+        emptyList.push_back({});
+        emptyList.back().history.reserve(historySize);
+    }
+}
+
+
 std::vector<uint8_t> createAdpcm4BitFromRawExperiment(const std::vector<uint8_t>& raw)
 {
-    std::vector<Path> leafs;
-    uint32_t maxSize = 16 * 16 * 16;
+    std::list<Path> leafs;
+    uint32_t maxSize = 16 * 16 * 16 * 2;
+
+    std::list<Path> emptyList;
+    // for (int i = 0; i < maxSize; ++i)
+    // {
+    //     emptyList.push_back({});
+    //     emptyList.back().history.reserve(raw.size() + 1);
+    // }
+
+    fillEmptyList(emptyList, raw.size(), maxSize * 16);
 
     leafs.push_back({0, {}, CreativeAdpcmDecoder4Bit(raw[0])});
 
     for (int n = 1; n < raw.size(); ++n)
     {
-        std::vector<Path> newLeafs;
+        std::list<Path> newLeafs;
 
         for (auto& leaf : leafs)
         {
             for (int i = 0; i < 16; ++i)
             {
-                Path p = leaf;
+                if (emptyList.empty())
+                {
+                    fillEmptyList(emptyList, raw.size(), 1);
+                }
+
+                Path& p = emptyList.front();
+                p.history = leaf.history;
+                p.decoder = leaf.decoder;
+                p.squaredSum = leaf.squaredSum;
                 int diff = p.decoder.decodeNibble(i) - raw[n];
                 p.squaredSum += diff * diff;
                 p.history.push_back(i);
-                newLeafs.push_back(p);
+                // newLeafs.push_back(p);
+                newLeafs.splice(newLeafs.end(), emptyList, emptyList.begin());
             }
         }
 
-        std::sort(newLeafs.begin(), newLeafs.end());
+        // std::sort(newLeafs.begin(), newLeafs.end());
+        newLeafs.sort();
 
         // remove worst paths, keep only maxSize paths
         if (newLeafs.size() > maxSize)
         {
             auto it = newLeafs.begin();
             std::advance(it, maxSize);
-            newLeafs.erase(it, newLeafs.end());
+            emptyList.splice(emptyList.begin(), newLeafs, it, newLeafs.end()); // move unneeded elements to emptyList
+            // newLeafs.erase(it, newLeafs.end());
         }
 
-        leafs = std::move(newLeafs);
+        // remove old leaves to emptyList
+        emptyList.splice(emptyList.begin(), leafs, leafs.begin(), leafs.end());
 
-        if (n % 10 == 0) printf("%d -> %ld (%ld)\n", n, raw.size(), leafs.size());
+        leafs.splice(leafs.begin(), newLeafs, newLeafs.begin(), newLeafs.end());
+
+        // leafs = std::move(newLeafs);
+
+        if (n % 10 == 0){
+            printf("%d -> %ld (%ld)\n", n, raw.size(), leafs.size());
+            printf("newLeafs: %ld\n", newLeafs.size());
+        }
     }
 
-    std::sort(leafs.begin(), leafs.end());
+    // std::sort(leafs.begin(), leafs.end());
+    leafs.sort();
 
     printf("res: %ld\n", leafs.front().squaredSum);
 
@@ -472,7 +511,7 @@ int main(int argc, char* argv[])
             case VOC_FORMAT_ADPCM_4BIT:
             {
                 std::vector<uint8_t> raw = loadFile(parser.getValue<std::string>("input"));
-                sampleData = createAdpcm4BitFromRaw(raw);
+                sampleData = createAdpcm4BitFromRawExperiment(raw);
                 break;
             }
             case VOC_FORMAT_PCM_8BIT:
