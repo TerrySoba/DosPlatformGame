@@ -8,6 +8,7 @@
 #include <math.h>
 #include <map>
 #include <limits>
+#include <list>
 
 // #include <omp.h>
 
@@ -225,7 +226,7 @@ std::vector<uint8_t> createAdpcm4BitFromRawOpenMP(const std::vector<uint8_t>& ra
  * Increasing the number further does not add much quality improvements,
  * but drastically increases the runtime, so 4 is the default.
  */
-std::vector<uint8_t> createAdpcm4BitFromRaw(const std::vector<uint8_t>& raw, uint64_t combinedNibbles = 5)
+std::vector<uint8_t> createAdpcm4BitFromRaw(const std::vector<uint8_t>& raw, uint64_t combinedNibbles = 4)
 {
     uint64_t squaredSum = 0u;
 
@@ -244,7 +245,7 @@ std::vector<uint8_t> createAdpcm4BitFromRaw(const std::vector<uint8_t>& raw, uin
             uint64_t diffSum = 0;
             for (int nib = 0; nib < combinedNibbles; ++nib)
             {
-                int diff = std::abs(decoderCopy.decodeNibble(getNthNibble(nib, n)) - raw[i*combinedNibbles + nib]);
+                int diff = decoderCopy.decodeNibble(getNthNibble(nib, n)) - raw[i*combinedNibbles + nib];
                 diffSum += diff * diff;
             }
  
@@ -261,10 +262,10 @@ std::vector<uint8_t> createAdpcm4BitFromRaw(const std::vector<uint8_t>& raw, uin
         squaredSum += bestResults.bestDiff;
 
 
-        if (i % 10 == 0) printf("%d\n", i);
+        // if (i % 10 == 0) printf("%d\n", i);
     }
 
-    printf("sum: %ld\n", squaredSum);
+    // printf("sum: %ld\n", squaredSum);
 
     std::vector<uint8_t> nibbles(result.size() * combinedNibbles);
     for (int i = 0; i < result.size(); ++i)
@@ -288,6 +289,76 @@ std::vector<uint8_t> createAdpcm4BitFromRaw(const std::vector<uint8_t>& raw, uin
     return binaryResult;
 }
 
+struct Path
+{
+    uint64_t squaredSum = 0;
+    std::vector<uint8_t> history;
+    CreativeAdpcmDecoder4Bit decoder = CreativeAdpcmDecoder4Bit(0);
+
+    bool operator<(const Path& other)
+    {
+        return this->squaredSum < other.squaredSum;
+    }
+};
+
+std::vector<uint8_t> createAdpcm4BitFromRawExperiment(const std::vector<uint8_t>& raw)
+{
+    std::vector<Path> leafs;
+    uint32_t maxSize = 16 * 16 * 16;
+
+    leafs.push_back({0, {}, CreativeAdpcmDecoder4Bit(raw[0])});
+
+    for (int n = 1; n < raw.size(); ++n)
+    {
+        std::vector<Path> newLeafs;
+
+        for (auto& leaf : leafs)
+        {
+            for (int i = 0; i < 16; ++i)
+            {
+                Path p = leaf;
+                int diff = p.decoder.decodeNibble(i) - raw[n];
+                p.squaredSum += diff * diff;
+                p.history.push_back(i);
+                newLeafs.push_back(p);
+            }
+        }
+
+        std::sort(newLeafs.begin(), newLeafs.end());
+
+        // remove worst paths, keep only maxSize paths
+        if (newLeafs.size() > maxSize)
+        {
+            auto it = newLeafs.begin();
+            std::advance(it, maxSize);
+            newLeafs.erase(it, newLeafs.end());
+        }
+
+        leafs = std::move(newLeafs);
+
+        if (n % 10 == 0) printf("%d -> %ld (%ld)\n", n, raw.size(), leafs.size());
+    }
+
+    std::sort(leafs.begin(), leafs.end());
+
+    printf("res: %ld\n", leafs.front().squaredSum);
+
+
+    auto& nibbles = leafs.front().history;
+
+    std::vector<uint8_t> binaryResult(nibbles.size() / 2);
+
+    // merge nibbles into bytes
+    for (int n = 0; n < nibbles.size() / 2; ++n)
+    {
+        binaryResult[n] = ((nibbles[2 * n] << 4) + (nibbles[2 * n + 1]));
+    }
+
+    binaryResult.insert(binaryResult.begin(), raw[0]);
+
+
+    return binaryResult;
+}
 
 
 void append(std::vector<uint8_t>& container, const std::string& value)
