@@ -9,8 +9,9 @@
 #include <map>
 #include <limits>
 #include <list>
+#include <cassert>
 
-// #include <omp.h>
+#include <omp.h>
 
 #include "command_line_parser.h"
 
@@ -25,7 +26,8 @@ std::vector<uint8_t> loadFile(const std::string& filename)
     size_t fileSize = ftell(fp);
     fseek(fp, 0L, SEEK_SET);
     std::vector<uint8_t> data(fileSize);
-    fread(&data[0], 1, fileSize, fp);
+    auto bytes = fread(&data[0], 1, fileSize, fp);
+    assert(fileSize == bytes);
     fclose(fp);
     return data;
 }
@@ -91,6 +93,30 @@ private:
     uint8_t m_previous;
 };
 
+
+std::vector<uint8_t> decodeAdpcm4(uint8_t initial, std::vector<uint8_t> nibbles)
+{
+    CreativeAdpcmDecoder4Bit decoder(initial);
+
+    std::vector<uint8_t> decoded(nibbles.size() + 1);
+    decoded[0] = initial;
+
+    for (int i = 0; i < nibbles.size(); ++i)
+    {
+        decoded[i + 1] = decoder.decodeNibble(nibbles[i]);
+    }
+
+    return decoded;
+}
+
+void dumpRaw(std::vector<uint8_t>& rawData)
+{
+    FILE* fp = fopen("dump.raw", "wb");
+    fwrite(rawData.data(), rawData.size(), 1, fp);
+    fclose(fp);
+}
+
+
 uint64_t getNthNibble(int n, uint64_t value)
 {
     return (0xf & (value >> (4 * n)));
@@ -125,11 +151,11 @@ struct Best
  * until it gets the output that most closely matches the input value.
  * The parameter combinedNibbles controlls the number of nibbles
  * that are combined. Each additional nibble muliplies the runtime
- * by 16. A value between 3 and 4 produces good results.
+ * by 16. A value between 3 and 5 produces good results.
  * Increasing the number further does not add much quality improvements,
- * but drastically increases the runtime, so 4 is the default.
+ * but drastically increases the runtime, so 5 is the default.
  */
-#if 0
+#if 1
 std::vector<uint8_t> createAdpcm4BitFromRawOpenMP(const std::vector<uint8_t>& raw, uint64_t combinedNibbles = 5)
 {
     uint64_t squaredSum = 0u;
@@ -150,7 +176,7 @@ std::vector<uint8_t> createAdpcm4BitFromRawOpenMP(const std::vector<uint8_t>& ra
             uint64_t diffSum = 0;
             for (int nib = 0; nib < combinedNibbles; ++nib)
             {
-                int diff = std::abs(decoderCopy.decodeNibble(getNthNibble(nib, n)) - raw[i*combinedNibbles + nib]);
+                int32_t diff = (int32_t)decoderCopy.decodeNibble(getNthNibble(nib, n)) - (int32_t)raw[i*combinedNibbles + nib];
                 diffSum += diff * diff;
             }
  
@@ -185,10 +211,10 @@ std::vector<uint8_t> createAdpcm4BitFromRawOpenMP(const std::vector<uint8_t>& ra
         squaredSum += bestDiff;
 
 
-        if (i % 10 == 0) printf("%d\n", i);
+        // if (i % 10 == 0) printf("%d\n", i);
     }
 
-    printf("sum: %ld\n", squaredSum);
+    // printf("sum: %ld\n", squaredSum);
 
     std::vector<uint8_t> nibbles(result.size() * combinedNibbles);
     for (int i = 0; i < result.size(); ++i)
@@ -198,6 +224,9 @@ std::vector<uint8_t> createAdpcm4BitFromRawOpenMP(const std::vector<uint8_t>& ra
             nibbles[i * combinedNibbles + nib] = getNthNibble(nib, result[i]);
         }
     }
+
+    // auto decoded = decodeAdpcm4(raw[0], nibbles);
+    // dumpRaw(decoded);
 
     std::vector<uint8_t> binaryResult(nibbles.size() / 2);
 
@@ -311,10 +340,12 @@ void fillEmptyList(std::list<Path>& emptyList, size_t historySize, size_t elemen
 }
 
 
+// For now this is experimental and does not yield good results.
+// You should generally not use this function.
 std::vector<uint8_t> createAdpcm4BitFromRawExperiment(const std::vector<uint8_t>& raw)
 {
     std::list<Path> leafs;
-    uint32_t maxSize = 16 * 16 * 16 * 2;
+    uint32_t maxSize = 16 * 16 * 16;
 
     std::list<Path> emptyList;
     // for (int i = 0; i < maxSize; ++i)
@@ -511,7 +542,7 @@ int main(int argc, char* argv[])
             case VOC_FORMAT_ADPCM_4BIT:
             {
                 std::vector<uint8_t> raw = loadFile(parser.getValue<std::string>("input"));
-                sampleData = createAdpcm4BitFromRawExperiment(raw);
+                sampleData = createAdpcm4BitFromRawOpenMP(raw);
                 break;
             }
             case VOC_FORMAT_PCM_8BIT:

@@ -14,7 +14,7 @@ SCRIPTDIR=`dirname $0`
 
 if (($# < 3))
 then
-    echo "Usage: $0 <input file> <output frequency in Hz> <output file>"
+    echo "Usage: $0 <input file> <output frequency in Hz> <format> <output file>"
     exit
 fi
 
@@ -22,7 +22,6 @@ input=$1
 frequency=$2
 format=$3
 output=$4
-
 
 temp_filename=$(mktemp /tmp/adpcm_tmp.XXXXXX)
 
