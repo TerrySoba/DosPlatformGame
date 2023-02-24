@@ -1,0 +1,30 @@
+{ "frames": {
+   "pyramid.ase": {
+    "frame": { "x": 0, "y": 0, "w": 320, "h": 200 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 320, "h": 200 },
+    "sourceSize": { "w": 320, "h": 200 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "https://github.com/LibreSprite/LibreSprite/",
+  "version": "1.0-dev",
+  "image": "/home/yoshi252/program_source/DosPlatformGame/images/pyramid.png",
+  "format": "I8",
+  "size": { "w": 320, "h": 200 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   { "name": "Bg", "opacity": 255, "blendMode": "normal" },
+   { "name": "Sun", "opacity": 255, "blendMode": "normal" },
+   { "name": "PyramidContact", "opacity": 255, "blendMode": "normal" },
+   { "name": "PyramidBase", "opacity": 255, "blendMode": "normal" },
+   { "name": "PyramidLights", "opacity": 255, "blendMode": "normal" },
+   { "name": "HelperLines", "opacity": 255, "blendMode": "normal" },
+   { "name": "DarkCity", "opacity": 255, "blendMode": "normal" }
+  ]
+ }
+}

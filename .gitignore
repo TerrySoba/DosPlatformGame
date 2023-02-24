@@ -18,3 +18,5 @@ sound/attic
 *.zip
 *.mmpz.bak
 *.pyc
+open_watcom_docker/
+*.img
