@@ -10,6 +10,7 @@ cd $BASE_DIR/build
 # ls -lh $BASE_DIR/open_watcom_docker/open_watcom.tar.gz
 tar -xzf $BASE_DIR/open_watcom_docker/open_watcom.tar.gz
 
+
 export WATCOM=$BASE_DIR/build/opt/opwatcom
 export PATH=$WATCOM/binl:$PATH
 export EDPATH=$WATCOM/eddat
