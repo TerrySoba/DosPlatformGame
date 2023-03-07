@@ -23,9 +23,9 @@
      inkscape:pagecheckerboard="true"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="0.56981429"
-     inkscape:cx="208.83997"
-     inkscape:cy="604.58294"
+     inkscape:zoom="1.4745087"
+     inkscape:cx="216.34325"
+     inkscape:cy="152.2541"
      inkscape:window-width="1846"
      inkscape:window-height="1016"
      inkscape:window-x="74"
@@ -45,18 +45,7 @@
      id="layer1"
      transform="translate(-1.5421491,-1.9666858)">
     <rect
-       style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:4.22071;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect846-9"
-       width="79.781166"
-       height="37.232758"
-       x="3.652504"
-       y="4.0770407"
-       ry="3.5381241"
-       inkscape:export-filename="/home/yoshi252/program_source/DosPlatformGame/docs/images/download.png"
-       inkscape:export-xdpi="139.73305"
-       inkscape:export-ydpi="139.73305" />
-    <rect
-       style="fill:none;stroke:#000000;stroke-width:1.27758;stroke-opacity:1"
+       style="fill:none;stroke:#b5e853;stroke-width:1.27758;stroke-opacity:1;fill-opacity:1"
        id="rect846"
        width="79.781166"
        height="37.232758"
@@ -68,7 +57,7 @@
        inkscape:export-ydpi="139.73305" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:22.9411px;line-height:1.25;font-family:Uroob;-inkscape-font-specification:Uroob;letter-spacing:0px;word-spacing:0px;stroke-width:0.26884"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:22.9411px;line-height:1.25;font-family:Uroob;-inkscape-font-specification:Uroob;letter-spacing:0px;word-spacing:0px;stroke-width:0.269;stroke-miterlimit:4;stroke-dasharray:none;stroke:none;stroke-opacity:1;fill:#b5e853;fill-opacity:1"
        x="9.2322388"
        y="25.113861"
        id="text43662"
@@ -77,12 +66,12 @@
        inkscape:export-ydpi="139.73305"><tspan
          sodipodi:role="line"
          id="tspan43660"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:22.9411px;font-family:Uroob;-inkscape-font-specification:Uroob;stroke-width:0.26884"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:22.9411px;font-family:Uroob;-inkscape-font-specification:Uroob;stroke-width:0.269;stroke-miterlimit:4;stroke-dasharray:none;stroke:none;stroke-opacity:1;fill:#b5e853;fill-opacity:1"
          x="9.2322388"
          y="25.113861">Download</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.66622px;line-height:1.25;font-family:Uroob;-inkscape-font-specification:Uroob;letter-spacing:0px;word-spacing:0px;stroke-width:0.541638"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.66622px;line-height:1.25;font-family:Uroob;-inkscape-font-specification:Uroob;letter-spacing:0px;word-spacing:0px;stroke-width:0.541638;fill:#b5e853;fill-opacity:1"
        x="29.064829"
        y="35.01561"
        id="text54548"
@@ -91,7 +80,7 @@
        inkscape:export-ydpi="139.73305"><tspan
          sodipodi:role="line"
          id="tspan54546"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Uroob;-inkscape-font-specification:Uroob;stroke-width:0.541638"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Uroob;-inkscape-font-specification:Uroob;stroke-width:0.541638;fill:#b5e853;fill-opacity:1"
          x="29.064829"
          y="35.01561"
          dy="0 0.57820636 0 0 0 0 0 0 0 0 -0.5782063">(Dos 16bit)</tspan></text>
