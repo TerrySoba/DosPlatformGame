@@ -1,3 +1,9 @@
-theme: jekyll-theme-minimal
-title: Dos Platform Game
-description: Bookmark this to keep an eye on my project updates!
+title: DosPloatformGame
+description: >- # this means to ignore newlines until "baseurl:"
+  DosPlatformGame is a retro platform game that runs on real DOS hardware.
+  Using Dosbox it runs on all modern platforms as well.
+
+# Build settings
+theme: minima
+
+
