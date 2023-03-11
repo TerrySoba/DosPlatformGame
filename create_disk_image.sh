@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 DISK_SECTOR_BYTES=512
 DISK_HEADS=2
 DISK_9_SECTORS=9
@@ -19,12 +18,15 @@ fallocate -l $DISK_720_BYTES image_720k.img
 fallocate -l $DISK_1200_BYTES image_1200.img
 fallocate -l $DISK_1440_BYTES image_1440k.img
 
-mformat -i image_360k.img -v game -N 31415926
-mformat -i image_720k.img -v game -N 31415926
-mformat -i image_1200.img -v game -N 31415926
-mformat -i image_1440k.img -v game -N 31415926
+# define serial number of disk image
+SERIAL=31415926
 
-mcopy -i image_360k.img release ::game
-mcopy -i image_720k.img release ::game
-mcopy -i image_1200.img release ::game
-mcopy -i image_1440k.img release ::game
+mformat -i image_360k.img -v game -N $SERIAL
+mformat -i image_720k.img -v game -N $SERIAL
+mformat -i image_1200.img -v game -N $SERIAL
+mformat -i image_1440k.img -v game -N $SERIAL
+
+mcopy -i image_360k.img installer/* ::
+mcopy -i image_720k.img installer/* ::
+mcopy -i image_1200.img installer/* ::
+mcopy -i image_1440k.img installer/* ::

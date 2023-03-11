@@ -1,0 +1,4 @@
+Dos Platform Game
+=================
+
+To install game run INSTALL.EXE

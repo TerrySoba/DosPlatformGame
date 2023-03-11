@@ -20,3 +20,4 @@ sound/attic
 *.pyc
 open_watcom_docker/
 *.img
+*.yar
