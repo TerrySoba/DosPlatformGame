@@ -51,5 +51,3 @@ jobs:
         with:
           name: disk-images
           path: image*.img
-
-      - 
