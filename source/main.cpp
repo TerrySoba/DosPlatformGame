@@ -138,6 +138,7 @@ int main(int argc, char* argv[])
     catch(const Exception& e)
     {
         fprintf(stderr, "Exception: %s\n", e.what());
+        fprintf(stderr, "errno: %d\n", errno);
         return 1;
     }
     catch(...)

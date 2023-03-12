@@ -384,7 +384,7 @@ const int VOC_FILE_ID_LENGTH = 22;
 
 SbSample SoundBlaster::loadVocFile(const char* filename)
 {
-    FILE *rawFile =  rawFile = fopen(filename, "rb");
+    FILE *rawFile = fopen(filename, "rb");
     if (!rawFile)
     {
         throw Exception("Could not open file: ", filename);
