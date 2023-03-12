@@ -25,30 +25,31 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      # Call open watcom build
-      #- uses: ./open_watcom_docker
-      #  with:
-      #    build-dir: source
 
       # Runs a set of commands using the runners shell
       - name: Install dependencies
-        run:  DEBIAN_FRONTEND=noninteractive sudo apt install -y nasm
-      #  run: |
-      #    DEBIAN_FRONTEND=noninteractive sudo apt update
-      #    DEBIAN_FRONTEND=noninteractive sudo apt upgrade -y
-      #    DEBIAN_FRONTEND=noninteractive sudo apt install -y software-properties-common upx make nasm zip git
+        run:  DEBIAN_FRONTEND=noninteractive sudo apt install -y nasm mtools
 
-      # Runs a single command using the runners shell
       - name: Build
         run: ./build.sh
 
       - name: Build installer
         run: ./build_installer.sh
 
+      - name: Create disk images
+        run: ./create_disk_image.sh
 
       # Now store built game as artifact
-      #- name: Archive build result
-      #  uses: actions/upload-artifact@v3
-      #  with:
-      #    name: game-zip
-      #    path: zip/game.zip
+      - name: Archive game zip
+        uses: actions/upload-artifact@v3
+        with:
+          name: game-zip
+          path: zip/game.zip
+      
+      - name: Archive disk images
+        uses: actions/upload-artifact@v3
+        with:
+          name: disk-images
+          path: image*.img
+
+      - 
