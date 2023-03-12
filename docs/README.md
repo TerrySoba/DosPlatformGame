@@ -5,10 +5,23 @@
  * IBM PC or compatible
  * 8086 / 8088 or better
  * 640kb of RAM
+ * VGA/MCGA compatible graphics
  * Soundblaster compatible soundcard
  * (optional) Joystick
 
-[![Download Dos 16bit](images/download.svg)](https://github.com/TerrySoba/DosPlatformGame/releases/download/RollingRelease/game.zip)
+[![Download Dos 16bit](images/download.svg)](https://github.com/TerrySoba/DosPlatformGame/releases/download/rolling_action/game.zip)
+
+## Floppy disk images
+
+If you'd like the full dos game experience, ther are also floppy disk image available that include an installer:
+[Floppy disk images](https://github.com/TerrySoba/DosPlatformGame/releases/download/rolling_action/images.zip)
+
+The archive contains images for most DOS compatibe floppy formats:
+ 
+ * 1.44MB
+ * 1.2MB
+ * 720KB
+ * 320KB
 
 ## Screenshots
 

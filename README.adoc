@@ -1,7 +1,8 @@
 # DosPlatformGame
 
 ## CI Status
-image:https://circleci.com/gh/TerrySoba/DosPlatformGame.svg?style=svg["CircleCI", link="https://circleci.com/gh/TerrySoba/DosPlatformGame"]
+
+image:https://github.com/TerrySoba/DosPlatformGame/actions/workflows/main.yml/badge.svg["Github Actions"]
 
 ## Quick Build Instructions
 
