@@ -49,6 +49,12 @@ jobs:
       #    name: disk-images
       #    path: image*.img
 
+      - uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with:
+          tag_name: rolling_action # tag name to delete
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
