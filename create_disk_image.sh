@@ -18,7 +18,7 @@ fallocate -l $DISK_720_BYTES image_720k.img
 fallocate -l $DISK_1200_BYTES image_1200.img
 fallocate -l $DISK_1440_BYTES image_1440k.img
 
-# define serial number of disk image
+# define serial number of disk image. For fun we use the first 8 digits of pi :)
 SERIAL=31415926
 
 mformat -i image_360k.img -v game -N $SERIAL
@@ -30,3 +30,5 @@ mcopy -i image_360k.img installer/* ::
 mcopy -i image_720k.img installer/* ::
 mcopy -i image_1200.img installer/* ::
 mcopy -i image_1440k.img installer/* ::
+
+zip images.zip image*.img
