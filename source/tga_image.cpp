@@ -1,7 +1,6 @@
 #include "tga_image.h"
 
 #include "exception.h"
-#include "safe_file.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -9,7 +8,11 @@
 
 TgaImage::TgaImage(const char* filename)
 {
-    SafeFile fp(filename, "rb");
+    FILE* fp = fopen(filename, "rb");
+    if (!fp)
+    {
+        throw Exception("Could not open file:", filename);
+    }
 
     uint8_t idLength;
     uint8_t colorMapType;
@@ -24,23 +27,24 @@ TgaImage::TgaImage(const char* filename)
     uint8_t bitsPerPixel;
     uint8_t imageDescriptor;
     
-    fread(&idLength, 1, 1, fp.file());
-    fread(&colorMapType, 1, 1, fp.file());
-    fread(&imageType, 1, 1, fp.file());
-    fread(&colorMapOrigin, 2, 1, fp.file());
-    fread(&colorMapLength, 2, 1, fp.file());
-    fread(&colorMapDepth, 1, 1, fp.file());
-    fread(&xOrigin, 2, 1, fp.file());
-    fread(&yOrigin, 2, 1, fp.file());
-    fread(&width, 2, 1, fp.file());
-    fread(&height, 2, 1, fp.file());
-    fread(&bitsPerPixel, 1, 1, fp.file());
-    fread(&imageDescriptor, 1, 1, fp.file());
+    fread(&idLength, 1, 1, fp);
+    fread(&colorMapType, 1, 1, fp);
+    fread(&imageType, 1, 1, fp);
+    fread(&colorMapOrigin, 2, 1, fp);
+    fread(&colorMapLength, 2, 1, fp);
+    fread(&colorMapDepth, 1, 1, fp);
+    fread(&xOrigin, 2, 1, fp);
+    fread(&yOrigin, 2, 1, fp);
+    fread(&width, 2, 1, fp);
+    fread(&height, 2, 1, fp);
+    fread(&bitsPerPixel, 1, 1, fp);
+    fread(&imageDescriptor, 1, 1, fp);
 
     // make sure we have palette data
     if (colorMapType != 1 )
     {
         printf("Color map type: %d\n", colorMapType);
+        fclose(fp);
         throw Exception("Invalid image format.");
     }
     
@@ -48,20 +52,22 @@ TgaImage::TgaImage(const char* filename)
     if (imageType != 1 && imageType != 9)
     {
         printf("Image type: %d\n", imageType);
+        fclose(fp);
         throw Exception("Invalid image format.");
     }
 
     uint16_t paletteEntrySize = (colorMapDepth == 15)? 16 : colorMapDepth;
 
     // we ignore id data, so seek over it
-    fseek(fp.file(), idLength, SEEK_CUR);
+    fseek(fp, idLength, SEEK_CUR);
 
     // seek over color palette for now
-    fseek(fp.file(), (uint32_t)(paletteEntrySize / 8) * (uint32_t)colorMapLength, SEEK_CUR);
+    fseek(fp, (uint32_t)(paletteEntrySize / 8) * (uint32_t)colorMapLength, SEEK_CUR);
 
     if (bitsPerPixel != 8)
     {
         printf("Only 8 bit images are supported, but got: %d\n", bitsPerPixel);
+        fclose(fp);
         throw Exception("Invalid image format.");
     }
 
@@ -71,20 +77,20 @@ TgaImage::TgaImage(const char* filename)
 
     if (imageType == 1) // uncompressed indexed
     {
-        fread(m_data, 1, size, fp.file());
+        fread(m_data, 1, size, fp);
     } else if (imageType == 9) { // compressed indexed
         uint32_t readBytes = 0;
         while (readBytes < size)
         {
-            uint8_t chunkHeader = fgetc(fp.file());
+            uint8_t chunkHeader = fgetc(fp);
             uint8_t chunkLength = (chunkHeader & 0x7f) + 1;
             bool isRLEChunk = chunkHeader & 0x80;
             if (isRLEChunk)
             {
-                uint8_t color = fgetc(fp.file());
+                uint8_t color = fgetc(fp);
                 memset(&m_data[readBytes], color, chunkLength);
             } else {
-                fread(&m_data[readBytes], 1, chunkLength, fp.file());
+                fread(&m_data[readBytes], 1, chunkLength, fp);
             }
 
             readBytes += chunkLength;
@@ -113,6 +119,8 @@ TgaImage::TgaImage(const char* filename)
 
         free(lineStore);
     }	
+
+    fclose(fp);
 }
 
 TgaImage::~TgaImage()
