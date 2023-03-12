@@ -31,7 +31,8 @@ jobs:
       #    build-dir: source
 
       # Runs a set of commands using the runners shell
-      #- name: Install dependencies
+      - name: Install dependencies
+        DEBIAN_FRONTEND=noninteractive apt install -y nasm
       #  run: |
       #    DEBIAN_FRONTEND=noninteractive sudo apt update
       #    DEBIAN_FRONTEND=noninteractive sudo apt upgrade -y
