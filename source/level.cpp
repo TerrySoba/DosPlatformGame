@@ -48,6 +48,7 @@ Level::Level(const char* mapFilename, shared_ptr<ImageBase> tilesImage,
 
     if (strcmp(buf, header) != 0)
     {
+        fclose(fp);
         throw Exception("Incorrect map header", mapFilename);
     }
 

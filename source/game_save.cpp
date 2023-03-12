@@ -73,5 +73,6 @@ bool loadGameState(GameState& gameState, const char* filename)
         gameState.colectedGuffins.push_back(guffin);
     }
 
+    fclose(fp);
     return true;
 }

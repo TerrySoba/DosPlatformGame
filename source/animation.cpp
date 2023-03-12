@@ -57,6 +57,7 @@ Animation::Animation(const char* animFilename, const char* tgaFilename, bool tra
     fread(header, 4, 1, fp);
     if (strcmp("ANIM", header) != 0)
     {
+        fclose(fp);
         throw Exception("File header incorrect: ", animFilename);
     }
 
@@ -93,6 +94,7 @@ Animation::Animation(const char* animFilename, const char* tgaFilename, bool tra
         char str[64];
         if (nameLen > 63)
         {
+            fclose(fp);
             throw Exception("tag name is too long:", animFilename);
         }
 
