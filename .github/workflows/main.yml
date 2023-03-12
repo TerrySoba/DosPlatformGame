@@ -35,19 +35,19 @@ jobs:
       - name: Create disk images
         run: ./create_disk_image.sh
 
-      # Now store built game as artifact
-      - name: Archive game zip
-        uses: actions/upload-artifact@v3
-        with:
-          name: game-zip
-          path: zip/game.zip
+      ## Now store built game as artifact
+      #- name: Archive game zip
+      #  uses: actions/upload-artifact@v3
+      #  with:
+      #    name: game-zip
+      #    path: zip/game.zip
       
       # Store built disk images as artifacts
-      - name: Archive disk images
-        uses: actions/upload-artifact@v3
-        with:
-          name: disk-images
-          path: image*.img
+      #- name: Archive disk images
+      #  uses: actions/upload-artifact@v3
+      #  with:
+      #    name: disk-images
+      #    path: image*.img
 
       - name: Create Release
         id: create_release
@@ -58,14 +58,12 @@ jobs:
           tag_name: rolling_action
           release_name: Release rolling_action
           body: |
-            Changes in this Release
-            - First Change
-            - Second Change
+            This is a rolling release that always contains the latest changes.
           draft: false
           prerelease: false
 
-      - name: Upload Release Asset
-        id: upload-release-asset 
+      - name: Upload game zip
+        id: upload-release-game
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -73,4 +71,15 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
           asset_path: ./zip/game.zip
           asset_name: game.zip
+          asset_content_type: application/zip
+        
+      - name: Upload disk images
+        id: upload-release-images
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./images.zip
+          asset_name: images.zip
           asset_content_type: application/zip
