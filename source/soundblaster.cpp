@@ -270,12 +270,14 @@ void SoundBlaster::singlePlayData(uint8_t __far * data, uint32_t length, uint8_t
 
 void SoundBlaster::singlePlay(const SbSample& sample)
 {
+    __asm { cli }
     if (s_playing)
     {
         // As DMA is currently running we need to pause it.
         // If this is not done, then the PC hangs.
         writeDsp(SB_PAUSE_DMA);
     }
+    __asm { sti }
 
     writeDsp(SB_SET_PLAYBACK_FREQUENCY);
     writeDsp(sample.timeConstant);
