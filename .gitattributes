@@ -1,2 +1,3 @@
 readme/readme.txt eol=crlf
 installer/install.txt eol=crlf
+*.bat eol=crlf
