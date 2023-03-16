@@ -9,19 +9,16 @@
  * Soundblaster compatible soundcard
  * (optional) Joystick
 
-[![Download Dos 16bit](images/download.svg)](https://github.com/TerrySoba/DosPlatformGame/releases/download/rolling_action/game.zip)
+[![Download Dos 16bit](images/download.svg)](https://github.com/TerrySoba/DosPlatformGame/releases/download/latest/game.zip)
 
 ## Floppy disk images
 
-If you'd like the full dos game experience, ther are also floppy disk image available that include an installer:
-[Floppy disk images](https://github.com/TerrySoba/DosPlatformGame/releases/download/rolling_action/images.zip)
+If you'd like the full dos game experience, there are also floppy disk images available that include an installer:
 
-The archive contains images for most DOS compatibe floppy formats:
- 
- * 1.44MB
- * 1.2MB
- * 720KB
- * 320KB
+ * [1.44MB 3½-inch Disk image](https://github.com/TerrySoba/DosPlatformGame/releases/download/latest/image_1440k.img)
+ * [1.2MB 5¼-inch Disk image](https://github.com/TerrySoba/DosPlatformGame/releases/download/latest/image_1200k.img)
+ * [720KB 3½-inch Disk image](https://github.com/TerrySoba/DosPlatformGame/releases/download/latest/image_720k.img)
+ * [360KB 5¼-inch Disk image](https://github.com/TerrySoba/DosPlatformGame/releases/download/latest/image_360k.img)
 
 ## Screenshots
 
