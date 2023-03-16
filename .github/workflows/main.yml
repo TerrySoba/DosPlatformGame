@@ -35,19 +35,19 @@ jobs:
       - name: Create disk images
         run: ./create_disk_image.sh
 
-      ## Now store built game as artifact
-      #- name: Archive game zip
-      #  uses: actions/upload-artifact@v3
-      #  with:
-      #    name: game-zip
-      #    path: zip/game.zip
+      # Now store built game as artifact
+      - name: Archive game zip
+        uses: actions/upload-artifact@v3
+        with:
+          name: game-zip
+          path: zip/game.zip
       
       # Store built disk images as artifacts
-      #- name: Archive disk images
-      #  uses: actions/upload-artifact@v3
-      #  with:
-      #    name: disk-images
-      #    path: image*.img
+      - name: Archive disk images
+        uses: actions/upload-artifact@v3
+        with:
+          name: disk-images
+          path: image*.img
 
       - uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with:
