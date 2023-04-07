@@ -102,7 +102,7 @@ int main(int argc, char* argv[])
 
         shared_ptr<VgaGfx> gfx(new VgaGfx);
         
-        RadPlayer music("CELT.RAD");
+        // RadPlayer music("CELT.RAD");
 
         GameAnimations animations = {guy, enemy, seekerEnemy, guffin, fireBall, jetPack};
 
@@ -116,7 +116,7 @@ int main(int argc, char* argv[])
                 {
                     LevelNumber level = {x,y};
                     try {
-                        game.loadLevel(level, UseSpawnPoint::NO);
+                        game.loadLevel(level, ActorPosition::LevelTransition);
                         game.drawFrame();
                         char filename[16];
                         sprintf(filename, "%02x%02x.tga", x, y);

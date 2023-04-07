@@ -326,6 +326,30 @@
     "spriteSourceSize": { "x": 0, "y": 0, "w": 10, "h": 15 },
     "sourceSize": { "w": 10, "h": 15 },
     "duration": 100
+   },
+   "guy 41.ase": {
+    "frame": { "x": 410, "y": 0, "w": 10, "h": 15 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 10, "h": 15 },
+    "sourceSize": { "w": 10, "h": 15 },
+    "duration": 100
+   },
+   "guy 42.ase": {
+    "frame": { "x": 420, "y": 0, "w": 10, "h": 15 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 10, "h": 15 },
+    "sourceSize": { "w": 10, "h": 15 },
+    "duration": 100
+   },
+   "guy 43.ase": {
+    "frame": { "x": 430, "y": 0, "w": 10, "h": 15 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 10, "h": 15 },
+    "sourceSize": { "w": 10, "h": 15 },
+    "duration": 100
    }
  },
  "meta": {
@@ -333,7 +357,7 @@
   "version": "1.0-dev",
   "image": "/home/yoshi252/program_source/DosPlatformGame/images/guy.png",
   "format": "I8",
-  "size": { "w": 410, "h": 15 },
+  "size": { "w": 440, "h": 15 },
   "scale": "1",
   "frameTags": [
    { "name": "StandR", "from": 0, "to": 5, "direction": "forward" },
@@ -344,7 +368,8 @@
    { "name": "WalkL", "from": 26, "to": 33, "direction": "forward" },
    { "name": "JumpR", "from": 34, "to": 35, "direction": "forward" },
    { "name": "JumpL", "from": 36, "to": 37, "direction": "forward" },
-   { "name": "JumpLJet", "from": 38, "to": 40, "direction": "forward" }
+   { "name": "JumpRJet", "from": 38, "to": 40, "direction": "forward" },
+   { "name": "JumpLJet", "from": 41, "to": 43, "direction": "forward" }
   ],
   "layers": [
    { "name": "Background", "opacity": 255, "blendMode": "normal" }

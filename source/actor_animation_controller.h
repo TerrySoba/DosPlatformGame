@@ -47,7 +47,7 @@ public:
     {
     }
     
-    void setPos(int16_t x, int16_t y)
+    void setPos(int16_t x, int16_t y, bool jetpackIsActive)
     {
         int16_t dx = x - m_lastX;
         int16_t dy = y - m_lastY;
@@ -128,10 +128,12 @@ public:
                 m_sound->playStandSound();
                 break;
             case ANIM_JUMP_RIGHT:
-                m_actorAnimation->useTag("JumpR");
+                if (jetpackIsActive) m_actorAnimation->useTag("JumpRJet");
+                else m_actorAnimation->useTag("JumpR");
                 break;
             case ANIM_JUMP_LEFT:
-                m_actorAnimation->useTag("JumpL");
+                if (jetpackIsActive) m_actorAnimation->useTag("JumpLJet");
+                else m_actorAnimation->useTag("JumpL");
                 break;
             }
         }

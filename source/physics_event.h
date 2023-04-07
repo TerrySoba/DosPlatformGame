@@ -18,6 +18,7 @@ public:
     virtual void levelTransition(LevelTransition transition) = 0;
     virtual void collectApple(Point point) = 0;
     virtual void collectJetPack(Point point) = 0;
+    virtual void touchButton(uint16_t id, ButtonType type) = 0;
 };
 
 #endif

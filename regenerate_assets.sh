@@ -33,10 +33,10 @@ popd
 wav2adpcm=AdpcmEncoder/wav2adpcm.sh
 
 #$wav2adpcm sound/death.wav 11000 ADPCM4 sound/death.voc
-#$wav2adpcm sound/jump.wav 11000 ADPCM4 sound/jump.voc
+#$wav2adpcm sound/jump.wav 8000 PCM sound/jump.voc
 #$wav2adpcm sound/steps.wav 11000 ADPCM4 sound/steps.voc
 #$wav2adpcm sound/stand.wav 11000 ADPCM4 sound/stand.voc
-#$wav2adpcm sound/guffin.wav 11000 ADPCM4 sound/guffin.voc
+#$wav2adpcm sound/guffin.wav 11000 PCM sound/guffin.voc
 #$wav2adpcm sound/jetpack.wav 11000 ADPCM4 sound/jetpack.voc
 
 

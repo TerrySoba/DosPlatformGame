@@ -200,6 +200,21 @@ Level::Level(const char* mapFilename, shared_ptr<ImageBase> tilesImage,
             m_jetPacks[i] += offset * 16;
         }
 
+        {
+            tnd::vector<Rectangle> buttons1_on = detectLines(collisionData.data(), collisionWidth, collisionHeight, HORIZONTAL, TILE_SWITCH_1_ON);
+            for (int i = 0; i < buttons1_on.size(); ++i)
+            {
+                Button button(1, BUTTON_ON, buttons1_on[i]); // id == 1
+                m_buttons.push_back(button);
+            }
+        }
+
+        for (int i = 0; i < m_buttons.size(); ++i)
+        {
+            m_buttons[i].scale(tileWidth * 16, tileHeight * 16);
+            m_buttons[i] += offset * 16;
+        }
+
         for (int x = 0; x < collisionWidth; ++x)
         {
             for (int y = 0; y < collisionHeight; ++y)

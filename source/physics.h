@@ -2,6 +2,7 @@
 #define PHYSICS_H_INCLUDED
 
 #include "rectangle.h"
+#include "button.h"
 #include "physics_event.h"
 #include "sound_controller.h"
 
@@ -58,6 +59,7 @@ public:
     void startActorJump(int index);
     void stopActorJump(int index);
     void activateJetpack(int index);
+    bool jetpackIsActive();
 
     void setWalls(const tnd::vector<Rectangle>& walls);
     void setDeath(const tnd::vector<Rectangle>& death);
@@ -66,6 +68,7 @@ public:
     void setGuffins(const tnd::vector<Rectangle>& guffins);
     void setJetPacks(const tnd::vector<Rectangle>& jetPacks);
     void setSpawnPoint(const Point& point);
+    void setButtons(const tnd::vector<Button>& buttons);
 
 
     void calc();
@@ -86,6 +89,9 @@ public:
     tnd::vector<Rectangle> m_fallThrough;
     tnd::vector<Rectangle> m_guffins;
     tnd::vector<Rectangle> m_jetPacks;
+
+    tnd::vector<Button> m_buttons;
+
     Rectangle m_rightLevelTransition;
     Rectangle m_leftLevelTransition;
     Rectangle m_bottomLevelTransition;
@@ -94,6 +100,8 @@ public:
     tnd::vector<Actor> m_actors;
     PhysicsCallback* m_callback;
     shared_ptr<SoundController> m_sound;
+    bool m_jetpackActive;
+    bool m_lastFrameJetpackActive;
 };
 
 #endif

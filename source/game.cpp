@@ -25,7 +25,7 @@ Game::Game(shared_ptr<VgaGfx> vgaGfx, shared_ptr<SoundController> sound,
            const char* levelBasename, LevelNumber startLevel) :
     m_vgaGfx(vgaGfx), m_tiles(tiles), m_animations(animations), m_frames(0), m_levelBasename(levelBasename),
     m_animationController(animations.actorAnimation, sound), m_lastButtonPressed(false), m_sound(sound),
-    m_jetpackCollected(0)
+    m_jetpackCollected(0), m_button1(0), m_levelMustReload(false)
 {
     m_nextLevel.x = -1;
     m_nextLevel.y = -1;
@@ -38,31 +38,63 @@ Game::Game(shared_ptr<VgaGfx> vgaGfx, shared_ptr<SoundController> sound,
     {
         m_collectedGuffins = state.colectedGuffins;
         m_jetpackCollected = state.jetpackCollected;
-        loadLevel(state.level, UseSpawnPoint::NO);   
+        m_button1 = state.button1;
+        loadLevel(state.level, ActorPosition::LevelTransition);   
         m_physics->setSpawnPoint(state.spawnPoint);
         drawAppleCount();
     }
     else
     {
-        loadLevel(startLevel, UseSpawnPoint::YES);
+        loadLevel(startLevel, ActorPosition::UseSpawnPoint);
     }
 }
 
-void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useSpawnPoint)
+void Game::reloadCurrentLevel()
+{
+    loadLevel(m_levelNumber, ActorPosition::KeepActorPos);
+}
+
+
+bool fileExists(const char* fileName)
+{
+    FILE *file;
+    if ((file = fopen(fileName, "rb")))
+    {
+        fclose(file);
+        return true;
+    }
+    return false;
+}
+
+
+void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT actorPosition)
 {
     LevelNumber previousLevel = m_levelNumber;
     m_levelNumber = levelNumber;
-    tnd::vector<char> buf(100);
+    char buf[16];
 
-    sprintf(buf.data(), m_levelBasename.c_str(), m_levelNumber.x, m_levelNumber.y);
+    sprintf(buf, m_levelBasename.c_str(), m_levelNumber.x, m_levelNumber.y);
 
-    TinyString levelMap = TinyString(buf.data() + TinyString(".map"));
+    TinyString levelMap = TinyString(buf + TinyString(".map"));
+
+    if (m_button1 == 1)
+    {
+        TinyString buttonLevelName = TinyString(buf + TinyString("b1.map"));
+        if (fileExists(buttonLevelName.c_str()))
+        {
+            levelMap = buttonLevelName;
+        }
+    }
 
     Level level(levelMap.c_str(), m_tiles, 16, 16, -8, -8);
     m_animations.actorAnimation->useTag("LoopR");
 
     int16_t actorPosX, actorPosY;
-    if (m_physics.get() == 0 || useSpawnPoint == UseSpawnPoint::YES)
+    if (actorPosition == ActorPosition::KeepActorPos)
+    {
+        m_physics->getActorPos(m_player, actorPosX, actorPosY);
+    }
+    else if (m_physics.get() == 0 || actorPosition == ActorPosition::UseSpawnPoint)
     {
         // so no previous position existed, or use of spawn point was explicitly requested
         // because of that we just put the actor to the defined spawn point of the level
@@ -183,11 +215,27 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
         }
     }
 
+    if (m_button1 == 1)
+    {
+        tnd::vector<uint8_t>& mapData = level.getMapData();
+
+        // increment the visible tiles gfx of the button1 blocks by one
+        // this makes the button gfx show on
+        for (int i = 0; i < mapData.size(); ++i)
+        {
+            if (mapData[i] == GFX_TILE_SWITCH_1) {
+                ++mapData[i];
+            }
+        }
+    }
+
     m_physics->setWalls(walls);
     m_physics->setDeath(level.getDeath());
     m_physics->setFallThrough(level.getFallThrough());
+    m_physics->setButtons(level.getButtons());
     m_physics->setGuffins(m_guffins);
     m_physics->setJetPacks(m_jetPacks);
+
     
     m_physics->setSpawnPoint(Point(actorPosX, actorPosY));
 
@@ -215,6 +263,7 @@ void Game::loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useS
     state.spawnPoint = Point(actorPosX, actorPosY);
     state.colectedGuffins = m_collectedGuffins;
     state.jetpackCollected = m_jetpackCollected;
+    state.button1 = m_button1;
     saveGameState(state, "game.sav");
 }
 
@@ -271,12 +320,28 @@ void Game::collectJetPack(Point point)
     m_sound->playJetpackSound();
 }
 
+void Game::touchButton(uint16_t id, ButtonType type)
+{
+    if (id == 1 && type == BUTTON_ON && m_button1 == 0)
+    {
+        m_button1 = 1;
+        m_sound->playJetpackSound();
+        m_levelMustReload = true; // mark level to be reloaded in text frame
+    }
+}
+
 void Game::drawFrame()
 {
     if (m_nextLevel.x != -1)
     {
-        loadLevel(m_nextLevel, UseSpawnPoint::NO);
+        loadLevel(m_nextLevel, ActorPosition::LevelTransition);
         m_nextLevel.x = -1;
+    }
+
+    if (m_levelMustReload)
+    {
+        m_levelMustReload = false;
+        reloadCurrentLevel();
     }
 
     m_vgaGfx->clear();
@@ -285,9 +350,7 @@ void Game::drawFrame()
     int16_t playerY;
     m_physics->getActorPos(m_player, playerX, playerY);
 
-    m_animationController.setPos(playerX, playerY);
-
-    
+    m_animationController.setPos(playerX, playerY, m_physics->jetpackIsActive());
     
     tnd::vector<Rectangle> enemyDeath;
 

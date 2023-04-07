@@ -13,7 +13,7 @@ int16_t JETPACK_THRUST_TABLE[] = {
 
 
 Physics::Physics(PhysicsCallback* callback, shared_ptr<SoundController> sound) :
-    m_callback(callback), m_sound(sound)
+    m_callback(callback), m_sound(sound), m_jetpackActive(false), m_lastFrameJetpackActive(false)
 {
     m_rightLevelTransition = Rectangle(316, 0, 4, 200);
     m_rightLevelTransition *= 16;
@@ -76,6 +76,11 @@ void Physics::setSpawnPoint(const Point& point)
     }
 }
 
+void Physics::setButtons(const tnd::vector<Button>& buttons)
+{
+    m_buttons = buttons;
+}
+
 void Physics::getActorPos(int index, int16_t& x, int16_t& y)
 {
     Actor& actor = m_actors[index];
@@ -95,6 +100,8 @@ Rectangle extendRectangle(Rectangle rect, int16_t horizontal, int16_t vertical)
 
 void Physics::calc()
 {
+    m_lastFrameJetpackActive = m_jetpackActive;
+    m_jetpackActive = false;
     for (int i = 0; i < m_actors.size(); ++i)
     {
         Actor& actor = m_actors[i];
@@ -234,6 +241,15 @@ void Physics::calc()
             }
         }
 
+        for (int n = 0; n < m_buttons.size(); ++n)
+        {
+            Button& button = m_buttons[n];
+            if (intersectRect(button, actor.rect))
+            {
+                m_callback->touchButton(button.buttonId, button.buttonType);
+            }
+        }
+
         actor.dy += 3; // gravity
         if (actor.dy > 32) actor.dy = 32; // cap max speed of actor
         if (actor.jetpackLockoutFrames > 0)
@@ -268,8 +284,14 @@ void Physics::activateJetpack(int index)
         {
             actor.jetpackFrames -= 1;
             actor.dy -= JETPACK_THRUST_TABLE[JETPACK_THRUST_TABLE_SIZE - 1 - actor.jetpackFrames];
+            m_jetpackActive = true;
         }
     }
+}
+
+bool Physics::jetpackIsActive()
+{
+    return m_lastFrameJetpackActive;
 }
 
 

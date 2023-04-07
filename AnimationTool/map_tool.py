@@ -119,7 +119,7 @@ if __name__ == "__main__":
 
     # This map needs to be kept in sync with the enum in level.cpp
     layerTypeMap = {
-        "bg"          : 1, 
+        "bg"          : 1,
         "col"         : 2,
         "text"        : 3,
         "fireball"    : 4,

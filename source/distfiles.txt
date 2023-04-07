@@ -23,6 +23,7 @@ title.exe
 ../images/jet.tga
 ../images/jet.ani
 ../levels/0101.map
+../levels/0101b1.map
 ../levels/0102.map
 ../levels/0103.map
 ../levels/0104.map

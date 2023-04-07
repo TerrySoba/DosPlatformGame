@@ -17,12 +17,13 @@ class Animation;
 class CompiledSprite;
 class SeekerEnemy;
 
-namespace UseSpawnPoint
+namespace ActorPosition
 {
-	enum UseSpawnPointT
+	enum ActorPositionT
 	{
-		NO,
-		YES
+		UseSpawnPoint,
+		LevelTransition,
+		KeepActorPos
 	};
 }
 
@@ -67,13 +68,16 @@ public:
 		const char* levelBasename,
 		LevelNumber startLevel);
 
-	void loadLevel(LevelNumber levelNumber, UseSpawnPoint::UseSpawnPointT useSpawnPoint);
+	void reloadCurrentLevel();
+
+	void loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT actorPosition);
     void drawFrame();
 
 	// PhysicsCallback interface
 	virtual void levelTransition(LevelTransition transition);
 	virtual void collectApple(Point point);
 	virtual void collectJetPack(Point point);
+	virtual void touchButton(uint16_t id, ButtonType type);
 
 private:
 	virtual void drawAppleCount();
@@ -99,6 +103,8 @@ private:
 	TinyString m_appleString;
 	shared_ptr<SoundController> m_sound;
 	uint8_t m_jetpackCollected; // 0 == no jetpack, 1 == jetpack collected
+	uint8_t m_button1; // 0 == button not pressed, 1 == button pressed
+	bool m_levelMustReload;
 };
 
 
