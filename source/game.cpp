@@ -223,7 +223,10 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
         // this makes the button gfx show on
         for (int i = 0; i < mapData.size(); ++i)
         {
-            if (mapData[i] == GFX_TILE_SWITCH_1) {
+            if (mapData[i] == GFX_TILE_SWITCH_1_ON) {
+                ++mapData[i];
+            }
+            if (mapData[i] == GFX_TILE_SWITCH_1_OFF) {
                 ++mapData[i];
             }
         }
@@ -325,6 +328,13 @@ void Game::touchButton(uint16_t id, ButtonType type)
     if (id == 1 && type == BUTTON_ON && m_button1 == 0)
     {
         m_button1 = 1;
+        m_sound->playJetpackSound();
+        m_levelMustReload = true; // mark level to be reloaded in text frame
+    }
+
+    if (id == 1 && type == BUTTON_OFF && m_button1 == 1)
+    {
+        m_button1 = 0;
         m_sound->playJetpackSound();
         m_levelMustReload = true; // mark level to be reloaded in text frame
     }
