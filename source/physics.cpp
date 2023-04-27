@@ -222,7 +222,6 @@ void Physics::calc()
             }
         }
 
-
         for (int n = 0; n < m_guffins.size(); ++n)
         {
             Rectangle& guffin = m_guffins[n];

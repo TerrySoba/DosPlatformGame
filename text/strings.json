@@ -39,6 +39,46 @@
         "en": "You may have escaped the dark city, but you may have to return...",
         "de": "Zwar bist du der Dunklen Stadt entkommen, doch wirst du bestimmt wiederkommen..."
     },
+    "11": {
+        "en": "Emergency reset",
+        "de": "Notfall reset"
+    },
+    "12": {
+        "en": "Something terrible seems to have happened here. Didn't this look normal just a moment ago?",
+        "de": "Etwas schlimmes muss hier passiert sein. Vor einem Moment sah doch noch alles normal aus."
+    },
+    "13": {
+        "en": "Welcome to the XI entry of the Artifact. Here we research \"phasing\" technology. Be assured that there is no risk for the general public.",
+        "de": "Wilkommen beim XI Eingang in das Artefakt. Hier wird \"phasen\"-Technologie erforscht. Sein Sie unbesorgt, von der hier erforschten Technologie geht keinerlei Gefahr für die Allgemeiheit aus."
+    },
+    "14": {
+        "en": "Entrance XI",
+        "de": "Eingang XI"
+    },
+    "15": {
+        "en": "This is the beginning of the Artifact tour. This will introduce you to the advances that have been made since the Artifact has been discovered 20 years ago. Continue to the right to advance the tour.",
+        "de": "Dies ist der Anfang der Artefakt-Tour. Hier werden Sie alles über die Erkenntnisse erfahren die wir in den 20 Jahren, seit das Artefakt gefunden wurde, gemacht haben."
+    },
+    "16": {
+        "en": "This is a Firesprite. They were discovered inside of the Artifact and are believed to be powered by an unknown energy source. We are currently investigating it for its levitation ability.",
+        "de": "Dies ist ein Feuerwesen. Sie wurden im Inneren des Artafakts entdeckt und scheinen sich duch eine unbekannte Energiequelle zu speisen. Wir untersuchen aktuell seine Fähigkeit zu schweben."
+    },
+    "17": {
+        "en": "Specimen 1: Firesprite",
+        "de": "Objekt 1: Feuerwesen"
+    },
+    "18": {
+        "en": "Specimen 2: Alien Robot",
+        "de": "Objekt 2: Außerirdischer Roboter"
+    },
+    "19": {
+        "en": "This is a Alien Robot that was found inside of the Artifact. It is believed to be a scout robot that was sent to investigate the Artifact. It is currently being investigated for its ability to phase through solid matter.",
+        "de": "Dies ist ein Außerirdischer Roboter der im Inneren des Artefakts gefunden wurde. Es wird vermutet, dass es sich um einen Aufklärungsroboter handelt, der zum Artefakt geschickt wurde. Wir untersuchen aktuell seine Fähigkeit durch feste Materie zu phasen."
+    },
+    "20": {
+        "en": "This is the center piece of the Artifact. We call it the \"a## s##### ##e\". It may never ########## or the wor### ###### ### ## #######...",
+        "de": "Dies ist das zentrale Stück des Artefakts. Wir nennen es das \"a#### s###### ###e\". Es darf niemals ########## oder die We###### ### ## #######..."
+    },                                                                 
     "65": {
         "en": "Welcome to the game!",
         "de": "Willkommen im Spiel!"

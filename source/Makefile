@@ -48,9 +48,9 @@ $(title): _$(title)
 -include *.d
 
 
-launcher.o: launcher.cpp
-	wpp $(coptions_launcher) launcher.cpp
-	wdis launcher.o > launcher.asm
+#launcher.o: launcher.cpp
+#	wpp $(coptions_launcher) launcher.cpp
+#	wdis launcher.o > launcher.asm
 
 # soundblaster.o : soundblaster.cpp
 # 	wpp $(coptions) soundblaster.cpp

@@ -2,9 +2,9 @@
 <map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="right-down" width="21" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="11">
  <tileset firstgid="1" source="tileset.tsx"/>
  <tileset firstgid="241" source="obj.tsx"/>
- <layer id="1" name="bg" width="21" height="13" visible="0">
+ <layer id="1" name="bg" width="21" height="13">
   <data encoding="csv">
-123,123,123,123,123,123,123,103,103,103,103,103,103,103,103,103,103,103,103,123,123,
+123,45,123,123,123,123,123,103,103,103,103,103,103,103,103,103,103,103,103,123,123,
 106,105,123,123,123,123,123,103,103,123,103,103,123,123,123,123,123,123,123,123,123,
 123,105,106,106,106,106,106,105,105,107,107,107,107,107,107,107,107,107,107,105,107,
 123,65,123,123,123,123,123,123,123,123,123,107,107,107,105,107,123,123,123,123,123,
