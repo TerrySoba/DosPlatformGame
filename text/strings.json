@@ -72,13 +72,17 @@
         "de": "Objekt 2: Außerirdischer Roboter"
     },
     "19": {
-        "en": "This is a Alien Robot that was found inside of the Artifact. It is believed to be a scout robot that was sent to investigate the Artifact. It is currently being investigated for its ability to phase through solid matter.",
+        "en": "This is an Alien Robot that was found inside of the Artifact. It is believed to be a scout robot that was sent to investigate the Artifact. It is currently being investigated for its ability to phase through solid matter.",
         "de": "Dies ist ein Außerirdischer Roboter der im Inneren des Artefakts gefunden wurde. Es wird vermutet, dass es sich um einen Aufklärungsroboter handelt, der zum Artefakt geschickt wurde. Wir untersuchen aktuell seine Fähigkeit durch feste Materie zu phasen."
     },
     "20": {
         "en": "This is the center piece of the Artifact. We call it the \"a## s##### ##e\". It may never ########## or the wor### ###### ### ## #######...",
         "de": "Dies ist das zentrale Stück des Artefakts. Wir nennen es das \"a#### s###### ###e\". Es darf niemals ########## oder die We###### ### ## #######..."
-    },                                                                 
+    },
+    "21": {
+        "en": "This is an Alien Robot that was ##### ## ######### ###### ###### ####### ###### ############ # ### ### # #...",
+        "de": "Dies ist ein Außerirdischer Roboter der ### ## ########### ####### ####### ##### ### ## ######### ### ## #..."
+    },                                                                         
     "65": {
         "en": "Welcome to the game!",
         "de": "Willkommen im Spiel!"

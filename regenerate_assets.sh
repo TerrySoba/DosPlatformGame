@@ -38,6 +38,7 @@ wav2adpcm=AdpcmEncoder/wav2adpcm.sh
 #$wav2adpcm sound/stand.wav 11000 ADPCM4 sound/stand.voc
 #$wav2adpcm sound/guffin.wav 11000 PCM sound/guffin.voc
 #$wav2adpcm sound/jetpack.wav 11000 ADPCM4 sound/jetpack.voc
+#$wav2adpcm sound/switch2.wav 11000 ADPCM4 sound/switch2.voc
 
 
 convertImage () {

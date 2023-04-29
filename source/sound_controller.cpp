@@ -11,6 +11,7 @@ SoundController::SoundController() :
     m_standSound = m_sb.loadVocFile("STAND.VOC");
     m_guffinSound = m_sb.loadVocFile("GUFFIN.VOC");
     m_jetpackSound = m_sb.loadVocFile("JETPACK.VOC");
+    m_switchSound = m_sb.loadVocFile("SWITCH2.VOC");
 }
 
 
@@ -49,6 +50,18 @@ void SoundController::playStandSound()
         {
             m_soundPriority = 2;
             m_sb.singlePlay(m_standSound);
+        }
+    }
+}
+
+void SoundController::playSwitchSound()
+{
+    if (m_sbFound)
+    {
+        if (priority(5))
+        {
+            m_soundPriority = 5;
+            m_sb.singlePlay(m_switchSound);
         }
     }
 }

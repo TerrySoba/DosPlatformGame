@@ -40,5 +40,5 @@ oplemu  = default
 
 mount c release
 c:
-game --dump-level-images
+game2 --dump-level-images
 exit

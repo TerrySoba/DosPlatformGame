@@ -90,6 +90,7 @@ title.exe
 ../levels/0D04.map
 ../levels/0E04.map
 ../levels/1001.map
+../levels/1001b1.map
 ../levels/1101.map
 ../levels/1101b1.map
 ../readme/readme.txt
@@ -101,3 +102,4 @@ title.exe
 ../sound/stand.voc
 ../sound/guffin.voc
 ../sound/jetpack.voc
+../sound/switch2.voc

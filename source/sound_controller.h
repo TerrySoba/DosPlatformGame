@@ -14,6 +14,7 @@ public:
     void playJetpackSound();
     void playDeathSound();
     void playStandSound();
+    void playSwitchSound();
 
     bool isPlaying()
     {
@@ -29,6 +30,7 @@ private:
     SbSample m_standSound;
     SbSample m_guffinSound;
     SbSample m_jetpackSound;
+    SbSample m_switchSound;
     uint16_t m_soundPriority;
 };
 

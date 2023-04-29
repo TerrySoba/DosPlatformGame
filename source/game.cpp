@@ -328,14 +328,14 @@ void Game::touchButton(uint16_t id, ButtonType type)
     if (id == 1 && type == BUTTON_ON && m_button1 == 0)
     {
         m_button1 = 1;
-        m_sound->playJetpackSound();
+        m_sound->playSwitchSound();
         m_levelMustReload = true; // mark level to be reloaded in text frame
     }
 
     if (id == 1 && type == BUTTON_OFF && m_button1 == 1)
     {
         m_button1 = 0;
-        m_sound->playJetpackSound();
+        m_sound->playSwitchSound();
         m_levelMustReload = true; // mark level to be reloaded in text frame
     }
 }
