@@ -82,7 +82,15 @@
     "21": {
         "en": "This is an Alien Robot that was ##### ## ######### ###### ###### ####### ###### ############ # ### ### # #...",
         "de": "Dies ist ein Außerirdischer Roboter der ### ## ########### ####### ####### ##### ### ## ######### ### ## #..."
-    },                                                                         
+    },        
+    "22": {
+        "en": "Danger: Maintenance area. Hard hats required.",
+        "de": "Achtung: Wartungsbereich. Schutzhelme erforderlich."
+    },
+    "23": {
+        "en": "Reactor area ahead. Weare protective clothing.",
+        "de": "Reaktorbereich voraus. Tragen Sie Schutzkleidung."
+    },                                                      
     "65": {
         "en": "Welcome to the game!",
         "de": "Willkommen im Spiel!"
