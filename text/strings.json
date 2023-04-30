@@ -90,7 +90,11 @@
     "23": {
         "en": "Reactor area ahead. Weare protective clothing.",
         "de": "Reaktorbereich voraus. Tragen Sie Schutzkleidung."
-    },                                                      
+    },
+    "24": {
+        "en": "How did you get in here? This is a restricted area, please leave immediately!",
+        "de": "Wie sind Sie hier herein gekommen? Dies ist ein gesperrter Bereich, bitte verlassen Sie ihn sofort!"
+    },
     "65": {
         "en": "Welcome to the game!",
         "de": "Willkommen im Spiel!"
