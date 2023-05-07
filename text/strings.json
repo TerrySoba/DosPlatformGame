@@ -52,8 +52,8 @@
         "de": "Wilkommen beim XI Eingang in das Artefakt. Hier wird \"phasen\"-Technologie erforscht. Sein Sie unbesorgt, von der hier erforschten Technologie geht keinerlei Gefahr für die Allgemeiheit aus."
     },
     "14": {
-        "en": "Entrance XI",
-        "de": "Eingang XI"
+        "en": "Entrance XI. Entry 30 apples.",
+        "de": "Eingang XI. Eintritt 30 Äpfel."
     },
     "15": {
         "en": "This is the beginning of the Artifact tour. This will introduce you to the advances that have been made since the Artifact has been discovered 20 years ago. Continue to the right to advance the tour.",
@@ -147,6 +147,26 @@
         "en": "phase shift",
         "de": "Phasenverschiebung"
     },
+    "77": {
+        "en": "Entrace XI",
+        "de": "Eingang XI"
+    },
+    "78": {
+        "en": "No guide?",
+        "de": "Kein Tourleiter?"
+    },
+    "79": {
+        "en": "Probably unbreakable glass...",
+        "de": "Vermutlich unzerbrechliches Glas..."
+    },
+    "80": {
+        "en": "Triple trouble",
+        "de": "Dreifacher Ärger"
+    },
+    "81": {
+        "en": "Looks important!",
+        "de": "Sieh wichtig aus!"
+    },
     "129": {
         "en": "Underground stream",
         "de": "Unterirdischer Fluss"
@@ -175,6 +195,10 @@
         "en": "Going down!",
         "de": "Auf dem Weg nach unten"
     },
+    "144": {
+        "en": "Maintenance shaft",
+        "de": "Wartungsschacht"
+    },
     "193": {
         "en": "Way back",
         "de": "Rückweg"
@@ -195,6 +219,14 @@
         "en": "Too many apples?",
         "de": "Zu viele Äpfel?"
     },
+    "208": {
+        "en": "Reactor access",
+        "de": "Reaktorzugang"
+    },
+    "209": {
+        "en": "Source of evil?",
+        "de": "Quelle des Bösen?"
+    },
     "137": {
         "en": "More bridge pillars",
         "de": "Noch mehr Brückenpfeiler"
@@ -214,6 +246,14 @@
     "203": {
         "en": "Is this the bottom?",
         "de": "Ist dies die Talsohle?"
+    },
+    "206": {
+        "en": "The end?",
+        "de": "Das Ende?"
+    },
+    "207": {
+        "en": "Second phase",
+        "de": "Zweite Phase"
     },
     "262": {
         "en": "Rhythm no. 2",
