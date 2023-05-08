@@ -38,7 +38,7 @@
  </layer>
  <objectgroup id="3" name="obj">
   <properties>
-   <property name="guffin_gate" type="int" value="30"/>
+   <property name="guffin_gate" type="int" value="25"/>
   </properties>
   <object id="20" name="ArtifactWelcomeText" type="text" x="94.0831" y="33.7211" width="136.166" height="55.8334">
    <properties>
