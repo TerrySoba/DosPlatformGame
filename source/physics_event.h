@@ -19,6 +19,7 @@ public:
     virtual void collectApple(Point point) = 0;
     virtual void collectJetPack(Point point) = 0;
     virtual void touchButton(uint16_t id, ButtonType type) = 0;
+    virtual void onDeath() = 0;
 };
 
 #endif

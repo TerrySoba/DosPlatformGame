@@ -78,9 +78,11 @@ public:
 	virtual void collectApple(Point point);
 	virtual void collectJetPack(Point point);
 	virtual void touchButton(uint16_t id, ButtonType type);
+	virtual void onDeath();
 
 private:
 	virtual void drawAppleCount();
+    virtual void drawDeathCount();
 
 private:
 	shared_ptr<VgaGfx> m_vgaGfx;
@@ -101,9 +103,11 @@ private:
 	bool m_lastButtonPressed;
 	tnd::vector<CollectedGuffin> m_collectedGuffins;
 	TinyString m_appleString;
+	TinyString m_deathString;
 	shared_ptr<SoundController> m_sound;
 	uint8_t m_jetpackCollected; // 0 == no jetpack, 1 == jetpack collected
 	uint8_t m_button1; // 0 == button not pressed, 1 == button pressed
+	uint32_t m_deathCounter;
 	bool m_levelMustReload;
 };
 

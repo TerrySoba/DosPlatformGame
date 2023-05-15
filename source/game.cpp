@@ -25,12 +25,13 @@ Game::Game(shared_ptr<VgaGfx> vgaGfx, shared_ptr<SoundController> sound,
            const char* levelBasename, LevelNumber startLevel) :
     m_vgaGfx(vgaGfx), m_tiles(tiles), m_animations(animations), m_frames(0), m_levelBasename(levelBasename),
     m_animationController(animations.actorAnimation, sound), m_lastButtonPressed(false), m_sound(sound),
-    m_jetpackCollected(0), m_button1(0), m_levelMustReload(false)
+    m_jetpackCollected(0), m_button1(0), m_levelMustReload(false), m_deathCounter(0)
 {
     m_nextLevel.x = -1;
     m_nextLevel.y = -1;
 
     m_appleString = I18N::getString(2);
+    m_deathString = I18N::getString(26);
 
     // try to load savegame
     GameState state;
@@ -39,9 +40,11 @@ Game::Game(shared_ptr<VgaGfx> vgaGfx, shared_ptr<SoundController> sound,
         m_collectedGuffins = state.colectedGuffins;
         m_jetpackCollected = state.jetpackCollected;
         m_button1 = state.button1;
+        m_deathCounter = state.deathCounter;
         loadLevel(state.level, ActorPosition::LevelTransition);   
         m_physics->setSpawnPoint(state.spawnPoint);
         drawAppleCount();
+        drawDeathCount();
     }
     else
     {
@@ -259,6 +262,7 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     Text t(levelString.c_str(), 0, false);
     m_vgaGfx->drawBackground(t, 50, 193);
     drawAppleCount();
+    drawDeathCount();
 
     // auto save current state
     GameState state;
@@ -267,6 +271,7 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     state.colectedGuffins = m_collectedGuffins;
     state.jetpackCollected = m_jetpackCollected;
     state.button1 = m_button1;
+    state.deathCounter = m_deathCounter;
     saveGameState(state, "game.sav");
 }
 
@@ -277,6 +282,15 @@ void Game::drawAppleCount()
     Text t(buf);
     m_vgaGfx->drawBackground(t, 260, 1);
 }
+
+void Game::drawDeathCount()
+{
+    char buf[16];
+    snprintf(buf, 16, m_deathString.c_str(), m_deathCounter);
+    Text t(buf);
+    m_vgaGfx->drawBackground(t, 10, 1);
+}
+
 
 void Game::collectApple(Point point)
 {
@@ -338,6 +352,12 @@ void Game::touchButton(uint16_t id, ButtonType type)
         m_sound->playSwitchSound();
         m_levelMustReload = true; // mark level to be reloaded in text frame
     }
+}
+
+void Game::onDeath()
+{
+    ++m_deathCounter;
+    drawDeathCount();
 }
 
 void Game::drawFrame()

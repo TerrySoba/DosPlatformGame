@@ -99,6 +99,10 @@
         "en": "Current end of game. Stay tuned for more!",
         "de": "Dies ist aktuell das Ende des Spiels. Fortsetzung folgt!"
     },
+    "26": {
+        "en": "Deaths: %d",
+        "de": "Tode: %d"
+    },
     "65": {
         "en": "Welcome to the game!",
         "de": "Willkommen im Spiel!"

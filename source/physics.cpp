@@ -206,6 +206,7 @@ void Physics::calc()
                 actor.dx = 0;
                 actor.dy = 0;
                 m_sound->playDeathSound();
+                m_callback->onDeath();
             }
         }
 
@@ -219,6 +220,7 @@ void Physics::calc()
                 actor.dx = 0;
                 actor.dy = 0;
                 m_sound->playDeathSound();
+                m_callback->onDeath();
             }
         }
 
