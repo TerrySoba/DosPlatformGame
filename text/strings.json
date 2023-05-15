@@ -52,8 +52,8 @@
         "de": "Wilkommen beim XI Eingang in das Artefakt. Hier wird \"phasen\"-Technologie erforscht. Sein Sie unbesorgt, von der hier erforschten Technologie geht keinerlei Gefahr für die Allgemeiheit aus."
     },
     "14": {
-        "en": "Entrance XI. Entry 30 apples.",
-        "de": "Eingang XI. Eintritt 30 Äpfel."
+        "en": "Entrance XI. Entry 25 apples.",
+        "de": "Eingang XI. Eintritt 25 Äpfel."
     },
     "15": {
         "en": "This is the beginning of the Artifact tour. This will introduce you to the advances that have been made since the Artifact has been discovered 20 years ago. Continue to the right to advance the tour.",
@@ -295,6 +295,4 @@
         "en": "One way tunnel",
         "de": "Einbahntunnel"
     }
-
-
 }
