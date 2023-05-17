@@ -3,7 +3,8 @@
 
 enum
 {
-    TILE_GROUND = 1,        
+    TILE_GROUND = 1,
+    TILE_SPAWN_POINT = 2,
     TILE_DEATH = 3,
     TILE_FALL_THROUGH = 4,
     TILE_ENEMY = 5,
@@ -12,6 +13,7 @@ enum
     TILE_JET_PACK = 8,
     TILE_SWITCH_1_ON = 9,
     TILE_SWITCH_1_OFF = 10,
+    TILE_SUN_CENTER = 11,
 };
 
 enum

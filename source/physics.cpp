@@ -76,6 +76,11 @@ void Physics::setSpawnPoint(const Point& point)
     }
 }
 
+void Physics::setSunPoint(const Point &point)
+{
+    m_sun = point;
+}
+
 void Physics::setButtons(const tnd::vector<Button>& buttons)
 {
     m_buttons = buttons;
@@ -295,6 +300,50 @@ bool Physics::jetpackIsActive()
     return m_lastFrameJetpackActive;
 }
 
+int32_t intsqrt(int32_t x)
+{
+    if (x < 0) return 0;
+    if (x < 2) return x;
+
+    int32_t val = 2;
+    int32_t n = 1;
+
+    while (val < x)
+    {
+        val += 2*n + 1;
+        n++;
+    }
+
+    return n;
+}
+
+void Physics::activateSunPull(int index)
+{
+    if (m_sun.x > 0 && m_sun.y > 0)
+    {
+        Actor& actor = m_actors[index];
+        
+        // Calculate vector between actor and sun
+        int32_t dx = m_sun.x * 16 - actor.rect.x;
+        int32_t dy = m_sun.y * 16 - actor.rect.y;
+        int32_t length = intsqrt(dx*dx + dy*dy);
+
+        if (length == 0)
+        {
+            dx = 0;
+            dy = 0;
+        }
+        else
+        {
+            dx = (dx * 16) / length;
+            dy = (dy * 16) / length;
+        }
+
+        // now set vector to actor speed
+        actor.dx = dx;
+        actor.dy = dy;
+    }
+}
 
 void Physics::stopActorJump(int index)
 {

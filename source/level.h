@@ -54,6 +54,8 @@ public:
 
     virtual Point getSpawnPoint() { return m_spawn; };
 
+    virtual Point getSunPoint() { return m_sun; };
+
 
     virtual tnd::vector<uint8_t>& getMapData() { return m_mapData; }
 
@@ -83,6 +85,7 @@ private:
     tnd::vector<Button> m_buttons;
 
     Point m_spawn;
+    Point m_sun;
     uint16_t m_guffinGate;
 };
 

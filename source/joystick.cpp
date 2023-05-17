@@ -28,7 +28,7 @@ RawJoystickState readJoystickRaw()
     // Then periodically read port 0x201 until the bits 0-3 of the read value
     // become 0. The waiting time until the bits become 0 corresponds to the
     // analogue value of the joystick axis. Because the timing needs to be
-    // accurate, interrups are disabled using "cli".
+    // accurate, interrupts are disabled using "cli".
     //
     // There is also a BIOS interrupt that may be use to read joystick values,
     // but this code seems to be faster. At least on an IBM PS/2 Model 30 286.
@@ -65,7 +65,7 @@ RawJoystickState readJoystickRaw()
     status.y1 = y1;
     status.x2 = 0;
     status.y2 = 0;
-
+    
     return status;
 }
 

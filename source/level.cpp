@@ -32,7 +32,8 @@ Level::Level(const char* mapFilename, shared_ptr<ImageBase> tilesImage,
     m_tileHeight(tileHeight),
     m_offsetX(offsetX),
     m_offsetY(offsetY),
-    m_guffinGate(10)
+    m_guffinGate(10),
+    m_sun(-1, -1)
 {
     FILE* fp = fopen(mapFilename, "rb");
     if (!fp)
@@ -224,14 +225,21 @@ Level::Level(const char* mapFilename, shared_ptr<ImageBase> tilesImage,
             m_buttons[i] += offset * 16;
         }
 
+        // find the spawn point and the sun
         for (int x = 0; x < collisionWidth; ++x)
         {
             for (int y = 0; y < collisionHeight; ++y)
             {
-                if (collisionData.data()[x + y*collisionWidth] == 2)
+                if (collisionData.data()[x + y*collisionWidth] == TILE_SPAWN_POINT)
                 {
                     m_spawn.x = x * tileWidth + m_offsetX;
                     m_spawn.y = y * tileHeight + m_offsetY;
+                }
+
+                if (collisionData.data()[x + y*collisionWidth] == TILE_SUN_CENTER)
+                {
+                    m_sun.x = x * tileWidth + m_offsetX;
+                    m_sun.y = y * tileHeight + m_offsetY;
                 }
             }
         }

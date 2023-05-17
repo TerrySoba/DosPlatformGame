@@ -244,7 +244,7 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
 
     
     m_physics->setSpawnPoint(Point(actorPosX, actorPosY));
-
+    m_physics->setSunPoint(level.getSunPoint());
     m_vgaGfx->clear();
 
     
@@ -466,6 +466,10 @@ void Game::drawFrame()
         m_physics->setActorDuck(m_player, false);
     }
     
+    if (s_keyCtrl || joystick & JOY_BUTTON_2)
+    {
+        m_physics->activateSunPull(m_player);
+    }
 
     if (m_frames % 4 == 0)
     {

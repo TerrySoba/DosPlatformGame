@@ -33,7 +33,7 @@ struct Actor
     bool isDucking;
     bool isFallingThrough;
     uint16_t jetpackFrames; // frames that the jetpack may be activated
-    uint16_t jetpackLockoutFrames; // lock out jetpack for a ceratain amount of frames after jump
+    uint16_t jetpackLockoutFrames; // lock out jetpack for a certain amount of frames after jump
 };
 
 enum IntersectionType
@@ -60,6 +60,7 @@ public:
     void stopActorJump(int index);
     void activateJetpack(int index);
     bool jetpackIsActive();
+    void activateSunPull(int index);
 
     void setWalls(const tnd::vector<Rectangle>& walls);
     void setDeath(const tnd::vector<Rectangle>& death);
@@ -68,6 +69,7 @@ public:
     void setGuffins(const tnd::vector<Rectangle>& guffins);
     void setJetPacks(const tnd::vector<Rectangle>& jetPacks);
     void setSpawnPoint(const Point& point);
+    void setSunPoint(const Point& point);
     void setButtons(const tnd::vector<Button>& buttons);
 
 
@@ -97,6 +99,7 @@ public:
     Rectangle m_bottomLevelTransition;
     Rectangle m_topLevelTransition;
     Point m_spawn;
+    Point m_sun;
     tnd::vector<Actor> m_actors;
     PhysicsCallback* m_callback;
     shared_ptr<SoundController> m_sound;
