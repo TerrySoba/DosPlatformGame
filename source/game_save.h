@@ -7,7 +7,7 @@
 struct GameState
 {
     GameState() :
-        jetpackCollected(0), button1(0), deathCounter(0)
+        jetpackCollected(0), sunItemCollected(0), button1(0), deathCounter(0)
     {
     }
 
@@ -15,6 +15,7 @@ struct GameState
     Point spawnPoint;
     tnd::vector<CollectedGuffin> colectedGuffins;
     uint8_t jetpackCollected; // 0 == no jetpack, 1 == jetpack collected
+    uint8_t sunItemCollected; // 0 == not collected, 1 == collected
     uint8_t button1; // 0 == button not pressed, 1 == button pressed
     uint32_t deathCounter;
 };

@@ -14,6 +14,7 @@ enum
     TILE_SWITCH_1_ON = 9,
     TILE_SWITCH_1_OFF = 10,
     TILE_SUN_CENTER = 11,
+    TILE_SUN_ITEM = 12,
 };
 
 enum

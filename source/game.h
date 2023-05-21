@@ -77,6 +77,7 @@ public:
 	virtual void levelTransition(LevelTransition transition);
 	virtual void collectApple(Point point);
 	virtual void collectJetPack(Point point);
+	virtual void collectSunItem(Point point);
 	virtual void touchButton(uint16_t id, ButtonType type);
 	virtual void onDeath();
 
@@ -93,6 +94,7 @@ private:
 	tnd::vector<shared_ptr<FireBall> > m_fireBalls;
 	tnd::vector<Rectangle> m_guffins;
 	tnd::vector<Rectangle> m_jetPacks;
+	tnd::vector<Rectangle> m_sunItems;
     shared_ptr<Physics> m_physics;
     long int m_frames;
     int m_player;
@@ -106,6 +108,7 @@ private:
 	TinyString m_deathString;
 	shared_ptr<SoundController> m_sound;
 	uint8_t m_jetpackCollected; // 0 == no jetpack, 1 == jetpack collected
+	uint8_t m_sunItemCollected; // 0 == not collected, 1 == collected
 	uint8_t m_button1; // 0 == button not pressed, 1 == button pressed
 	uint32_t m_deathCounter;
 	bool m_levelMustReload;

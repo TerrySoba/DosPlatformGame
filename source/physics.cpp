@@ -66,6 +66,11 @@ void Physics::setJetPacks(const tnd::vector<Rectangle>& jetPacks)
     m_jetPacks = jetPacks;
 }
 
+void Physics::setSunItems(const tnd::vector<Rectangle>& sunItems)
+{
+    m_sunItems = sunItems;
+}
+
 void Physics::setSpawnPoint(const Point& point)
 {
     m_spawn = point;
@@ -247,6 +252,15 @@ void Physics::calc()
             }
         }
 
+        for (int n = 0; n < m_sunItems.size(); ++n)
+        {
+            Rectangle& sunItem = m_sunItems[n];
+            if (intersectRect(sunItem, actor.rect))
+            {
+                m_callback->collectSunItem(Point(sunItem.x, sunItem.y));
+            }
+        }
+
         for (int n = 0; n < m_buttons.size(); ++n)
         {
             Button& button = m_buttons[n];
@@ -300,22 +314,6 @@ bool Physics::jetpackIsActive()
     return m_lastFrameJetpackActive;
 }
 
-int32_t intsqrt(int32_t x)
-{
-    if (x < 0) return 0;
-    if (x < 2) return x;
-
-    int32_t val = 2;
-    int32_t n = 1;
-
-    while (val < x)
-    {
-        val += 2*n + 1;
-        n++;
-    }
-
-    return n;
-}
 
 void Physics::activateSunPull(int index)
 {
@@ -326,7 +324,9 @@ void Physics::activateSunPull(int index)
         // Calculate vector between actor and sun
         int32_t dx = m_sun.x * 16 - actor.rect.x;
         int32_t dy = m_sun.y * 16 - actor.rect.y;
-        int32_t length = intsqrt(dx*dx + dy*dy);
+
+        // calculate length of vector using 1 norm (euclidean 2 norm is too slow, as it requires a square root)
+        int32_t length = abs(dx) + abs(dy);
 
         if (length == 0)
         {

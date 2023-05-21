@@ -68,6 +68,7 @@ public:
     void setFallThrough(const tnd::vector<Rectangle>& fallThrough);
     void setGuffins(const tnd::vector<Rectangle>& guffins);
     void setJetPacks(const tnd::vector<Rectangle>& jetPacks);
+    void setSunItems(const tnd::vector<Rectangle>& sunItems);
     void setSpawnPoint(const Point& point);
     void setSunPoint(const Point& point);
     void setButtons(const tnd::vector<Button>& buttons);
@@ -91,6 +92,7 @@ public:
     tnd::vector<Rectangle> m_fallThrough;
     tnd::vector<Rectangle> m_guffins;
     tnd::vector<Rectangle> m_jetPacks;
+    tnd::vector<Rectangle> m_sunItems;
 
     tnd::vector<Button> m_buttons;
 

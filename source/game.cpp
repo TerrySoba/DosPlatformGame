@@ -25,7 +25,7 @@ Game::Game(shared_ptr<VgaGfx> vgaGfx, shared_ptr<SoundController> sound,
            const char* levelBasename, LevelNumber startLevel) :
     m_vgaGfx(vgaGfx), m_tiles(tiles), m_animations(animations), m_frames(0), m_levelBasename(levelBasename),
     m_animationController(animations.actorAnimation, sound), m_lastButtonPressed(false), m_sound(sound),
-    m_jetpackCollected(0), m_button1(0), m_levelMustReload(false), m_deathCounter(0)
+    m_jetpackCollected(0), m_sunItemCollected(0), m_button1(0), m_levelMustReload(false), m_deathCounter(0)
 {
     m_nextLevel.x = -1;
     m_nextLevel.y = -1;
@@ -162,6 +162,12 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
         m_jetPacks = level.getJetPacks();
     }
 
+    m_sunItems.clear();
+    if (m_sunItemCollected == 0) // only load sunItem elements if it has not been collected yet
+    {
+        m_sunItems = level.getSunItems();
+    }
+
     // remove already collected guffins
     for (int n = 0; n < m_collectedGuffins.size(); ++n)
     {
@@ -241,6 +247,7 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     m_physics->setButtons(level.getButtons());
     m_physics->setGuffins(m_guffins);
     m_physics->setJetPacks(m_jetPacks);
+    m_physics->setSunItems(m_sunItems);
 
     
     m_physics->setSpawnPoint(Point(actorPosX, actorPosY));
@@ -337,6 +344,29 @@ void Game::collectJetPack(Point point)
     m_sound->playJetpackSound();
 }
 
+
+void Game::collectSunItem(Point point)
+{
+    // set sunItem collected flag in game state
+    m_sunItemCollected = 1;
+
+    // remove colected sunItem from sunItem list
+    int index = -1;
+    for (int i = 0; i < m_sunItems.size(); ++i)
+    {
+        Rectangle& sunItem = m_sunItems[i];
+        if (sunItem.x == point.x && sunItem.y == point.y)
+        {
+            index = i;
+        }
+    }
+
+    if (index >= 0) m_sunItems.erase(index);
+    m_physics->setSunItems(m_sunItems);
+    m_sound->playJetpackSound();
+}
+
+
 void Game::touchButton(uint16_t id, ButtonType type)
 {
     if (id == 1 && type == BUTTON_ON && m_button1 == 0)
@@ -423,6 +453,12 @@ void Game::drawFrame()
         m_vgaGfx->draw(*m_animations.jetPackAnimation, SUBPIXEL_TO_PIXEL(jetPack.x), SUBPIXEL_TO_PIXEL(jetPack.y));
     }
 
+    for (int i = 0; i < m_sunItems.size(); ++i)
+    {
+        Rectangle& sunItem = m_sunItems[i];
+        m_vgaGfx->draw(*m_animations.jetPackAnimation, SUBPIXEL_TO_PIXEL(sunItem.x), SUBPIXEL_TO_PIXEL(sunItem.y));
+    }
+
 
     m_vgaGfx->draw(*m_animations.actorAnimation, SUBPIXEL_TO_PIXEL(playerX), SUBPIXEL_TO_PIXEL(playerY));
 
@@ -466,7 +502,7 @@ void Game::drawFrame()
         m_physics->setActorDuck(m_player, false);
     }
     
-    if (s_keyCtrl || joystick & JOY_BUTTON_2)
+    if (m_sunItemCollected > 0 && (s_keyCtrl || joystick & JOY_BUTTON_2))
     {
         m_physics->activateSunPull(m_player);
     }

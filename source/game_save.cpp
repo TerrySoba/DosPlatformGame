@@ -19,6 +19,7 @@ void saveGameState(const GameState& gameState, const char* filename)
     fwrite(&gameState.spawnPoint.x, sizeof(gameState.spawnPoint.x), 1, fp);
     fwrite(&gameState.spawnPoint.y, sizeof(gameState.spawnPoint.y), 1, fp);
     fwrite(&gameState.jetpackCollected, sizeof(gameState.jetpackCollected), 1, fp);
+    fwrite(&gameState.sunItemCollected, sizeof(gameState.sunItemCollected), 1, fp);
     fwrite(&gameState.button1, sizeof(gameState.button1), 1, fp);
     fwrite(&gameState.deathCounter, sizeof(gameState.deathCounter), 1, fp);
 
@@ -60,6 +61,7 @@ bool loadGameState(GameState& gameState, const char* filename)
     fread(&gameState.spawnPoint.x, sizeof(gameState.spawnPoint.x), 1, fp);
     fread(&gameState.spawnPoint.y, sizeof(gameState.spawnPoint.y), 1, fp);
     fread(&gameState.jetpackCollected, sizeof(gameState.jetpackCollected), 1, fp);
+    fread(&gameState.sunItemCollected, sizeof(gameState.sunItemCollected), 1, fp);
     fread(&gameState.button1, sizeof(gameState.button1), 1, fp);
     fread(&gameState.deathCounter, sizeof(gameState.deathCounter), 1, fp);
 
