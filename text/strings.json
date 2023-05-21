@@ -103,6 +103,10 @@
         "en": "Deaths: %d",
         "de": "Tode: %d"
     },
+    "27": {
+        "en": "What you are about to receive is an object so powerful that is can increase the gravity of the sun. But be aware that it only works if the sun is surrounded by stars. (Your controller does have two buttons, doesn't it?)",
+        "de": "Was Sie gleich erhalten ist ein Objekt so mächtig, dass es die Gravitation der Sonne erhöhen kann. Aber seien Sie gewarnt, es funktioniert nur wenn die Sonne von Sternen umgeben ist. (Ihr Controller hat doch zwei Knöpfe, oder?)"
+    },
     "65": {
         "en": "Welcome to the game!",
         "de": "Willkommen im Spiel!"

@@ -481,6 +481,24 @@ char characterQuotes[] = {
      0,  0,  0,  0,  0,
 };
 
+char characterParenthesesOpen[] = { 
+     0,  0, 15, 15,  0,
+     0, 15, 15,  0,  0,
+     0, 15,  0,  0,  0,
+     0, 15, 15,  0,  0,
+     0,  0, 15, 15,  0,
+     0,  0,  0,  0,  0,
+};
+
+char characterParenthesesClose[] = { 
+     15, 15,  0,  0,  0,
+      0, 15, 15,  0,  0,
+      0,  0, 15,  0,  0,
+      0, 15, 15,  0,  0,
+     15, 15,  0,  0,  0,
+      0,  0,  0,  0,  0,
+};
+
 char characterUnknown[] = { 
     15, 15, 15, 15,  0,
     15,  0,  0, 15,  0,
@@ -505,7 +523,7 @@ char* alphabet[] = {
     characterExclamationmark, characterColon, characterPlus, characterMinus,
     characterPercent, characterLower, characterGreater, characterAe,
     characterOe, characterUe, characterSS, characterApostrophe, characterQuotes,
-    characterUnknown,
+    characterParenthesesOpen, characterParenthesesClose, characterUnknown,
 };
 
 int getCharacterIndex(char ch)
@@ -565,9 +583,11 @@ int getCharacterIndex(char ch)
         case '\xE1': return 50; // sharp S in CP437
         case '\x27': return 51; // ' in CP437
         case '\"': return 52;
+        case '(': return 53;
+        case ')': return 54;
     }
 
-    return 53;
+    return 55;
 }
 
 

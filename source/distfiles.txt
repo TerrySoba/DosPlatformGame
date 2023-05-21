@@ -99,11 +99,13 @@ title.exe
 ../levels/1002.map
 ../levels/1003.map
 ../levels/1003b1.map
+../levels/1004.map
 ../levels/1103.map
 ../levels/1103b1.map
 ../levels/1001b1.map
 ../levels/1101.map
 ../levels/1101b1.map
+../levels/1201.map
 ../readme/readme.txt
 ../scripts/game_de.bat
 ../scripts/game_en.bat
