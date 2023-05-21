@@ -94,6 +94,7 @@ title.exe
 ../levels/0E04.map
 ../levels/0F03.map
 ../levels/0F03b1.map
+../levels/0F04.map
 ../levels/1001.map
 ../levels/1002.map
 ../levels/1003.map
