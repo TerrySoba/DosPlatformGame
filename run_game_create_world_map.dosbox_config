@@ -2,12 +2,13 @@
 fullscreen=false
 fulldouble=false
 fullresolution=original
-windowresolution=2560x1440
+windowresolution=100x100
 output=openglnb
 
 [dosbox]
 machine=vgaonly
 vertical retrace poll debug line=false
+
 [render]
 frameskip=0
 aspect=true
@@ -16,7 +17,7 @@ scaler=none
 [cpu]
 core=auto
 cputype=8086
-cycles=fixed 20000
+cycles=fixed 30000
 cycleup=10
 cycledown=20
 
@@ -37,8 +38,3 @@ oplemu  = default
 [autoexec]
 # Lines in this section will be run at startup.
 # You can put your MOUNT lines here.
-
-mount c release
-c:
-game2 --dump-level-images
-exit

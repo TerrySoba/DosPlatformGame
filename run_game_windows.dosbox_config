@@ -2,7 +2,7 @@
 fullscreen=false
 fulldouble=false
 fullresolution=original
-# windowresolution=2560x1440
+windowresolution=1600x900
 output=openglnb
 
 [dosbox]
@@ -27,9 +27,3 @@ joysticktype=auto
 # Lines in this section will be run at startup.
 # You can put your MOUNT lines here.
 
-mount c release
-c:
-@echo If game does not run lower number in next line to free memory!
-loadfix -100 game --level 1 1
-pause
-exit

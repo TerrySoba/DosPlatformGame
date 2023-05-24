@@ -38,13 +38,13 @@ oplemu  = default
 # Lines in this section will be run at startup.
 # You can put your MOUNT lines here.
 
-mount c release
-c:
-@echo If game does not run lower number in next line to free memory!
+rem mount c release
+rem c:
+rem @echo If game does not run lower number in next line to free memory!
 rem loadfix -150 title --german
 rem loadfix -100 game --level 9 5 --german
 rem loadfix -150 game --level 1 1 
-loadfix -150 game2 --level 1 1
+rem loadfix -150 game2 --level 1 1
 
-pause
-exit
+rem pause
+rem exit
