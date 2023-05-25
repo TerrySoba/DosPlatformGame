@@ -63,16 +63,8 @@ convertAnimation () {
 # now animations
 for jsonfile in images/*.json; do  convertAnimation "$jsonfile" ; done
 
-generateCsv () {
-    local tmxfile=$1
-    directory=`dirname $tmxfile`
-    filename=`basename $tmxfile .tmx`
-    echo Converting level \"${directory}/${filename}.tmx\" to CSV
-    python3 AnimationTool/map_tool.py ${directory}/${filename}.tmx
-}
+# generate level data
+pushd levels
+make -j8
+popd
 
-# now convert tiled maps to csv
-for tmxfile in levels/*.tmx;
-do
-    generateCsv "$tmxfile"
-done

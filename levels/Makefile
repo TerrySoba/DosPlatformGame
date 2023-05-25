@@ -1,0 +1,94 @@
+LEVELS= \
+0101.map \
+0102.map \
+0103.map \
+0104.map \
+0105.map \
+0106.map \
+0201.map \
+0202.map \
+0203.map \
+0204.map \
+0205.map \
+0206.map \
+0301.map \
+0302.map \
+0303.map \
+0304b1.map \
+0304.map \
+0305.map \
+0306.map \
+0401.map \
+0402.map \
+0403.map \
+0404.map \
+0405.map \
+0406.map \
+0501.map \
+0502.map \
+0504.map \
+0505.map \
+0506.map \
+0601.map \
+0602.map \
+0603.map \
+0604.map \
+0605.map \
+0606.map \
+0701.map \
+0702.map \
+0705b1.map \
+0705.map \
+0801.map \
+0802.map \
+0803.map \
+0804.map \
+0805.map \
+0901.map \
+0902.map \
+0903.map \
+0904.map \
+0905.map \
+0A01.map \
+0A04.map \
+0A05.map \
+0B01b1.map \
+0B01.map \
+0B02.map \
+0B03.map \
+0B04.map \
+0C01b1.map \
+0C01.map \
+0C03.map \
+0C04.map \
+0D01.map \
+0D02.map \
+0D03.map \
+0D04.map \
+0E01.map \
+0E03.map \
+0E04.map \
+0F01.map \
+0F03b1.map \
+0F03.map \
+0F04.map \
+1001b1.map \
+1001.map \
+1002.map \
+1003b1.map \
+1003.map \
+1004.map \
+1004b1.map \
+1101b1.map \
+1101.map \
+1103b1.map \
+1103.map \
+1201.map 
+
+all: $(LEVELS)
+
+%.map : %.tmx
+	python3 ../AnimationTool/map_tool.py $<
+
+clean:
+	rm -f $(LEVELS)

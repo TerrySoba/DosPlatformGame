@@ -100,6 +100,7 @@ title.exe
 ../levels/1003.map
 ../levels/1003b1.map
 ../levels/1004.map
+../levels/1004b1.map
 ../levels/1103.map
 ../levels/1103b1.map
 ../levels/1001b1.map
