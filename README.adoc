@@ -11,27 +11,32 @@ image:https://github.com/TerrySoba/DosPlatformGame/actions/workflows/main.yml/ba
 The build system is designed for Linux.
 You might get it to build using Windows or MacOS, but YMMV.
 
-. Install required dependencies. On Ubuntu 20.04 the following command line may be used:
+. Install git. On Ubuntu 22.04 the following command line may be used:
 +
 [source,bash]
 ----
-sudo apt install -y software-properties-common upx make nasm zip
+sudo apt update && sudo apt install -y git
 ----
-. Download the repository.
+. Download the repository:
 +
 [source,bash]
 ----
 git clone https://github.com/TerrySoba/DosPlatformGame.git
 
 ----
-. Run the script *build.sh*
+. Install dependencies:
 +
 [source,bash]
 ----
 cd DosPlatformGame
+sudo ./ubuntu_setup.sh
+----
+. Build the game:
++
+[source,bash]
+----
 ./build.sh
 ----
-
 
 That's it.
 The directory *release* now contains the game.
@@ -51,10 +56,8 @@ The https://en.wikipedia.org/wiki/Watcom_C/C%2B%2B[Open Watcom] compiler is used
 | Tool | URI
 | Open Watcom | http://openwatcom.org/
 | GNU Make | https://www.gnu.org/software/make/
-| cJSON | https://github.com/DaveGamble/cJSON
 | Rad Tracker | https://www.3eality.com/Public/Releases/RAD/DOS/1.1a/
 | LibreSprite | https://github.com/LibreSprite/LibreSprite
 | Tiled | https://www.mapeditor.org/
 | UPX | https://upx.github.io/
-| Docker (optional) | https://www.docker.com/
 |====

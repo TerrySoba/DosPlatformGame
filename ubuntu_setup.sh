@@ -1,2 +1,3 @@
 #!/bin/bash
-sudo apt install docker.io git gcc cmake nasm upx dosbox
+apt update
+apt -y install git gcc g++ cmake nasm upx python3 zip p7zip-full mtools
