@@ -1,5 +1,7 @@
 # DosPlatformGame
 
+If you'd like to download the game visit: https://terrysoba.github.io/DosPlatformGame/
+
 ## CI Status
 
 image:https://github.com/TerrySoba/DosPlatformGame/actions/workflows/main.yml/badge.svg["Github Actions"]
