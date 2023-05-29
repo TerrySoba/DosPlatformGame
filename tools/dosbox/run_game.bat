@@ -1,0 +1,1 @@
+dosbox-staging\dosbox.exe -conf run_game_windows.dosbox_config -c "mount c release" -c "c:" -c "cd release" -c "game.exe" -c "exit"

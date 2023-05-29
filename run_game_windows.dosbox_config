@@ -1,21 +1,20 @@
 [sdl]
 fullscreen=false
-fulldouble=false
-fullresolution=original
-windowresolution=1600x900
-output=openglnb
+# fullresolution=3840x2160
+windowresolution=1024x768
+output=opengl
 
 [dosbox]
 machine=vgaonly
-vertical retrace poll debug line=false
+# vertical retrace poll debug line=false
+
 [render]
-frameskip=0
 aspect=true
-scaler=none
+glshader = crt\geom.tweaked
 
 [cpu]
 core=auto
-cputype=8086
+cputype=auto
 cycles=fixed 30000
 cycleup=10
 cycledown=20

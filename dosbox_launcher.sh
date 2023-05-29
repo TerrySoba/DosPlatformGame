@@ -9,8 +9,7 @@ if [ $# -lt 2 ]; then
     exit 1
 fi
 
-
-WSL_DOSBOX_PATH="/mnt/c/Program Files (x86)/DOSBox-0.74-3/DOSBox.exe"
+WSL_DOSBOX_PATH="/mnt/c/Program Files (x86)/dosbox-staging/DOSBox.exe"
 LINUX_DOSBOX_PATH="dosbox"
 
 COMMANDS=()
