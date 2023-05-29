@@ -65,6 +65,6 @@ for jsonfile in images/*.json; do  convertAnimation "$jsonfile" ; done
 
 # generate level data
 pushd levels
-make -j8
+make -j
 popd
 

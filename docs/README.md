@@ -6,7 +6,7 @@
  * 8086 / 8088 or better
  * 640kb of RAM
  * VGA/MCGA compatible graphics
- * Soundblaster compatible soundcard
+ * (optional) Soundblaster compatible soundcard
  * (optional) Joystick
 
 [![Download Dos 16bit](images/download.svg)](https://github.com/TerrySoba/DosPlatformGame/releases/download/latest/game.zip)
@@ -36,5 +36,5 @@ I recommend [Dosbox](https://www.dosbox.com/), which is available on most platfo
 
 ## Development
 
-If you are interessted in the development of the game hop over to the [github](https://github.com/TerrySoba/DosPlatformGame) page.
+If you are interested in the development of the game hop over to the [github](https://github.com/TerrySoba/DosPlatformGame) page.
 The game is licensed under the MIT license.
