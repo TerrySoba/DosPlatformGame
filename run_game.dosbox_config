@@ -1,21 +1,20 @@
 [sdl]
 fullscreen=false
-fulldouble=false
-fullresolution=original
-windowresolution=3000x2000
+# fullresolution=3840x2160
+windowresolution=2500x1800
 output=openglnb
 
 [dosbox]
 machine=vgaonly
-vertical retrace poll debug line=false
+# vertical retrace poll debug line=false
+
 [render]
-frameskip=0
 aspect=true
-scaler=none
+glshader = crt/geom.tweaked
 
 [cpu]
 core=auto
-cputype=8086
+cputype=auto
 cycles=fixed 30000
 cycleup=10
 cycledown=20
@@ -23,28 +22,7 @@ cycledown=20
 [joystick]
 joysticktype=auto
 
-
-[sblaster]
-sbtype  = sbpro2
-sbbase  = 220
-irq     = 7
-dma     = 1
-hdma    = 5
-sbmixer = true
-oplmode = auto
-oplemu  = default
-
 [autoexec]
 # Lines in this section will be run at startup.
 # You can put your MOUNT lines here.
 
-rem mount c release
-rem c:
-rem @echo If game does not run lower number in next line to free memory!
-rem loadfix -150 title --german
-rem loadfix -100 game --level 9 5 --german
-rem loadfix -150 game --level 1 1 
-rem loadfix -150 game2 --level 1 1
-
-rem pause
-rem exit

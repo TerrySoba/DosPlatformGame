@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="right-down" width="21" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="39">
+<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="right-down" width="21" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="38">
  <tileset firstgid="1" source="tileset.tsx"/>
  <tileset firstgid="241" source="obj.tsx"/>
  <layer id="1" name="bg" width="21" height="13">
@@ -15,7 +15,7 @@
 18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,
 18,18,18,100,100,18,18,100,100,100,100,100,100,100,100,100,100,100,100,100,100,
 18,18,100,100,100,100,18,100,100,100,100,100,100,100,100,100,100,100,100,100,100,
-83,84,100,100,100,100,18,18,18,18,18,18,18,16,45,45,200,100,100,100,100,
+83,84,100,100,100,100,18,18,18,18,18,18,18,18,18,18,160,100,100,100,100,
 103,104,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100
 </data>
  </layer>
@@ -32,15 +32,14 @@
 241,241,241,241,241,241,241,241,241,241,241,241,241,241,241,241,241,241,241,241,241,
 241,241,241,242,242,241,241,242,242,242,242,242,242,242,242,242,242,242,242,242,242,
 241,241,242,242,242,242,241,242,242,242,242,242,242,242,242,242,242,242,241,241,241,
-242,242,242,241,241,242,241,241,241,241,241,241,250,241,241,241,241,242,241,241,241,
+242,242,242,241,241,242,241,241,241,241,241,241,241,241,251,241,241,242,241,241,241,
 241,241,241,241,241,242,242,242,242,242,242,242,242,242,242,242,242,242,241,241,241
 </data>
  </layer>
  <objectgroup id="3" name="obj">
-  <object id="38" name="EvilGuyText" type="text" x="132.139" y="43.8899" width="176.005" height="92.2805">
-   <properties>
-    <property name="string_id" type="int" value="29"/>
-   </properties>
-  </object>
+  <object id="34" name="FireballEnemy" type="fireball" x="64.8074" y="32.7606" width="253.87" height="110.108"/>
+  <object id="35" name="FireballEnemy" type="fireball" x="197.335" y="35.5804" width="118.12" height="103.26"/>
+  <object id="36" name="FireballEnemy" type="fireball" x="90.3861" y="43.0326" width="118.12" height="87.55"/>
+  <object id="37" name="FireballEnemy" type="fireball" x="131.474" y="77.8766" width="118.12" height="64.1865"/>
  </objectgroup>
 </map>

@@ -2,7 +2,7 @@
 fullscreen=false
 # fullresolution=3840x2160
 windowresolution=1024x768
-output=opengl
+output=openglnb
 
 [dosbox]
 machine=vgaonly
@@ -10,7 +10,7 @@ machine=vgaonly
 
 [render]
 aspect=true
-glshader = crt\geom.tweaked
+glshader = crt/geom.tweaked
 
 [cpu]
 core=auto
