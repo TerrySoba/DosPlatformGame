@@ -4,28 +4,28 @@
 
 // #include <stdio.h>
 
-void print(char *string);
-#pragma aux print = \
-        "mov ah, 09h"   \
-        "int 0x21"      \
-        parm    [dx]    \
-        modify  [ax];
-
-// void printCh(char ch);
-// #pragma aux printCh = \
-//         "mov ah, 02h"   \
+// void print(char *string);
+// #pragma aux print = \
+//         "mov ah, 09h"   \
 //         "int 0x21"      \
-//         parm    [dl]    \
+//         parm    [dx]    \
 //         modify  [ax];
 
-// void printStr(const char* str)
-// {
-//     while (str && *str)
-//     {
-//         printCh(*str);
-//         ++str;
-//     }
-// }
+void printCh(char ch);
+#pragma aux printCh = \
+        "mov ah, 02h"   \
+        "int 0x21"      \
+        parm    [dl]    \
+        modify  [ax];
+
+void printStr(const char* str)
+{
+    while (str && *str)
+    {
+        printCh(*str);
+        ++str;
+    }
+}
 
 // void printInteger(int value)
 // {
@@ -70,7 +70,7 @@ int main(int argc, char* argv[])
     int ret = spawnl(P_WAIT, "title.exe", 0);
     if (ret == 1)
     {
-        print("Launching game, please wait...\r\n$");
+        printStr("Launching game, please wait...\r\n");
         if (german)
         {
             system("game2.exe --german");

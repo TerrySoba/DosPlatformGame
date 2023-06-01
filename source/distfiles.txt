@@ -110,6 +110,7 @@ title.exe
 ../levels/1104b1.map
 ../levels/1204.map
 ../levels/1201.map
+../levels/1304.map
 ../readme/readme.txt
 ../scripts/game_de.bat
 ../scripts/game_en.bat
