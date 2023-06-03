@@ -111,6 +111,7 @@ title.exe
 ../levels/1204.map
 ../levels/1201.map
 ../levels/1304.map
+../levels/1402.map
 ../levels/1403.map
 ../levels/1404.map
 ../readme/readme.txt
