@@ -25,7 +25,8 @@ Game::Game(shared_ptr<VgaGfx> vgaGfx, shared_ptr<SoundController> sound,
            const char* levelBasename, LevelNumber startLevel) :
     m_vgaGfx(vgaGfx), m_tiles(tiles), m_animations(animations), m_frames(0), m_levelBasename(levelBasename),
     m_animationController(animations.actorAnimation, sound), m_lastButtonPressed(false), m_sound(sound),
-    m_jetpackCollected(0), m_sunItemCollected(0), m_button1(0), m_levelMustReload(false), m_deathCounter(0)
+    m_jetpackCollected(1), m_sunItemCollected(0), m_button1(0), m_levelMustReload(false), m_deathCounter(0),
+    m_frameCounter(0)
 {
     m_nextLevel.x = -1;
     m_nextLevel.y = -1;
@@ -41,6 +42,7 @@ Game::Game(shared_ptr<VgaGfx> vgaGfx, shared_ptr<SoundController> sound,
         m_jetpackCollected = state.jetpackCollected;
         m_button1 = state.button1;
         m_deathCounter = state.deathCounter;
+        m_frameCounter = state.frameCounter;
         loadLevel(state.level, ActorPosition::LevelTransition);   
         m_physics->setSpawnPoint(state.spawnPoint);
         drawAppleCount();
@@ -279,6 +281,7 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     state.jetpackCollected = m_jetpackCollected;
     state.button1 = m_button1;
     state.deathCounter = m_deathCounter;
+    state.frameCounter = m_frameCounter;
     saveGameState(state, "game.sav");
 }
 
@@ -392,6 +395,7 @@ void Game::onDeath()
 
 void Game::drawFrame()
 {
+    ++m_frameCounter;
     if (m_nextLevel.x != -1)
     {
         loadLevel(m_nextLevel, ActorPosition::LevelTransition);

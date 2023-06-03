@@ -22,6 +22,7 @@ void saveGameState(const GameState& gameState, const char* filename)
     fwrite(&gameState.sunItemCollected, sizeof(gameState.sunItemCollected), 1, fp);
     fwrite(&gameState.button1, sizeof(gameState.button1), 1, fp);
     fwrite(&gameState.deathCounter, sizeof(gameState.deathCounter), 1, fp);
+    fwrite(&gameState.frameCounter, sizeof(gameState.frameCounter), 1, fp);
 
     size_t collectedCount = gameState.colectedGuffins.size();
     fwrite(&collectedCount, sizeof(collectedCount), 1, fp);
@@ -64,6 +65,7 @@ bool loadGameState(GameState& gameState, const char* filename)
     fread(&gameState.sunItemCollected, sizeof(gameState.sunItemCollected), 1, fp);
     fread(&gameState.button1, sizeof(gameState.button1), 1, fp);
     fread(&gameState.deathCounter, sizeof(gameState.deathCounter), 1, fp);
+    fread(&gameState.frameCounter, sizeof(gameState.frameCounter), 1, fp);
 
     size_t collectedCount;
     fread(&collectedCount, sizeof(collectedCount), 1, fp);

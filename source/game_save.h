@@ -7,7 +7,7 @@
 struct GameState
 {
     GameState() :
-        jetpackCollected(0), sunItemCollected(0), button1(0), deathCounter(0)
+        jetpackCollected(0), sunItemCollected(0), button1(0), deathCounter(0), frameCounter(0)
     {
     }
 
@@ -18,6 +18,7 @@ struct GameState
     uint8_t sunItemCollected; // 0 == not collected, 1 == collected
     uint8_t button1; // 0 == button not pressed, 1 == button pressed
     uint32_t deathCounter;
+    uint32_t frameCounter; // frame of gameplay (usually 70 frames per second)
 };
 
 void saveGameState(const GameState& gameState, const char* filename);

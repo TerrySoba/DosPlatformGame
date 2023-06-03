@@ -73,6 +73,8 @@ public:
 	void loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT actorPosition);
     void drawFrame();
 
+	uint32_t getFrameCount() const { return m_frameCounter; }
+
 	// PhysicsCallback interface
 	virtual void levelTransition(LevelTransition transition);
 	virtual void collectApple(Point point);
@@ -112,6 +114,7 @@ private:
 	uint8_t m_button1; // 0 == button not pressed, 1 == button pressed
 	uint32_t m_deathCounter;
 	bool m_levelMustReload;
+	uint32_t m_frameCounter;
 };
 
 

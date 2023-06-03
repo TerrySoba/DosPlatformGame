@@ -115,6 +115,10 @@
         "en": "We made a terrible mistake when we turned on the reactor. It is now out of control and we are unable to shut it down. Our boss is posessed by the artifact and is trying to destroy the world. Please help us!\nThere is a powerful object further ahead that may be able to stop him.\n\nI'm afraind to leave my hiding place here, so you'll have to do it.",
         "de": "Wir haben einen schrecklichen Fehler gemacht als wir den Reaktor eingeschaltet haben. Er ist außer Kontrolle und wir können ihn nicht mehr abschalten. Unser Boss ist vom Artefakt besessen und versucht die Welt zu zerstören. Bitte hilf uns!\nEs gibt ein mächtiges Objekt weiter vorne, das ihn aufhalten könnte.\n\nIch traue mich nicht aus meinem Versteck hier heraus, also musst du es tun."
     },
+    "30": {
+        "en": "Playtime: ",
+        "de": "Spielzeit: "
+    },
     "65": {
         "en": "Welcome to the game!",
         "de": "Willkommen im Spiel!"

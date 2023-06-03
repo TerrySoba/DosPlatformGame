@@ -69,8 +69,26 @@ CommandLineParametes parseCommandline(int argc, char* argv[])
 }
 
 
+
+// function that converts frames into a time string
+void printTime(uint32_t frames)
+{
+    uint32_t seconds = frames / 70;
+    uint32_t minutes = seconds / 60;
+    uint32_t hours = minutes / 60;
+    minutes = minutes % 60;
+    seconds = seconds % 60;
+    frames = frames % 70;
+
+    printf("%02ld:%02ld:%02ld.%03ld\n", hours, minutes, seconds, frames * 1000 / 70);
+}
+
+
 int main(int argc, char* argv[])
 {
+
+    uint32_t frameCounter = 0;
+
     try
     {
         shared_ptr<SoundController> sound(new SoundController);
@@ -134,6 +152,8 @@ int main(int argc, char* argv[])
             }
         }
         
+
+        frameCounter = game.getFrameCount();
     }
     catch(const Exception& e)
     {
@@ -147,6 +167,9 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    printf(I18N::getString(30).c_str());
+    printTime(frameCounter);
+    printf("Frames: %ld\n", frameCounter);
     printf(I18N::getString(3).c_str(), BUILD_DATE);
 
     return 0;
