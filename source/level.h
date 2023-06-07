@@ -50,6 +50,7 @@ public:
     virtual tnd::vector<Rectangle> getSunItems() { return m_sunItems; }
     virtual tnd::vector<MessageBox> getMessageBoxes() { return m_messageBoxes; }
     virtual tnd::vector<Rectangle> getFireBalls() { return m_fireBalls; }
+    virtual tnd::vector<Rectangle> getBoss1() { return m_boss1; }
     virtual tnd::vector<Button> getButtons() { return m_buttons; }
 
 
@@ -84,6 +85,7 @@ private:
     tnd::vector<MessageBox> m_messageBoxes;
     tnd::vector<Rectangle> m_fireBalls;
     tnd::vector<Rectangle> m_seekerEnemies;
+    tnd::vector<Rectangle> m_boss1;
     tnd::vector<Button> m_buttons;
 
     Point m_spawn;

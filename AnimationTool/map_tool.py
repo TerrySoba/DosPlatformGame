@@ -125,6 +125,7 @@ if __name__ == "__main__":
         "fireball"    : 4,
         "seeker"      : 5,
         "guffin_gate" : 6,
+        "boss1"       : 7,
     }
 
 

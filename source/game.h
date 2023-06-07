@@ -9,6 +9,7 @@
 #include "enemy.h"
 #include "fire_ball.h"
 #include "sound_controller.h"
+#include "boss1.h"
 
 // forward declarations
 class VgaGfx;
@@ -94,6 +95,7 @@ private:
 	tnd::vector<shared_ptr<Enemy> > m_enemies;
 	tnd::vector<shared_ptr<SeekerEnemy> > m_seekerEnemies;
 	tnd::vector<shared_ptr<FireBall> > m_fireBalls;
+	tnd::vector<shared_ptr<Boss1> > m_boss1;
 	tnd::vector<Rectangle> m_guffins;
 	tnd::vector<Rectangle> m_jetPacks;
 	tnd::vector<Rectangle> m_sunItems;

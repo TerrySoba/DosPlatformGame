@@ -91,8 +91,10 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
         }
     }
 
+
     Level level(levelMap.c_str(), m_tiles, 16, 16, -8, -8);
     m_animations.actorAnimation->useTag("LoopR");
+
 
     int16_t actorPosX, actorPosY;
     if (actorPosition == ActorPosition::KeepActorPos)
@@ -127,7 +129,7 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
             actorPosY = PIXEL_TO_SUBPIXEL(185 - m_animations.actorAnimation->height());
         }
     }
-    
+
     // now load enemies
     m_enemies.clear();
     tnd::vector<Rectangle> enemyRectangles = level.getEnemies();
@@ -153,10 +155,8 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
         m_fireBalls.push_back(shared_ptr<FireBall>(new FireBall(fireBalls[i], m_animations.fireBallAnimation)));
     }
 
-
     m_guffins.clear();
     m_guffins = level.getMacGuffins();
-
 
     m_jetPacks.clear();
     if (m_jetpackCollected == 0) // only load jetpack elements if it has not been collected yet
@@ -187,6 +187,16 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
         }
 
         if (index >= 0) m_guffins.erase(index);
+    }
+
+    // now load boss1 if any exist
+    m_boss1.clear();
+    tnd::vector<Rectangle> boss1Rects = level.getBoss1();
+    
+    // create boss1 instances
+    for (int i = 0; i < boss1Rects.size(); ++i)
+    {
+        m_boss1.push_back(shared_ptr<Boss1>(new Boss1(boss1Rects[i], m_animations.fireBallAnimation)));
     }
 
 
@@ -431,9 +441,6 @@ void Game::drawFrame()
         m_seekerEnemies[i]->walk(Rectangle(playerX, playerY, 1, 1));
         Rectangle enemy = m_seekerEnemies[i]->getPos();
         enemyDeath.push_back(enemy);
-
-        // LOG_ENTRY("x:%d y:%d", enemy.x, enemy.y);
-
         m_vgaGfx->draw(*m_animations.seekerEnemyAnimation, SUBPIXEL_TO_PIXEL(enemy.x), SUBPIXEL_TO_PIXEL(enemy.y));
     }
 
@@ -463,6 +470,20 @@ void Game::drawFrame()
         m_vgaGfx->draw(*m_animations.jetPackAnimation, SUBPIXEL_TO_PIXEL(sunItem.x), SUBPIXEL_TO_PIXEL(sunItem.y));
     }
 
+    // iterate over boss1 instances and call walk() on them
+    for (int i = 0; i < m_boss1.size(); ++i)
+    {
+        m_boss1[i]->walk(Rectangle(playerX, playerY, 1, 1));
+        tnd::vector<Rectangle> projectiles = m_boss1[i]->getProjectiles();
+
+        // draw projectiles
+        for (int j = 0; j < projectiles.size(); ++j)
+        {
+            Rectangle& projectile = projectiles[j];
+            enemyDeath.push_back(projectile);
+            m_vgaGfx->draw(*m_animations.fireBallAnimation, SUBPIXEL_TO_PIXEL(projectile.x), SUBPIXEL_TO_PIXEL(projectile.y));
+        }
+    }
 
     m_vgaGfx->draw(*m_animations.actorAnimation, SUBPIXEL_TO_PIXEL(playerX), SUBPIXEL_TO_PIXEL(playerY));
 

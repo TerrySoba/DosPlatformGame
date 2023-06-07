@@ -37,7 +37,7 @@
 </data>
  </layer>
  <objectgroup id="3" name="obj">
-  <object id="20" name="ArtifactTour3Text" type="text" x="18.715" y="18.1957" width="166.759" height="46.7619">
+  <object id="20" name="ArtifactTour3Text" type="text" x="135.801" y="15.4657" width="166.759" height="46.7619">
    <properties>
     <property name="string_id" type="int" value="21"/>
    </properties>

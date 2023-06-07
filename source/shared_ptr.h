@@ -75,6 +75,11 @@ public:
         return m_storage->ptr;
     }
 
+    const ValueT* operator->() const
+    {
+        return m_storage->ptr;
+    }
+
     ValueT& operator*()
     {
         return *m_storage->ptr;

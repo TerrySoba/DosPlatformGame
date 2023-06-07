@@ -22,3 +22,5 @@ open_watcom_docker/
 *.img
 *.yar
 DosPlatformGameWin32/
+world.png
+world.tga

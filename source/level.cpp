@@ -21,6 +21,7 @@ enum LayerType
     LAYER_FIREBALL = 4,
     LAYER_SEEKER   = 5,
     LAYER_GUFFIN_GATE = 6,
+    LAYER_BOSS1    = 7,
 };
 
 
@@ -132,6 +133,19 @@ Level::Level(const char* mapFilename, shared_ptr<ImageBase> tilesImage,
             case LAYER_GUFFIN_GATE:
             {
                 fread(&m_guffinGate, sizeof(m_guffinGate), 1, fp);
+                break;
+            }
+            case LAYER_BOSS1:
+            {
+                uint16_t x,y,w,h;
+                fread(&x, sizeof(x), 1, fp);
+                fread(&y, sizeof(y), 1, fp);
+                fread(&w, sizeof(w), 1, fp);
+                fread(&h, sizeof(h), 1, fp);
+                Rectangle rect(x+offsetX, y+offsetY, w, h);
+
+                rect *= 16;
+                m_boss1.push_back(rect);
                 break;
             }
             default: // skip unknown layers

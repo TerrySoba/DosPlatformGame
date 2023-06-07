@@ -14,6 +14,7 @@
 #include "sound_controller.h"
 #include <dos.h>
 
+
 #include "exception.h"
 
 #include <stdio.h>
@@ -86,7 +87,6 @@ void printTime(uint32_t frames)
 
 int main(int argc, char* argv[])
 {
-
     uint32_t frameCounter = 0;
 
     try
@@ -137,6 +137,10 @@ int main(int argc, char* argv[])
                         game.loadLevel(level, ActorPosition::LevelTransition);
                         game.drawFrame();
                         char filename[16];
+                        sprintf(filename, "%02x%02x.tmx", x, y);
+                        Text t(filename, 10, false);
+                        gfx->draw(t, 100, 100);
+                        gfx->drawScreen();
                         sprintf(filename, "%02x%02x.tga", x, y);
                         gfx->saveAsTgaImage(filename);
                     } catch (...)
