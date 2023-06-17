@@ -85,6 +85,7 @@ title.exe
 ../levels/0C03.map
 ../levels/0C04.map
 ../levels/0C06.map
+../levels/0C06b1.map
 ../levels/0D01.map
 ../levels/0E01.map
 ../levels/0F01.map

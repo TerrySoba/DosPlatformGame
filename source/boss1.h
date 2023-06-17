@@ -22,7 +22,7 @@ struct Projectile
 class Boss1
 {
 public:
-    Boss1(Rectangle enemyRectangle, shared_ptr<Animation> animation);
+    Boss1(Rectangle enemyRectangle, shared_ptr<Animation> animation, const tnd::vector<Rectangle>& walls);
     virtual ~Boss1();
 
     void walk(const Rectangle& playerPos);
@@ -38,6 +38,7 @@ private:
     Boss1State m_state;
     int16_t m_idleFrames;
     tnd::vector<Projectile> m_projectiles;
+    tnd::vector<Rectangle> m_walls;
     int16_t m_lastPlayerPosX;
     int16_t m_lastPlayerPosY;
 };

@@ -119,6 +119,14 @@
         "en": "Playtime: ",
         "de": "Spielzeit: "
     },
+    "31": {
+        "en": "I...\nWill...\nProtect...\nThe...\nArtifact...\n\nD I E ! ! !",
+        "de": "Ich...\nWerde...\nDas...\nArtefakt...\nBeschützen...\n\nS T I R B ! ! !"
+    },
+    "32": {
+        "en": "You may have defeated me, but you will never defeat the artifact! Only the sun itself may be able to stop it now!",
+        "de": "Du hast mich vielleicht besiegt, aber du wirst das Artefakt niemals besiegen! Nur die Sonne selbst kann es jetzt noch aufhalten!"
+    },
     "65": {
         "en": "Welcome to the game!",
         "de": "Willkommen im Spiel!"
