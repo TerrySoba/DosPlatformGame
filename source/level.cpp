@@ -22,6 +22,7 @@ enum LayerType
     LAYER_SEEKER   = 5,
     LAYER_GUFFIN_GATE = 6,
     LAYER_BOSS1    = 7,
+    LAYER_PLAY_TIME = 8,
 };
 
 
@@ -146,6 +147,17 @@ Level::Level(const char* mapFilename, shared_ptr<ImageBase> tilesImage,
 
                 rect *= 16;
                 m_boss1.push_back(rect);
+                break;
+            }
+            case LAYER_PLAY_TIME:
+            {
+                uint16_t x,y,w,h;
+                fread(&x, sizeof(x), 1, fp);
+                fread(&y, sizeof(y), 1, fp);
+                fread(&w, sizeof(w), 1, fp);
+                fread(&h, sizeof(h), 1, fp);
+                Rectangle rect(x+offsetX, y+offsetY, w, h);
+                m_playTime.push_back(rect);
                 break;
             }
             default: // skip unknown layers

@@ -124,8 +124,16 @@
         "de": "Ich...\nWerde...\nDas...\nArtefakt...\nBeschützen...\n\nS T I R B ! ! !"
     },
     "32": {
-        "en": "You may have defeated me, but you will never defeat the artifact! Only the sun itself may be able to stop it now!",
-        "de": "Du hast mich vielleicht besiegt, aber du wirst das Artefakt niemals besiegen! Nur die Sonne selbst kann es jetzt noch aufhalten!"
+        "en": "You have defeated me! The fate of the world is now in your hands.",
+        "de": "Du hast mich besiegt! Das Schicksal der Welt liegt nun in deinen Händen."
+    },
+    "33": {
+        "en": "Congratulations! You have defeated the evil boss and saved the world. I hope you enjoyed your time in this world.\n\n  --TerrySoba",
+        "de": "Herzlichen Glückwunsch! Du hast den bösen Boss besiegt und die Welt gerettet. Ich hoffe du hattest Spaß in dieser Welt.\n\n  --TerrySoba"
+    },
+    "34": {
+        "en": "Time:",
+        "de": "Zeit:"
     },
     "65": {
         "en": "Welcome to the game!",

@@ -5,7 +5,7 @@ objects_game_lib = \
 	rectangle.o tiny_string.o game.o compiled_sprite.o \
 	joystick.o enemy.o game_save.o text.o i18n.o fire_ball.o \
 	soundblaster.o sound_controller.o seeker_enemy.o \
-	boss1.o
+	boss1.o time_tools.o
 objects_game = \
 	main.o $(objects_game_lib)
 objects_test = \

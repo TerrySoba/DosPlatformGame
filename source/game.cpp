@@ -16,10 +16,11 @@
 #include "tile_definitions.h"
 #include "fire_ball.h"
 #include "seeker_enemy.h"
+#include "time_tools.h"
 
 #include <stdio.h>
 
-Game::Game(shared_ptr<VgaGfx> vgaGfx, shared_ptr<SoundController> sound, 
+Game::Game(shared_ptr<VgaGfx> vgaGfx, shared_ptr<SoundController> sound,
            shared_ptr<ImageBase> tiles,
            GameAnimations animations,
            const char* levelBasename, LevelNumber startLevel) :
@@ -196,7 +197,7 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     // create boss1 instances
     for (int i = 0; i < boss1Rects.size(); ++i)
     {
-        m_boss1.push_back(shared_ptr<Boss1>(new Boss1(boss1Rects[i], m_animations.fireBallAnimation)));
+        m_boss1.push_back(shared_ptr<Boss1>(new Boss1(boss1Rects[i], m_animations.fireBallAnimation, level.getWalls())));
     }
 
 
@@ -275,6 +276,13 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
         TinyString message = I18N::getString(messageBox.textId);
         Text t(message.c_str(), messageBox.w / 5, true);
         m_vgaGfx->drawBackground(t, messageBox.x, messageBox.y);
+    }
+
+    tnd::vector<Rectangle> playTimes = level.getPlayTime();
+    for (int i = 0; i < playTimes.size(); ++i) {
+        Rectangle& playTime = playTimes[i];
+        Text t(createTimeString(m_frameCounter), 100, true);
+        m_vgaGfx->drawBackground(t, playTime.x, playTime.y);
     }
 
     TinyString levelString = I18N::getString((m_levelNumber.y << 6) + m_levelNumber.x);

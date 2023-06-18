@@ -126,6 +126,7 @@ if __name__ == "__main__":
         "seeker"      : 5,
         "guffin_gate" : 6,
         "boss1"       : 7,
+        "play_time"   : 8,
     }
 
 
