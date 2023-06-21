@@ -94,7 +94,8 @@ uint8_t readJoystick()
             ((s.x1 > s_jsDeadzoneXMax)?JOY_RIGHT:0) |
             ((s.y1 < s_jsDeadzoneYMin)?JOY_UP:0) |
             ((s.y1 > s_jsDeadzoneYMax)?JOY_DOWN:0) |
-            ( ((~s.buttons) & (1 << 4))?JOY_BUTTON_1:0 ) );
+            ( ((~s.buttons) & (1 << 4))?JOY_BUTTON_1:0 )|
+            ( ((~s.buttons) & (1 << 5))?JOY_BUTTON_2:0 ) );
 }
 
 enum CalibrationState

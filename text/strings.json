@@ -338,5 +338,13 @@
     "330": {
         "en": "One way tunnel",
         "de": "Einbahntunnel"
+    },
+    "396": {
+        "en": "Evil Boss",
+        "de": "Endgegner"
+    },
+    "460": {
+        "en": "Thank You!",
+        "de": "Danke!"
     }
 }

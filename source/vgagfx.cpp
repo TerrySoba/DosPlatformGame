@@ -75,11 +75,6 @@ void VgaGfx::vsync()
     waitForVsync();
 }
 
-#define lower(x) (x & 0x0f)
-#define upper(x) ((x & 0xf0) >> 4)
-
-#define set_lower(x, val) ((x & 0xf0) | val)
-#define set_upper(x, val) ((x & 0x0f) | (val << 4))
 
 void VgaGfx::draw(const Drawable& image, int16_t x, int16_t y)
 {

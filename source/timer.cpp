@@ -33,7 +33,7 @@ DosTimer::DosTimer(void (*timerFunction)(), int frequency)
     // set clock speed
     __asm {
         cli
-      	mov     bx,  speed //  set the clock speed to 60Hz (1193180/60)
+      	mov     bx,  speed //  set the clock speed to selected frequency
       	mov     al,  00110110b
     	out     43h, al
       	mov     al,  bl
@@ -50,6 +50,7 @@ DosTimer::DosTimer(void (*timerFunction)(), int frequency)
 DosTimer::~DosTimer()
 {
     __asm {
+        cli
       	xor bx,  bx        // min rate 18.2 Hz when set to zero
     	mov al,  00110110b
       	out 43h, al
@@ -57,6 +58,7 @@ DosTimer::~DosTimer()
     	out 40h, al
       	mov al,  bh
 	    out 40h, al
+        sti
     }
 
     _dos_setvect(TIMER_INTERRUPT, m_oldInterrupt);
