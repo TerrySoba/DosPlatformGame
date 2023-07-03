@@ -13,6 +13,26 @@
 #define SCREEN_W 320L
 #define SCREEN_H 200L
 
+
+static const uint8_t rgbiColors[] = { // colors are in BGR order
+    0x00,0x00,0x00,
+    0xAA,0x00,0x00,
+    0x00,0xAA,0x00,
+    0xAA,0xAA,0x00,
+    0x00,0x00,0xAA,
+    0xAA,0x00,0xAA,
+    0x00,0x55,0xAA,
+    0xAA,0xAA,0xAA,
+    0x55,0x55,0x55,
+    0xFF,0x55,0x55,
+    0x55,0xFF,0x55,
+    0xFF,0xFF,0x55,
+    0xFF,0x55,0xFF,
+    0xFF,0x55,0xFF,
+    0x55,0xFF,0xFF,
+    0xFF,0xFF,0xFF,
+};
+
 extern void videoInit(uint8_t mode);
 #pragma aux videoInit =    \
     "mov ah, 0"            \
@@ -30,6 +50,25 @@ void sortRects(tnd::vector<Rectangle>& rects)
     qsort(&rects[0], rects.size(), sizeof(Rectangle), compareRectangles);
 }
 
+/**
+ * Sets the default VGA palette.
+ * 
+ * Sets the first 16 colors to the default VGA palette which is the same as the CGA and EGA palette.
+ * Normally this is already set by the graphics card, but some games may change it.
+ */
+void setDefaultVgaPalette()
+{
+    outp(0x3C8, 0);
+    for (int i = 0; i < 16; ++i)
+    {
+        // Colors need to be set in RGB order. As rgbiColors is in BGR order, we need to reverse the order.
+        // As VGA only supports 6 bits per color, we need to shift the values by 2 bits.
+        outp(0x3C9, rgbiColors[i * 3 + 2] >> 2);
+        outp(0x3C9, rgbiColors[i * 3 + 1] >> 2);
+        outp(0x3C9, rgbiColors[i * 3 + 0] >> 2);
+    }
+}
+
 
 VgaGfx::VgaGfx()
 {
@@ -45,6 +84,8 @@ VgaGfx::VgaGfx()
     m_dirtyRects.push_back(rect);
 
     videoInit(0x13);
+
+    setDefaultVgaPalette();
 }
 
 VgaGfx::~VgaGfx()
@@ -155,24 +196,6 @@ void VgaGfx::setBackground(const ImageBase& image)
 }
 
 
-static const uint8_t rgbiColors[] = {
-    0x00,0x00,0x00,
-    0xAA,0x00,0x00,
-    0x00,0xAA,0x00,
-    0xAA,0xAA,0x00,
-    0x00,0x00,0xAA,
-    0xAA,0x00,0xAA,
-    0x00,0x55,0xAA, 
-    0xAA,0xAA,0xAA,
-    0x55,0x55,0x55,
-    0xFF,0x55,0x55,
-    0x55,0xFF,0x55,
-    0xFF,0xFF,0x55,
-    0xFF,0x55,0xFF,
-    0xFF,0x55,0xFF,
-    0x55,0xFF,0xFF,
-    0xFF,0xFF,0xFF,
-};
 
 void write16bit(uint16_t data, FILE* fp)
 {
