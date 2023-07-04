@@ -135,6 +135,10 @@
         "en": "Time:",
         "de": "Zeit:"
     },
+    "35": {
+        "en": "This is you last chance to turn back. If you continue onwards you'll have to face the evil boss.\n\nAre you ready?",
+        "de": "Dies ist deine letzte Chance umzukehren. Wenn du weiter gehst musst du dich dem bösen Boss stellen.\n\nBist du bereit?"
+    },
     "65": {
         "en": "Welcome to the game!",
         "de": "Willkommen im Spiel!"
