@@ -47,7 +47,7 @@ void Boss1::walk(const Rectangle& playerPos)
             }
             break;
         case BOSS1_STATE_PROJECTILE_ATTACK:
-            if (m_projectiles.size() >= 2)
+            if (m_projectiles.size() >= 4)
             {
                 m_state = BOSS1_STATE_INITIAL;
             }
