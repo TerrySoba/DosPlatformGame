@@ -37,6 +37,7 @@ private:
     shared_ptr<Animation> m_animation;
     Boss1State m_state;
     int16_t m_idleFrames;
+    int16_t m_actionFrame;
     tnd::vector<Projectile> m_projectiles;
     tnd::vector<Rectangle> m_walls;
     int16_t m_lastPlayerPosX;

@@ -4,7 +4,7 @@
 
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 200
-#define PROJECTILE_SPEED 40
+#define PROJECTILE_SPEED 50
 
 template <class T>
 T abs(T val)
@@ -22,6 +22,7 @@ Boss1::Boss1(Rectangle enemyRectangle, shared_ptr<Animation> animation, const tn
     m_animation(animation),
     m_state(BOSS1_STATE_INITIAL),
     m_idleFrames(0),
+    m_actionFrame(0),
     m_lastPlayerPosX(-1),
     m_lastPlayerPosY(-1),
     m_walls(walls)
@@ -33,58 +34,124 @@ Boss1::~Boss1()
 
 }
 
+
+void setVectorLength(int32_t& x, int32_t& y, int32_t length)
+{
+    int32_t len = manhattanNorm(x, y);
+    if (len != 0)
+    {
+        x = x * length / len;
+        y = y * length / len;
+    }
+}
+
+
+
+Projectile createProjectile(int16_t startX, int16_t startY, int16_t targetX, int16_t targetY, int16_t speed)
+{
+    Projectile projectile;
+    projectile.x = startX;
+    projectile.y = startY;
+
+    int32_t dx = targetX - startX;
+    int32_t dy = targetY - startY;
+    setVectorLength(dx, dy, speed);
+    projectile.dx = dx;
+    projectile.dy = dy;
+    return projectile;
+}
+
+
+const int16_t WIGGLE_TABLE[] = {1,2,3,4,5,6,5,4,3,2};
+const int WIGGLE_TABLE_SIZE = sizeof(WIGGLE_TABLE) / sizeof(WIGGLE_TABLE[0]);
+
 void Boss1::walk(const Rectangle& playerPos)
 {
     moveProjectiles();
 
-    switch (m_state)
-    {   
-        case BOSS1_STATE_INITIAL:
-            // if player is close to boss start projectile attack
-            if (SUBPIXEL_TO_PIXEL(abs(playerPos.x - m_enemyRectangle.x)) < 100)
-            {
-                m_state = BOSS1_STATE_PROJECTILE_ATTACK;
-            }
-            break;
-        case BOSS1_STATE_PROJECTILE_ATTACK:
-            if (m_projectiles.size() >= 4)
-            {
-                m_state = BOSS1_STATE_INITIAL;
-            }
-            else
-            {
-                if (--m_idleFrames <= 0)
-                {
-                    m_idleFrames = 20;
-                    // shoot projectiles
-                    Projectile projectile;
-                    projectile.x = m_enemyRectangle.x + m_enemyRectangle.width / 2 - PIXEL_TO_SUBPIXEL(m_animation->width()) / 2;
-                    projectile.y = m_enemyRectangle.y + m_enemyRectangle.height / 2 - PIXEL_TO_SUBPIXEL(m_animation->height()) / 2;
 
-                    // calculate expected player pos in 20 frames
-                    int16_t playerPosX = playerPos.x; // + playerDx * 20;
-                    int16_t playerPosY = playerPos.y; // + playerDy * 20;
+    if (m_idleFrames == 0)
+    {
+        if (SUBPIXEL_TO_PIXEL(playerPos.x) > 90)
+        {
+            m_idleFrames = 7;
+            ++m_actionFrame;
 
-                    // if last player position is positive predict movement
-                    if (m_lastPlayerPosX >= 0 && m_lastPlayerPosY >= 0)
-                    {
-                        playerPosX += (playerPosX - m_lastPlayerPosX) * 20;
-                        playerPosY += (playerPosY - m_lastPlayerPosY) * 20;
-                    }
+            if (m_actionFrame >= WIGGLE_TABLE_SIZE) m_actionFrame = 0;
 
-                    int32_t dx = playerPosX - projectile.x;
-                    int32_t dy = playerPosY - projectile.y;
-                    int32_t len = manhattanNorm(dx, dy);
-                    if (len != 0)
-                    {
-                        projectile.dx = dx * PROJECTILE_SPEED / len;
-                        projectile.dy = dy * PROJECTILE_SPEED / len;
-                        m_projectiles.push_back(projectile);
-                    }
-                }
+            int16_t startX = m_enemyRectangle.x + m_enemyRectangle.width / 2 - PIXEL_TO_SUBPIXEL(m_animation->width()) / 2;
+            int16_t startY = m_enemyRectangle.y + m_enemyRectangle.height / 2 - PIXEL_TO_SUBPIXEL(m_animation->height()) / 2;
+            int16_t targetX = playerPos.x + playerPos.width / 2 + PIXEL_TO_SUBPIXEL(WIGGLE_TABLE[m_actionFrame]) * 5 + PIXEL_TO_SUBPIXEL(30);
+            int16_t targetY = playerPos.y + playerPos.height / 2;
+            m_projectiles.push_back(createProjectile(startX, startY, targetX, targetY, PROJECTILE_SPEED));
+        } 
+        else
+        {
+            m_idleFrames = 100;
+        
+            for (int i = -3; i < 3; ++i)
+            {
+                int16_t startX = m_enemyRectangle.x + m_enemyRectangle.width / 2 - PIXEL_TO_SUBPIXEL(m_animation->width()) / 2;
+                int16_t startY = m_enemyRectangle.y + m_enemyRectangle.height / 2 - PIXEL_TO_SUBPIXEL(m_animation->height()) / 2;
+                int16_t targetX = playerPos.x + playerPos.width / 2;
+                int16_t targetY = playerPos.y + playerPos.height / 2 + PIXEL_TO_SUBPIXEL(i*10);
+                m_projectiles.push_back(createProjectile(startX, startY, targetX, targetY, PROJECTILE_SPEED));
             }
-            break;
+        }
     }
+
+
+
+    // switch (m_state)
+    // {   
+    //     case BOSS1_STATE_INITIAL:
+    //         // if player is close to boss start projectile attack
+    //         if (SUBPIXEL_TO_PIXEL(abs(playerPos.x - m_enemyRectangle.x)) < 100)
+    //         {
+    //             m_state = BOSS1_STATE_PROJECTILE_ATTACK;
+    //         }
+    //         break;
+    //     case BOSS1_STATE_PROJECTILE_ATTACK:
+    //         if (m_projectiles.size() >= 7)
+    //         {
+    //             m_state = BOSS1_STATE_INITIAL;
+    //         }
+    //         else
+    //         {
+    //             if (--m_idleFrames <= 0)
+    //             {
+    //                 m_idleFrames = 20;
+    //                 // shoot projectiles
+    //                 Projectile projectile;
+    //                 projectile.x = m_enemyRectangle.x + m_enemyRectangle.width / 2 - PIXEL_TO_SUBPIXEL(m_animation->width()) / 2;
+    //                 projectile.y = m_enemyRectangle.y + m_enemyRectangle.height / 2 - PIXEL_TO_SUBPIXEL(m_animation->height()) / 2;
+
+    //                 // calculate expected player pos in 20 frames
+    //                 int16_t playerPosX = playerPos.x; // + playerDx * 20;
+    //                 int16_t playerPosY = playerPos.y; // + playerDy * 20;
+
+    //                 // if last player position is positive predict movement
+    //                 if (m_lastPlayerPosX >= 0 && m_lastPlayerPosY >= 0)
+    //                 {
+    //                     playerPosX += (playerPosX - m_lastPlayerPosX) * 20;
+    //                     playerPosY += (playerPosY - m_lastPlayerPosY) * 20;
+    //                 }
+
+    //                 int32_t dx = playerPosX - projectile.x;
+    //                 int32_t dy = playerPosY - projectile.y;
+    //                 int32_t len = manhattanNorm(dx, dy);
+    //                 if (len != 0)
+    //                 {
+    //                     projectile.dx = dx * PROJECTILE_SPEED / len;
+    //                     projectile.dy = dy * PROJECTILE_SPEED / len;
+    //                     m_projectiles.push_back(projectile);
+    //                 }
+    //             }
+    //         }
+    //         break;
+    // }
+
+    m_idleFrames = (m_idleFrames > 0) ? (m_idleFrames - 1) : 0;
 
     m_lastPlayerPosX = playerPos.x;
     m_lastPlayerPosY = playerPos.y;
