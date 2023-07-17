@@ -69,10 +69,31 @@ void Boss1::walk(const Rectangle& playerPos)
 {
     moveProjectiles();
 
+    switch (m_state)
+    {   
+        case BOSS1_STATE_INITIAL:
+            m_state = BOSS1_STATE_BURST_SHOT_PHASE;
+            m_idleFrames = 0;
+            break;
+        case BOSS1_STATE_BURST_SHOT_PHASE:
+            if (SUBPIXEL_TO_PIXEL(playerPos.x) > 90)
+            {
+                m_state = BOSS1_STATE_WAVE_LINE_PHASE;
+                m_idleFrames = 0;
+            }
+            break;
+        case BOSS1_STATE_WAVE_LINE_PHASE:
+            if (SUBPIXEL_TO_PIXEL(playerPos.x) < 80)
+            {
+                m_state = BOSS1_STATE_BURST_SHOT_PHASE;
+                m_idleFrames = 0;
+            }
+            break;
+    }
 
     if (m_idleFrames == 0)
     {
-        if (SUBPIXEL_TO_PIXEL(playerPos.x) > 90)
+        if (m_state == BOSS1_STATE_WAVE_LINE_PHASE)
         {
             m_idleFrames = 7;
             ++m_actionFrame;
@@ -81,11 +102,11 @@ void Boss1::walk(const Rectangle& playerPos)
 
             int16_t startX = m_enemyRectangle.x + m_enemyRectangle.width / 2 - PIXEL_TO_SUBPIXEL(m_animation->width()) / 2;
             int16_t startY = m_enemyRectangle.y + m_enemyRectangle.height / 2 - PIXEL_TO_SUBPIXEL(m_animation->height()) / 2;
-            int16_t targetX = playerPos.x + playerPos.width / 2 + PIXEL_TO_SUBPIXEL(WIGGLE_TABLE[m_actionFrame]) * 5 + PIXEL_TO_SUBPIXEL(30);
+            int16_t targetX = playerPos.x + playerPos.width / 2 + PIXEL_TO_SUBPIXEL(WIGGLE_TABLE[m_actionFrame]) * 10 + PIXEL_TO_SUBPIXEL(30);
             int16_t targetY = playerPos.y + playerPos.height / 2;
             m_projectiles.push_back(createProjectile(startX, startY, targetX, targetY, PROJECTILE_SPEED));
         } 
-        else
+        else if (m_state == BOSS1_STATE_BURST_SHOT_PHASE)
         {
             m_idleFrames = 100;
         
@@ -99,57 +120,6 @@ void Boss1::walk(const Rectangle& playerPos)
             }
         }
     }
-
-
-
-    // switch (m_state)
-    // {   
-    //     case BOSS1_STATE_INITIAL:
-    //         // if player is close to boss start projectile attack
-    //         if (SUBPIXEL_TO_PIXEL(abs(playerPos.x - m_enemyRectangle.x)) < 100)
-    //         {
-    //             m_state = BOSS1_STATE_PROJECTILE_ATTACK;
-    //         }
-    //         break;
-    //     case BOSS1_STATE_PROJECTILE_ATTACK:
-    //         if (m_projectiles.size() >= 7)
-    //         {
-    //             m_state = BOSS1_STATE_INITIAL;
-    //         }
-    //         else
-    //         {
-    //             if (--m_idleFrames <= 0)
-    //             {
-    //                 m_idleFrames = 20;
-    //                 // shoot projectiles
-    //                 Projectile projectile;
-    //                 projectile.x = m_enemyRectangle.x + m_enemyRectangle.width / 2 - PIXEL_TO_SUBPIXEL(m_animation->width()) / 2;
-    //                 projectile.y = m_enemyRectangle.y + m_enemyRectangle.height / 2 - PIXEL_TO_SUBPIXEL(m_animation->height()) / 2;
-
-    //                 // calculate expected player pos in 20 frames
-    //                 int16_t playerPosX = playerPos.x; // + playerDx * 20;
-    //                 int16_t playerPosY = playerPos.y; // + playerDy * 20;
-
-    //                 // if last player position is positive predict movement
-    //                 if (m_lastPlayerPosX >= 0 && m_lastPlayerPosY >= 0)
-    //                 {
-    //                     playerPosX += (playerPosX - m_lastPlayerPosX) * 20;
-    //                     playerPosY += (playerPosY - m_lastPlayerPosY) * 20;
-    //                 }
-
-    //                 int32_t dx = playerPosX - projectile.x;
-    //                 int32_t dy = playerPosY - projectile.y;
-    //                 int32_t len = manhattanNorm(dx, dy);
-    //                 if (len != 0)
-    //                 {
-    //                     projectile.dx = dx * PROJECTILE_SPEED / len;
-    //                     projectile.dy = dy * PROJECTILE_SPEED / len;
-    //                     m_projectiles.push_back(projectile);
-    //                 }
-    //             }
-    //         }
-    //         break;
-    // }
 
     m_idleFrames = (m_idleFrames > 0) ? (m_idleFrames - 1) : 0;
 

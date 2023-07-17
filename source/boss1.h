@@ -8,7 +8,8 @@
 
 enum Boss1State {
     BOSS1_STATE_INITIAL = 1,
-    BOSS1_STATE_PROJECTILE_ATTACK = 2,
+    BOSS1_STATE_BURST_SHOT_PHASE = 2,
+    BOSS1_STATE_WAVE_LINE_PHASE = 3,
 };
 
 struct Projectile
