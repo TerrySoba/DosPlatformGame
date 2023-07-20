@@ -2,7 +2,7 @@
 #include "physics.h"
 #include <stdlib.h>
 
-FireBall::FireBall(Rectangle collision, shared_ptr<Animation> animation) :
+FireBall::FireBall(Rectangle collision, Animation* animation) :
     m_collision(collision),
     m_animation(animation),
     m_posX(collision.x),

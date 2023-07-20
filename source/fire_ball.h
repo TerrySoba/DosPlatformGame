@@ -3,13 +3,12 @@
 
 #include "rectangle.h"
 #include "animation.h"
-#include "shared_ptr.h"
 #include "vector.h"
 
 class FireBall
 {
 public:
-    FireBall(Rectangle collision, shared_ptr<Animation> animation);
+    FireBall(Rectangle collision, Animation* animation);
     ~FireBall();
 
     void walk();
@@ -18,7 +17,7 @@ public:
 
 private:
     const Rectangle m_collision;
-    shared_ptr<Animation> m_animation;
+    Animation* m_animation;
     int m_posX;
     int m_posY;
     int m_speedX;

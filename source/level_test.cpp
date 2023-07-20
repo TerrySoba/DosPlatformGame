@@ -4,9 +4,8 @@
 
 TEST(LevelTest1)
 {
-    shared_ptr<ImageBase> tilesImage;
+    ImageBase* tilesImage = 0;
     Level level("levels\\0101.map", tilesImage, 16, 16, -8, -8);
-
     printf("w:%d h:%d\n", level.width(), level.height());
 
     tnd::vector<Rectangle> death = level.getDeath();

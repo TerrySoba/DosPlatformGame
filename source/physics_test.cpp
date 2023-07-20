@@ -1,6 +1,5 @@
 #include "unit_test.h"
 #include "physics.h"
-#include "shared_ptr.h"
 
 TEST(RectCollision)
 {

@@ -4,7 +4,6 @@
 #include "image_base.h"
 #include "drawable.h"
 #include "button.h"
-#include "shared_ptr.h"
 #include "rectangle.h"
 #include "vector.h"
 
@@ -29,7 +28,7 @@ struct MessageBox
 class Level : public Drawable
 {
 public:
-    Level(const char* mapFilename, shared_ptr<ImageBase> tilesImage,
+    Level(const char* mapFilename, ImageBase* tilesImage,
           int16_t tileWidth, int16_t tileHeight,
           int16_t offsetX, int16_t offsetY);
 
@@ -53,6 +52,7 @@ public:
     virtual tnd::vector<Rectangle> getBoss1() { return m_boss1; }
     virtual tnd::vector<Rectangle> getPlayTime() { return m_playTime; }
     virtual tnd::vector<Button> getButtons() { return m_buttons; }
+    virtual uint16_t getMusicIndex() { return m_musicIndex; }
 
 
     virtual Point getSpawnPoint() { return m_spawn; };
@@ -65,7 +65,7 @@ public:
     virtual uint16_t getGuffinGate() { return m_guffinGate; }
 
 private:
-    shared_ptr<ImageBase> m_tilesImage;
+    ImageBase* m_tilesImage;
     int16_t m_tileWidth;  // width of a single tile in pixles
     int16_t m_tileHeight; // height of a single tile in pixles
     int16_t m_offsetX;
@@ -93,6 +93,7 @@ private:
     Point m_spawn;
     Point m_sun;
     uint16_t m_guffinGate;
+    uint16_t m_musicIndex;
 };
 
 #endif

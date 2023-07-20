@@ -17,7 +17,7 @@ int32_t manhattanNorm(int32_t x, int32_t y)
     return abs(x) + abs(y);
 }
 
-Boss1::Boss1(Rectangle enemyRectangle, shared_ptr<Animation> animation, const tnd::vector<Rectangle>& walls) :
+Boss1::Boss1(Rectangle enemyRectangle, Animation* animation, const tnd::vector<Rectangle>& walls) :
     m_enemyRectangle(enemyRectangle),
     m_animation(animation),
     m_state(BOSS1_STATE_INITIAL),
@@ -40,11 +40,10 @@ void setVectorLength(int32_t& x, int32_t& y, int32_t length)
     int32_t len = manhattanNorm(x, y);
     if (len != 0)
     {
-        x = x * length / len;
-        y = y * length / len;
+        x = (x * length) / len;
+        y = (y * length) / len;
     }
 }
-
 
 
 Projectile createProjectile(int16_t startX, int16_t startY, int16_t targetX, int16_t targetY, int16_t speed)
@@ -102,7 +101,7 @@ void Boss1::walk(const Rectangle& playerPos)
 
             int16_t startX = m_enemyRectangle.x + m_enemyRectangle.width / 2 - PIXEL_TO_SUBPIXEL(m_animation->width()) / 2;
             int16_t startY = m_enemyRectangle.y + m_enemyRectangle.height / 2 - PIXEL_TO_SUBPIXEL(m_animation->height()) / 2;
-            int16_t targetX = playerPos.x + playerPos.width / 2 + PIXEL_TO_SUBPIXEL(WIGGLE_TABLE[m_actionFrame]) * 10 + PIXEL_TO_SUBPIXEL(30);
+            int16_t targetX = playerPos.x + playerPos.width / 2 + PIXEL_TO_SUBPIXEL(WIGGLE_TABLE[m_actionFrame]) * 10 + PIXEL_TO_SUBPIXEL(25);
             int16_t targetY = playerPos.y + playerPos.height / 2;
             m_projectiles.push_back(createProjectile(startX, startY, targetX, targetY, PROJECTILE_SPEED));
         } 

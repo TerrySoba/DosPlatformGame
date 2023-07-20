@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 
-Enemy::Enemy(Rectangle enemyWalkArea, shared_ptr<Animation> animation) :
+Enemy::Enemy(Rectangle enemyWalkArea, Animation* animation) :
     m_enemyWalkArea(enemyWalkArea), m_animation(animation), m_walkSpeed(24)
 {
     m_posY = m_enemyWalkArea.y;
@@ -10,7 +10,6 @@ Enemy::Enemy(Rectangle enemyWalkArea, shared_ptr<Animation> animation) :
 
     // shrink rectangle by animation width, so that we only can ignore animation width later on
     m_enemyWalkArea.width -= animation->width() * 16;
-
 }
 
 void Enemy::walk()

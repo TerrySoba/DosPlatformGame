@@ -3,7 +3,6 @@
 
 #include "rectangle.h"
 #include "animation.h"
-#include "shared_ptr.h"
 
 enum WalkingDirection
 {
@@ -14,7 +13,7 @@ enum WalkingDirection
 class SeekerEnemy
 {
 public:
-    SeekerEnemy(Rectangle enemyWalkArea, shared_ptr<Animation> animation);
+    SeekerEnemy(Rectangle enemyWalkArea, Animation* animation);
     ~SeekerEnemy();
 
     void walk(const Rectangle& playerPos);
@@ -23,7 +22,7 @@ public:
 
 private:
     Rectangle m_enemyWalkArea;
-    shared_ptr<Animation> m_animation;
+    Animation* m_animation;
     int8_t m_walkSpeed;
     int m_posX;
     int m_posY;

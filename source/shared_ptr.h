@@ -1,11 +1,14 @@
 #ifndef SHARED_PTR_INCLUDED
 #define SHARED_PTR_INCLUDED
 
-template <class ValueT>
+
+// #error This should not be used!
+
+template <class T>
 struct shared_ptr_storage
 {
     int user_count;
-    ValueT* ptr;
+    T* ptr;
 };
 
 

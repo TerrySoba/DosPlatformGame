@@ -4,6 +4,8 @@
 
 #include <stdio.h>
 
+static bool s_destructorRan = false;
+
 struct TestThingy
 {
     TestThingy(const char* text) :
@@ -14,6 +16,7 @@ struct TestThingy
     ~TestThingy()
     {
         // printf("~TestThingy: %s\n", m_text);
+        s_destructorRan = true;
     }
 
     void doIt() {
@@ -65,4 +68,14 @@ TEST(SharedPtrTest4)
     i.reset();
     j.reset();
     
+}
+
+TEST(SharedPtrDestructorTest)
+{
+    s_destructorRan = false;
+    {
+        shared_ptr<TestThingy> i(new TestThingy("test1"));
+    }
+ 
+    ASSERT_TRUE(s_destructorRan);
 }

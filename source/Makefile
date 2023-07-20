@@ -5,14 +5,14 @@ objects_game_lib = \
 	rectangle.o tiny_string.o game.o compiled_sprite.o \
 	joystick.o enemy.o game_save.o text.o i18n.o fire_ball.o \
 	soundblaster.o sound_controller.o seeker_enemy.o \
-	boss1.o time_tools.o
+	boss1.o time_tools.o music_controller.o
 objects_game = \
 	main.o $(objects_game_lib)
 objects_test = \
     $(objects_game_lib) test_main.o unit_test.o \
 	physics_test.o tga_image_test.o shared_ptr_test.o \
 	blit_test.o vector_test.o rectangle_test.o tiny_string_test.o animation_test.o \
-	text_layout_test.o i18n_test.o level_test.o
+	text_layout_test.o i18n_test.o level_test.o raii_ptr_test.o
 
 
 title_screen = \

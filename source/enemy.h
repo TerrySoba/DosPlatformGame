@@ -3,12 +3,11 @@
 
 #include "rectangle.h"
 #include "animation.h"
-#include "shared_ptr.h"
 
 class Enemy
 {
 public:
-    Enemy(Rectangle enemyWalkArea, shared_ptr<Animation> animation);
+    Enemy(Rectangle enemyWalkArea, Animation* animation);
     ~Enemy();
 
     void walk();
@@ -17,7 +16,7 @@ public:
 
 private:
     Rectangle m_enemyWalkArea;
-    shared_ptr<Animation> m_animation;
+    Animation* m_animation;
     int8_t m_walkSpeed;
     int m_posX;
     int m_posY;

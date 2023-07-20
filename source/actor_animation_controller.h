@@ -2,7 +2,6 @@
 #define ACTOR_ANIMATION_CONTROLLER_H_INCLUDED
 
 #include "animation.h"
-#include "shared_ptr.h"
 
 #include "sound_controller.h"
 
@@ -35,7 +34,7 @@ enum HorizontalDirection
 class ActorAnimationController
 {
 public:
-    ActorAnimationController(shared_ptr<Animation> actorAnimation, shared_ptr<SoundController> sound) :
+    ActorAnimationController(Animation* actorAnimation, SoundController* sound) :
         m_actorAnimation(actorAnimation),
         m_lastX(0),
         m_lastY(0),
@@ -141,14 +140,14 @@ public:
     }
 
 private:
-    shared_ptr<Animation> m_actorAnimation;
+    Animation* m_actorAnimation;
     int16_t m_lastX;
     int16_t m_lastY;
     AnimationEnum m_activeAnimation;
     VerticalDirection m_lastDirection;
     HorizontalDirection m_lastHDir;
     int m_airFrames;
-    shared_ptr<SoundController> m_sound;
+    SoundController* m_sound;
 };
 
 #endif

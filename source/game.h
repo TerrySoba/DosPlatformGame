@@ -1,7 +1,6 @@
 #ifndef GAME_H_INCLUDED
 #define GAME_H_INCLUDED
 
-#include "shared_ptr.h"
 #include "physics.h"
 #include "physics_event.h"
 #include "tiny_string.h"
@@ -10,6 +9,8 @@
 #include "fire_ball.h"
 #include "sound_controller.h"
 #include "boss1.h"
+#include "music_controller.h"
+#include "shared_ptr.h"
 
 // forward declarations
 class VgaGfx;
@@ -42,12 +43,12 @@ struct LevelNumber
 
 struct GameAnimations
 {
-	shared_ptr<Animation> actorAnimation;
-	shared_ptr<Animation> enemyAnimation;
-	shared_ptr<Animation> seekerEnemyAnimation;
-	shared_ptr<Animation> guffinAnimation;
-	shared_ptr<Animation> fireBallAnimation;
-	shared_ptr<Animation> jetPackAnimation;
+	Animation* actorAnimation;
+	Animation* enemyAnimation;
+	Animation* seekerEnemyAnimation;
+	Animation* guffinAnimation;
+	Animation* fireBallAnimation;
+	Animation* jetPackAnimation;
 };
 
 
@@ -62,12 +63,15 @@ class Game : public PhysicsCallback
 {
 public:
 	Game(
-	    shared_ptr<VgaGfx> vgaGfx,
-		shared_ptr<SoundController> sound, 
-		shared_ptr<ImageBase> tiles,
+	    VgaGfx* vgaGfx,
+		SoundController* sound, 
+		MusicController* music,
+		ImageBase* tiles,
 		GameAnimations animations,
 		const char* levelBasename,
 		LevelNumber startLevel);
+
+	~Game();
 
 	void reloadCurrentLevel();
 
@@ -89,8 +93,8 @@ private:
     virtual void drawDeathCount();
 
 private:
-	shared_ptr<VgaGfx> m_vgaGfx;
-	shared_ptr<ImageBase> m_tiles;
+	VgaGfx* m_vgaGfx;
+	ImageBase* m_tiles;
 	GameAnimations m_animations;
 	tnd::vector<shared_ptr<Enemy> > m_enemies;
 	tnd::vector<shared_ptr<SeekerEnemy> > m_seekerEnemies;
@@ -99,7 +103,7 @@ private:
 	tnd::vector<Rectangle> m_guffins;
 	tnd::vector<Rectangle> m_jetPacks;
 	tnd::vector<Rectangle> m_sunItems;
-    shared_ptr<Physics> m_physics;
+    Physics* m_physics;
     long int m_frames;
     int m_player;
 	TinyString m_levelBasename;
@@ -110,7 +114,8 @@ private:
 	tnd::vector<CollectedGuffin> m_collectedGuffins;
 	TinyString m_appleString;
 	TinyString m_deathString;
-	shared_ptr<SoundController> m_sound;
+	SoundController* m_sound;
+	MusicController* m_music;
 	uint8_t m_jetpackCollected; // 0 == no jetpack, 1 == jetpack collected
 	uint8_t m_sunItemCollected; // 0 == not collected, 1 == collected
 	uint8_t m_button1; // 0 == button not pressed, 1 == button pressed

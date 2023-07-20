@@ -2,22 +2,21 @@
 #include "image.h"
 #include "animation.h"
 #include "keyboard.h"
-#include "rad_player.h"
+#include "music_controller.h"
 #include "tga_image.h"
 #include "level.h"
 #include "game.h"
 #include "version.h"
-#include "shared_ptr.h"
 #include "joystick.h"
 #include "text.h"
 #include "i18n.h"
 #include "sound_controller.h"
+#include "raii_ptr.h"
 #include <dos.h>
 
 #include "exception.h"
 
 #include <stdio.h>
-
 
 enum Language {
     LANGUAGE_ENGLISH,
@@ -75,7 +74,7 @@ int main(int argc, char* argv[])
 
     try
     {
-        shared_ptr<SoundController> sound(new SoundController);
+        raii_ptr<SoundController> sound = new SoundController();
 
         CommandLineParametes params = parseCommandline(argc, argv);
         calibrateJoystick();
@@ -90,25 +89,24 @@ int main(int argc, char* argv[])
                 I18N::loadTranslations("strings.en");
         }
 
-        
         Keyboard keyboard;
 
-        shared_ptr<ImageBase> tiles(new TgaImage("tiles.tga"));
-        
-        shared_ptr<Animation> enemy(new Animation("enemy.ani", "enemy.tga"));
-        shared_ptr<Animation> seekerEnemy(new Animation("enemy2.ani", "enemy2.tga"));
-        shared_ptr<Animation> guffin(new Animation("guffin.ani", "guffin.tga"));
-        shared_ptr<Animation> guy(new Animation("guy.ani", "guy.tga"));
-        shared_ptr<Animation> fireBall(new Animation("fire.ani", "fire.tga"));
-        shared_ptr<Animation> jetPack(new Animation("jet.ani", "jet.tga"));
+        raii_ptr<ImageBase> tiles = new TgaImage("tiles.tga");
+    
+        raii_ptr<Animation> enemy = new Animation("enemy.ani", "enemy.tga");
+        raii_ptr<Animation> seekerEnemy = new Animation("enemy2.ani", "enemy2.tga");
+        raii_ptr<Animation> guffin = new Animation("guffin.ani", "guffin.tga");
+        raii_ptr<Animation> guy = new Animation("guy.ani", "guy.tga");
+        raii_ptr<Animation> fireBall = new Animation("fire.ani", "fire.tga");
+        raii_ptr<Animation> jetPack = new Animation("jet.ani", "jet.tga");
 
-        shared_ptr<VgaGfx> gfx(new VgaGfx);
-        
-        // RadPlayer music("CELT.RAD");
+        raii_ptr<VgaGfx> gfx = new VgaGfx();
 
-        GameAnimations animations = {guy, enemy, seekerEnemy, guffin, fireBall, jetPack};
+        raii_ptr<MusicController> music = new MusicController();
 
-        Game game(gfx, sound, tiles, animations, "%02x%02x", params.level);
+        GameAnimations animations = {guy.get(), enemy.get(), seekerEnemy.get(), guffin.get(), fireBall.get(), jetPack.get()};
+
+        Game game(gfx.get(), sound.get(), music.get(), tiles.get(), animations, "%02x%02x", params.level);
 
         if (params.dumpLevelImages)
         {
@@ -140,17 +138,18 @@ int main(int argc, char* argv[])
             }
         }
         
-
         frameCounter = game.getFrameCount();
     }
     catch(const Exception& e)
     {
+
         fprintf(stderr, "Exception: %s\n", e.what());
         fprintf(stderr, "errno: %d\n", errno);
         return 1;
     }
     catch(...)
     {
+
         fprintf(stderr, "Unknown exception.");
         return 1;
     }

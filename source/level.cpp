@@ -23,10 +23,11 @@ enum LayerType
     LAYER_GUFFIN_GATE = 6,
     LAYER_BOSS1    = 7,
     LAYER_PLAY_TIME = 8,
+    LAYER_MUSIC    = 9,
 };
 
 
-Level::Level(const char* mapFilename, shared_ptr<ImageBase> tilesImage,
+Level::Level(const char* mapFilename, ImageBase* tilesImage,
              int16_t tileWidth, int16_t tileHeight,
              int16_t offsetX, int16_t offsetY) :
     m_tilesImage(tilesImage),
@@ -35,13 +36,17 @@ Level::Level(const char* mapFilename, shared_ptr<ImageBase> tilesImage,
     m_offsetX(offsetX),
     m_offsetY(offsetY),
     m_guffinGate(10),
-    m_sun(-1, -1)
+    m_sun(-1, -1),
+    m_musicIndex(0)
 {
     FILE* fp = fopen(mapFilename, "rb");
     if (!fp)
     {
         throw Exception("Could not open file:", mapFilename);
     }
+
+
+
 
     const char* header = "MAP";
 
@@ -160,10 +165,14 @@ Level::Level(const char* mapFilename, shared_ptr<ImageBase> tilesImage,
                 m_playTime.push_back(rect);
                 break;
             }
+            case LAYER_MUSIC:
+            {
+                fread(&m_musicIndex, sizeof(m_musicIndex), 1, fp);
+                break;
+            }
             default: // skip unknown layers
                 fseek(fp, layerDataSize, SEEK_CUR);
         }
-
     }
 
     fclose(fp);

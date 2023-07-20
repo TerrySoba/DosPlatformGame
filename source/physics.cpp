@@ -12,7 +12,7 @@ int16_t JETPACK_THRUST_TABLE[] = {
 #define JETPACK_THRUST_TABLE_SIZE 40
 
 
-Physics::Physics(PhysicsCallback* callback, shared_ptr<SoundController> sound) :
+Physics::Physics(PhysicsCallback* callback, SoundController* sound) :
     m_callback(callback), m_sound(sound), m_jetpackActive(false), m_lastFrameJetpackActive(false)
 {
     m_rightLevelTransition = Rectangle(316, 0, 4, 200);

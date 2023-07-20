@@ -9,7 +9,7 @@ class TgaImage : public ImageBase
 {
 public:
     TgaImage(const char* filename);
-    ~TgaImage();
+    virtual ~TgaImage();
 
     virtual int16_t width() const;
 	virtual int16_t height() const;

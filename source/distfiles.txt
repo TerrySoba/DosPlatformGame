@@ -3,7 +3,9 @@ game2.exe
 title.exe
 ../text/strings.en
 ../text/strings.de
-../music/CELT.RAD
+../music/FIRST.RAD
+../music/SECOND.RAD
+../music/THIRD.RAD
 ../images/tiles.tga
 ../images/guy.tga
 ../images/guy.ani

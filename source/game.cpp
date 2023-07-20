@@ -20,15 +20,17 @@
 
 #include <stdio.h>
 
-Game::Game(shared_ptr<VgaGfx> vgaGfx, shared_ptr<SoundController> sound,
-           shared_ptr<ImageBase> tiles,
+Game::Game(VgaGfx* vgaGfx, SoundController* sound,
+           MusicController* music,
+           ImageBase* tiles,
            GameAnimations animations,
            const char* levelBasename, LevelNumber startLevel) :
     m_vgaGfx(vgaGfx), m_tiles(tiles), m_animations(animations), m_frames(0), m_levelBasename(levelBasename),
-    m_animationController(animations.actorAnimation, sound), m_lastButtonPressed(false), m_sound(sound),
+    m_animationController(animations.actorAnimation, sound), m_lastButtonPressed(false), m_sound(sound), m_music(music),
     m_jetpackCollected(0), m_sunItemCollected(0), m_button1(0), m_levelMustReload(false), m_deathCounter(0),
-    m_frameCounter(0)
+    m_frameCounter(0), m_physics(0)
 {
+
     m_nextLevel.x = -1;
     m_nextLevel.y = -1;
 
@@ -44,7 +46,9 @@ Game::Game(shared_ptr<VgaGfx> vgaGfx, shared_ptr<SoundController> sound,
         m_button1 = state.button1;
         m_deathCounter = state.deathCounter;
         m_frameCounter = state.frameCounter;
+
         loadLevel(state.level, ActorPosition::LevelTransition);   
+
         m_physics->setSpawnPoint(state.spawnPoint);
         drawAppleCount();
         drawDeathCount();
@@ -52,6 +56,14 @@ Game::Game(shared_ptr<VgaGfx> vgaGfx, shared_ptr<SoundController> sound,
     else
     {
         loadLevel(startLevel, ActorPosition::UseSpawnPoint);
+    }
+}
+
+Game::~Game()
+{
+    if (m_physics)
+    {
+        delete m_physics;
     }
 }
 
@@ -92,8 +104,10 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
         }
     }
 
-
     Level level(levelMap.c_str(), m_tiles, 16, 16, -8, -8);
+
+    m_music->playMusic((SongIndex)level.getMusicIndex());
+
     m_animations.actorAnimation->useTag("LoopR");
 
 
@@ -102,7 +116,7 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     {
         m_physics->getActorPos(m_player, actorPosX, actorPosY);
     }
-    else if (m_physics.get() == 0 || actorPosition == ActorPosition::UseSpawnPoint)
+    else if (m_physics == 0 || actorPosition == ActorPosition::UseSpawnPoint)
     {
         // so no previous position existed, or use of spawn point was explicitly requested
         // because of that we just put the actor to the defined spawn point of the level
@@ -201,8 +215,11 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     }
 
 
-    m_physics.reset(); // reset first, so we do not have two instances of physics at once
-    m_physics = shared_ptr<Physics>(new Physics(this, m_sound));
+    if (m_physics)
+    {
+        delete m_physics; // delete first, so we do not have two instances of physics at once
+    }
+    m_physics = new Physics(this, m_sound);
     Actor actor;
     actor.rect.x = actorPosX;
     actor.rect.y = actorPosY;
@@ -268,7 +285,11 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     m_vgaGfx->clear();
 
     
+
+
     m_vgaGfx->drawBackground(level, -8, -8);
+
+
 
     tnd::vector<MessageBox> messageBoxes = level.getMessageBoxes();
     for (int i = 0; i < messageBoxes.size(); ++i) {

@@ -113,6 +113,16 @@ if __name__ == "__main__":
         except:
             pass
 
+    # read music property
+    music = None
+    musicElement = root.find("./properties/property[@name='music']")
+
+    if musicElement is not None:
+        try:
+            music = int(musicElement.attrib["value"])
+        except:
+            pass
+
     # output filename
     base_name = os.path.splitext(sys.argv[1])[0]
 
@@ -127,6 +137,7 @@ if __name__ == "__main__":
         "guffin_gate" : 6,
         "boss1"       : 7,
         "play_time"   : 8,
+        "music"       : 9,
     }
 
 
@@ -135,6 +146,9 @@ if __name__ == "__main__":
 
         layerCount = len(layers) + len(objectLayers)
         if guffinGate is not None:
+            layerCount = layerCount + 1
+
+        if music is not None:
             layerCount = layerCount + 1
 
         map_file.write(struct.pack("<H", layerCount))  # no. of layers
@@ -170,6 +184,13 @@ if __name__ == "__main__":
             layerData = bytearray()
             layerData += struct.pack("<H", guffinGate)
             map_file.write(struct.pack("B", layerTypeMap["guffin_gate"]))  # layer type
+            map_file.write(struct.pack("<H", len(layerData)))           # size of layer
+            map_file.write(layerData)
+
+        if music is not None:
+            layerData = bytearray()
+            layerData += struct.pack("<H", music)
+            map_file.write(struct.pack("B", layerTypeMap["music"]))
             map_file.write(struct.pack("<H", len(layerData)))           # size of layer
             map_file.write(layerData)
 
