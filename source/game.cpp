@@ -2,8 +2,6 @@
 #include "keyboard.h"
 #include "level.h"
 #include "image_base.h"
-#include "animation.h"
-#include "vgagfx.h"
 #include "physics.h"
 #include "version.h"
 #include "vector.h"
@@ -14,8 +12,6 @@
 #include "text.h"
 #include "i18n.h"
 #include "tile_definitions.h"
-#include "fire_ball.h"
-#include "seeker_enemy.h"
 #include "time_tools.h"
 
 #include <stdio.h>
@@ -150,7 +146,7 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     tnd::vector<Rectangle> enemyRectangles = level.getEnemies();
     for (int i = 0; i < enemyRectangles.size(); ++i)
     {
-        m_enemies.push_back(shared_ptr<Enemy>(new Enemy(enemyRectangles[i], m_animations.enemyAnimation)));
+        m_enemies.push_back(new Enemy(enemyRectangles[i], m_animations.enemyAnimation));
     }
 
     // now load seeker enemies
@@ -158,7 +154,7 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     tnd::vector<Rectangle> seekerEnemyRectangles = level.getSeekerEnemies();
     for (int i = 0; i < seekerEnemyRectangles.size(); ++i)
     {
-        m_seekerEnemies.push_back(shared_ptr<SeekerEnemy>(new SeekerEnemy(seekerEnemyRectangles[i], m_animations.seekerEnemyAnimation)));
+        m_seekerEnemies.push_back(new SeekerEnemy(seekerEnemyRectangles[i], m_animations.seekerEnemyAnimation));
     }
 
 
@@ -167,7 +163,7 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     tnd::vector<Rectangle> fireBalls = level.getFireBalls();
     for (int i = 0; i < fireBalls.size(); ++i)
     {
-        m_fireBalls.push_back(shared_ptr<FireBall>(new FireBall(fireBalls[i], m_animations.fireBallAnimation)));
+        m_fireBalls.push_back(new FireBall(fireBalls[i], m_animations.fireBallAnimation));
     }
 
     m_guffins.clear();
@@ -211,7 +207,7 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     // create boss1 instances
     for (int i = 0; i < boss1Rects.size(); ++i)
     {
-        m_boss1.push_back(shared_ptr<Boss1>(new Boss1(boss1Rects[i], m_animations.fireBallAnimation, level.getWalls())));
+        m_boss1.push_back(new Boss1(boss1Rects[i], m_animations.fireBallAnimation, level.getWalls()));
     }
 
 
@@ -459,24 +455,27 @@ void Game::drawFrame()
 
     for (int i = 0; i < m_enemies.size(); ++i)
     {
-        m_enemies[i]->walk();
-        Rectangle enemy = m_enemies[i]->getPos();
+        Enemy* enemyPtr = m_enemies[i].get();
+        enemyPtr->walk();
+        Rectangle enemy = enemyPtr->getPos();
         enemyDeath.push_back(enemy);
         m_vgaGfx->draw(*m_animations.enemyAnimation, SUBPIXEL_TO_PIXEL(enemy.x), SUBPIXEL_TO_PIXEL(enemy.y));
     }
 
     for (int i = 0; i < m_seekerEnemies.size(); ++i)
     {
-        m_seekerEnemies[i]->walk(Rectangle(playerX, playerY, 1, 1));
-        Rectangle enemy = m_seekerEnemies[i]->getPos();
+        SeekerEnemy* enemyPtr = m_seekerEnemies[i].get();
+        enemyPtr->walk(Rectangle(playerX, playerY, 1, 1));
+        Rectangle enemy = enemyPtr->getPos();
         enemyDeath.push_back(enemy);
         m_vgaGfx->draw(*m_animations.seekerEnemyAnimation, SUBPIXEL_TO_PIXEL(enemy.x), SUBPIXEL_TO_PIXEL(enemy.y));
     }
 
     for (int i = 0; i < m_fireBalls.size(); ++i)
     {
-        m_fireBalls[i]->walk();
-        Rectangle enemy = m_fireBalls[i]->getPos();
+        FireBall* enemyPtr = m_fireBalls[i].get();
+        enemyPtr->walk();
+        Rectangle enemy = enemyPtr->getPos();
         enemyDeath.push_back(enemy);
         m_vgaGfx->draw(*m_animations.fireBallAnimation, SUBPIXEL_TO_PIXEL(enemy.x), SUBPIXEL_TO_PIXEL(enemy.y));
     }
@@ -502,8 +501,9 @@ void Game::drawFrame()
     // iterate over boss1 instances and call walk() on them
     for (int i = 0; i < m_boss1.size(); ++i)
     {
-        m_boss1[i]->walk(Rectangle(playerX, playerY, 1, 1));
-        tnd::vector<Rectangle> projectiles = m_boss1[i]->getProjectiles();
+        Boss1* boss1Ptr = m_boss1[i].get();
+        boss1Ptr->walk(Rectangle(playerX, playerY, 1, 1));
+        tnd::vector<Rectangle> projectiles = boss1Ptr->getProjectiles();
 
         // draw projectiles
         for (int j = 0; j < projectiles.size(); ++j)

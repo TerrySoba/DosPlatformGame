@@ -1,8 +1,9 @@
 #include "unit_test.h"
 #include "shared_ptr.h"
 
-
 #include <stdio.h>
+
+using namespace tnd;
 
 static bool s_destructorRan = false;
 

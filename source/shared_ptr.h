@@ -1,8 +1,8 @@
 #ifndef SHARED_PTR_INCLUDED
 #define SHARED_PTR_INCLUDED
 
-
-// #error This should not be used!
+namespace tnd // TaNDy game
+{
 
 template <class T>
 struct shared_ptr_storage
@@ -113,5 +113,7 @@ private:
 private:
     shared_ptr_storage<ValueT>* m_storage;
 };
+
+} // namespace tnd
 
 #endif

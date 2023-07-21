@@ -5,19 +5,17 @@
 #include "physics_event.h"
 #include "tiny_string.h"
 #include "actor_animation_controller.h"
-#include "enemy.h"
-#include "fire_ball.h"
 #include "sound_controller.h"
-#include "boss1.h"
 #include "music_controller.h"
 #include "shared_ptr.h"
+#include "animation.h"
+#include "vgagfx.h"
+#include "enemy.h"
+#include "seeker_enemy.h"
+#include "fire_ball.h"
+#include "rectangle.h"
+#include "boss1.h"
 
-// forward declarations
-class VgaGfx;
-class ImageBase;
-class Animation;
-class CompiledSprite;
-class SeekerEnemy;
 
 namespace ActorPosition
 {
@@ -96,10 +94,10 @@ private:
 	VgaGfx* m_vgaGfx;
 	ImageBase* m_tiles;
 	GameAnimations m_animations;
-	tnd::vector<shared_ptr<Enemy> > m_enemies;
-	tnd::vector<shared_ptr<SeekerEnemy> > m_seekerEnemies;
-	tnd::vector<shared_ptr<FireBall> > m_fireBalls;
-	tnd::vector<shared_ptr<Boss1> > m_boss1;
+	tnd::vector<tnd::shared_ptr<Enemy> > m_enemies;
+	tnd::vector<tnd::shared_ptr<SeekerEnemy> > m_seekerEnemies;
+	tnd::vector<tnd::shared_ptr<FireBall> > m_fireBalls;
+	tnd::vector<tnd::shared_ptr<Boss1> > m_boss1;
 	tnd::vector<Rectangle> m_guffins;
 	tnd::vector<Rectangle> m_jetPacks;
 	tnd::vector<Rectangle> m_sunItems;
