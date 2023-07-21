@@ -12,7 +12,7 @@ objects_test = \
     $(objects_game_lib) test_main.o unit_test.o \
 	physics_test.o tga_image_test.o shared_ptr_test.o \
 	blit_test.o vector_test.o rectangle_test.o tiny_string_test.o animation_test.o \
-	text_layout_test.o i18n_test.o level_test.o raii_ptr_test.o 
+	text_layout_test.o i18n_test.o level_test.o raii_ptr_test.o ptr_vector_test.o
 	
 
 title_screen = \

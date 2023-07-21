@@ -455,7 +455,7 @@ void Game::drawFrame()
 
     for (int i = 0; i < m_enemies.size(); ++i)
     {
-        Enemy* enemyPtr = m_enemies[i].get();
+        Enemy* enemyPtr = m_enemies[i];
         enemyPtr->walk();
         Rectangle enemy = enemyPtr->getPos();
         enemyDeath.push_back(enemy);
@@ -464,7 +464,7 @@ void Game::drawFrame()
 
     for (int i = 0; i < m_seekerEnemies.size(); ++i)
     {
-        SeekerEnemy* enemyPtr = m_seekerEnemies[i].get();
+        SeekerEnemy* enemyPtr = m_seekerEnemies[i];
         enemyPtr->walk(Rectangle(playerX, playerY, 1, 1));
         Rectangle enemy = enemyPtr->getPos();
         enemyDeath.push_back(enemy);
@@ -473,7 +473,7 @@ void Game::drawFrame()
 
     for (int i = 0; i < m_fireBalls.size(); ++i)
     {
-        FireBall* enemyPtr = m_fireBalls[i].get();
+        FireBall* enemyPtr = m_fireBalls[i];
         enemyPtr->walk();
         Rectangle enemy = enemyPtr->getPos();
         enemyDeath.push_back(enemy);
@@ -501,7 +501,7 @@ void Game::drawFrame()
     // iterate over boss1 instances and call walk() on them
     for (int i = 0; i < m_boss1.size(); ++i)
     {
-        Boss1* boss1Ptr = m_boss1[i].get();
+        Boss1* boss1Ptr = m_boss1[i];
         boss1Ptr->walk(Rectangle(playerX, playerY, 1, 1));
         tnd::vector<Rectangle> projectiles = boss1Ptr->getProjectiles();
 
