@@ -50,6 +50,14 @@ void sortRects(tnd::vector<Rectangle>& rects)
     qsort(&rects[0], rects.size(), sizeof(Rectangle), compareRectangles);
 }
 
+
+// convert RGB to grayscale according to rec601 luma
+uint8_t rgbToGray(uint8_t r, uint8_t g, uint8_t b)
+{
+    return 0.299 * r + 0.587 * g + 0.114 * b;
+}
+
+
 /**
  * Sets the default VGA palette.
  * 
@@ -66,6 +74,16 @@ void setDefaultVgaPalette()
         outp(0x3C9, rgbiColors[i * 3 + 2] >> 2);
         outp(0x3C9, rgbiColors[i * 3 + 1] >> 2);
         outp(0x3C9, rgbiColors[i * 3 + 0] >> 2);
+    }
+
+    // set the following 16 colors to an inverted grayscale versions of the first 16 colors
+    // This pallette is used by the death animation of the game.
+    for (int i = 0; i < 16; ++i)
+    {
+        uint8_t gray = (255 - rgbToGray(rgbiColors[i * 3 + 2], rgbiColors[i * 3 + 1], rgbiColors[i * 3 + 0])) * 0.75;
+        outp(0x3C9, gray >> 2);
+        outp(0x3C9, gray >> 2);
+        outp(0x3C9, gray >> 2);
     }
 }
 
@@ -236,4 +254,28 @@ void convertToTga(char far* data, const char* filename)
 void VgaGfx::saveAsTgaImage(const char* filename)
 {
     convertToTga(screen, filename);
+}
+
+void VgaGfx::drawDeathEffect()
+{
+    for (int y = 0; y < SCREEN_H; ++y)
+    {
+        if ((y % 6) == 0) vsync();
+        char *line = getScreenLine(y);
+
+        for (int x = 0; x < SCREEN_W; ++x)
+        {
+            line[x] = (line[x] + 16);
+        }
+    }
+    for (int y = 0; y < SCREEN_H; ++y)
+    {
+        if ((y % 6) == 0) vsync();
+        char *line = getScreenLine(y);
+
+        for (int x = 0; x < SCREEN_W; ++x)
+        {
+            line[x] = (line[x] - 16);
+        }
+    }
 }

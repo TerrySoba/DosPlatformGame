@@ -426,6 +426,7 @@ void Game::onDeath()
 {
     ++m_deathCounter;
     drawDeathCount();
+    m_vgaGfx->drawDeathEffect();
 }
 
 void Game::drawFrame()

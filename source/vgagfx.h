@@ -27,6 +27,8 @@ public:
 	
 	void saveAsTgaImage(const char* filename);
 
+	void drawDeathEffect();
+
 private:
 	char* m_backgroundImage;
 	char* m_screenBuffer;
