@@ -302,7 +302,7 @@ void VgaGfx::drawDeathEffect()
 {
     for (int y = 0; y < SCREEN_H; ++y)
     {
-        if ((y % 12) == 0) vsync();
+        if ((y % 15) == 0) vsync();
         char *line = getScreenLine(y);
 
         for (int x = 0; x < SCREEN_W; ++x)
@@ -314,7 +314,7 @@ void VgaGfx::drawDeathEffect()
     m_greyFramesLeft = DEATH_ANIMATION_PALETTE_FRAMES - 1;
     for (int y = 0; y < SCREEN_H; ++y)
     {
-        if ((y % 12) == 0) vsync();
+        if ((y % 15) == 0) vsync();
         char *line = getScreenLine(y);
 
         for (int x = 0; x < SCREEN_W; ++x)
