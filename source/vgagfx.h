@@ -34,6 +34,8 @@ private:
 	char* m_screenBuffer;
 	tnd::vector<Rectangle> m_undrawnRects;
 	tnd::vector<Rectangle> m_dirtyRects;
+
+	uint8_t m_greyFramesLeft;
 };
 
 

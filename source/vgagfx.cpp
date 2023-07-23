@@ -54,7 +54,8 @@ void sortRects(tnd::vector<Rectangle>& rects)
 // convert RGB to grayscale according to rec601 luma
 uint8_t rgbToGray(uint8_t r, uint8_t g, uint8_t b)
 {
-    return 0.299 * r + 0.587 * g + 0.114 * b;
+    // return 0.299 * r + 0.587 * g + 0.114 * b; // rec601 luma
+    return 0.133 * r + 0.433 * g + 0.433 * b; // more artistic luma
 }
 
 
@@ -87,8 +88,26 @@ void setDefaultVgaPalette()
     }
 }
 
+// 64 == 100% grey
+// 0  == color
+void setInBetweenPalette(uint8_t factor)
+{
+    float f1 = factor / 64.0f;
+    float f2 = 1.0f - f1;
 
-VgaGfx::VgaGfx()
+    outp(0x3C8, 0);
+    for (int i = 0; i < 16; ++i)
+    {
+        uint8_t gray = rgbToGray(rgbiColors[i * 3 + 2], rgbiColors[i * 3 + 1], rgbiColors[i * 3 + 0]);
+        outp(0x3C9, (uint8_t(gray * f1) + uint8_t(rgbiColors[i * 3 + 2] * f2)) >> 2);
+        outp(0x3C9, (uint8_t(gray * f1) + uint8_t(rgbiColors[i * 3 + 1] * f2)) >> 2);
+        outp(0x3C9, (uint8_t(gray * f1) + uint8_t(rgbiColors[i * 3 + 0] * f2)) >> 2);        
+    }
+}
+
+
+VgaGfx::VgaGfx() :
+    m_greyFramesLeft(0)
 {
     long int screenBytes = SCREEN_W * SCREEN_H;
 
@@ -180,6 +199,11 @@ void VgaGfx::clear()
 void VgaGfx::drawScreen()
 {   
     vsync();
+    if (m_greyFramesLeft > 0)
+    {
+        setInBetweenPalette(m_greyFramesLeft);
+        --m_greyFramesLeft;
+    }
 
     // todo: Create minimal set of rectangles to redraw.
 
@@ -268,6 +292,8 @@ void VgaGfx::drawDeathEffect()
             line[x] = (line[x] + 16);
         }
     }
+    setInBetweenPalette(64);
+    m_greyFramesLeft = 64;
     for (int y = 0; y < SCREEN_H; ++y)
     {
         if ((y % 6) == 0) vsync();
