@@ -88,27 +88,44 @@ void setDefaultVgaPalette()
     }
 }
 
-// 64 == 100% grey
-// 0  == color
-void setInBetweenPalette(uint8_t factor)
+void setInBetweenPalette(uint8_t frame, uint8_t* paletteAnimation)
 {
-    float f1 = factor / 64.0f;
-    float f2 = 1.0f - f1;
-
-    outp(0x3C8, 0);
-    for (int i = 0; i < 16; ++i)
+    if (frame >= DEATH_ANIMATION_PALETTE_FRAMES)
     {
-        uint8_t gray = rgbToGray(rgbiColors[i * 3 + 2], rgbiColors[i * 3 + 1], rgbiColors[i * 3 + 0]);
-        outp(0x3C9, (uint8_t(gray * f1) + uint8_t(rgbiColors[i * 3 + 2] * f2)) >> 2);
-        outp(0x3C9, (uint8_t(gray * f1) + uint8_t(rgbiColors[i * 3 + 1] * f2)) >> 2);
-        outp(0x3C9, (uint8_t(gray * f1) + uint8_t(rgbiColors[i * 3 + 0] * f2)) >> 2);        
+        return;
+    }
+    outp(0x3C8, 0);
+    for (int i = frame * DEATH_ANIMATION_PALETTE_BYTES;
+         i < (frame + 1) * DEATH_ANIMATION_PALETTE_BYTES;
+         ++i)
+    {
+        outp(0x3C9, paletteAnimation[i]);
     }
 }
 
+void createDeathAnimationPaletteAnimation(uint8_t* paletteAnimation)
+{
+    uint16_t pos = 0;
+    for (int frame = 0; frame < DEATH_ANIMATION_PALETTE_FRAMES; ++frame)
+    {
+        float f1 = frame / (float)DEATH_ANIMATION_PALETTE_FRAMES;
+        float f2 = 1.0f - f1;
+
+        for (int i = 0; i < DEATH_ANIMATION_PALETTE_ENTRIES; ++i)
+        {
+            uint8_t gray = rgbToGray(rgbiColors[i * 3 + 2], rgbiColors[i * 3 + 1], rgbiColors[i * 3 + 0]);
+            paletteAnimation[pos++] = (uint8_t(gray * f1) + uint8_t(rgbiColors[i * 3 + 2] * f2)) >> 2;
+            paletteAnimation[pos++] = (uint8_t(gray * f1) + uint8_t(rgbiColors[i * 3 + 1] * f2)) >> 2;
+            paletteAnimation[pos++] = (uint8_t(gray * f1) + uint8_t(rgbiColors[i * 3 + 0] * f2)) >> 2;
+        }
+    }
+}
 
 VgaGfx::VgaGfx() :
     m_greyFramesLeft(0)
 {
+    m_greyPaletteAnimation = new uint8_t[DEATH_ANIMATION_PALETTE_BYTES * DEATH_ANIMATION_PALETTE_FRAMES];
+    createDeathAnimationPaletteAnimation(m_greyPaletteAnimation);
     long int screenBytes = SCREEN_W * SCREEN_H;
 
     m_backgroundImage = new char[screenBytes];
@@ -127,6 +144,7 @@ VgaGfx::VgaGfx() :
 
 VgaGfx::~VgaGfx()
 {
+    delete[] m_greyPaletteAnimation;
     delete[] m_screenBuffer;
     delete[] m_backgroundImage;
 
@@ -201,7 +219,7 @@ void VgaGfx::drawScreen()
     vsync();
     if (m_greyFramesLeft > 0)
     {
-        setInBetweenPalette(m_greyFramesLeft);
+        setInBetweenPalette(m_greyFramesLeft, m_greyPaletteAnimation);
         --m_greyFramesLeft;
     }
 
@@ -292,8 +310,8 @@ void VgaGfx::drawDeathEffect()
             line[x] = (line[x] + 16);
         }
     }
-    setInBetweenPalette(64);
-    m_greyFramesLeft = 64;
+    setInBetweenPalette(DEATH_ANIMATION_PALETTE_FRAMES - 1, m_greyPaletteAnimation);
+    m_greyFramesLeft = DEATH_ANIMATION_PALETTE_FRAMES - 1;
     for (int y = 0; y < SCREEN_H; ++y)
     {
         if ((y % 6) == 0) vsync();

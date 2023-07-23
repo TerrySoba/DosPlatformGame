@@ -7,6 +7,11 @@
 #include "drawable.h"
 #include "rectangle.h"
 
+#include <stdint.h>
+
+static const uint16_t DEATH_ANIMATION_PALETTE_FRAMES = 16;
+static const uint16_t DEATH_ANIMATION_PALETTE_ENTRIES = 16;
+static const uint16_t DEATH_ANIMATION_PALETTE_BYTES = DEATH_ANIMATION_PALETTE_ENTRIES * 3;
 
 class VgaGfx
 {
@@ -35,7 +40,9 @@ private:
 	tnd::vector<Rectangle> m_undrawnRects;
 	tnd::vector<Rectangle> m_dirtyRects;
 
+	// variables needed to the death effect
 	uint8_t m_greyFramesLeft;
+	uint8_t* m_greyPaletteAnimation;
 };
 
 
