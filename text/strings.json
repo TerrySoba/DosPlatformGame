@@ -207,6 +207,18 @@
         "en": "Looks important!",
         "de": "Sieh wichtig aus!"
     },
+    "82": {
+        "en": "Please read thoroughly!",
+        "de": "Bitte gründlich lesen!"
+    },
+    "83": {
+        "en": "Rising tension",
+        "de": "Die Spannung steigt"
+    },
+    "84": {
+        "en": "Floating rocks",
+        "de": "Schwebende Felsen"
+    },
     "129": {
         "en": "Underground stream",
         "de": "Unterirdischer Fluss"
@@ -227,9 +239,21 @@
         "en": "A bridge in the sky",
         "de": "Eine Brücke in der Luft"
     },
+    "134": {
+        "en": "You'll not make that.. Yet?",
+        "de": "Das schaffst du nicht... Noch nicht!"
+    },
     "135": {
         "en": "Light and Shadow",
         "de": "Licht und Schatten"
+    },
+    "137": {
+        "en": "More bridge pillars",
+        "de": "Noch mehr Brückenpfeiler"
+    },
+    "136": {
+        "en": "Bridge pillars",
+        "de": "Brückenpfeiler"
     },
     "139": {
         "en": "Going down!",
@@ -238,6 +262,10 @@
     "144": {
         "en": "Maintenance shaft",
         "de": "Wartungsschacht"
+    },
+    "148": {
+        "en": "Transition",
+        "de": "Übergang"
     },
     "193": {
         "en": "Way back",
@@ -259,22 +287,6 @@
         "en": "Too many apples?",
         "de": "Zu viele Äpfel?"
     },
-    "208": {
-        "en": "Reactor access",
-        "de": "Reaktorzugang"
-    },
-    "209": {
-        "en": "Source of evil?",
-        "de": "Quelle des Bösen?"
-    },
-    "137": {
-        "en": "More bridge pillars",
-        "de": "Noch mehr Brückenpfeiler"
-    },
-    "136": {
-        "en": "Bridge pillars",
-        "de": "Brückenpfeiler"
-    },
     "200": {
         "en": "Access Tunnel",
         "de": "Zugangstunnel"
@@ -287,6 +299,10 @@
         "en": "Is this the bottom?",
         "de": "Ist dies die Talsohle?"
     },
+    "205": {
+        "en": "Dead end 2",
+        "de": "Sackgasse 2"
+    },
     "206": {
         "en": "The end?",
         "de": "Das Ende?"
@@ -294,6 +310,38 @@
     "207": {
         "en": "Second phase",
         "de": "Zweite Phase"
+    },
+    "208": {
+        "en": "Reactor access",
+        "de": "Reaktorzugang"
+    },
+    "209": {
+        "en": "Source of evil?",
+        "de": "Quelle des Bösen?"
+    },
+    "212": {
+        "en": "Tricky jump",
+        "de": "Kniffliger Sprung"
+    },
+    "257": {
+        "en": "Apple reward",
+        "de": "Apfelbelohnung"
+    },
+    "258": {
+        "en": "Labyrinth reloaded",
+        "de": "Labyrinth reloaded"
+    },
+    "259": {
+        "en": "Blocked way",
+        "de": "Versperrter Weg"
+    },
+    "260": {
+        "en": "Three ponds",
+        "de": "Drei Tümpel"
+    },
+    "261": {
+        "en": "New jumping technique",
+        "de": "Neue Sprungtechnik"
     },
     "262": {
         "en": "Rhythm no. 2",
@@ -328,12 +376,60 @@
         "de": "Renovierung?"
     },
     "271": {
-        "en": "Remember the second action button?",
-        "de": "Erinnerst du dich an den zweiten Aktionsknopf?"
+        "en": "You might have to come back for this...",
+        "de": "Du musst vielleicht später zurückkommen..."
+    },
+    "272": {
+        "en": "Lively bouncer",
+        "de": "Lebhafter Türsteher"
     },
     "273": {
         "en": "A place to hide",
         "de": "Das Versteck"
+    },
+    "274": {
+        "en": "Up and down",
+        "de": "Auf und ab"
+    },
+    "275": {
+        "en": "Air control",
+        "de": "Luftkontrolle"
+    },
+    "276": {
+        "en": "Upwards",
+        "de": "Aufwärts"
+    },
+    "321": {
+        "en": "The switch",
+        "de": "Der Schalter"
+    },
+    "322": {
+        "en": "Low ceiling jumps",
+        "de": "Sprünge mit niedriger Decke"
+    },
+    "323": {
+        "en": "Technique",
+        "de": "Technik"
+    },
+    "324": {
+        "en": "Move along",
+        "de": "Weitergehen"
+    },
+    "325": {
+        "en": "Tutorial",
+        "de": "Tutorial"
+    },
+    "326": {
+        "en": "Go left first!",
+        "de": "Geh zuerst nach links!"
+    },
+    "327": {
+        "en": "Highway to the city",
+        "de": "Straße in die Stadt"
+    },
+    "328": {
+        "en": "Roadblock",
+        "de": "Straßensperre"
     },
     "329": {
         "en": "Ray of hope",
@@ -342,6 +438,50 @@
     "330": {
         "en": "One way tunnel",
         "de": "Einbahntunnel"
+    },
+    "385": {
+        "en": "Death trap",
+        "de": "Todesfalle"
+    },
+    "386": {
+        "en": "Just some screen :)",
+        "de": "Nur ein Bildschirm :)"
+    },
+    "387": {
+        "en": "Sky underground",
+        "de": "Himmel unter der Erde"
+    },
+    "388": {
+        "en": "Do you understand the \"gravity\" of the situation?",
+        "de": "Bist du dir der \"Schwere\" der Situation bewusst?"
+    },
+    "389": {
+        "en": "Nothing to see here",
+        "de": "Hier gibt es nichts zu sehen"
+    },
+    "390": {
+        "en": "Final Gauntlet?",
+        "de": "Letzte Herausforderung?"
+    },
+    "391": {
+        "en": "Ghost or Cat?",
+        "de": "Geist oder Katze?"
+    },
+    "392": {
+        "en": "Difficulty spike",
+        "de": "Stachelige Angelegenheit"
+    },
+    "393": {
+        "en": "Fire labyrinth",
+        "de": "Feuerlabyrinth"
+    },
+    "394": {
+        "en": "Penultimate challenge",
+        "de": "Vorletzte Herausforderung"
+    },
+    "395": {
+        "en": "Are you ready?",
+        "de": "Bist du bereit?"
     },
     "396": {
         "en": "Evil Boss",
