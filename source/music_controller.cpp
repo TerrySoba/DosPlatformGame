@@ -19,6 +19,7 @@ MusicController::~MusicController()
 
 void MusicController::playMusic(SongIndex index)
 {
+    return;
     // do not reload music if it is already playing
     if (index == MUSIC_INDEX_NO_CHANGE || index == m_currentSong)
     {
