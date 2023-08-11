@@ -14,6 +14,18 @@ SoundController::SoundController() :
     m_switchSound = m_sb.loadVocFile("SWITCH2.VOC");
 }
 
+SoundController::~SoundController()
+{
+    m_sb.freeSample(m_jumpSound);
+    m_sb.freeSample(m_deathSound);
+    m_sb.freeSample(m_walkSound);
+    m_sb.freeSample(m_standSound);
+    m_sb.freeSample(m_guffinSound);
+    m_sb.freeSample(m_jetpackSound);
+    m_sb.freeSample(m_switchSound);
+}
+
+
 
 #define priority(x) ((x) > (m_soundPriority) || !m_sb.isPlaying())
 

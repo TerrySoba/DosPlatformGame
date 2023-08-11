@@ -20,7 +20,7 @@ static void* allignedMalloc(int size, void** origBlock = NULL)
 {
 	char* ptr = (char*)malloc(size + 16);
 	if (origBlock) *origBlock = (void*)ptr;
-	ptr += 16ul - ((uint32_t)ptr & 0xf);
+	ptr += 16ul - ((intptr_t)ptr & 0xf);
 	return (void*)ptr;
 }
 

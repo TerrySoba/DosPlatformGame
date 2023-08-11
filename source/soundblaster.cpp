@@ -383,6 +383,13 @@ const char* VOC_FILE_ID = "Creative Voice File\x1a\x1a\x00";
 const int VOC_FILE_ID_LENGTH = 22;
 
 
+void SoundBlaster::freeSample(SbSample& sample)
+{
+    free(sample.data);
+    sample.data = 0;
+    sample.length = 0;
+}
+
 SbSample SoundBlaster::loadVocFile(const char* filename)
 {
     FILE *rawFile = fopen(filename, "rb");

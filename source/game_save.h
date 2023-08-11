@@ -9,6 +9,8 @@ struct GameState
     GameState() :
         jetpackCollected(0), sunItemCollected(0), button1(0), deathCounter(0), frameCounter(0)
     {
+        level.x = 0;
+        level.y = 0;
     }
 
     LevelNumber level;

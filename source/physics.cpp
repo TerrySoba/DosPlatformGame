@@ -216,7 +216,10 @@ void Physics::calc()
                 actor.dx = 0;
                 actor.dy = 0;
                 m_sound->playDeathSound();
-                m_callback->onDeath();
+                if (m_callback)
+                {
+                    m_callback->onDeath();
+                }
             }
         }
 

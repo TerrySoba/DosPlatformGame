@@ -71,7 +71,7 @@ public:
 
     static SbSample loadRawSample(const char* filename, uint16_t sampleRate /* in Hz */);
     static SbSample loadVocFile(const char* filename);
-
+    static void freeSample(SbSample& sample);
 
     SbVersion getDspVersion();
 

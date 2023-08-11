@@ -49,6 +49,7 @@ std::vector<char> loadFile(const std::string& filename)
 
     if (!f)
     {
+        fclose(f);
         std::stringstream message;
         message << "Could not open file '" << filename << "' for reading.";
         throw std::runtime_error(message.str());
@@ -63,7 +64,8 @@ std::vector<char> loadFile(const std::string& filename)
 
     rewind(f);
     fread(buffer.data(), sizeof(char), size, f);
-
+    fclose(f);
+    
     return buffer;
 }
 

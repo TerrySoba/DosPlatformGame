@@ -7,6 +7,7 @@ class SoundController
 {
 public:
     SoundController();
+    ~SoundController();
 
     void playJumpSound();
     void playWalkSound();
