@@ -67,6 +67,22 @@ public:
         ++m_size;
     }
 
+    void resize(int newSize)
+    {
+        if (newSize > m_capacity)
+        {
+            ValueT* tmp = new ValueT[newSize];
+            m_capacity = newSize;
+            for (int i = 0; i < m_size; ++i)
+            {
+                tmp[i] = m_data[i];
+            }
+            delete[] m_data;
+            m_data = tmp;
+        }
+        m_size = newSize;
+    }
+
     void clear()
     {
         m_size = 0;

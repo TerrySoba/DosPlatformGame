@@ -44,3 +44,26 @@ TEST(VectorTestErase)
     ASSERT_TRUE(vec[1] == 3);
     ASSERT_TRUE(vec[2] == 4);
 }
+
+
+TEST(VectorResizeTest)
+{
+    tnd::vector<int> vec;
+    vec.push_back(1);
+    vec.push_back(2);
+    vec.push_back(3);
+    vec.push_back(4);
+
+    vec.resize(2);
+    ASSERT_TRUE(vec.size() == 2);
+    ASSERT_TRUE(vec[0] == 1);
+    ASSERT_TRUE(vec[1] == 2);
+
+
+    vec.resize(10);
+    ASSERT_TRUE(vec.size() == 10);
+    ASSERT_TRUE(vec[0] == 1);
+    ASSERT_TRUE(vec[1] == 2);
+    // elements 2, 3, 4 are undefined
+
+}

@@ -243,48 +243,36 @@ void Physics::calc()
         for (int n = 0; n < m_guffins.size(); ++n)
         {
             Rectangle& guffin = m_guffins[n];
-            if (intersectRect(guffin, actor.rect))
+            if (intersectRect(guffin, actor.rect) && m_callback)
             {
-                if (m_callback)
-                {
-                    m_callback->collectApple(Point(guffin.x, guffin.y));
-                }
+                m_callback->collectApple(Point(guffin.x, guffin.y));
             }
         }
 
         for (int n = 0; n < m_jetPacks.size(); ++n)
         {
             Rectangle& jetPack = m_jetPacks[n];
-            if (intersectRect(jetPack, actor.rect))
+            if (intersectRect(jetPack, actor.rect) && m_callback)
             {
-                if (m_callback)
-                {
-                    m_callback->collectJetPack(Point(jetPack.x, jetPack.y));
-                }
+                m_callback->collectJetPack(Point(jetPack.x, jetPack.y));
             }
         }
 
         for (int n = 0; n < m_sunItems.size(); ++n)
         {
             Rectangle& sunItem = m_sunItems[n];
-            if (intersectRect(sunItem, actor.rect))
+            if (intersectRect(sunItem, actor.rect) && m_callback)
             {
-                if (m_callback)
-                {
-                    m_callback->collectSunItem(Point(sunItem.x, sunItem.y));
-                }
+                m_callback->collectSunItem(Point(sunItem.x, sunItem.y));
             }
         }
 
         for (int n = 0; n < m_buttons.size(); ++n)
         {
             Button& button = m_buttons[n];
-            if (intersectRect(button, actor.rect))
+            if (intersectRect(button, actor.rect) && m_callback)
             {
-                if (m_callback)
-                {
-                    m_callback->touchButton(button.buttonId, button.buttonType);
-                }
+                m_callback->touchButton(button.buttonId, button.buttonType);
             }
         }
 

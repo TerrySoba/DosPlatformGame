@@ -42,7 +42,7 @@ void write16Bit(char* functionBuffer, size_t functionBufferSize, int& functionPo
     functionPos += 2;
 }
 
-enum CompilePass {
+enum {
     FIRST_COMPILE_PASS = 0,
     SECOND_COMPILE_PASS = 1
 };
