@@ -4,27 +4,41 @@
 
 #include <string.h>
 
-void write8Bit(char* function, int& functionPos, uint16_t offset, uint8_t data)
+const int WRITE_8BIT_SIZE = 5;
+const int WRITE_16BIT_SIZE = 6;
+
+
+void write8Bit(char* functionBuffer, size_t functionBufferSize, int& functionPos, uint16_t offset, uint8_t data)
 {
-    strcpy(function + functionPos, "\xC6\x87"); // mov    byte ptr offset[bx],data
+    if (functionPos + WRITE_8BIT_SIZE + 1 >= functionBufferSize)
+    {
+        return;
+    }
+
+    memcpy(functionBuffer + functionPos, "\xC6\x87", 2); // mov    byte ptr offset[bx],data
     functionPos += 2;
 
-    memcpy(function + functionPos, &offset, 2);
+    memcpy(functionBuffer + functionPos, &offset, 2);
     functionPos += 2;
 
-    *(function + functionPos) = data;
+    *(functionBuffer + functionPos) = data;
     functionPos += 1;
 }
 
-void write16Bit(char* function, int& functionPos, uint16_t offset, uint16_t data)
+void write16Bit(char* functionBuffer, size_t functionBufferSize, int& functionPos, uint16_t offset, uint16_t data)
 {
-    strcpy(function + functionPos, "\xC7\x87"); // mov    byte ptr offset[bx],data
+    if (functionPos + WRITE_8BIT_SIZE + 1 >= functionBufferSize)
+    {
+        return;
+    }
+
+    memcpy(functionBuffer + functionPos, "\xC7\x87", 2); // mov    byte ptr offset[bx],data
     functionPos += 2;
 
-    memcpy(function + functionPos, &offset, 2);
+    memcpy(functionBuffer + functionPos, &offset, 2);
     functionPos += 2;
 
-    memcpy(function + functionPos, &data, 2);
+    memcpy(functionBuffer + functionPos, &data, 2);
     functionPos += 2;
 }
 
@@ -49,16 +63,15 @@ DrawCompiledSpritePtr CompiledSprite::compileSprite(const PixelSource& image, in
         "\x5b"      // pop bx
         "\xcb";     // retf
 
-    const int WRITE_8BIT_SIZE = 5;
-    const int WRITE_16BIT_SIZE = 6;
-
     int transparentColor = image.transparentColor();
+    size_t functionBufferSize = 0;
 
     for (int pass = FIRST_COMPILE_PASS; pass <= SECOND_COMPILE_PASS; ++pass)
     {
         if (pass == SECOND_COMPILE_PASS)
         {
-            function = new char[functionSize + 10];
+            functionBufferSize = functionSize + strlen(functionHeader) + strlen(functionEnd) + 1; //  +1 for null terminator
+            function = new char[functionBufferSize];
             strcpy(function, functionHeader);
             functionPos = strlen(function);
         }
@@ -74,7 +87,7 @@ DrawCompiledSpritePtr CompiledSprite::compileSprite(const PixelSource& image, in
                     if (consecutivePixel == 1)
                     {
                         if (pass == FIRST_COMPILE_PASS) functionSize += WRITE_8BIT_SIZE;
-                        else write8Bit(function, functionPos, targetWidth * y + x - 1, lastPixel);
+                        else write8Bit(function, functionBufferSize, functionPos, targetWidth * y + x - 1, lastPixel);
                         consecutivePixel = 0;
                     }
                 }
@@ -84,7 +97,7 @@ DrawCompiledSpritePtr CompiledSprite::compileSprite(const PixelSource& image, in
                     else
                     {
                         if (pass == FIRST_COMPILE_PASS) functionSize += WRITE_16BIT_SIZE;
-                        else write16Bit(function, functionPos, targetWidth * y + x - 1, lastPixel | pixel << 8);
+                        else write16Bit(function, functionBufferSize, functionPos, targetWidth * y + x - 1, lastPixel | pixel << 8);
                         consecutivePixel = 0;
                     }
                 }
@@ -93,7 +106,7 @@ DrawCompiledSpritePtr CompiledSprite::compileSprite(const PixelSource& image, in
             if (consecutivePixel != 0)
             {
                 if (pass == FIRST_COMPILE_PASS) functionSize += WRITE_8BIT_SIZE;
-                else write8Bit(function, functionPos, targetWidth * y + image.width() - 1, lastPixel);
+                else write8Bit(function, functionBufferSize, functionPos, targetWidth * y + image.width() - 1, lastPixel);
             }
         }
     }
