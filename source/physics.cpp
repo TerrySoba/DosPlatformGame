@@ -233,7 +233,10 @@ void Physics::calc()
                 actor.dx = 0;
                 actor.dy = 0;
                 m_sound->playDeathSound();
-                m_callback->onDeath();
+                if (m_callback)
+                {
+                    m_callback->onDeath();
+                }
             }
         }
 
@@ -242,7 +245,10 @@ void Physics::calc()
             Rectangle& guffin = m_guffins[n];
             if (intersectRect(guffin, actor.rect))
             {
-                m_callback->collectApple(Point(guffin.x, guffin.y));
+                if (m_callback)
+                {
+                    m_callback->collectApple(Point(guffin.x, guffin.y));
+                }
             }
         }
 
@@ -251,7 +257,10 @@ void Physics::calc()
             Rectangle& jetPack = m_jetPacks[n];
             if (intersectRect(jetPack, actor.rect))
             {
-                m_callback->collectJetPack(Point(jetPack.x, jetPack.y));
+                if (m_callback)
+                {
+                    m_callback->collectJetPack(Point(jetPack.x, jetPack.y));
+                }
             }
         }
 
@@ -260,7 +269,10 @@ void Physics::calc()
             Rectangle& sunItem = m_sunItems[n];
             if (intersectRect(sunItem, actor.rect))
             {
-                m_callback->collectSunItem(Point(sunItem.x, sunItem.y));
+                if (m_callback)
+                {
+                    m_callback->collectSunItem(Point(sunItem.x, sunItem.y));
+                }
             }
         }
 
@@ -269,7 +281,10 @@ void Physics::calc()
             Button& button = m_buttons[n];
             if (intersectRect(button, actor.rect))
             {
-                m_callback->touchButton(button.buttonId, button.buttonType);
+                if (m_callback)
+                {
+                    m_callback->touchButton(button.buttonId, button.buttonType);
+                }
             }
         }
 
