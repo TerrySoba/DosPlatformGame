@@ -28,38 +28,17 @@ void write16Bit(char* function, int& functionPos, uint16_t offset, uint16_t data
     functionPos += 2;
 }
 
+enum CompilePass {
+    FIRST_COMPILE_PASS = 0,
+    SECOND_COMPILE_PASS = 1
+};
+
 DrawCompiledSpritePtr CompiledSprite::compileSprite(const PixelSource& image, int16_t targetWidth)
 {
     int functionSize = 0;
-    for (int y = 0; y < image.height(); ++y)
-    {
-        int consecutivePixel = 0;
-        for (int x = 0; x < image.width(); ++x)
-        {
-            if (image.pixel(x,y) == image.transparentColor())
-            {
-                if (consecutivePixel == 1)
-                {
-                    functionSize += 5;
-                    consecutivePixel = 0;
-                }
-            }
-            else
-            {
-                if (consecutivePixel == 0) consecutivePixel++;
-                else
-                {
-                    functionSize += 6;
-                    consecutivePixel = 0;
-                }
-                
-            }
-        }
-        if (consecutivePixel != 0) functionSize += 5;
-    }
-
-    char* function = new char[functionSize + 10];
+    char* function;
     int functionPos = 0;
+    char lastPixel = 0;
 
     const char* functionHeader =
         "\x53"      // push bx
@@ -70,41 +49,52 @@ DrawCompiledSpritePtr CompiledSprite::compileSprite(const PixelSource& image, in
         "\x5b"      // pop bx
         "\xcb";     // retf
 
-    strcpy(function, functionHeader);
-    functionPos = strlen(function);
+    const int WRITE_8BIT_SIZE = 5;
+    const int WRITE_16BIT_SIZE = 6;
 
+    int transparentColor = image.transparentColor();
 
-    char lastPixel;
-
-    for (int y = 0; y < image.height(); ++y)
+    for (int pass = FIRST_COMPILE_PASS; pass <= SECOND_COMPILE_PASS; ++pass)
     {
-        int consecutivePixel = 0;
-        for (int x = 0; x < image.width(); ++x)
+        if (pass == SECOND_COMPILE_PASS)
         {
-            char pixel = image.pixel(x,y);
-            if (pixel == 0) // if pixel is transparent
+            function = new char[functionSize + 10];
+            strcpy(function, functionHeader);
+            functionPos = strlen(function);
+        }
+
+        for (int y = 0; y < image.height(); ++y)
+        {
+            int consecutivePixel = 0;
+            for (int x = 0; x < image.width(); ++x)
             {
-                if (consecutivePixel == 1)
+                char pixel = image.pixel(x,y);
+                if (pixel == transparentColor)
                 {
-                    write8Bit(function, functionPos, targetWidth * y + x - 1, lastPixel);
-                    consecutivePixel = 0;
+                    if (consecutivePixel == 1)
+                    {
+                        if (pass == FIRST_COMPILE_PASS) functionSize += WRITE_8BIT_SIZE;
+                        else write8Bit(function, functionPos, targetWidth * y + x - 1, lastPixel);
+                        consecutivePixel = 0;
+                    }
                 }
-            }
-            else
-            {
-                if (consecutivePixel == 0) consecutivePixel++;
                 else
                 {
-                    write16Bit(function, functionPos, targetWidth * y + x - 1, lastPixel | pixel << 8);
-                    consecutivePixel = 0;
+                    if (consecutivePixel == 0) consecutivePixel++;
+                    else
+                    {
+                        if (pass == FIRST_COMPILE_PASS) functionSize += WRITE_16BIT_SIZE;
+                        else write16Bit(function, functionPos, targetWidth * y + x - 1, lastPixel | pixel << 8);
+                        consecutivePixel = 0;
+                    }
                 }
-                
+                lastPixel = pixel;
             }
-            lastPixel = pixel;
-        }
-        if (consecutivePixel != 0)
-        {
-            write8Bit(function, functionPos, targetWidth * y + image.width() - 1, lastPixel);
+            if (consecutivePixel != 0)
+            {
+                if (pass == FIRST_COMPILE_PASS) functionSize += WRITE_8BIT_SIZE;
+                else write8Bit(function, functionPos, targetWidth * y + image.width() - 1, lastPixel);
+            }
         }
     }
 
