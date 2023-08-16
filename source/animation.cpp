@@ -114,11 +114,6 @@ Animation::Animation(const char* animFilename, const char* tgaFilename, bool tra
     nextFrame();
 }
 
-Animation::~Animation()
-{
-}
-
-
 int16_t Animation::width() const
 {
     return m_width;

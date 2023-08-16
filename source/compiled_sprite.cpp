@@ -68,7 +68,7 @@ size_t compileData(char* dst, size_t dstSize, const PixelSource& image, int16_t 
         "\x5b"      // pop bx
         "\xcb";     // retf
 
-    int transparentColor = image.transparentColor();
+    char transparentColor = image.transparentColor();
     size_t functionBufferSize = 0;
             
     if (dst) {
@@ -125,7 +125,7 @@ size_t compileData(char* dst, size_t dstSize, const PixelSource& image, int16_t 
         strlcpy(dst + functionPos, functionEnd, dstSize - functionPos);
     }
 
-    return functionSize + strlen(functionHeader) + strlen(functionEnd) + 1; //  +1 for null terminator;
+    return functionSize + strlen(functionHeader) + strlen(functionEnd) + 1; //  +1 for null termination
 }
 
 char* CompiledSprite::compileSprite(const PixelSource& image, int16_t targetWidth)
