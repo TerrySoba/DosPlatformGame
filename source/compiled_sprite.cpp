@@ -7,6 +7,7 @@
 const int WRITE_8BIT_SIZE = 5;
 const int WRITE_16BIT_SIZE = 6;
 
+typedef void (*DrawCompiledSpritePtr)(char* img);
 
 void write8Bit(char* functionBuffer, size_t functionBufferSize, int& functionPos, uint16_t offset, uint8_t data)
 {
@@ -42,15 +43,19 @@ void write16Bit(char* functionBuffer, size_t functionBufferSize, int& functionPo
     functionPos += 2;
 }
 
-enum {
-    FIRST_COMPILE_PASS = 0,
-    SECOND_COMPILE_PASS = 1
-};
-
-DrawCompiledSpritePtr CompiledSprite::compileSprite(const PixelSource& image, int16_t targetWidth)
+/**
+ * Compiles the given image to 8086 machine code.
+ * 
+ * If dst is NULL, the function only returns the size of the compiled code and does not write anything.
+ * 
+ * dst: The buffer to write the compiled code to.
+ * dstSize: The size of the buffer.
+ * image: The image to compile.
+ * targetWidth: The width of the target screen (usually 320).
+ */
+size_t compileData(char* dst, size_t dstSize, const PixelSource& image, int16_t targetWidth)
 {
     int functionSize = 0;
-    char* function;
     int functionPos = 0;
     char lastPixel = 0;
 
@@ -65,60 +70,70 @@ DrawCompiledSpritePtr CompiledSprite::compileSprite(const PixelSource& image, in
 
     int transparentColor = image.transparentColor();
     size_t functionBufferSize = 0;
+            
+    if (dst) {
+        strlcpy(dst, functionHeader, dstSize);
+        functionPos = strlen(dst);
+    }
 
-    for (int pass = FIRST_COMPILE_PASS; pass <= SECOND_COMPILE_PASS; ++pass)
+    for (int y = 0; y < image.height(); ++y)
     {
-        if (pass == SECOND_COMPILE_PASS)
+        int consecutivePixel = 0;
+        for (int x = 0; x < image.width(); ++x)
         {
-            functionBufferSize = functionSize + strlen(functionHeader) + strlen(functionEnd) + 1; //  +1 for null terminator
-            function = new char[functionBufferSize];
-            strcpy(function, functionHeader);
-            functionPos = strlen(function);
-        }
-
-        for (int y = 0; y < image.height(); ++y)
-        {
-            int consecutivePixel = 0;
-            for (int x = 0; x < image.width(); ++x)
+            char pixel = image.pixel(x, y);
+            if (pixel == transparentColor)
             {
-                char pixel = image.pixel(x,y);
-                if (pixel == transparentColor)
+                if (consecutivePixel == 1)
                 {
-                    if (consecutivePixel == 1)
+                    functionSize += WRITE_8BIT_SIZE;
+                    if (dst)
                     {
-                        if (pass == FIRST_COMPILE_PASS) functionSize += WRITE_8BIT_SIZE;
-                        else write8Bit(function, functionBufferSize, functionPos, targetWidth * y + x - 1, lastPixel);
-                        consecutivePixel = 0;
+                        write8Bit(dst, dstSize, functionPos, targetWidth * y + x - 1, lastPixel);
                     }
+                    consecutivePixel = 0;
                 }
+            }
+            else
+            {
+                if (consecutivePixel == 0)
+                    consecutivePixel++;
                 else
                 {
-                    if (consecutivePixel == 0) consecutivePixel++;
-                    else
+                    functionSize += WRITE_16BIT_SIZE;
+                    if (dst)
                     {
-                        if (pass == FIRST_COMPILE_PASS) functionSize += WRITE_16BIT_SIZE;
-                        else write16Bit(function, functionBufferSize, functionPos, targetWidth * y + x - 1, lastPixel | pixel << 8);
-                        consecutivePixel = 0;
+                        write16Bit(dst, dstSize, functionPos, targetWidth * y + x - 1, lastPixel | pixel << 8);
                     }
+                    consecutivePixel = 0;
                 }
-                lastPixel = pixel;
             }
-            if (consecutivePixel != 0)
+            lastPixel = pixel;
+        }
+        if (consecutivePixel != 0)
+        {
+            functionSize += WRITE_8BIT_SIZE;
+            if (dst)
             {
-                if (pass == FIRST_COMPILE_PASS) functionSize += WRITE_8BIT_SIZE;
-                else write8Bit(function, functionBufferSize, functionPos, targetWidth * y + image.width() - 1, lastPixel);
+                write8Bit(dst, dstSize, functionPos, targetWidth * y + image.width() - 1, lastPixel);
             }
         }
     }
 
-    strcpy(function + functionPos, functionEnd);
+    if (dst)
+    {
+        strlcpy(dst + functionPos, functionEnd, dstSize - functionPos);
+    }
 
-    return (DrawCompiledSpritePtr)function;
+    return functionSize + strlen(functionHeader) + strlen(functionEnd) + 1; //  +1 for null terminator;
 }
 
-void CompiledSprite::freeCompiledSprite(DrawCompiledSpritePtr sprite)
+char* CompiledSprite::compileSprite(const PixelSource& image, int16_t targetWidth)
 {
-    delete (char*)sprite;
+    size_t compiledSpriteSize = compileData(NULL, 0, image, targetWidth);
+    char* compiledSprite = new char[compiledSpriteSize];
+    (void)compileData(compiledSprite, compiledSpriteSize, image, targetWidth);
+    return compiledSprite;
 }
 
 class MyPixelSource : public PixelSource
@@ -165,10 +180,16 @@ CompiledSprite::CompiledSprite(const char* filename, int16_t targetWidth)
     m_compiledFunction = compileSprite(pixels, targetWidth);
 }
 
+CompiledSprite::CompiledSprite(const PixelSource& image, int16_t targetWidth)
+{
+    m_width = image.width();
+    m_height = image.height();
+    m_compiledFunction = compileSprite(image, targetWidth);
+}
 
 CompiledSprite::~CompiledSprite()
 {
-    freeCompiledSprite(m_compiledFunction);
+    delete[] m_compiledFunction;
 }
 
 int16_t CompiledSprite::width() const
@@ -192,5 +213,5 @@ void sprite2(char* img)
 void CompiledSprite::draw(char* target, int16_t targetWidth, int16_t targetHeight, int16_t targetX, int16_t targetY) const
 {
     char* img = target + targetWidth * targetY + targetX;
-    m_compiledFunction(img);
+    ((DrawCompiledSpritePtr)m_compiledFunction)(img);
 }

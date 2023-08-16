@@ -3,8 +3,6 @@
 
 #include "drawable.h"
 
-typedef void (*DrawCompiledSpritePtr)(char* img);
-
 class PixelSource
 {
 public:
@@ -30,18 +28,19 @@ class CompiledSprite : public Drawable
 {
 public:
     CompiledSprite(const char* filename, int16_t targetWidth);
+    CompiledSprite(const PixelSource& image, int16_t targetWidth);
     virtual ~CompiledSprite();
 
     virtual int16_t width() const;
     virtual int16_t height() const;
     virtual void draw(char* target, int16_t targetWidth, int16_t targetHeight, int16_t targetX, int16_t targetY) const;
 
-    static DrawCompiledSpritePtr compileSprite(const PixelSource& image, int16_t targetWidth);
-    static void freeCompiledSprite(DrawCompiledSpritePtr sprite);
+private:
+    char* compileSprite(const PixelSource& image, int16_t targetWidth);
 
 private:
     int16_t m_width, m_height;
-    DrawCompiledSpritePtr m_compiledFunction;
+    char* m_compiledFunction;
 };
 
 #endif

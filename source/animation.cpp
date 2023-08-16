@@ -75,7 +75,7 @@ Animation::Animation(const char* animFilename, const char* tgaFilename, bool tra
 
         m_frames.push_back(f);
         FrameImage frameImage(image, f.x, f.y, f.width, f.height);
-        m_frameSprites.push_back(CompiledSprite::compileSprite(frameImage, 320));
+        m_frameSprites.push_back(new CompiledSprite(frameImage, 320));
     }
 
     uint16_t tagNumber;
@@ -116,10 +116,6 @@ Animation::Animation(const char* animFilename, const char* tgaFilename, bool tra
 
 Animation::~Animation()
 {
-    for (int i = 0; i < m_frameSprites.size(); ++i)
-    {
-        CompiledSprite::freeCompiledSprite(m_frameSprites[i]);
-    }
 }
 
 
@@ -169,6 +165,5 @@ tnd::vector<FrameTag> Animation::getTags()
 
 void Animation::draw(char* target, int16_t targetWidth, int16_t targetHeight, int16_t targetX, int16_t targetY) const
 {
-    char *dst = target + targetWidth * targetY + targetX;
-    m_frameSprites[m_currentFrame](dst);
+    m_frameSprites[m_currentFrame]->draw(target, targetWidth, targetHeight, targetX, targetY);
 }

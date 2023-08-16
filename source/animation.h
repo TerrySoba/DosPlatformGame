@@ -10,6 +10,7 @@
 #include <string.h>
 #include "vector.h"
 #include "tiny_string.h"
+#include "shared_ptr.h"
 
 struct Frame
 {
@@ -46,7 +47,7 @@ private:
     int16_t m_height;
 
     tnd::vector<Frame> m_frames;
-    tnd::vector<DrawCompiledSpritePtr> m_frameSprites;
+    tnd::vector<tnd::shared_ptr<CompiledSprite> > m_frameSprites;
     tnd::vector<FrameTag> m_tags;
     int m_currentFrame;
     int m_minFrame;
