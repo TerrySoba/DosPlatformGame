@@ -65,7 +65,6 @@ jobs:
           name: disk-images
           path: image*.img
 
-
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
@@ -76,20 +75,3 @@ jobs:
             ./zip/game.zip
             image*.img
             DosPlatformGameWin32.zip
-
-
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install dependencies
-        run:  DEBIAN_FRONTEND=noninteractive sudo apt install -y dosbox
-
-      - name: Download a single artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: game-zip
-
-      - name: Print directory listing
-        run: ls -lha
-
