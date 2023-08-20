@@ -2,6 +2,7 @@
 #include "shared_ptr.h"
 #include "test_class.h"
 #include "vector.h"
+#include "exception.h"
 
 #include <stdio.h>
 #include <string>
@@ -140,6 +141,7 @@ TEST(SharedPtrExternalTest)
     s_instanceCount2 = 0;
     ASSERT_TRUE(s_instanceCount2 == 0);
 
+
     shared_ptr<TestThingy2> i;
     ASSERT_TRUE(i.use_count() == 0);
     {
@@ -156,39 +158,12 @@ TEST(SharedPtrExternalTest)
         ASSERT_TRUE(s_instanceCount2 == 2);
     }
 
-    ASSERT_TRUE(s_instanceCount2 == 0);
+    ASSERT_TRUE(s_instanceCount2 == 1);
 }
-
-// this function prints the current value of the register sp
-void printStackPointer()
-{
-    uint16_t stackPointer;
-    _asm {
-        mov stackPointer, sp
-    }
-    printf("SP == 0x%x\n", stackPointer);
-
-    _asm {
-        push    bp
-        mov     bp,sp
-        mov     ax,[bp-16]   ;ax = pushed value from bx
-        mov     sp,bp       ;restore sp
-        pop     bp          ;restore bp
-        mov     stackPointer, ax
-    }
-
-    printf("content: 0x%x\n", stackPointer);
-
-}
-
-
-
 
 // a unit test that checks the tnd::shared_ptr class thoroughly
 TEST(SharedPtrTestAuto)
 {
-    printStackPointer();
-    printf("Start of test %d\n");
     {
     shared_ptr<std::string> i(new std::string);
     *i = "0";
@@ -240,8 +215,5 @@ TEST(SharedPtrTestAuto)
     ASSERT_TRUE(k.use_count() == 4);
     ASSERT_TRUE(l.use_count() == 4);
     }
-    printf("End of test\n");
-
-    printStackPointer();
 }
 

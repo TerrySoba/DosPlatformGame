@@ -18,11 +18,14 @@ extern TestResult s_currentTestResult;
 
 std::map<std::string, TestFunctionPtr>& getTests();
 
+const size_t s_lastMessageBufferSize = 128;
+extern char s_lastMessageBuffer[s_lastMessageBufferSize];
+
 // returns true on success, false if at least one test failed
 bool runTests(const char* filter);
 
-#define xstr(s) str(s)
-#define str(s) #s
+#define _xstr(s) _ystr(s)
+#define _ystr(s) #s
 
 #define RUN_STATIC(expr, line) \
 	class StaticRunner ## line \
@@ -34,13 +37,14 @@ bool runTests(const char* filter);
 
 #define TEST(name) \
 	void test_ ## name (); \
-	RUN_STATIC(getTests()[xstr(name)] = &test_ ## name, name); \
+	RUN_STATIC(getTests()[_xstr(name)] = &test_ ## name, name); \
 	void test_ ## name ()
 
 #define ASSERT_TRUE(expr) \
 	if (!(expr)) \
 	{ \
-		std::cout << "Assert failed: ASSERT_TRUE("  xstr(expr)  ") " << __FILE__ << ":" << __LINE__ << std::endl; \
+		snprintf(s_lastMessageBuffer, s_lastMessageBufferSize, "Assert failed: ASSERT_TRUE("  _xstr(expr)  ") " __FILE__ ":%d", __LINE__); \
+		std::cout << s_lastMessageBuffer << "\n"; \
 		s_currentTestResult = TEST_FAILURE; \
 		return; \
 	}
@@ -48,7 +52,8 @@ bool runTests(const char* filter);
 #define ASSERT_THROW(expr, expected_exception) \
 	try { \
 		expr; \
-		std::cout << "Assert failed: ASSERT_THROW("  xstr(expr)  ") but actually it did not throw. " << __FILE__ << ":" << __LINE__ << std::endl; \
+		snprintf(s_lastMessageBuffer, s_lastMessageBufferSize, "Assert failed: ASSERT_THROW("  _xstr(expr)  ") but actually it did not throw. " __FILE__ ":%d", __LINE__); \
+		std::cout << s_lastMessageBuffer << "\n"; \
 		s_currentTestResult = TEST_FAILURE; \
 		return; \
 	} catch (const expected_exception&)	{}
@@ -56,7 +61,8 @@ bool runTests(const char* filter);
 #define ASSERT_FALSE(expr) \
 	if ((expr)) \
 	{ \
-		std::cout << "Assert failed: ASSERT_FALSE("  xstr(expr)  ") " << __FILE__ << ":" << __LINE__ << std::endl; \
+		snprintf(s_lastMessageBuffer, s_lastMessageBufferSize, "Assert failed: ASSERT_FALSE("  _xstr(expr)  ") " __FILE__ ":%d", __LINE__); \
+		std::cout << s_lastMessageBuffer << "\n"; \
 		s_currentTestResult = TEST_FAILURE; \
 		return; \
 	}

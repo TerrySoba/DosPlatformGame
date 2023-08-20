@@ -3,7 +3,7 @@
 
 TEST(AnimationTest)
 {
-    Animation ani("images\\guy.jsn", "images\\guy.tga");
+    Animation ani("images\\guy.ani", "images\\guy.tga");
     tnd::vector<FrameTag> tags = ani.getTags();
     for (int i = 0; i < tags.size(); ++i)
     {

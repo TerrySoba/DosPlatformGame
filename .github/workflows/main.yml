@@ -24,10 +24,16 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Install dependencies
-        run:  DEBIAN_FRONTEND=noninteractive sudo apt install -y nasm mtools
+        run:  DEBIAN_FRONTEND=noninteractive sudo apt install -y nasm mtools dosbox xvfb
 
       - name: Build
         run: ./build.sh
+
+      - name: Run tests
+        run: xvfb-run dosbox -c source/gametest.exe -c exit
+
+      - name: Check test results
+        run: python3 parse_junit_xml.py
 
       - name: Build installer
         run: ./build_installer.sh

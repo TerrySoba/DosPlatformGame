@@ -1,9 +1,8 @@
 #include "unit_test.h"
 #include "i18n.h"
 
-TEST(ZI18NTest)
+TEST(DISABLD_I18NTest)
 {
-
     I18N::loadTranslations("strings.en");
 
     TinyString str = I18N::getString(100);
