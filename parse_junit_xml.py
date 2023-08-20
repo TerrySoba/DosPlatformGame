@@ -27,4 +27,4 @@ def parse_junit_xml(xml_file_path):
         sys.exit(1) # exit with error code 1 to signal that the build failed
 
 if __name__ == "__main__":
-    parse_junit_xml("source/JUNIT.XML")
+    parse_junit_xml("JUNIT.XML")

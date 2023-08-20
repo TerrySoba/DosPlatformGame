@@ -30,7 +30,7 @@ jobs:
         run: ./build.sh
 
       - name: Run tests
-        run: xvfb-run dosbox -c source/gametest.exe -c exit
+        run: xvfb-run dosbox -c "mount c ." -c "c:" -c "source\\gametest.exe" -c exit
 
       - name: Check test results
         run: python3 parse_junit_xml.py
