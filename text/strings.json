@@ -490,5 +490,9 @@
     "460": {
         "en": "Thank You!",
         "de": "Danke!"
+    },
+    "12345": {
+        "en": "This is a test",
+        "de": "Dies ist ein Test"
     }
 }

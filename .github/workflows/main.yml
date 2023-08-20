@@ -32,6 +32,13 @@ jobs:
       - name: Run tests
         run: xvfb-run dosbox -c "mount c ." -c "c:" -c "source\\gametest.exe" -c exit
 
+      # Now store test results as artifact
+      - name: Archive test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: JUnit-XML
+          path: JUNIT.XML
+
       - name: Check test results
         run: python3 parse_junit_xml.py
 

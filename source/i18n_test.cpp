@@ -1,16 +1,13 @@
 #include "unit_test.h"
 #include "i18n.h"
 
-TEST(DISABLD_I18NTest)
+TEST(I18NTest)
 {
-    I18N::loadTranslations("strings.en");
+    I18N::loadTranslations("text/strings.en");
 
-    TinyString str = I18N::getString(100);
-    ASSERT_TRUE(str == "This is yet another sample text.");
+    TinyString str = I18N::getString(12345);
+    ASSERT_TRUE(str == "This is a test");
 
-    str = I18N::getString(1);
-    ASSERT_TRUE(str == "\xE4\xF6\xFC\xDF");
-
-    str = I18N::getString(123);
-    ASSERT_TRUE(str == "???");
+    str = I18N::getString(12346);
+    ASSERT_TRUE(str == "??? <id:12346>");
 }

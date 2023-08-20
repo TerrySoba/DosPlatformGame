@@ -16,6 +16,43 @@ std::map<std::string, TestFunctionPtr>& getTests()
 
 TestResult s_currentTestResult;
 
+
+void quoteXmlString(char* buffer, size_t bufferLength)
+{
+    size_t pos = 0;
+    while (buffer[pos] != 0)
+    {
+        if (buffer[pos] == '<') {
+            memmove(buffer + pos + 4, buffer + pos + 1, bufferLength - pos - 4);
+            memcpy(buffer + pos, "&lt;", 4);
+            pos += 4;
+        }
+        else if (buffer[pos] == '>') {
+            memmove(buffer + pos + 4, buffer + pos + 1, bufferLength - pos - 4);
+            memcpy(buffer + pos, "&gt;", 4);
+            pos += 4;
+        }
+        else if (buffer[pos] == '&') {
+            memmove(buffer + pos + 5, buffer + pos + 1, bufferLength - pos - 5);
+            memcpy(buffer + pos, "&amp;", 5);
+            pos += 5;
+        }
+        else if (buffer[pos] == '"') {
+            memmove(buffer + pos + 6, buffer + pos + 1, bufferLength - pos - 6);
+            memcpy(buffer + pos, "&quot;", 6);
+            pos += 6;
+        }
+        else if (buffer[pos] == '\'') {
+            memmove(buffer + pos + 6, buffer + pos + 1, bufferLength - pos - 6);
+            memcpy(buffer + pos, "&apos;", 6);
+            pos += 6;
+        }
+        else {
+            ++pos;
+        }
+    }
+}
+
 bool runTests(const char* filter)
 {
     FILE* junit = fopen("junit.xml", "w");
@@ -66,6 +103,7 @@ bool runTests(const char* filter)
             if (s_currentTestResult != TEST_SUCCESS)
             {
                 ++failureCount;
+                quoteXmlString(s_lastMessageBuffer, s_lastMessageBufferSize);
                 fprintf(junit, "      <failure message=\"%s\"></failure>\n", s_lastMessageBuffer);
             }
             std::cout << "[      " << ((s_currentTestResult == TEST_SUCCESS)?"  OK":"FAIL") << " ] " << name.c_str() << std::endl;
