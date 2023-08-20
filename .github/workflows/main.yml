@@ -63,3 +63,19 @@ jobs:
             ./zip/game.zip
             image*.img
             DosPlatformGameWin32.zip
+
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+      - name: Install dependencies
+        run:  DEBIAN_FRONTEND=noninteractive sudo apt install -y dosbox
+
+      - name: Download a single artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: game-zip
+
+      - name: Print directory listing
+        run: ls -lha
+
