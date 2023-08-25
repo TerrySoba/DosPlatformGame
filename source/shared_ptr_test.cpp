@@ -217,3 +217,13 @@ TEST(SharedPtrTestAuto)
     }
 }
 
+TEST(SharedPtrNullptrTest)
+{
+    shared_ptr<std::string> i;
+    ASSERT_TRUE(i.get() == NULL);
+    ASSERT_TRUE(i.use_count() == 0);
+
+    shared_ptr<std::string> s(NULL);
+    ASSERT_TRUE(s.get() == NULL);
+    ASSERT_TRUE(s.use_count() == 0);
+}

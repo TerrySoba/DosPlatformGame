@@ -7,7 +7,7 @@
 class Enemy
 {
 public:
-    Enemy(Rectangle enemyWalkArea, Animation* animation);
+    Enemy(Rectangle enemyWalkArea, tnd::shared_ptr<Animation> animation);
     ~Enemy();
 
     void walk();
@@ -16,7 +16,7 @@ public:
 
 private:
     Rectangle m_enemyWalkArea;
-    Animation* m_animation;
+    tnd::shared_ptr<Animation> m_animation;
     int8_t m_walkSpeed;
     int m_posX;
     int m_posY;

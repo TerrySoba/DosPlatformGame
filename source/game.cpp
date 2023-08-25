@@ -16,15 +16,15 @@
 
 #include <stdio.h>
 
-Game::Game(VgaGfx* vgaGfx, SoundController* sound,
-           MusicController* music,
-           ImageBase* tiles,
+Game::Game(tnd::shared_ptr<VgaGfx> vgaGfx, tnd::shared_ptr<SoundController> sound,
+           tnd::shared_ptr<MusicController> music,
+           tnd::shared_ptr<ImageBase> tiles,
            GameAnimations animations,
            const char* levelBasename, LevelNumber startLevel) :
     m_vgaGfx(vgaGfx), m_tiles(tiles), m_animations(animations), m_frames(0), m_levelBasename(levelBasename),
     m_animationController(animations.actorAnimation, sound), m_lastButtonPressed(false), m_sound(sound), m_music(music),
     m_jetpackCollected(0), m_sunItemCollected(0), m_button1(0), m_levelMustReload(false), m_deathCounter(0),
-    m_frameCounter(0), m_physics(0)
+    m_frameCounter(0)
 {
 
     m_nextLevel.x = -1;
@@ -57,10 +57,6 @@ Game::Game(VgaGfx* vgaGfx, SoundController* sound,
 
 Game::~Game()
 {
-    if (m_physics)
-    {
-        delete m_physics;
-    }
 }
 
 void Game::reloadCurrentLevel()
@@ -112,7 +108,7 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     {
         m_physics->getActorPos(m_player, actorPosX, actorPosY);
     }
-    else if (m_physics == 0 || actorPosition == ActorPosition::UseSpawnPoint)
+    else if (m_physics.get() == 0 || actorPosition == ActorPosition::UseSpawnPoint)
     {
         // so no previous position existed, or use of spawn point was explicitly requested
         // because of that we just put the actor to the defined spawn point of the level
@@ -201,21 +197,31 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     }
 
     // now load boss1 if any exist
-    m_boss1.clear();
-    tnd::vector<Rectangle> boss1Rects = level.getBoss1();
-    
-    // create boss1 instances
-    for (int i = 0; i < boss1Rects.size(); ++i)
     {
-        m_boss1.push_back(new Boss1(boss1Rects[i], m_animations.fireBallAnimation, level.getWalls()));
+        m_boss1.clear();
+        tnd::vector<Rectangle> boss1Rects = level.getBoss1();
+        
+        // create boss1 instances
+        for (int i = 0; i < boss1Rects.size(); ++i)
+        {
+            m_boss1.push_back(new Boss1(boss1Rects[i], m_animations.fireBallAnimation, level.getWalls()));
+        }
     }
 
-
-    if (m_physics)
+    // now load boss2 if any exist
     {
-        delete m_physics; // delete first, so we do not have two instances of physics at once
+        // m_boss1.clear();
+        tnd::vector<Rectangle> boss2Rects = level.getBoss2();
+        
+        // create boss1 instances
+        for (int i = 0; i < boss2Rects.size(); ++i)
+        {
+            m_boss1.push_back(new Boss1(boss2Rects[i], m_animations.fireBallAnimation, level.getWalls()));
+        }
     }
-    m_physics = new Physics(this, m_sound);
+
+    m_physics.reset();
+    m_physics = tnd::shared_ptr<Physics>(new Physics(this, m_sound));
     Actor actor;
     actor.rect.x = actorPosX;
     actor.rect.y = actorPosY;

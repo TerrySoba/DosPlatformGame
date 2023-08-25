@@ -7,6 +7,7 @@
 #include "sound_controller.h"
 
 #include "vector.h"
+#include "shared_ptr.h"
 #include <stdint.h>
 
 // Physics calculations are done on subpixels.
@@ -48,7 +49,7 @@ enum IntersectionType
 class Physics
 {
 public:
-    Physics(PhysicsCallback* callback, SoundController* sound);
+    Physics(tnd::shared_ptr<PhysicsCallback> callback, tnd::shared_ptr<SoundController> sound);
     int addActor(const Actor& rect);
     void setActor(int index, const Actor& rect);
     void getActorPos(int index, int16_t& x, int16_t& y);
@@ -102,8 +103,8 @@ public:
     Point m_spawn;
     Point m_sun;
     tnd::vector<Actor> m_actors;
-    PhysicsCallback* m_callback;
-    SoundController* m_sound;
+    tnd::shared_ptr<PhysicsCallback> m_callback;
+    tnd::shared_ptr<SoundController> m_sound;
     bool m_jetpackActive;
     bool m_lastFrameJetpackActive;
 };

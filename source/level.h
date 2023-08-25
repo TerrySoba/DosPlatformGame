@@ -6,6 +6,7 @@
 #include "button.h"
 #include "rectangle.h"
 #include "vector.h"
+#include "shared_ptr.h"
 
 struct MessageBox
 {
@@ -28,7 +29,7 @@ struct MessageBox
 class Level : public Drawable
 {
 public:
-    Level(const char* mapFilename, ImageBase* tilesImage,
+    Level(const char* mapFilename, tnd::shared_ptr<ImageBase> tilesImage,
           int16_t tileWidth, int16_t tileHeight,
           int16_t offsetX, int16_t offsetY);
 
@@ -50,6 +51,7 @@ public:
     virtual tnd::vector<MessageBox> getMessageBoxes() { return m_messageBoxes; }
     virtual tnd::vector<Rectangle> getFireBalls() { return m_fireBalls; }
     virtual tnd::vector<Rectangle> getBoss1() { return m_boss1; }
+    virtual tnd::vector<Rectangle> getBoss2() { return m_boss2; }
     virtual tnd::vector<Rectangle> getPlayTime() { return m_playTime; }
     virtual tnd::vector<Button> getButtons() { return m_buttons; }
     virtual uint16_t getMusicIndex() { return m_musicIndex; }
@@ -65,7 +67,7 @@ public:
     virtual uint16_t getGuffinGate() { return m_guffinGate; }
 
 private:
-    ImageBase* m_tilesImage;
+    tnd::shared_ptr<ImageBase> m_tilesImage;
     int16_t m_tileWidth;  // width of a single tile in pixles
     int16_t m_tileHeight; // height of a single tile in pixles
     int16_t m_offsetX;
@@ -87,6 +89,7 @@ private:
     tnd::vector<Rectangle> m_fireBalls;
     tnd::vector<Rectangle> m_seekerEnemies;
     tnd::vector<Rectangle> m_boss1;
+    tnd::vector<Rectangle> m_boss2;
     tnd::vector<Rectangle> m_playTime;
     tnd::vector<Button> m_buttons;
 

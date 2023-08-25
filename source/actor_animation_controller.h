@@ -5,6 +5,8 @@
 
 #include "sound_controller.h"
 
+#include "shared_ptr.h"
+
 #include <stdlib.h>
 
 enum AnimationEnum
@@ -34,7 +36,7 @@ enum HorizontalDirection
 class ActorAnimationController
 {
 public:
-    ActorAnimationController(Animation* actorAnimation, SoundController* sound) :
+    ActorAnimationController(tnd::shared_ptr<Animation> actorAnimation, tnd::shared_ptr<SoundController> sound) :
         m_actorAnimation(actorAnimation),
         m_lastX(0),
         m_lastY(0),
@@ -140,14 +142,14 @@ public:
     }
 
 private:
-    Animation* m_actorAnimation;
+    tnd::shared_ptr<Animation> m_actorAnimation;
     int16_t m_lastX;
     int16_t m_lastY;
     AnimationEnum m_activeAnimation;
     VerticalDirection m_lastDirection;
     HorizontalDirection m_lastHDir;
     int m_airFrames;
-    SoundController* m_sound;
+    tnd::shared_ptr<SoundController> m_sound;
 };
 
 #endif

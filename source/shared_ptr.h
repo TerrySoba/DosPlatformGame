@@ -22,9 +22,14 @@ public:
 
     shared_ptr(ValueT* ptr)
     {
-        m_storage = new shared_ptr_storage<ValueT>;
-        m_storage->user_count = 1;
-        m_storage->ptr = ptr;
+        if (ptr)
+        {
+            m_storage = new shared_ptr_storage<ValueT>;
+            m_storage->user_count = 1;
+            m_storage->ptr = ptr;
+        } else {
+            m_storage = (shared_ptr_storage<ValueT>*)0;
+        }
     }
 
     shared_ptr(const shared_ptr<ValueT>& other)

@@ -15,6 +15,7 @@
 #include "fire_ball.h"
 #include "rectangle.h"
 #include "boss1.h"
+#include "shared_ptr.h"
 
 
 namespace ActorPosition
@@ -41,12 +42,12 @@ struct LevelNumber
 
 struct GameAnimations
 {
-	Animation* actorAnimation;
-	Animation* enemyAnimation;
-	Animation* seekerEnemyAnimation;
-	Animation* guffinAnimation;
-	Animation* fireBallAnimation;
-	Animation* jetPackAnimation;
+	tnd::shared_ptr<Animation> actorAnimation;
+	tnd::shared_ptr<Animation> enemyAnimation;
+	tnd::shared_ptr<Animation> seekerEnemyAnimation;
+	tnd::shared_ptr<Animation> guffinAnimation;
+	tnd::shared_ptr<Animation> fireBallAnimation;
+	tnd::shared_ptr<Animation> jetPackAnimation;
 };
 
 
@@ -61,10 +62,10 @@ class Game : public PhysicsCallback
 {
 public:
 	Game(
-	    VgaGfx* vgaGfx,
-		SoundController* sound, 
-		MusicController* music,
-		ImageBase* tiles,
+	    tnd::shared_ptr<VgaGfx> vgaGfx,
+		tnd::shared_ptr<SoundController> sound, 
+		tnd::shared_ptr<MusicController> music,
+		tnd::shared_ptr<ImageBase> tiles,
 		GameAnimations animations,
 		const char* levelBasename,
 		LevelNumber startLevel);
@@ -91,8 +92,8 @@ private:
     virtual void drawDeathCount();
 
 private:
-	VgaGfx* m_vgaGfx;
-	ImageBase* m_tiles;
+	tnd::shared_ptr<VgaGfx> m_vgaGfx;
+	tnd::shared_ptr<ImageBase> m_tiles;
 	GameAnimations m_animations;
 	tnd::ptr_vector<Enemy> m_enemies;
 	tnd::ptr_vector<SeekerEnemy> m_seekerEnemies;
@@ -101,7 +102,7 @@ private:
 	tnd::vector<Rectangle> m_guffins;
 	tnd::vector<Rectangle> m_jetPacks;
 	tnd::vector<Rectangle> m_sunItems;
-    Physics* m_physics;
+    tnd::shared_ptr<Physics> m_physics;
     long int m_frames;
     int m_player;
 	TinyString m_levelBasename;
@@ -112,8 +113,8 @@ private:
 	tnd::vector<CollectedGuffin> m_collectedGuffins;
 	TinyString m_appleString;
 	TinyString m_deathString;
-	SoundController* m_sound;
-	MusicController* m_music;
+	tnd::shared_ptr<SoundController> m_sound;
+	tnd::shared_ptr<MusicController> m_music;
 	uint8_t m_jetpackCollected; // 0 == no jetpack, 1 == jetpack collected
 	uint8_t m_sunItemCollected; // 0 == not collected, 1 == collected
 	uint8_t m_button1; // 0 == button not pressed, 1 == button pressed

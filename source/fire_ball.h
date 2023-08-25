@@ -8,7 +8,7 @@
 class FireBall
 {
 public:
-    FireBall(Rectangle collision, Animation* animation);
+    FireBall(Rectangle collision, tnd::shared_ptr<Animation> animation);
     ~FireBall();
 
     void walk();
@@ -17,7 +17,7 @@ public:
 
 private:
     const Rectangle m_collision;
-    Animation* m_animation;
+    tnd::shared_ptr<Animation> m_animation;
     int m_posX;
     int m_posY;
     int m_speedX;

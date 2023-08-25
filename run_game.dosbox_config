@@ -8,6 +8,9 @@ output=openglnb
 machine=vgaonly
 # vertical retrace poll debug line=false
 
+[mixer]
+nosound=false
+
 [render]
 aspect=true
 glshader = crt/geom.tweaked

@@ -17,7 +17,7 @@ int32_t manhattanNorm(int32_t x, int32_t y)
     return abs(x) + abs(y);
 }
 
-Boss1::Boss1(Rectangle enemyRectangle, Animation* animation, const tnd::vector<Rectangle>& walls) :
+Boss1::Boss1(Rectangle enemyRectangle, tnd::shared_ptr<Animation> animation, const tnd::vector<Rectangle>& walls) :
     m_enemyRectangle(enemyRectangle),
     m_animation(animation),
     m_state(BOSS1_STATE_INITIAL),

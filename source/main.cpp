@@ -11,7 +11,7 @@
 #include "text.h"
 #include "i18n.h"
 #include "sound_controller.h"
-#include "raii_ptr.h"
+#include "shared_ptr.h"
 #include <dos.h>
 
 #include "exception.h"
@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
 
     try
     {
-        raii_ptr<SoundController> sound = new SoundController();
+        tnd::shared_ptr<SoundController> sound = new SoundController();
 
         CommandLineParametes params = parseCommandline(argc, argv);
         calibrateJoystick();
@@ -91,22 +91,22 @@ int main(int argc, char* argv[])
 
         Keyboard keyboard;
 
-        raii_ptr<ImageBase> tiles = new TgaImage("tiles.tga");
+        tnd::shared_ptr<ImageBase> tiles = new TgaImage("tiles.tga");
     
-        raii_ptr<Animation> enemy = new Animation("enemy.ani", "enemy.tga");
-        raii_ptr<Animation> seekerEnemy = new Animation("enemy2.ani", "enemy2.tga");
-        raii_ptr<Animation> guffin = new Animation("guffin.ani", "guffin.tga");
-        raii_ptr<Animation> guy = new Animation("guy.ani", "guy.tga");
-        raii_ptr<Animation> fireBall = new Animation("fire.ani", "fire.tga");
-        raii_ptr<Animation> jetPack = new Animation("jet.ani", "jet.tga");
+        tnd::shared_ptr<Animation> enemy = new Animation("enemy.ani", "enemy.tga");
+        tnd::shared_ptr<Animation> seekerEnemy = new Animation("enemy2.ani", "enemy2.tga");
+        tnd::shared_ptr<Animation> guffin = new Animation("guffin.ani", "guffin.tga");
+        tnd::shared_ptr<Animation> guy = new Animation("guy.ani", "guy.tga");
+        tnd::shared_ptr<Animation> fireBall = new Animation("fire.ani", "fire.tga");
+        tnd::shared_ptr<Animation> jetPack = new Animation("jet.ani", "jet.tga");
 
-        raii_ptr<VgaGfx> gfx = new VgaGfx();
+        tnd::shared_ptr<VgaGfx> gfx = new VgaGfx();
 
-        raii_ptr<MusicController> music = new MusicController();
+        tnd::shared_ptr<MusicController> music = new MusicController();
 
-        GameAnimations animations = {guy.get(), enemy.get(), seekerEnemy.get(), guffin.get(), fireBall.get(), jetPack.get()};
+        GameAnimations animations = {guy, enemy, seekerEnemy, guffin, fireBall, jetPack};
 
-        Game game(gfx.get(), sound.get(), music.get(), tiles.get(), animations, "%02x%02x", params.level);
+        Game game(gfx, sound, music, tiles, animations, "%02x%02x", params.level);
 
         if (params.dumpLevelImages)
         {

@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 
-Enemy::Enemy(Rectangle enemyWalkArea, Animation* animation) :
+Enemy::Enemy(Rectangle enemyWalkArea, tnd::shared_ptr<Animation> animation) :
     m_enemyWalkArea(enemyWalkArea), m_animation(animation), m_walkSpeed(24)
 {
     m_posY = m_enemyWalkArea.y;

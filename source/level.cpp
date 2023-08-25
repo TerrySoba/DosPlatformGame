@@ -24,10 +24,11 @@ enum LayerType
     LAYER_BOSS1    = 7,
     LAYER_PLAY_TIME = 8,
     LAYER_MUSIC    = 9,
+    LAYER_BOSS2    = 10,
 };
 
 
-Level::Level(const char* mapFilename, ImageBase* tilesImage,
+Level::Level(const char* mapFilename, tnd::shared_ptr<ImageBase> tilesImage,
              int16_t tileWidth, int16_t tileHeight,
              int16_t offsetX, int16_t offsetY) :
     m_tilesImage(tilesImage),
@@ -44,9 +45,6 @@ Level::Level(const char* mapFilename, ImageBase* tilesImage,
     {
         throw Exception("Could not open file:", mapFilename);
     }
-
-
-
 
     const char* header = "MAP";
 
@@ -152,6 +150,19 @@ Level::Level(const char* mapFilename, ImageBase* tilesImage,
 
                 rect *= 16;
                 m_boss1.push_back(rect);
+                break;
+            }
+            case LAYER_BOSS2:
+            {
+                uint16_t x,y,w,h;
+                fread(&x, sizeof(x), 1, fp);
+                fread(&y, sizeof(y), 1, fp);
+                fread(&w, sizeof(w), 1, fp);
+                fread(&h, sizeof(h), 1, fp);
+                Rectangle rect(x+offsetX, y+offsetY, w, h);
+
+                rect *= 16;
+                m_boss2.push_back(rect);
                 break;
             }
             case LAYER_PLAY_TIME:

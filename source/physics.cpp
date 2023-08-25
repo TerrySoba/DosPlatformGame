@@ -12,7 +12,7 @@ int16_t JETPACK_THRUST_TABLE[] = {
 #define JETPACK_THRUST_TABLE_SIZE 40
 
 
-Physics::Physics(PhysicsCallback* callback, SoundController* sound) :
+Physics::Physics(tnd::shared_ptr<PhysicsCallback> callback, tnd::shared_ptr<SoundController> sound) :
     m_callback(callback), m_sound(sound), m_jetpackActive(false), m_lastFrameJetpackActive(false)
 {
     m_rightLevelTransition = Rectangle(316, 0, 4, 200);
@@ -127,7 +127,7 @@ void Physics::calc()
 
         // check for level transitions
 
-        if (m_callback)
+        if (m_callback.get())
         {
             if (intersectRect(actor.rect, m_rightLevelTransition))
             {
@@ -216,7 +216,7 @@ void Physics::calc()
                 actor.dx = 0;
                 actor.dy = 0;
                 m_sound->playDeathSound();
-                if (m_callback)
+                if (m_callback.get())
                 {
                     m_callback->onDeath();
                 }
@@ -233,7 +233,7 @@ void Physics::calc()
                 actor.dx = 0;
                 actor.dy = 0;
                 m_sound->playDeathSound();
-                if (m_callback)
+                if (m_callback.get())
                 {
                     m_callback->onDeath();
                 }
@@ -243,7 +243,7 @@ void Physics::calc()
         for (int n = 0; n < m_guffins.size(); ++n)
         {
             Rectangle& guffin = m_guffins[n];
-            if (intersectRect(guffin, actor.rect) && m_callback)
+            if (intersectRect(guffin, actor.rect) && m_callback.get())
             {
                 m_callback->collectApple(Point(guffin.x, guffin.y));
             }
@@ -252,7 +252,7 @@ void Physics::calc()
         for (int n = 0; n < m_jetPacks.size(); ++n)
         {
             Rectangle& jetPack = m_jetPacks[n];
-            if (intersectRect(jetPack, actor.rect) && m_callback)
+            if (intersectRect(jetPack, actor.rect) && m_callback.get())
             {
                 m_callback->collectJetPack(Point(jetPack.x, jetPack.y));
             }
@@ -261,7 +261,7 @@ void Physics::calc()
         for (int n = 0; n < m_sunItems.size(); ++n)
         {
             Rectangle& sunItem = m_sunItems[n];
-            if (intersectRect(sunItem, actor.rect) && m_callback)
+            if (intersectRect(sunItem, actor.rect) && m_callback.get())
             {
                 m_callback->collectSunItem(Point(sunItem.x, sunItem.y));
             }
@@ -270,7 +270,7 @@ void Physics::calc()
         for (int n = 0; n < m_buttons.size(); ++n)
         {
             Button& button = m_buttons[n];
-            if (intersectRect(button, actor.rect) && m_callback)
+            if (intersectRect(button, actor.rect) && m_callback.get())
             {
                 m_callback->touchButton(button.buttonId, button.buttonType);
             }
@@ -284,9 +284,6 @@ void Physics::calc()
         }
     }
 }
-
-
-
 
 
 void Physics::startActorJump(int index)

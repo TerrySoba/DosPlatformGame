@@ -83,7 +83,7 @@ version.h: FORCE
 _$(dest): $(objects_game)
 	echo "NAME   $@" > game.lnk
 	echo "SYSTEM DOS" >> game.lnk
-	echo "OPTION STACK=8192" >> game.lnk
+	echo "OPTION STACK=16000" >> game.lnk
 	echo "FILE   {$(objects_game)}" >> game.lnk
 	wlink  @game.lnk
 

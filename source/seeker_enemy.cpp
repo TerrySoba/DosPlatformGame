@@ -1,6 +1,6 @@
 #include "seeker_enemy.h"
 
-SeekerEnemy::SeekerEnemy(Rectangle enemyWalkArea, Animation* animation) :
+SeekerEnemy::SeekerEnemy(Rectangle enemyWalkArea, tnd::shared_ptr<Animation> animation) :
     m_enemyWalkArea(enemyWalkArea), m_animation(animation), m_walkSpeed(10), m_oldDirection(WALK_LEFT), m_direction(WALK_RIGHT), m_firstLoop(true)
 {
     m_posX = enemyWalkArea.x;

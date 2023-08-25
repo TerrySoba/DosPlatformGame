@@ -13,7 +13,7 @@ enum WalkingDirection
 class SeekerEnemy
 {
 public:
-    SeekerEnemy(Rectangle enemyWalkArea, Animation* animation);
+    SeekerEnemy(Rectangle enemyWalkArea, tnd::shared_ptr<Animation> animation);
     ~SeekerEnemy();
 
     void walk(const Rectangle& playerPos);
@@ -22,7 +22,7 @@ public:
 
 private:
     Rectangle m_enemyWalkArea;
-    Animation* m_animation;
+    tnd::shared_ptr<Animation> m_animation;
     int8_t m_walkSpeed;
     int m_posX;
     int m_posY;
