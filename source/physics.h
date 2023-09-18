@@ -50,6 +50,7 @@ class Physics
 {
 public:
     Physics(tnd::shared_ptr<PhysicsCallback> callback, tnd::shared_ptr<SoundController> sound);
+    ~Physics();
     int addActor(const Actor& rect);
     void setActor(int index, const Actor& rect);
     void getActorPos(int index, int16_t& x, int16_t& y);

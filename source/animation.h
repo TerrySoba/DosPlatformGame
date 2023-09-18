@@ -28,6 +28,7 @@ class Animation : public Drawable
 {
 public:
     Animation(const char* jsonFilename, const char* tgaFilename, bool transparent = true);
+    ~Animation();
     void nextFrame();
     
     void useTag(const char* name);

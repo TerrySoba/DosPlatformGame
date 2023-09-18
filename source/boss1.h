@@ -23,7 +23,7 @@ class Boss1
 {
 public:
     Boss1(Rectangle enemyRectangle, tnd::shared_ptr<Animation> animation, const tnd::vector<Rectangle>& walls);
-    virtual ~Boss1();
+    ~Boss1();
 
     void walk(const Rectangle& playerPos);
 

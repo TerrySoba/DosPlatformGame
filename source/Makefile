@@ -1,5 +1,5 @@
 objects_game_lib = \
-    vgagfx.o image.o animation.o keyboard.o rad_player.o \
+    drawable.o vgagfx.o image.o animation.o keyboard.o rad_player.o \
     rad_player_asm.o timer.o physics.o tga_image.o \
     level.o blit.o detect_lines.o exception.o \
 	rectangle.o tiny_string.o game.o compiled_sprite.o \
@@ -98,6 +98,7 @@ $(test): $(objects_test)
 _$(title): $(title_screen)
 	echo "NAME   $@" > title.lnk
 	echo "SYSTEM DOS" >> title.lnk
+	echo "OPTION STACK=16000" >> title.lnk
 	echo "FILE   {$(title_screen)}" >> title.lnk
 	wlink  @title.lnk
 

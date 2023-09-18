@@ -138,8 +138,8 @@ if __name__ == "__main__":
         "boss1"       : 7,
         "play_time"   : 8,
         "music"       : 9,
+        "boss2"       : 10,
     }
-
 
     with open(base_name + ".map", "wb") as map_file:
         map_file.write("MAP".encode("ascii"))           # map header

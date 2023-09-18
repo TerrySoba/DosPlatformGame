@@ -26,6 +26,6 @@ cycledown=20
 
 mount c .
 c:
-source\gametest --filter=LevelTest
+source\gametest
 pause
-exit
+

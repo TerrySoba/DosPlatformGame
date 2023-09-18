@@ -9,6 +9,7 @@ class Text : public Drawable
 {
 public:
     Text(const char* str, int lineWidth = 0, bool transparentBackground = false);
+    ~Text();
 
     virtual int16_t width() const;
     virtual int16_t height() const;

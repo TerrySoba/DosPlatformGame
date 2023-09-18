@@ -25,6 +25,10 @@ Physics::Physics(tnd::shared_ptr<PhysicsCallback> callback, tnd::shared_ptr<Soun
     m_topLevelTransition *= 16;
 }
 
+Physics::~Physics()
+{
+}
+
 int Physics::addActor(const Actor &rect)
 {
     m_actors.push_back(rect);

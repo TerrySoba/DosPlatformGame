@@ -68,6 +68,10 @@ Text::Text(const char* str, int lineWidth, bool transparentBackground) :
     
 }
 
+Text::~Text()
+{
+}
+
 int16_t Text::width() const
 {
     return m_width;

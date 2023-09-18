@@ -41,7 +41,9 @@ public:
     shared_ptr<ValueT>& operator=(const shared_ptr<ValueT>& other)
     {
         if (this == &other)
+        {
             return *this;
+        }
         
         delete_storage();
         m_storage = other.m_storage;
