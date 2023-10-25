@@ -29,7 +29,7 @@ std::vector<uint8_t> loadFile(const std::string& filename)
     size_t fileSize = ftell(fp);
     fseek(fp, 0L, SEEK_SET);
     std::vector<uint8_t> data(fileSize);
-    auto bytes = fread(&data[0], 1, fileSize, fp);
+    [[maybe_unused]] auto bytes = fread(&data[0], 1, fileSize, fp);
     assert(fileSize == bytes);
     fclose(fp);
     return data;
@@ -119,7 +119,7 @@ std::vector<uint8_t> decodeAdpcm4(uint8_t initial, std::vector<uint8_t> nibbles)
     std::vector<uint8_t> decoded(nibbles.size() + 1);
     decoded[0] = initial;
 
-    for (int i = 0; i < nibbles.size(); ++i)
+    for (size_t i = 0; i < nibbles.size(); ++i)
     {
         decoded[i + 1] = decoder.decodeNibble(nibbles[i]);
     }
@@ -182,7 +182,7 @@ std::vector<uint8_t> createAdpcm4BitFromRawOpenMP(const std::vector<uint8_t>& ra
     
     std::vector<uint64_t> result(raw.size() / combinedNibbles);
 
-    for (int i = 1; i < raw.size() / combinedNibbles; ++i)
+    for (size_t i = 1; i < raw.size() / combinedNibbles; ++i)
     {
         std::vector<Best> bestResults(omp_get_max_threads());
 
@@ -192,7 +192,7 @@ std::vector<uint8_t> createAdpcm4BitFromRawOpenMP(const std::vector<uint8_t>& ra
         {
             CreativeAdpcmDecoder4Bit decoderCopy = decoder;
             uint64_t diffSum = 0;
-            for (int nib = 0; nib < combinedNibbles; ++nib)
+            for (size_t nib = 0; nib < combinedNibbles; ++nib)
             {
                 int32_t diff = (int32_t)decoderCopy.decodeNibble(getNthNibble(nib, n)) - (int32_t)raw[i*combinedNibbles + nib];
                 diffSum += diff * diff;
@@ -235,9 +235,9 @@ std::vector<uint8_t> createAdpcm4BitFromRawOpenMP(const std::vector<uint8_t>& ra
     // printf("sum: %ld\n", squaredSum);
 
     std::vector<uint8_t> nibbles(result.size() * combinedNibbles);
-    for (int i = 0; i < result.size(); ++i)
+    for (size_t i = 0; i < result.size(); ++i)
     {
-        for (int nib = 0; nib < combinedNibbles; ++nib)
+        for (size_t nib = 0; nib < combinedNibbles; ++nib)
         {
             nibbles[i * combinedNibbles + nib] = getNthNibble(nib, result[i]);
         }
@@ -249,7 +249,7 @@ std::vector<uint8_t> createAdpcm4BitFromRawOpenMP(const std::vector<uint8_t>& ra
     std::vector<uint8_t> binaryResult(nibbles.size() / 2);
 
     // merge nibbles into bytes
-    for (int n = 0; n < nibbles.size() / 2; ++n)
+    for (size_t n = 0; n < nibbles.size() / 2; ++n)
     {
         binaryResult[n] = ((nibbles[2 * n] << 4) + (nibbles[2 * n + 1]));
     }
@@ -281,7 +281,7 @@ std::vector<uint8_t> createAdpcm4BitFromRaw(const std::vector<uint8_t>& raw, uin
     
     std::vector<uint64_t> result(raw.size() / combinedNibbles);
 
-    for (int i = 1; i < raw.size() / combinedNibbles; ++i)
+    for (size_t i = 1; i < raw.size() / combinedNibbles; ++i)
     {
         Best bestResults;
 
@@ -290,7 +290,7 @@ std::vector<uint8_t> createAdpcm4BitFromRaw(const std::vector<uint8_t>& raw, uin
         {
             CreativeAdpcmDecoder4Bit decoderCopy = decoder;
             uint64_t diffSum = 0;
-            for (int nib = 0; nib < combinedNibbles; ++nib)
+            for (size_t nib = 0; nib < combinedNibbles; ++nib)
             {
                 int diff = decoderCopy.decodeNibble(getNthNibble(nib, n)) - raw[i*combinedNibbles + nib];
                 diffSum += diff * diff;
@@ -315,9 +315,9 @@ std::vector<uint8_t> createAdpcm4BitFromRaw(const std::vector<uint8_t>& raw, uin
     // printf("sum: %ld\n", squaredSum);
 
     std::vector<uint8_t> nibbles(result.size() * combinedNibbles);
-    for (int i = 0; i < result.size(); ++i)
+    for (size_t i = 0; i < result.size(); ++i)
     {
-        for (int nib = 0; nib < combinedNibbles; ++nib)
+        for (size_t nib = 0; nib < combinedNibbles; ++nib)
         {
             nibbles[i * combinedNibbles + nib] = getNthNibble(nib, result[i]);
         }
@@ -326,7 +326,7 @@ std::vector<uint8_t> createAdpcm4BitFromRaw(const std::vector<uint8_t>& raw, uin
     std::vector<uint8_t> binaryResult(nibbles.size() / 2);
 
     // merge nibbles into bytes
-    for (int n = 0; n < nibbles.size() / 2; ++n)
+    for (size_t n = 0; n < nibbles.size() / 2; ++n)
     {
         binaryResult[n] = ((nibbles[2 * n] << 4) + (nibbles[2 * n + 1]));
     }
@@ -337,9 +337,9 @@ std::vector<uint8_t> createAdpcm4BitFromRaw(const std::vector<uint8_t>& raw, uin
 }
 
 
-std::vector<uint8_t> createAdpcm4BitFromRawSIMD(const std::vector<uint8_t>& raw, uint64_t combinedNibbles = 4)
+std::vector<uint8_t> createAdpcm4BitFromRawSIMD(const std::vector<uint8_t>& raw, [[maybe_unused]] uint64_t combinedNibbles = 4)
 {
-    uint64_t squaredSum = 0u;
+    // uint64_t squaredSum = 0u;
 
     Vec16uc accumulators(1);
     Vec16uc previous(raw[0]);
@@ -366,7 +366,7 @@ std::vector<uint8_t> createAdpcm4BitFromRawSIMD(const std::vector<uint8_t>& raw,
     std::vector<uint8_t> binaryResult(nibbles.size() / 2);
 
     // merge nibbles into bytes
-    for (int n = 0; n < nibbles.size() / 2; ++n)
+    for (size_t n = 0; n < nibbles.size() / 2; ++n)
     {
         binaryResult[n] = ((nibbles[2 * n] << 4) + (nibbles[2 * n + 1]));
     }
@@ -390,7 +390,7 @@ struct Path
 
 void fillEmptyList(std::list<Path>& emptyList, size_t historySize, size_t elementCount)
 {
-    for (int i = 0; i < elementCount; ++i)
+    for (size_t i = 0; i < elementCount; ++i)
     {
         emptyList.push_back({});
         emptyList.back().history.reserve(historySize);
@@ -416,7 +416,7 @@ std::vector<uint8_t> createAdpcm4BitFromRawExperiment(const std::vector<uint8_t>
 
     leafs.push_back({0, {}, CreativeAdpcmDecoder4Bit(raw[0])});
 
-    for (int n = 1; n < raw.size(); ++n)
+    for (size_t n = 1; n < raw.size(); ++n)
     {
         std::list<Path> newLeafs;
 
@@ -461,7 +461,7 @@ std::vector<uint8_t> createAdpcm4BitFromRawExperiment(const std::vector<uint8_t>
         // leafs = std::move(newLeafs);
 
         if (n % 10 == 0){
-            printf("%d -> %ld (%ld)\n", n, raw.size(), leafs.size());
+            printf("%lud -> %ld (%ld)\n", n, raw.size(), leafs.size());
             printf("newLeafs: %ld\n", newLeafs.size());
         }
     }
@@ -477,7 +477,7 @@ std::vector<uint8_t> createAdpcm4BitFromRawExperiment(const std::vector<uint8_t>
     std::vector<uint8_t> binaryResult(nibbles.size() / 2);
 
     // merge nibbles into bytes
-    for (int n = 0; n < nibbles.size() / 2; ++n)
+    for (size_t n = 0; n < nibbles.size() / 2; ++n)
     {
         binaryResult[n] = ((nibbles[2 * n] << 4) + (nibbles[2 * n + 1]));
     }
@@ -600,13 +600,19 @@ int main(int argc, char* argv[])
             case VOC_FORMAT_ADPCM_4BIT:
             {
                 std::vector<uint8_t> raw = loadFile(parser.getValue<std::string>("input"));
-                sampleData = createAdpcm4BitFromRawOpenMP(raw);
+                sampleData = createAdpcm4BitFromRawSIMD(raw);
                 break;
             }
             case VOC_FORMAT_PCM_8BIT:
             {
                 sampleData = loadFile(parser.getValue<std::string>("input"));
                 break;
+            }
+            case VOC_FORMAT_ADPCM_3BIT:
+            case VOC_FORMAT_ADPCM_2BIT:
+            {
+                printf("compression format not implemented\n");
+                return 1;
             }
         }
 

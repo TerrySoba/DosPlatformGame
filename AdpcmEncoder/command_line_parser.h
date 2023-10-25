@@ -176,7 +176,7 @@ private:
         std::cout << "\n\n" << m_programDescription << "\n\n";
         std::cout << "options:\n";
 
-        int longestLine = 0;
+        unsigned int longestLine = 0;
 
         for (auto param : m_parameters)
         {
