@@ -10,8 +10,11 @@
 #include <limits>
 #include <list>
 #include <cassert>
+#include <array>
 
 #include <omp.h>
+
+#include "vectorclass/vectorclass.h"
 
 #include "command_line_parser.h"
 
@@ -43,6 +46,24 @@ void storeFile(const std::string& filename, const std::vector<uint8_t>& data)
     fwrite(&data[0], data.size(), 1, fp);
 
     fclose(fp);
+}
+
+void calculateAllNibbles(Vec16uc& previous, Vec16uc& accumulators)
+{
+    Vec16uc nibbles(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+    Vec16uc data = nibbles & 7;
+
+    Vec16uc delta =
+        (data * accumulators) +
+        (accumulators / 2);
+
+    previous = select((nibbles & 8) != 0, add_saturated(previous, delta), sub_saturated(previous, delta));
+
+    Vec16cb mask = (data == 0) & (accumulators > 1);
+    accumulators = select(mask, accumulators / 2, accumulators);
+
+    mask = (data >= 5) & (accumulators < 8);
+    accumulators = select(mask, accumulators * 2, accumulators);
 }
 
 
@@ -300,6 +321,46 @@ std::vector<uint8_t> createAdpcm4BitFromRaw(const std::vector<uint8_t>& raw, uin
         {
             nibbles[i * combinedNibbles + nib] = getNthNibble(nib, result[i]);
         }
+    }
+
+    std::vector<uint8_t> binaryResult(nibbles.size() / 2);
+
+    // merge nibbles into bytes
+    for (int n = 0; n < nibbles.size() / 2; ++n)
+    {
+        binaryResult[n] = ((nibbles[2 * n] << 4) + (nibbles[2 * n + 1]));
+    }
+
+    binaryResult.insert(binaryResult.begin(), raw[0]);
+
+    return binaryResult;
+}
+
+
+std::vector<uint8_t> createAdpcm4BitFromRawSIMD(const std::vector<uint8_t>& raw, uint64_t combinedNibbles = 4)
+{
+    uint64_t squaredSum = 0u;
+
+    Vec16uc accumulators(1);
+    Vec16uc previous(raw[0]);
+    
+    std::vector<uint8_t> nibbles;
+    nibbles.reserve(raw.size());
+
+    for (size_t i = 1; i < raw.size(); ++i)
+    {   
+        calculateAllNibbles(previous, accumulators);
+        // find minimum difference between prediction and actual result
+
+        Vec16uc diff = select(previous > raw[i], previous - raw[i], raw[i] - previous);
+
+        uint8_t minDiff = horizontal_min(diff);
+        uint8_t minIndex = horizontal_find_first(diff == minDiff);
+
+        nibbles.push_back(minIndex);
+
+        accumulators = accumulators[minIndex];
+        previous = previous[minIndex];
     }
 
     std::vector<uint8_t> binaryResult(nibbles.size() / 2);
