@@ -18,6 +18,8 @@
 
 #include "command_line_parser.h"
 
+uint64_t nibbleDecodings = 0;
+
 std::vector<uint8_t> loadFile(const std::string& filename)
 {
     FILE* fp = fopen(filename.c_str(), "rb");
@@ -90,6 +92,7 @@ public:
      */
     uint8_t decodeNibble(uint8_t nibble)
     {
+        nibbleDecodings++;
         int sign = (nibble & 8) / 4 - 1;            // Input is just 4 bits (a nibble), so the 4th bit is the sign bit
         uint8_t data = nibble & 7;                  // The lower 3 bits are the sample data
         uint8_t delta = 
@@ -292,7 +295,7 @@ std::vector<uint8_t> createAdpcm4BitFromRaw(const std::vector<uint8_t>& raw, uin
             uint64_t diffSum = 0;
             for (size_t nib = 0; nib < combinedNibbles; ++nib)
             {
-                int diff = decoderCopy.decodeNibble(getNthNibble(nib, n)) - raw[i*combinedNibbles + nib];
+                int diff = decoderCopy.decodeNibble(getNthNibble(nib, n)) - raw[i*combinedNibbles + nib - combinedNibbles + 1];
                 diffSum += diff * diff;
             }
  
@@ -312,7 +315,7 @@ std::vector<uint8_t> createAdpcm4BitFromRaw(const std::vector<uint8_t>& raw, uin
         // if (i % 10 == 0) printf("%d\n", i);
     }
 
-    // printf("sum: %ld\n", squaredSum);
+    printf("sum: %ld\n", squaredSum);
 
     std::vector<uint8_t> nibbles(result.size() * combinedNibbles);
     for (size_t i = 0; i < result.size(); ++i)
@@ -337,31 +340,77 @@ std::vector<uint8_t> createAdpcm4BitFromRaw(const std::vector<uint8_t>& raw, uin
 }
 
 
+struct BestStep
+{
+    uint8_t accumulator;
+    uint8_t previous;
+    size_t squaredDiff;
+    uint64_t history;
+};
+
+
+void calculateStepRecursively(const uint8_t *data, uint8_t accumulator, uint8_t previous, size_t squaredDiff, uint64_t history, size_t recursionDepth, BestStep& bestStep)
+{
+    Vec16uc accumulators(accumulator);
+    Vec16uc previousValues(previous);
+    calculateAllNibbles(previousValues, accumulators);
+    nibbleDecodings+=16;
+
+    Vec16uc diff = select(previousValues > *data, previousValues - (*data), (*data) - previousValues);
+
+    if (recursionDepth != 0)
+    {
+        for (size_t i = 0; i < 16; ++i)
+        {
+            calculateStepRecursively(data + 1, accumulators[i], previousValues[i], squaredDiff + diff[i] * diff[i], history | (i << (4 * recursionDepth)), recursionDepth - 1, bestStep);
+        }
+    }
+    else
+    {
+        // Vec16us cDiff = extend(diff);
+        // Vec16us squaredDiffs = diff
+
+        for (size_t i = 0; i < 16; ++i)
+        {
+            auto currentDiff = squaredDiff + diff[i] * diff[i];
+            if (currentDiff < bestStep.squaredDiff)
+            {
+                bestStep.squaredDiff = currentDiff;
+                bestStep.accumulator = accumulators[i];
+                bestStep.previous = previousValues[i];
+                bestStep.history = history | (i << (4 * recursionDepth));
+            }
+        }
+    }
+}
+
 std::vector<uint8_t> createAdpcm4BitFromRawSIMD(const std::vector<uint8_t>& raw, [[maybe_unused]] uint64_t combinedNibbles = 4)
 {
-    // uint64_t squaredSum = 0u;
-
-    Vec16uc accumulators(1);
-    Vec16uc previous(raw[0]);
-    
+    uint64_t squaredSum = 0u;
     std::vector<uint8_t> nibbles;
     nibbles.reserve(raw.size());
 
-    for (size_t i = 1; i < raw.size(); ++i)
-    {   
-        calculateAllNibbles(previous, accumulators);
-        // find minimum difference between prediction and actual result
+    BestStep bestStep;
+    bestStep.accumulator = 1;
+    bestStep.previous = raw[0];
+    bestStep.squaredDiff = std::numeric_limits<size_t>::max();
 
-        Vec16uc diff = select(previous > raw[i], previous - raw[i], raw[i] - previous);
+    for (size_t i = 1; i < raw.size() - combinedNibbles; i += combinedNibbles)
+    {
+        Vec16uc accumulators(bestStep.accumulator);
+        Vec16uc previous(bestStep.previous);
+        bestStep.squaredDiff = std::numeric_limits<size_t>::max();
+        calculateStepRecursively(&raw[i], accumulators[0], previous[0], 0, 0, combinedNibbles - 1, bestStep);
 
-        uint8_t minDiff = horizontal_min(diff);
-        uint8_t minIndex = horizontal_find_first(diff == minDiff);
+        for (int n = combinedNibbles - 1; n >= 0; --n)
+        {
+            nibbles.push_back((bestStep.history >> (4 * n)) & 0xf);
+        }
 
-        nibbles.push_back(minIndex);
-
-        accumulators = accumulators[minIndex];
-        previous = previous[minIndex];
+        squaredSum += bestStep.squaredDiff;
     }
+
+    std::cout << "SIMD sum: " << squaredSum << "\n";
 
     std::vector<uint8_t> binaryResult(nibbles.size() / 2);
 
@@ -567,6 +616,30 @@ std::map <std::string, VocSampleFormat> compressionFormats =
     {"ADPCM4", VOC_FORMAT_ADPCM_4BIT},
 };
 
+
+uint64_t calcTotalSquareError(const std::vector<uint8_t>& adpcm, const std::vector<uint8_t>& raw)
+{
+    std::vector<uint8_t> nibbles((adpcm.size() - 1) * 2);
+    for (size_t i = 1; i < adpcm.size(); ++i)
+    {
+        nibbles[2 * (i - 1)] = adpcm[i] >> 4;
+        nibbles[2 * (i - 1) + 1] = adpcm[i] & 0xf;
+    }
+    auto decoded = decodeAdpcm4(adpcm[0], nibbles);
+
+    uint64_t squaredSum = 0;
+    for (size_t i = 0; i < decoded.size(); ++i)
+    {
+        int diff = decoded[i] - raw[i];
+        squaredSum += diff * diff;
+    }
+
+    storeFile("dump_raw.raw", raw);
+    storeFile("dump_adpcm.raw", decoded);
+
+    return squaredSum;
+}
+
 int main(int argc, char* argv[])
 {
     try
@@ -600,7 +673,10 @@ int main(int argc, char* argv[])
             case VOC_FORMAT_ADPCM_4BIT:
             {
                 std::vector<uint8_t> raw = loadFile(parser.getValue<std::string>("input"));
-                sampleData = createAdpcm4BitFromRawSIMD(raw);
+                std::cout << "raw size: " << raw.size() << "\n";
+                sampleData = createAdpcm4BitFromRaw(raw);
+                std::cout << "total error: " << calcTotalSquareError(sampleData, raw) << "\n";
+
                 break;
             }
             case VOC_FORMAT_PCM_8BIT:
@@ -619,6 +695,8 @@ int main(int argc, char* argv[])
         std::vector<uint8_t> vocData = createVocFile(parser.getValue<uint32_t>("frequency"), sampleData, format);
 
         storeFile(parser.getValue<std::string>("output"), vocData);
+
+        std::cout << "nibble decodings: " << nibbleDecodings << "\n";
 
         return 0;
     }
