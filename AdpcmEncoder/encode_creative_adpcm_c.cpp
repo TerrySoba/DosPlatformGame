@@ -62,10 +62,10 @@ void calculateAllNibbles(Vec16uc& previous, Vec16uc& accumulators)
     previous = select((nibbles & 8) != 0, add_saturated(previous, delta), sub_saturated(previous, delta));
 
     Vec16cb mask = (data == 0) & (accumulators > 1);
-    accumulators = select(mask, accumulators / 2, accumulators);
+    accumulators = select(mask, accumulators >> 1, accumulators);
 
     mask = (data >= 5) & (accumulators < 8);
-    accumulators = select(mask, accumulators * 2, accumulators);
+    accumulators = select(mask, accumulators << 1, accumulators);
 }
 
 
@@ -197,7 +197,7 @@ std::vector<uint8_t> createAdpcm4BitFromRawOpenMP(const std::vector<uint8_t>& ra
             uint64_t diffSum = 0;
             for (size_t nib = 0; nib < combinedNibbles; ++nib)
             {
-                int32_t diff = (int32_t)decoderCopy.decodeNibble(getNthNibble(nib, n)) - (int32_t)raw[i*combinedNibbles + nib];
+                int32_t diff = (int32_t)decoderCopy.decodeNibble(getNthNibble(nib, n)) - (int32_t)raw[i*combinedNibbles + nib - combinedNibbles + 1];
                 diffSum += diff * diff;
             }
  
@@ -425,119 +425,6 @@ std::vector<uint8_t> createAdpcm4BitFromRawSIMD(const std::vector<uint8_t>& raw,
     return binaryResult;
 }
 
-struct Path
-{
-    uint64_t squaredSum = 0;
-    std::vector<uint8_t> history;
-    CreativeAdpcmDecoder4Bit decoder = CreativeAdpcmDecoder4Bit(0);
-
-    bool operator<(const Path& other)
-    {
-        return this->squaredSum < other.squaredSum;
-    }
-};
-
-void fillEmptyList(std::list<Path>& emptyList, size_t historySize, size_t elementCount)
-{
-    for (size_t i = 0; i < elementCount; ++i)
-    {
-        emptyList.push_back({});
-        emptyList.back().history.reserve(historySize);
-    }
-}
-
-
-// For now this is experimental and does not yield good results.
-// You should generally not use this function.
-std::vector<uint8_t> createAdpcm4BitFromRawExperiment(const std::vector<uint8_t>& raw)
-{
-    std::list<Path> leafs;
-    uint32_t maxSize = 16 * 16 * 16;
-
-    std::list<Path> emptyList;
-    // for (int i = 0; i < maxSize; ++i)
-    // {
-    //     emptyList.push_back({});
-    //     emptyList.back().history.reserve(raw.size() + 1);
-    // }
-
-    fillEmptyList(emptyList, raw.size(), maxSize * 16);
-
-    leafs.push_back({0, {}, CreativeAdpcmDecoder4Bit(raw[0])});
-
-    for (size_t n = 1; n < raw.size(); ++n)
-    {
-        std::list<Path> newLeafs;
-
-        for (auto& leaf : leafs)
-        {
-            for (int i = 0; i < 16; ++i)
-            {
-                if (emptyList.empty())
-                {
-                    fillEmptyList(emptyList, raw.size(), 1);
-                }
-
-                Path& p = emptyList.front();
-                p.history = leaf.history;
-                p.decoder = leaf.decoder;
-                p.squaredSum = leaf.squaredSum;
-                int diff = p.decoder.decodeNibble(i) - raw[n];
-                p.squaredSum += diff * diff;
-                p.history.push_back(i);
-                // newLeafs.push_back(p);
-                newLeafs.splice(newLeafs.end(), emptyList, emptyList.begin());
-            }
-        }
-
-        // std::sort(newLeafs.begin(), newLeafs.end());
-        newLeafs.sort();
-
-        // remove worst paths, keep only maxSize paths
-        if (newLeafs.size() > maxSize)
-        {
-            auto it = newLeafs.begin();
-            std::advance(it, maxSize);
-            emptyList.splice(emptyList.begin(), newLeafs, it, newLeafs.end()); // move unneeded elements to emptyList
-            // newLeafs.erase(it, newLeafs.end());
-        }
-
-        // remove old leaves to emptyList
-        emptyList.splice(emptyList.begin(), leafs, leafs.begin(), leafs.end());
-
-        leafs.splice(leafs.begin(), newLeafs, newLeafs.begin(), newLeafs.end());
-
-        // leafs = std::move(newLeafs);
-
-        if (n % 10 == 0){
-            printf("%lud -> %ld (%ld)\n", n, raw.size(), leafs.size());
-            printf("newLeafs: %ld\n", newLeafs.size());
-        }
-    }
-
-    // std::sort(leafs.begin(), leafs.end());
-    leafs.sort();
-
-    printf("res: %ld\n", leafs.front().squaredSum);
-
-
-    auto& nibbles = leafs.front().history;
-
-    std::vector<uint8_t> binaryResult(nibbles.size() / 2);
-
-    // merge nibbles into bytes
-    for (size_t n = 0; n < nibbles.size() / 2; ++n)
-    {
-        binaryResult[n] = ((nibbles[2 * n] << 4) + (nibbles[2 * n + 1]));
-    }
-
-    binaryResult.insert(binaryResult.begin(), raw[0]);
-
-
-    return binaryResult;
-}
-
-
 void append(std::vector<uint8_t>& container, const std::string& value)
 {
     container.insert(container.end(), value.c_str(), value.c_str() + value.size());
@@ -674,7 +561,7 @@ int main(int argc, char* argv[])
             {
                 std::vector<uint8_t> raw = loadFile(parser.getValue<std::string>("input"));
                 std::cout << "raw size: " << raw.size() << "\n";
-                sampleData = createAdpcm4BitFromRaw(raw);
+                sampleData = createAdpcm4BitFromRawSIMD(raw,6);
                 std::cout << "total error: " << calcTotalSquareError(sampleData, raw) << "\n";
 
                 break;
