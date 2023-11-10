@@ -122,7 +122,7 @@ public:
         {
             if (!param.value.has_value() && param.required == ParameterRequired::yes)
             {
-                std::cout << "parameter \"" << param.name << "\" is missing.\n";
+                std::cout << "Parameter \"" << param.name << "\" is missing.\n";
                 printUsage(programName);
                 exit(1);
             }
@@ -169,7 +169,7 @@ private:
             std::cout << "-" << param.shortForm << " " << uppercaseName << " ";
 
             if (param.required == ParameterRequired::no) {
-                std::cout << "]";
+                std::cout << "] ";
             }
         }
 

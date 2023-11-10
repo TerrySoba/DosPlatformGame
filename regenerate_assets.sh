@@ -30,15 +30,15 @@ pushd AdpcmEncoder/build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make
 popd
-wav2adpcm=AdpcmEncoder/wav2adpcm.sh
+wav2adpcm=AdpcmEncoder/build/adpcm_encoder
 
-#$wav2adpcm sound/death.wav 8000 ADPCM4 sound/death.voc
-#$wav2adpcm sound/jump.wav 8000 ADPCM4 sound/jump.voc
-#$wav2adpcm sound/steps.wav 8000 ADPCM4 sound/steps.voc
-#$wav2adpcm sound/stand.wav 8000 ADPCM4 sound/stand.voc
-#$wav2adpcm sound/guffin.wav 15000 ADPCM4 sound/guffin.voc
-#$wav2adpcm sound/jetpack.wav 8000 ADPCM4 sound/jetpack.voc
-#$wav2adpcm sound/switch2.wav 11000 ADPCM4 sound/switch2.voc
+$wav2adpcm -i sound/death.wav -f 8000 -c ADPCM4 -o sound/death.voc -n 0.7
+$wav2adpcm -i sound/jump.wav -f 8000 -c ADPCM4 -o sound/jump.voc -n 0.2
+$wav2adpcm -i sound/steps.wav -f 8000 -c ADPCM4 -o sound/steps.voc -n 0.2
+$wav2adpcm -i sound/stand.wav -f 8000 -c ADPCM4 -o sound/stand.voc -n 0.2
+$wav2adpcm -i sound/guffin.wav -f 8000 -c PCM -o sound/guffin.voc -n 0.9
+$wav2adpcm -i sound/jetpack.wav -f 8000 -c ADPCM4 -o sound/jetpack.voc -n 0.9
+$wav2adpcm -i sound/switch2.wav -f 11000 -c ADPCM4 -o sound/switch2.voc -n 0.9
 
 
 convertImage () {
