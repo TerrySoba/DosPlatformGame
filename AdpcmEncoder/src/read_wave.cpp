@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <cstring>
 #include <iostream>
+#include <memory>
 #include "resampling.h"
 
 void safeRead(void* buffer, size_t size, size_t count, FILE* file)
@@ -69,28 +70,22 @@ std::vector<uint8_t> readWaveDataChunk(FILE* file)
 
 WaveFile loadWaveFile(const char* filename)
 {
-    FILE* file = fopen(filename, "rb");
+    auto file = std::shared_ptr<FILE>(
+        fopen(filename, "rb"),
+        [](FILE* file) { if (file) {fclose(file);} });
     if (!file)
     {
         throw std::runtime_error("Failed to open file");
     }
 
-    try
-    {        
-        WaveFileHeader header = readWaveFileHeder(file);
+    WaveFileHeader header = readWaveFileHeder(file.get());
 
-        auto data = readWaveDataChunk(file);
+    auto data = readWaveDataChunk(file.get());
 
-        WaveFile waveFile;
-        waveFile.header = header;
-        waveFile.rawData = std::move(data);
-        return waveFile;
-    }
-    catch(...)
-    {
-        fclose(file);
-        throw;
-    }
+    WaveFile waveFile;
+    waveFile.header = header;
+    waveFile.rawData = std::move(data);
+    return waveFile;
 }
 
 
@@ -118,7 +113,7 @@ WaveFileMono loadWaveFileToMono(const char *filename)
         throw std::runtime_error("Only 8 and 16 bit files supported");
     }
 
-    if (waveFile.header.numChannels != 1)
+    if (waveFile.header.numChannels > 1)
     {
         // merge float samples to mono
         for (size_t i = 0; i < output.size(); i += waveFile.header.numChannels)

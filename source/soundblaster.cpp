@@ -421,6 +421,7 @@ SbSample SoundBlaster::loadVocFile(const char* filename)
 
 
     SbSample sample;
+    sample.data = 0;
 
     while (!feof(rawFile))
     {
@@ -442,6 +443,10 @@ SbSample SoundBlaster::loadVocFile(const char* filename)
                     sample.length = length;
                     sample.packMethod = (PackMethod)packMethod;
                     sample.timeConstant = timeConstant;
+                    if (sample.data)
+                    {
+                        free(sample.data);
+                    }
                     sample.data = (uint8_t*)malloc(sample.length);
                     fread(sample.data, 1, sample.length, rawFile);
                 }
