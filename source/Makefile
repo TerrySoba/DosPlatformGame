@@ -1,5 +1,5 @@
 objects_game_lib = \
-    drawable.o vgagfx.o image.o animation.o keyboard.o rad_player.o \
+    vgagfx.o image.o animation.o keyboard.o rad_player.o \
     rad_player_asm.o timer.o physics.o tga_image.o \
     level.o blit.o detect_lines.o exception.o \
 	rectangle.o tiny_string.o game.o compiled_sprite.o \
