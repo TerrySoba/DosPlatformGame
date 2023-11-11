@@ -1,7 +1,7 @@
 #include "voc_format.h"
 
 #include <string>
-
+#include <cmath>
 
 void append(std::vector<uint8_t>& container, const std::string& value)
 {
@@ -19,21 +19,12 @@ void append(std::vector<uint8_t>& container, uint8_t value)
     container.push_back(value);
 }
 
-
-int intRound(double x)
-{
-    if (x < 0.0)
-        return (int)(x - 0.5);
-    else
-        return (int)(x + 0.5);
-}
-
 std::vector<uint8_t> createVocFile(
     uint32_t frequency,
     const std::vector<uint8_t>& sampleData,
     VocSampleFormat sampleFormat)
 {
-    uint8_t timeConstant = intRound(256 - 1000000.0 / frequency);
+    uint8_t timeConstant = round(256 - 1000000.0 / frequency);
 
     std::string vocHeader = "Creative Voice File\x1a";
 

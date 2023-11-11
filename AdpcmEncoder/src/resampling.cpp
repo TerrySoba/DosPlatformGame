@@ -125,6 +125,17 @@ std::vector<float> createLowpassFilter(float sampleRate, float cutoffFrequency, 
 //     return output;
 // }
 
+std::vector<float> toFloatVector(const std::vector<int32_t>& input)
+{
+    std::vector<float> output;
+    output.reserve(input.size());
+    for (size_t i = 0; i < input.size(); ++i)
+    {
+        output.push_back(std::clamp(input[i] / (double)std::numeric_limits<int32_t>::max(), -1.0, 1.0));
+    }
+    return output;
+}
+
 std::vector<float> toFloatVector(const std::vector<int16_t>& input)
 {
     std::vector<float> output;
