@@ -210,12 +210,12 @@ std::vector<float> resample(const std::vector<float>& inputData, uint32_t inputS
     // output.reserve(outputSize);
     for (size_t i = 0; i < outputSize; ++i)
     {
-        float inputIndex = (float)i * (float)inputSampleRate / (float)outputSampleRate;
+        double inputIndex = (double)i * (double)inputSampleRate / (double)outputSampleRate;
         
         // do linear interpolation
         size_t inputIndexFloor = (size_t)inputIndex;
         size_t inputIndexCeil = inputIndexFloor + 1;
-        float inputIndexFraction = inputIndex - inputIndexFloor;
+        double inputIndexFraction = inputIndex - inputIndexFloor;
         if (inputIndexCeil >= input.size())
         {
             inputIndexCeil = input.size() - 1;

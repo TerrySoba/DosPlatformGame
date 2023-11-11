@@ -30,6 +30,7 @@ int main(int argc, char* argv[])
         parser.addParameter("output", "o", "Name of the output file", clp::ParameterRequired::yes);
         parser.addParameter("compression", "c", "Compression to be used. Options: PCM, ADPCM4", clp::ParameterRequired::no, "ADPCM4");
         parser.addParameter("normalize", "n", "Normalize audio to given fraction, e.g. 0.9", clp::ParameterRequired::no, "-1.0");
+        parser.addParameter("level", "l", "Level of compression. Must be integer. 1 = lowest quality but fast. Bigger values than 5 probably make no sense and are terribly slow.", clp::ParameterRequired::no, "4");
 
         parser.parse(argc, argv);
 
@@ -71,7 +72,7 @@ int main(int argc, char* argv[])
             case VOC_FORMAT_ADPCM_4BIT:
             {
                 printf("Output format: ADPCM 4-bit\n");
-                sampleData = createAdpcm4BitFromRawSIMD(raw,4);
+                sampleData = createAdpcm4BitFromRawSIMD(raw, parser.getValue<uint64_t>("level"));
                 break;
             }
             case VOC_FORMAT_PCM_8BIT:
