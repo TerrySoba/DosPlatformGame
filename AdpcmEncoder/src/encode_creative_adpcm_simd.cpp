@@ -12,9 +12,9 @@ struct BestStep
     uint64_t history;
 };
 
-int64_t cube(int64_t a)
+constexpr int64_t square(int64_t a) 
 {
-    return abs(a * a * a);
+    return a * a;
 }
 
 void calculateAllNibbles(Vec16uc& previous, Vec16uc& accumulators)
@@ -49,14 +49,14 @@ void calculateStepRecursively(const uint8_t *data, uint8_t accumulator, uint8_t 
     {
         for (size_t i = 0; i < 16; ++i)
         {
-            calculateStepRecursively(data + 1, accumulators[i], previousValues[i], squaredDiff + cube(diff[i]), history | (i << (4 * recursionDepth)), recursionDepth - 1, bestStep);
+            calculateStepRecursively(data + 1, accumulators[i], previousValues[i], squaredDiff + square(diff[i]), history | (i << (4 * recursionDepth)), recursionDepth - 1, bestStep);
         }
     }
     else
     {
         for (size_t i = 0; i < 16; ++i)
         {
-            auto currentDiff = squaredDiff + cube(diff[i]);
+            auto currentDiff = squaredDiff + square(diff[i]);
             if (currentDiff < bestStep.squaredDiff)
             {
                 bestStep.squaredDiff = currentDiff;
