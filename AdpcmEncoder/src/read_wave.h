@@ -39,12 +39,5 @@ struct WaveFileMono
  */
 WaveFileMono loadWaveFileToMono(const char *filename);
 
-// struct WaveFile8BitMono
-// {
-//     uint32_t sampleRate;
-//     std::vector<uint8_t> data;
-// };
-
-// WaveFile8BitMono loadWaveFile8BitMono(const char* filename, int32_t targetSampleRate);
 
 #endif
