@@ -52,14 +52,7 @@ WaveFileHeader readWaveFileHeader(FILE* file)
 
 std::vector<uint8_t> readWaveDataChunk(FILE* file)
 {
-    std::array<char, 4> subChunk2Id;
     uint32_t subChunk2Size;
-    // safeRead(subChunk2Id.data(), 4, 1, file);
-    // if (memcmp(subChunk2Id.data(), "data", 4) != 0)
-    // {
-    //     throw std::runtime_error("Invalid file format, expected data chunk.");
-    // }
-
     safeRead(&subChunk2Size, 4, 1, file);
 
     std::vector<uint8_t> data(subChunk2Size);
@@ -109,6 +102,7 @@ WaveFile loadWaveFile(const char* filename)
         }
         else
         {
+            // skip chunk
             uint32_t chunkSize;
             safeRead(&chunkSize, 4, 1, file.get());
             fseek(file.get(), chunkSize, SEEK_CUR);
@@ -139,38 +133,20 @@ WaveFileMono loadWaveFileToMono(const char *filename)
         switch(waveFile.header.bitsPerSample)
         {
             case 32:
-            {
-                std::vector<int32_t> samples;
-                samples.reserve(waveFile.rawData.size() / 4);
-                for (size_t i = 0; i < waveFile.rawData.size(); i += 4)
-                {
-                    int32_t sample = (waveFile.rawData[i + 0] << 0) | (waveFile.rawData[i + 1] << 8) | (waveFile.rawData[i + 2] << 16) | (waveFile.rawData[i + 3] << 24);
-                    samples.push_back(sample);
-                }
-                output = toFloatVector(samples);
-                break;
-            }
-
             case 24:
-            {
-                std::vector<int32_t> samples;
-                samples.reserve(waveFile.rawData.size() / 3);
-                for (size_t i = 0; i < waveFile.rawData.size(); i += 3)
-                {
-                    int32_t sample = (waveFile.rawData[i] << 8) | (waveFile.rawData[i + 1] << 16) | (waveFile.rawData[i + 2] << 24);
-                    samples.push_back(sample);
-                }
-                output = toFloatVector(samples);
-                break;
-            }   
-
             case 16:
             {
-                std::vector<int16_t> samples;
-                samples.reserve(waveFile.rawData.size() / 2);
-                for (size_t i = 0; i < waveFile.rawData.size(); i += 2)
+                std::vector<int32_t> samples;
+                size_t bytesPerSample = waveFile.header.bitsPerSample / 8;
+                samples.reserve(waveFile.rawData.size() / bytesPerSample);
+                for (size_t i = 0; i < waveFile.rawData.size(); i += bytesPerSample)
                 {
-                    int16_t sample = waveFile.rawData[i] | (waveFile.rawData[i + 1] << 8);
+                    int32_t sample = 0;
+                    int32_t shift = 4 - bytesPerSample;
+                    for (size_t n = 0; n < bytesPerSample; ++n)
+                    {
+                        sample |= waveFile.rawData[i + n] << ( (n + shift) * 8);
+                    }
                     samples.push_back(sample);
                 }
                 output = toFloatVector(samples);
@@ -179,6 +155,7 @@ WaveFileMono loadWaveFileToMono(const char *filename)
 
             case 8:
             {
+                // as 8bit samples are unsigned we cannot handle them in the general case above
                 output = toFloatVector(waveFile.rawData);
                 break;
             }
@@ -196,31 +173,37 @@ WaveFileMono loadWaveFileToMono(const char *filename)
         switch(waveFile.header.bitsPerSample)
         {
             case 32:
-            {
-                std::vector<float> samples;
-                samples.reserve(waveFile.rawData.size() / 4);
-                for (size_t i = 0; i < waveFile.rawData.size(); i += 4)
-                {
-                    float sample;
-                    memcpy(&sample, &waveFile.rawData[i], 4);
-                    samples.push_back(sample);
-                }
-                output = std::move(samples);
-                break;
-            }
             case 64:
             {
                 std::vector<float> samples;
-                samples.reserve(waveFile.rawData.size() / 8);
-                for (size_t i = 0; i < waveFile.rawData.size(); i += 8)
+                size_t bytesPerSample = waveFile.header.bitsPerSample / 8;
+                samples.reserve(waveFile.rawData.size() / bytesPerSample);
+                if (bytesPerSample == 4)
                 {
-                    double sample;
-                    memcpy(&sample, &waveFile.rawData[i], 8);
-                    samples.push_back((float)sample);
+                    for (size_t i = 0; i < waveFile.rawData.size(); i += bytesPerSample)
+                    {
+                        float sample;
+                        memcpy(&sample, &waveFile.rawData[i], bytesPerSample);
+                        samples.push_back(sample);
+                    }
+                }
+                else if (bytesPerSample == 8)
+                {
+                    for (size_t i = 0; i < waveFile.rawData.size(); i += bytesPerSample)
+                    {
+                        double sample;
+                        memcpy(&sample, &waveFile.rawData[i], bytesPerSample);
+                        samples.push_back((float)sample);
+                    }   
+                }
+                else
+                {
+                    throw std::runtime_error("Unsupported bits per sample float");
                 }
                 output = std::move(samples);
                 break;
             }
+            
             default:
             {
                 std::stringstream ss;
