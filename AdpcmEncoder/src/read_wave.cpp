@@ -70,10 +70,10 @@ std::string readChunkId(FILE* file)
 }
 
 
-WaveFile loadWaveFile(const char* filename)
+WaveFile loadWaveFile(const std::string& filename)
 {
     auto file = std::shared_ptr<FILE>(
-        fopen(filename, "rb"),
+        fopen(filename.c_str(), "rb"),
         [](FILE* file) { if (file) {fclose(file);} });
     if (!file)
     {
@@ -116,17 +116,11 @@ WaveFile loadWaveFile(const char* filename)
     return waveFile;
 }
 
-enum WaveAudioFormat
-{
-    WAVE_FORMAT_PCM = 1,
-    WAVE_FORMAT_IEEE_FLOAT = 3
-};
 
-
-WaveFileMono loadWaveFileToMono(const char *filename)
+WaveFileMono loadWaveFileToMono(const std::string& filename)
 {
-    auto waveFile = loadWaveFile(filename);
-    std::vector<float> output;
+    auto waveFile = loadWaveFile(filename.c_str());
+    std::vector<double> output;
 
     if (waveFile.header.audioFormat == WAVE_FORMAT_PCM)
     {
@@ -149,14 +143,14 @@ WaveFileMono loadWaveFileToMono(const char *filename)
                     }
                     samples.push_back(sample);
                 }
-                output = toFloatVector(samples);
+                output = toDoubleVector(samples);
                 break;
             }
 
             case 8:
             {
                 // as 8bit samples are unsigned we cannot handle them in the general case above
-                output = toFloatVector(waveFile.rawData);
+                output = toDoubleVector(waveFile.rawData);
                 break;
             }
 
@@ -175,7 +169,7 @@ WaveFileMono loadWaveFileToMono(const char *filename)
             case 32:
             case 64:
             {
-                std::vector<float> samples;
+                std::vector<double> samples;
                 size_t bytesPerSample = waveFile.header.bitsPerSample / 8;
                 samples.reserve(waveFile.rawData.size() / bytesPerSample);
                 if (bytesPerSample == 4)

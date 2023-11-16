@@ -4,6 +4,13 @@
 #include <vector>
 #include <cstdint>
 #include <array>
+#include <string>
+
+enum WaveAudioFormat : uint16_t
+{
+    WAVE_FORMAT_PCM = 1,
+    WAVE_FORMAT_IEEE_FLOAT = 3
+};
 
 struct WaveFileHeader
 {
@@ -26,18 +33,18 @@ struct WaveFile
     std::vector<uint8_t> rawData;
 };
 
-WaveFile loadWaveFile(const char* filename);
+WaveFile loadWaveFile(const std::string& filename);
 
 struct WaveFileMono
 {
     uint32_t sampleRate;
-    std::vector<float> data;
+    std::vector<double> data;
 };
 
 /**
  * @brief Loads a wave file and converts it to mono. The samples are converted to float.
  */
-WaveFileMono loadWaveFileToMono(const char *filename);
+WaveFileMono loadWaveFileToMono(const std::string& filename);
 
 
 #endif

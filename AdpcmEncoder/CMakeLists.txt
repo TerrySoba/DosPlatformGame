@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.9)
 project(adpcm_encoder)
 set(CMAKE_CXX_STANDARD 20)
 
-#find_package(Catch2 REQUIRED)
+find_package(Catch2 REQUIRED)
 #find_package(vectorclass REQUIRED)
 find_package(OpenMP REQUIRED)
 
@@ -33,13 +33,17 @@ target_link_libraries(adpcm_encoder
     adpcm_encoder_lib
 )
 
-# add_executable(adpcm_encoder_test
-#     src/resampling_test.cpp 
-#     )
+add_executable(adpcm_encoder_test
+    src/test/resampling_test.cpp
+    )
 
-# target_link_libraries(adpcm_encoder_test
-#     PUBLIC adpcm_encoder_lib
-#     PUBLIC Catch2::Catch2WithMain
-# )
+target_link_libraries(adpcm_encoder_test
+    adpcm_encoder_lib
+    Catch2::Catch2WithMain)
 
-# target_compile_definitions(adpcm_encoder_test PUBLIC TEST_DATA_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/testdata\")
+target_include_directories(adpcm_encoder_test PRIVATE 
+    ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_compile_definitions(adpcm_encoder_test PUBLIC TEST_DATA_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/testdata\")
