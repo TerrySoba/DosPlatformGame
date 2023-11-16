@@ -1,15 +1,38 @@
 # Creative ADPCM
 
 This directory contains a Creative ADPCM 4bit encoder.
-The encoder can be used to encode raw unsigned 8bit audio files to Creative ADPCM 4bit VOC files.
+The encoder can be used to encode wave audio files to Creative ADPCM 4bit VOC files.
 
 ## Usage of encoder
 
-Example usage:
-~~~bash
-adpcm_encoder input.raw 11000 output.voc
 ~~~
-This will encode the file **input.raw** into a Creative ADPCM encoded VOC file with 11kHz.
+Usage: ./adpcm_encoder -i INPUT [ -f FREQUENCY ] -o OUTPUT [ -c COMPRESSION ] [ -n NORMALIZE ] [ -l LEVEL ] 
+
+Program to convert WAVE files into VOC files including optional ADPCM compression.
+File is converted to mono. If a frequency is give then the file is also resampled
+to the given frequency. Otherwise the sample frequency of the WAVE file is kept.
+
+Compression formats:
+  PCM    - unsigned integer 8-bit per sample
+  ADPCM4 - ADPCM 4-bit per sample
+
+
+options:
+  -i, --input        Name of the input file
+  -f, --frequency    Frequency of output file in hertz ( default: -1 )
+  -o, --output       Name of the output file
+  -c, --compression  Compression to be used. Options: PCM, ADPCM4 ( default: ADPCM4 )
+  -n, --normalize    Normalize audio to given fraction, e.g. 0.9 ( default: -1.0 )
+  -l, --level        Level of compression. Must be integer. 1 = lowest quality but fast. Bigger values than 5 probably make no sense and are terribly slow. ( default: 4 )
+~~~
+
+Example usage:
+~~~
+adpcm_encoder -i sound.wav -f 8000 -c ADPCM4 -o sound.voc -n 0.7
+~~~
+This will encode the file **sound.wav** into a Creative ADPCM encoded VOC file with 8kHz.
+It will also normalize the sound to 70% of the maximum volume.
+
 
 ## About Creative ADPCM
 
