@@ -55,6 +55,7 @@ TEST_CASE("Conversion Tests uint8_t")
     REQUIRE(output.size() == input.size());
     REQUIRE(output2.size() == input.size());
     REQUIRE(output2 == input);
+
 }
 
 TEST_CASE("Conversion Tests uint16_t")
@@ -112,7 +113,6 @@ TEST_CASE("Normalize Test")
     REQUIRE(sum == 1.0);
 }
 
-
 TEST_CASE("LoadWaveTest 16bit")
 {
     auto waveFile = loadWaveFile(getTestDataDir() + "/16bit_mono_48000.wav");
@@ -125,6 +125,21 @@ TEST_CASE("LoadWaveTest 16bit")
 
     REQUIRE(
         readRaw(getTestDataDir() + "/16bit_mono_48000.raw") ==
+        waveFile.rawData);
+}
+
+TEST_CASE("LoadWaveTest 24bit")
+{
+    auto waveFile = loadWaveFile(getTestDataDir() + "/24bit_mono_44100.wav");
+    REQUIRE(waveFile.header.sampleRate == 44100);
+    REQUIRE(waveFile.header.numChannels == 1);
+    REQUIRE(waveFile.header.bitsPerSample == 24);
+    REQUIRE(waveFile.header.bytesPerSample == 3);
+    REQUIRE(waveFile.header.byteRate == 44100 * 3);
+    REQUIRE(waveFile.header.audioFormat == WAVE_FORMAT_PCM);
+
+    REQUIRE(
+        readRaw(getTestDataDir() + "/24bit_mono_44100.raw") ==
         waveFile.rawData);
 }
 
@@ -145,11 +160,32 @@ TEST_CASE("LoadWaveTest 32bit float")
 
 TEST_CASE("Resampling Test")
 {
-    std::vector<double> input(1000, 1);
-    std::vector<double> output = resample(input, 10, 5);
-    REQUIRE(output.size() == 500);
-    REQUIRE(output[0] == 1);
-    REQUIRE(output[1] == 1);
-    REQUIRE(output[2] == 1);
+    std::vector<double> input(1000);
+    // fill with defined frequency
+    for (size_t i = 0; i < input.size(); ++i)
+    {
+        input[i] = (i&1) ? 1 : -1;
+    }
 
+    SECTION( "10Hz to 5Hz" )
+    {
+        std::vector<double> output = resample(input, 10, 5);
+        REQUIRE(output.size() == 500);
+        
+    }
+
+    SECTION( "100Hz to 33Hz" )
+    {
+        std::vector<double> output = resample(input, 100, 33);
+        REQUIRE(output.size() == 330);
+    }
+
+    SECTION( "1000Hz to 200Hz" )
+    {
+        std::vector<double> output = resample(input, 1000, 200);
+        REQUIRE(output.size() == 200);
+    }
 }
+
+
+
