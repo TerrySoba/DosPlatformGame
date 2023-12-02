@@ -16,8 +16,6 @@
 
 #include "exception.h"
 
-#include <stdio.h>
-
 enum Language {
     LANGUAGE_ENGLISH,
     LANGUAGE_GERMAN,
@@ -118,13 +116,16 @@ int main(int argc, char* argv[])
                     try {
                         game.loadLevel(level, ActorPosition::LevelTransition);
                         game.drawFrame();
-                        char filename[16];
-                        sprintf(filename, "%02x%02x.tmx", x, y);
-                        Text t(filename, 10, false);
+                        char xBuf[3];
+                        char yBuf[3];
+                        intToString(x, 16, xBuf, 3, 2, '0');
+                        intToString(y, 16, yBuf, 3, 2, '0');
+                        TinyString filename = TinyString(xBuf) + TinyString(yBuf) + TinyString(".tmx");
+                        Text t(filename.c_str(), 10, false);
                         gfx->draw(t, 100, 100);
                         gfx->drawScreen();
-                        sprintf(filename, "%02x%02x.tga", x, y);
-                        gfx->saveAsTgaImage(filename);
+                        filename = TinyString(xBuf) + TinyString(yBuf) + TinyString(".tga");
+                        gfx->saveAsTgaImage(filename.c_str());
                     } catch (...)
                     {}
                 }
@@ -142,19 +143,23 @@ int main(int argc, char* argv[])
     }
     catch(const Exception& e)
     {
+        printStr("Exception: ");
+        printStr(e.what());
+        printStr("\r\nerrno: ");
 
-        fprintf(stderr, "Exception: %s\n", e.what());
-        fprintf(stderr, "errno: %d\n", errno);
+        char buf[10];
+        intToString(errno, 10, buf, 10);
+        printStr(buf);
+        printStr("\r\n");
         return 1;
     }
     catch(...)
     {
-
-        fprintf(stderr, "Unknown exception.");
+        printStr("Unknown exception.\r\n");
         return 1;
     }
 
-    printf(I18N::getString(3).c_str(), BUILD_DATE);
+    printStr(BUILD_DATE + TinyString("\r\n") + I18N::getString(3).c_str());
 
     return 0;
 }

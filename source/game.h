@@ -16,6 +16,7 @@
 #include "rectangle.h"
 #include "boss1.h"
 #include "shared_ptr.h"
+#include "key_mapper.h"
 
 
 namespace ActorPosition
@@ -121,6 +122,7 @@ private:
 	uint32_t m_deathCounter;
 	bool m_levelMustReload;
 	uint32_t m_frameCounter;
+	KeyMapper m_keyMapper;
 };
 
 

@@ -5,21 +5,22 @@ objects_game_lib = \
 	rectangle.o tiny_string.o game.o compiled_sprite.o \
 	joystick.o enemy.o game_save.o text.o i18n.o fire_ball.o \
 	soundblaster.o sound_controller.o seeker_enemy.o \
-	boss1.o time_tools.o music_controller.o
+	boss1.o time_tools.o music_controller.o key_mapper.o
 objects_game = \
 	main.o $(objects_game_lib)
 objects_test = \
     $(objects_game_lib) test_main.o unit_test.o \
 	physics_test.o tga_image_test.o shared_ptr_test.o \
 	blit_test.o vector_test.o rectangle_test.o tiny_string_test.o animation_test.o \
-	text_layout_test.o i18n_test.o level_test.o raii_ptr_test.o ptr_vector_test.o test_class.o
+	text_layout_test.o i18n_test.o level_test.o raii_ptr_test.o ptr_vector_test.o test_class.o \
+	time_tools_test.o
 
 rad_tester = \
-	keyboard.o rad_tester.o timer.o rad_player.o rad_player_asm.o exception.o
+	keyboard.o rad_tester.o timer.o rad_player.o rad_player_asm.o exception.o tiny_string.o
 	
 title_screen = \
     title.o vgagfx.o image.o tga_image.o exception.o rectangle.o keyboard.o \
-	tiny_string.o animation.o compiled_sprite.o
+	tiny_string.o animation.o compiled_sprite.o tiny_string.o
 
 
 # coptions = -0 -ml -xs -onatx -oh -oi+ -ei -zp8 -fpi87

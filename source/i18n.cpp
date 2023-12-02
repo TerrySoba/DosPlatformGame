@@ -68,21 +68,19 @@ TinyString I18N::_getString(uint16_t id)
     {
         if (m_entries[i].id == id)
         {
-            // printf("id: %d\n", entries[i].id);
-
             fseek(m_file, m_entries[i].offset, SEEK_SET);
             TinyString str(m_entries[i].length);
-
             fread(str.data(), m_entries[i].length, 1, m_file);
-            // printf("str: %s\n", str.c_str());
             return str;
         }
     }
 
     // If string is not available in translation file, then display three question marks
     // and the id of the missing string.
-    char buf[20];
-    snprintf(buf, 20, "??? <id:%d>", id);
+    static char buf[20];
+    static const char* prefix = "??? id:";
+    strcpy(buf, prefix);
+    intToString(id, 10, buf + strlen(prefix), 20 - strlen(prefix));
 
     return buf;
 }

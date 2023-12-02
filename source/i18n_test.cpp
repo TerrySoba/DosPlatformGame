@@ -9,5 +9,5 @@ TEST(I18NTest)
     ASSERT_TRUE(str == "This is a test");
 
     str = I18N::getString(12346);
-    ASSERT_TRUE(str == "??? <id:12346>");
+    ASSERT_TRUE(str == "??? id:12346");
 }

@@ -1,5 +1,4 @@
 #include "game.h"
-#include "keyboard.h"
 #include "level.h"
 #include "image_base.h"
 #include "physics.h"
@@ -7,7 +6,6 @@
 #include "vector.h"
 #include "exception.h"
 #include "compiled_sprite.h"
-#include "joystick.h"
 #include "game_save.h"
 #include "text.h"
 #include "i18n.h"
@@ -83,7 +81,8 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     m_levelNumber = levelNumber;
     char buf[16];
 
-    sprintf(buf, m_levelBasename.c_str(), m_levelNumber.x, m_levelNumber.y);
+    intToString(m_levelNumber.x, 16, buf, 16, 2, '0');
+    intToString(m_levelNumber.y, 16, buf + 2, 14, 2, '0');
 
     TinyString levelMap = TinyString(buf + TinyString(".map"));
 
@@ -329,19 +328,20 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
 void Game::drawAppleCount()
 {
     char buf[16];
-    snprintf(buf, 16, m_appleString.c_str(), m_collectedGuffins.size());
-    Text t(buf);
+    intToString(m_collectedGuffins.size(), 10, buf, 16, 3);
+    TinyString appleString = m_appleString + buf;
+    Text t(appleString.c_str());
     m_vgaGfx->drawBackground(t, 260, 1);
 }
 
 void Game::drawDeathCount()
 {
     char buf[16];
-    snprintf(buf, 16, m_deathString.c_str(), m_deathCounter);
-    Text t(buf);
+    intToString(m_deathCounter, 10, buf, 16);
+    TinyString deathString = m_deathString + buf;
+    Text t(deathString.c_str());
     m_vgaGfx->drawBackground(t, 10, 1);
 }
-
 
 void Game::collectApple(Point point)
 {
@@ -529,20 +529,19 @@ void Game::drawFrame()
 
     ++m_frames;
 
-    uint8_t joystick = readJoystick();
+    KeyBits keys = m_keyMapper.getKeys();
 
-
-    if (s_keyRight || joystick & JOY_RIGHT)
+    if (keys & KEY_RIGHT)
     {
         m_physics->setActorSpeedX(m_player, 16);
     }
     
-    if (s_keyLeft || joystick & JOY_LEFT)
+    if (keys & KEY_LEFT)
     {
         m_physics->setActorSpeedX(m_player, -16);
     }
 
-    bool buttonPressed = s_keyAlt || joystick & JOY_BUTTON_1;
+    bool buttonPressed = keys & KEY_JUMP;
     if (buttonPressed && !m_lastButtonPressed)
     {
         m_physics->startActorJump(m_player);
@@ -554,7 +553,7 @@ void Game::drawFrame()
         m_physics->activateJetpack(m_player);
     }
 
-    if (s_keyDown || joystick & JOY_DOWN)
+    if (keys & KEY_DOWN)
     {
         m_physics->setActorDuck(m_player, true);
     }
@@ -563,7 +562,7 @@ void Game::drawFrame()
         m_physics->setActorDuck(m_player, false);
     }
     
-    if (m_sunItemCollected > 0 && (s_keyCtrl || joystick & JOY_BUTTON_2))
+    if (m_sunItemCollected > 0 && (keys & KEY_ACTION1))
     {
         m_physics->activateSunPull(m_player);
     }

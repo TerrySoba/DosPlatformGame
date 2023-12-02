@@ -1,6 +1,7 @@
 #include "rad_player.h"
 
 #include "exception.h"
+#include "tiny_string.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,7 +49,7 @@ void* radLoadModule(const char* filename)
 
 	if (!radInitPlayer(songData))
 	{
-		printf("Could not initialize RAD player. Maybe file is corrupted.\n");
+		printStr("Could not initialize RAD player. Maybe file is corrupted.\r\n");
 		free(origBlock);
 		fclose(fp);
 		return NULL;

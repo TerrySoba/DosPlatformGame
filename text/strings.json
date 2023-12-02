@@ -4,12 +4,12 @@
         "de": "Willkommen Fremder!\nNimm dir so viele Äpfel wie du willst. Nimm dich aber vor der Anomalie im metallenen Raum in Acht. Mehr als 9 Äpfel könnten dazu führen, dass seltsame Dinge geschehen..."
     },
     "2": {
-        "en": "Apples: %3d",
-        "de": "\u00c4pfel: %3d"
+        "en": "Apples: ",
+        "de": "Äpfel: "
     },
     "3": {
-        "en": "Build date: %s\nhttps://github.com/TerrySoba/DosPlatformGame\n\nThanks for playing :)\n",
-        "de": "Build-Datum: %s\nhttps://github.com/TerrySoba/DosPlatformGame\n\nDanke fürs Spielen :)\n"
+        "en": "https://github.com/TerrySoba/DosPlatformGame\r\n\r\nThanks for playing :)\r\n",
+        "de": "https://github.com/TerrySoba/DosPlatformGame\r\n\r\nDanke fürs Spielen :)\r\n"
     },
     "4": {
         "en": "This is the dark city. People have been known to disappear in this forsaken land. Please be careful!",
@@ -100,8 +100,8 @@
         "de": "Dies ist aktuell das Ende des Spiels. Fortsetzung folgt!"
     },
     "26": {
-        "en": "Deaths: %d",
-        "de": "Tode: %d"
+        "en": "Deaths: ",
+        "de": "Tode: "
     },
     "27": {
         "en": "What you are about to receive is an object so powerful that is can increase the gravity of the sun. But be aware that it only works if the sun is surrounded by stars. (Your controller does have two buttons, doesn't it?)",

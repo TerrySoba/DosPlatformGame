@@ -43,17 +43,15 @@ TgaImage::TgaImage(const char* filename)
     // make sure we have palette data
     if (colorMapType != 1 )
     {
-        printf("Color map type: %d\n", colorMapType);
         fclose(fp);
-        throw Exception("Invalid image format.");
+        throw Exception("Invalid image colorMapType.");
     }
     
     // make sure this is a Color-mapped Image
     if (imageType != 1 && imageType != 9)
     {
-        printf("Image type: %d\n", imageType);
         fclose(fp);
-        throw Exception("Invalid image format.");
+        throw Exception("Invalid image imageType.");
     }
 
     uint16_t paletteEntrySize = (colorMapDepth == 15)? 16 : colorMapDepth;
@@ -66,9 +64,8 @@ TgaImage::TgaImage(const char* filename)
 
     if (bitsPerPixel != 8)
     {
-        printf("Only 8 bit images are supported, but got: %d\n", bitsPerPixel);
         fclose(fp);
-        throw Exception("Invalid image format.");
+        throw Exception("Invalid image bitsPerPixel.");
     }
 
     size_t size = width * height;

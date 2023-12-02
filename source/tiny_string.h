@@ -1,6 +1,8 @@
 #ifndef _TINY_STRING_H
 #define _TINY_STRING_H
 
+#include <stdint.h>
+
 class TinyString
 {
 public:
@@ -26,6 +28,11 @@ private:
 TinyString operator+(const TinyString& a, const TinyString& b);
 TinyString operator+(const TinyString& a, const char* b);
 TinyString operator+(const char* a, const TinyString& b);
+
+
+int intToString(int32_t value, int base, char* buffer, int bufferSize, int minLength = 0, char fillChar = ' ');
+void printStr(const char* str);
+void printStr(const TinyString& str);
 
 
 #endif

@@ -95,3 +95,87 @@ TinyString operator+(const char* a, const TinyString& b)
 {
     return mergeStrings(a, b.c_str());
 }
+
+int intToString(int32_t value, int base, char* buffer, int bufferSize, int minLength, char fillChar)
+{
+    char* originalBuffer = buffer;
+    if (base < 2 || base > 16 || buffer == NULL || bufferSize <= 0)
+    {
+        return 0;
+    }
+
+    // check if we need to add a minus sign
+    if (value < 0)
+    {
+        value = -value;
+        *buffer = '-';
+        ++buffer;
+        --bufferSize;
+    }
+
+    // find out number of digits
+    int digits = 0;
+    {
+        uint32_t tmp = value;
+        do
+        {
+            ++digits;
+            tmp /= base;
+        } while (tmp > 0);
+    }
+
+    // check if we need to add fill characters
+    if (digits < minLength)
+    {
+        digits = minLength;
+    }
+
+    // check if we have enough space
+    if (digits >= bufferSize)
+    {
+        digits = bufferSize - 1;
+    }
+
+    // fill buffer with fill characters
+    for (int i = 0; i < digits; ++i)
+    {
+        buffer[i] = fillChar;
+    }
+
+    // convert number to string
+    for (int i = digits - 1; i >= 0; --i)
+    {
+        buffer[i] = "0123456789ABCDEF"[value % base];
+        value /= base;
+        if (value == 0)
+        {
+            break;
+        }
+    }
+
+    // terminate string
+    buffer[digits] = '\0';
+
+    return buffer - originalBuffer + digits;
+}
+
+void printCh(char ch);
+#pragma aux printCh = \
+        "mov ah, 02h"   \
+        "int 0x21"      \
+        parm    [dl]    \
+        modify  [ax];
+
+void printStr(const char* str)
+{
+    while (str && *str)
+    {
+        printCh(*str);
+        ++str;
+    }
+}
+
+void printStr(const TinyString& str)
+{
+    printStr(str.c_str());
+}

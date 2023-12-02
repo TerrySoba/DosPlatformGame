@@ -1,6 +1,7 @@
 #include "joystick.h"
 
-#include <stdio.h>
+#include "tiny_string.h"
+
 #include <conio.h>
 
 uint16_t s_jsDeadzoneXMin = 0;
@@ -131,16 +132,19 @@ void calibrateJoystick()
 
     disableCursor();
 
-    puts("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    for (int i = 0; i < 48; ++i)
+    {
+        printStr("\r\n");
+    }
 
     setCursor(0,0);
-    puts("Calibrate Joystick");
+    printStr("Calibrate Joystick");
     setCursor(1,0);
-    puts("------------------");
+    printStr("------------------");
     setCursor(19,0);
-    puts("Press \"Q\" on keyboard to disable joystick support.");
+    printStr("Press \"Q\" on keyboard to disable joystick support.");
     setCursor(20,0);
-    puts("Press \"R\" on keyboard to restart calibration.");
+    printStr("Press \"R\" on keyboard to restart calibration.");
     setCursor(9,6);
 
     bool done = false;
@@ -158,11 +162,13 @@ void calibrateJoystick()
         char buf[8];
 
         setCursor(6,3);
-        sprintf(buf, "x:%05hu", s.x1);
-        puts(buf);
+        intToString(s.x1, 10, buf, 8, 5, '0');
+        printStr("x:");
+        printStr(buf);
         setCursor(7,3);
-        sprintf(buf, "y:%05hu", s.y1);
-        puts(buf);
+        intToString(s.y1, 10, buf, 8, 5, '0');
+        printStr("y:");
+        printStr(buf);
 
         #define BUTTON_PRESSED() ((~s.buttons) & (1 << 4))
 
@@ -170,7 +176,7 @@ void calibrateJoystick()
         switch(state)
         {
             case FIND_MIN_MAX:
-                puts("Rotate joystick, then press first joystick button.           ");
+                printStr("Rotate joystick, then press first joystick button.           ");
                 if (s.x1 > jsMaxX) jsMaxX = s.x1;
                 if (s.y1 > jsMaxY) jsMaxY = s.y1;
                 if (s.x1 < jsMinX) jsMinX = s.x1;
@@ -181,7 +187,7 @@ void calibrateJoystick()
                 if (!BUTTON_PRESSED()) state = FIND_CENTER;
                 break;
             case FIND_CENTER:
-                puts("Return joystick to center, then press first joystick button. ");
+                printStr("Return joystick to center, then press first joystick button. ");
                 if (BUTTON_PRESSED())
                 {
                     state = WAIT_FOR_BUTTON_UP2;
@@ -201,7 +207,7 @@ void calibrateJoystick()
                 if (!BUTTON_PRESSED()) state = FINAL;
                 break;
             case FINAL:
-                puts("Press first joystick button to start game.                   ");
+                printStr("Press first joystick button to start game.                   ");
                 if (BUTTON_PRESSED()) state = WAIT_FOR_BUTTON_UP3;
                 break;
             case WAIT_FOR_BUTTON_UP3:
@@ -211,17 +217,16 @@ void calibrateJoystick()
 
         uint8_t js = readJoystick();
         setCursor(10,3);
-        if (js & JOY_LEFT) puts("left");
-        else puts("    ");
+        if (js & JOY_LEFT) printStr("left");
+        else printStr("    ");
         setCursor(10,11);
-        if (js & JOY_RIGHT) puts("right");
-        else puts("     ");
+        if (js & JOY_RIGHT) printStr("right");
+        else printStr("     ");
         setCursor(9,8);
-        if (js & JOY_UP) puts("up");
-        else puts("  ");
+        if (js & JOY_UP) printStr("up");
+        else printStr("  ");
         setCursor(11,7);
-        if (js & JOY_DOWN) puts("down");
-        else puts("    ");
-       
+        if (js & JOY_DOWN) printStr("down");
+        else printStr("    ");
     }
 }
