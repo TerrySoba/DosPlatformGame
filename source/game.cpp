@@ -41,7 +41,7 @@ Game::Game(tnd::shared_ptr<VgaGfx> vgaGfx, tnd::shared_ptr<SoundController> soun
         m_deathCounter = state.deathCounter;
         m_frameCounter = state.frameCounter;
 
-        loadLevel(state.level, ActorPosition::LevelTransition);   
+        loadLevel(state.level, ActorPosition::LoadSaveGame);   
 
         m_physics->setSpawnPoint(state.spawnPoint);
         drawAppleCount();
@@ -103,7 +103,8 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
 
 
     int16_t actorPosX, actorPosY;
-    if (actorPosition == ActorPosition::KeepActorPos)
+    if (actorPosition == ActorPosition::KeepActorPos ||
+        actorPosition == ActorPosition::LoadSaveGame)
     {
         m_physics->getActorPos(m_player, actorPosX, actorPosY);
     }
@@ -322,7 +323,11 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     state.button1 = m_button1;
     state.deathCounter = m_deathCounter;
     state.frameCounter = m_frameCounter;
-    saveGameState(state, "game.sav");
+    
+    if (actorPosition != ActorPosition::LoadSaveGame)
+    {
+        saveGameState(state, "game.sav");
+    }
 }
 
 void Game::drawAppleCount()

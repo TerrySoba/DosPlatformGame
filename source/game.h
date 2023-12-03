@@ -25,7 +25,8 @@ namespace ActorPosition
 	{
 		UseSpawnPoint,
 		LevelTransition,
-		KeepActorPos
+		KeepActorPos,
+		LoadSaveGame,
 	};
 }
 
