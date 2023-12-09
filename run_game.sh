@@ -6,5 +6,5 @@ if [[ $(grep WSL /proc/version) ]]; then
     ./dosbox_launcher.sh run_game_windows.dosbox_config release "loadfix -100 game --german" "exit"
 else
     # we run on native Linux
-    ./dosbox_launcher.sh run_game.dosbox_config release "loadfix -100 game2 --level 1 1 --german"
+    ./dosbox_launcher.sh run_game.dosbox_config release "loadfix -100 game2 --level 12 6 --german"
 fi
