@@ -67,7 +67,6 @@ public:
 	    tnd::shared_ptr<VgaGfx> vgaGfx,
 		tnd::shared_ptr<SoundController> sound, 
 		tnd::shared_ptr<MusicController> music,
-		tnd::shared_ptr<ImageBase> tiles,
 		GameAnimations animations,
 		const char* levelBasename,
 		LevelNumber startLevel);
@@ -124,6 +123,7 @@ private:
 	bool m_levelMustReload;
 	uint32_t m_frameCounter;
 	KeyMapper m_keyMapper;
+	TinyString m_loadedTilesetName;
 };
 
 

@@ -25,6 +25,7 @@ enum LayerType
     LAYER_PLAY_TIME = 8,
     LAYER_MUSIC    = 9,
     LAYER_BOSS2    = 10,
+    LAYER_TILESET  = 11,
 };
 
 
@@ -46,10 +47,14 @@ void readRectangleLayer(FILE* fp, Rectangle& rect, int16_t offsetX, int16_t offs
     rect = Rectangle(x+offsetX, y+offsetY, w, h);
 }
 
-Level::Level(const char* mapFilename, tnd::shared_ptr<ImageBase> tilesImage,
+void Level::setTilesImage(tnd::shared_ptr<ImageBase> tilesImage)
+{
+    m_tilesImage = tilesImage;
+}
+
+Level::Level(const char* mapFilename,
              int16_t tileWidth, int16_t tileHeight,
              int16_t offsetX, int16_t offsetY) :
-    m_tilesImage(tilesImage),
     m_tileWidth(tileWidth),
     m_tileHeight(tileHeight),
     m_offsetX(offsetX),
@@ -155,8 +160,23 @@ Level::Level(const char* mapFilename, tnd::shared_ptr<ImageBase> tilesImage,
                 fread(&m_musicIndex, sizeof(m_musicIndex), 1, fp);
                 break;
             }
+            case LAYER_TILESET:
+            {
+                uint16_t tilesetFilenameLength;
+                char tilesetFilename[13]; // 8.3 filename + null terminator
+                fread(&tilesetFilenameLength, sizeof(tilesetFilenameLength), 1, fp);
+                if (tilesetFilenameLength > 12)
+                {
+                    throw Exception("Tileset filename too long", mapFilename);
+                }
+                fread(tilesetFilename, tilesetFilenameLength, 1, fp);
+                tilesetFilename[tilesetFilenameLength] = 0;
+                m_tileset = tilesetFilename;
+            }
             default: // skip unknown layers
+            {
                 fseek(fp, layerDataSize, SEEK_CUR);
+            }
         }
     }
 

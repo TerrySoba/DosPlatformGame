@@ -36,6 +36,7 @@ bool TinyString::operator==(const TinyString& other)
     return strcmp(other.m_data, m_data) == 0;
 }
 
+
 void TinyString::operator=(const char* str)
 {
     free((void*)m_data);

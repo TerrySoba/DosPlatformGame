@@ -89,7 +89,7 @@ int main(int argc, char* argv[])
 
         Keyboard keyboard;
 
-        tnd::shared_ptr<ImageBase> tiles = new TgaImage("tiles.tga");
+        // tnd::shared_ptr<ImageBase> tiles = new TgaImage("tiles.tga");
     
         tnd::shared_ptr<Animation> enemy = new Animation("enemy.ani", "enemy.tga");
         tnd::shared_ptr<Animation> seekerEnemy = new Animation("enemy2.ani", "enemy2.tga");
@@ -104,7 +104,7 @@ int main(int argc, char* argv[])
 
         GameAnimations animations = {guy, enemy, seekerEnemy, guffin, fireBall, jetPack};
 
-        Game game(gfx, sound, music, tiles, animations, "%02x%02x", params.level);
+        Game game(gfx, sound, music, animations, "%02x%02x", params.level);
 
         if (params.dumpLevelImages)
         {

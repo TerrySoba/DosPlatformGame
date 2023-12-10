@@ -16,10 +16,9 @@
 
 Game::Game(tnd::shared_ptr<VgaGfx> vgaGfx, tnd::shared_ptr<SoundController> sound,
            tnd::shared_ptr<MusicController> music,
-           tnd::shared_ptr<ImageBase> tiles,
            GameAnimations animations,
            const char* levelBasename, LevelNumber startLevel) :
-    m_vgaGfx(vgaGfx), m_tiles(tiles), m_animations(animations), m_frames(0), m_levelBasename(levelBasename),
+    m_vgaGfx(vgaGfx), m_animations(animations), m_frames(0), m_levelBasename(levelBasename),
     m_animationController(animations.actorAnimation, sound), m_lastButtonPressed(false), m_sound(sound), m_music(music),
     m_jetpackCollected(0), m_sunItemCollected(0), m_button1(0), m_levelMustReload(false), m_deathCounter(0),
     m_frameCounter(0)
@@ -95,7 +94,18 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
         }
     }
 
-    Level level(levelMap.c_str(), m_tiles, 16, 16, -8, -8);
+    Level level(levelMap.c_str(), 16, 16, -8, -8);
+
+    // load new tileset if it has changed
+    if (m_loadedTilesetName != level.getTileset())
+    {
+        m_loadedTilesetName = level.getTileset();
+        m_tiles.reset();
+        m_tiles = new TgaImage(m_loadedTilesetName.c_str());
+    }
+
+    level.setTilesImage(m_tiles);
+
 
     m_music->playMusic((SongIndex)level.getMusicIndex());
 

@@ -7,6 +7,7 @@ title.exe
 ../music/SECOND.RAD
 ../music/THIRD.RAD
 ../images/tiles.tga
+../images/tiles2.tga
 ../images/guy.tga
 ../images/guy.ani
 ../images/enemy.tga

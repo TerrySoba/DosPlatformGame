@@ -47,6 +47,19 @@ class DataMapper:
                 return value - self.firstgids[index]
         return value - self.firstgids[-1]
 
+
+def changeExtension(path, newExtension):
+    return os.path.splitext(path)[0] + newExtension
+
+def getTilesetImage(tilesetPath):
+    """ Returns the filename of the tileset image. The extension is changed to .tga. """
+    tilesetPath = os.path.join(os.path.dirname(sys.argv[1]), tilesetPath)
+    tilesetXml = readFile(tilesetPath)
+    root = ET.fromstring(tilesetXml)
+    tilesetElements = root.find("./image")
+    return changeExtension(os.path.basename(tilesetElements.attrib["source"]), ".tga")
+
+
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: {} <input tmx file>".format(sys.argv[0]))
@@ -123,6 +136,13 @@ if __name__ == "__main__":
         except:
             pass
 
+    # read filename of tileset
+    tilesetFilename = None
+    tilesetFilenameElement = root.find("./tileset[@firstgid='1']")
+    if tilesetFilenameElement is not None:
+        tilesetXml = tilesetFilenameElement.attrib["source"]
+        tilesetFilename = getTilesetImage(tilesetXml)
+
     # output filename
     base_name = os.path.splitext(sys.argv[1])[0]
 
@@ -139,6 +159,7 @@ if __name__ == "__main__":
         "play_time"   : 8,
         "music"       : 9,
         "boss2"       : 10,
+        "tileset"     : 11,
     }
 
     with open(base_name + ".map", "wb") as map_file:
@@ -149,6 +170,9 @@ if __name__ == "__main__":
             layerCount = layerCount + 1
 
         if music is not None:
+            layerCount = layerCount + 1
+
+        if tilesetFilename is not None:
             layerCount = layerCount + 1
 
         map_file.write(struct.pack("<H", layerCount))  # no. of layers
@@ -191,6 +215,15 @@ if __name__ == "__main__":
             layerData = bytearray()
             layerData += struct.pack("<H", music)
             map_file.write(struct.pack("B", layerTypeMap["music"]))
+            map_file.write(struct.pack("<H", len(layerData)))           # size of layer
+            map_file.write(layerData)
+
+        if tilesetFilename is not None:
+            filenameAscii = tilesetFilename.encode("ascii")
+            layerData = bytearray()
+            layerData += struct.pack("<H", len(filenameAscii))
+            layerData += filenameAscii
+            map_file.write(struct.pack("B", layerTypeMap["tileset"]))  # layer type
             map_file.write(struct.pack("<H", len(layerData)))           # size of layer
             map_file.write(layerData)
 

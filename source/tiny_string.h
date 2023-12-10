@@ -14,6 +14,8 @@ public:
 
     bool operator==(const char* str);
     bool operator==(const TinyString& other);
+    bool operator!=(const char* str) { return !(*this == str); };
+    bool operator!=(const TinyString& other) { return !(*this == other); };
     void operator=(const char* str);
     void operator=(const TinyString& other);
 

@@ -7,6 +7,7 @@
 #include "rectangle.h"
 #include "vector.h"
 #include "shared_ptr.h"
+#include "tiny_string.h"
 
 struct MessageBox
 {
@@ -29,9 +30,11 @@ struct MessageBox
 class Level : public Drawable
 {
 public:
-    Level(const char* mapFilename, tnd::shared_ptr<ImageBase> tilesImage,
+    Level(const char* mapFilename,
           int16_t tileWidth, int16_t tileHeight,
           int16_t offsetX, int16_t offsetY);
+
+    void setTilesImage(tnd::shared_ptr<ImageBase> tilesImage);
 
     virtual ~Level();
 
@@ -66,6 +69,8 @@ public:
 
     virtual uint16_t getGuffinGate() { return m_guffinGate; }
 
+    virtual TinyString getTileset() { return m_tileset; }
+
 private:
     tnd::shared_ptr<ImageBase> m_tilesImage;
     int16_t m_tileWidth;  // width of a single tile in pixles
@@ -92,6 +97,8 @@ private:
     tnd::vector<Rectangle> m_boss2;
     tnd::vector<Rectangle> m_playTime;
     tnd::vector<Button> m_buttons;
+
+    TinyString m_tileset;
 
     Point m_spawn;
     Point m_sun;
