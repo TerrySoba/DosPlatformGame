@@ -56,6 +56,7 @@ public:
     virtual tnd::vector<Rectangle> getBoss1() { return m_boss1; }
     virtual tnd::vector<Rectangle> getBoss2() { return m_boss2; }
     virtual tnd::vector<Rectangle> getPlayTime() { return m_playTime; }
+    virtual tnd::vector<Rectangle> getTentacles() { return m_tentacles; }
     virtual tnd::vector<Button> getButtons() { return m_buttons; }
     virtual uint16_t getMusicIndex() { return m_musicIndex; }
 
@@ -96,6 +97,7 @@ private:
     tnd::vector<Rectangle> m_boss1;
     tnd::vector<Rectangle> m_boss2;
     tnd::vector<Rectangle> m_playTime;
+    tnd::vector<Rectangle> m_tentacles;
     tnd::vector<Button> m_buttons;
 
     TinyString m_tileset;

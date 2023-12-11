@@ -234,6 +234,13 @@ Level::Level(const char* mapFilename,
             m_guffins[i] += offset * 16;
         }
 
+        m_tentacles = detectLines(collisionData.data(), collisionWidth, collisionHeight, HORIZONTAL, TILE_TENTACLE);
+        for (int i = 0; i < m_tentacles.size(); ++i)
+        {
+            m_tentacles[i].scale(tileWidth * 16, tileHeight * 16);
+            m_tentacles[i] += offset * 16;
+        }
+
         m_jetPacks = detectLines(collisionData.data(), collisionWidth, collisionHeight, HORIZONTAL, TILE_JET_PACK);
         for (int i = 0; i < m_jetPacks.size(); ++i)
         {

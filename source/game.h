@@ -11,6 +11,7 @@
 #include "animation.h"
 #include "vgagfx.h"
 #include "enemy.h"
+#include "tentacle.h"
 #include "seeker_enemy.h"
 #include "fire_ball.h"
 #include "rectangle.h"
@@ -50,6 +51,7 @@ struct GameAnimations
 	tnd::shared_ptr<Animation> guffinAnimation;
 	tnd::shared_ptr<Animation> fireBallAnimation;
 	tnd::shared_ptr<Animation> jetPackAnimation;
+	tnd::shared_ptr<Animation> tentacleAnimation;
 };
 
 
@@ -100,6 +102,7 @@ private:
 	tnd::ptr_vector<SeekerEnemy> m_seekerEnemies;
 	tnd::ptr_vector<FireBall> m_fireBalls;
 	tnd::ptr_vector<Boss1> m_boss1;
+	tnd::ptr_vector<Tentacle> m_tentacles;
 	tnd::vector<Rectangle> m_guffins;
 	tnd::vector<Rectangle> m_jetPacks;
 	tnd::vector<Rectangle> m_sunItems;

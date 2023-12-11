@@ -8,6 +8,7 @@ title.exe
 ../music/THIRD.RAD
 ../images/tiles.tga
 ../images/tiles2.tga
+../images/tiles3.tga
 ../images/guy.tga
 ../images/guy.ani
 ../images/enemy.tga
@@ -25,6 +26,8 @@ title.exe
 ../images/arrow2.ani
 ../images/jet.tga
 ../images/jet.ani
+../images/tentacle.ani
+../images/tentacle.tga
 ../levels/0101.map
 ../levels/0102.map
 ../levels/0103.map
@@ -98,12 +101,13 @@ title.exe
 ../levels/0C06b1.map
 ../levels/0C07.map
 ../levels/0C08.map
+../levels/0C09.map
 ../levels/0D01.map
-../levels/0E01.map
-../levels/0F01.map
 ../levels/0D02.map
 ../levels/0D03.map
 ../levels/0D04.map
+../levels/0E01.map
+../levels/0F01.map
 ../levels/0E03.map
 ../levels/0E04.map
 ../levels/0F03.map

@@ -155,6 +155,14 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
         m_enemies.push_back(new Enemy(enemyRectangles[i], m_animations.enemyAnimation));
     }
 
+    // now load tentacles
+    m_tentacles.clear();
+    tnd::vector<Rectangle> tentacleRectangles = level.getTentacles();
+    for (int i = 0; i < tentacleRectangles.size(); ++i)
+    {
+        m_tentacles.push_back(new Tentacle(tentacleRectangles[i].x, tentacleRectangles[i].y, m_animations.tentacleAnimation));
+    }
+
     // now load seeker enemies
     m_seekerEnemies.clear();
     tnd::vector<Rectangle> seekerEnemyRectangles = level.getSeekerEnemies();
@@ -484,6 +492,16 @@ void Game::drawFrame()
         m_vgaGfx->draw(*m_animations.enemyAnimation, SUBPIXEL_TO_PIXEL(enemy.x), SUBPIXEL_TO_PIXEL(enemy.y));
     }
 
+    for (int i = 0; i < m_tentacles.size(); ++i)
+    {
+        Tentacle* tentaclePtr = m_tentacles[i];
+        tentaclePtr->act();
+        Rectangle tentacle = tentaclePtr->getPos();
+        m_vgaGfx->draw(*m_animations.tentacleAnimation, SUBPIXEL_TO_PIXEL(tentacle.x), SUBPIXEL_TO_PIXEL(tentacle.y));
+        tentacle.shrink(32);
+        enemyDeath.push_back(tentacle);
+    }
+
     for (int i = 0; i < m_seekerEnemies.size(); ++i)
     {
         SeekerEnemy* enemyPtr = m_seekerEnemies[i];
@@ -594,6 +612,7 @@ void Game::drawFrame()
     if (m_frames % 16 == 0)
     {
         m_animations.guffinAnimation->nextFrame();
+        m_animations.tentacleAnimation->nextFrame();
     }
 
     m_physics->calc();
