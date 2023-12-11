@@ -28,6 +28,8 @@ title.exe
 ../images/jet.ani
 ../images/tentacle.ani
 ../images/tentacle.tga
+../images/bullet.ani
+../images/bullet.tga
 ../levels/0101.map
 ../levels/0102.map
 ../levels/0103.map
