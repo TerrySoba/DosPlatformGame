@@ -52,6 +52,7 @@ struct GameAnimations
 	tnd::shared_ptr<Animation> fireBallAnimation;
 	tnd::shared_ptr<Animation> jetPackAnimation;
 	tnd::shared_ptr<Animation> tentacleAnimation;
+	tnd::shared_ptr<Animation> projectileAnimation;
 };
 
 

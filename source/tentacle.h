@@ -4,6 +4,8 @@
 #include "rectangle.h"
 #include "animation.h"
 
+#include "vector.h"
+
 class Tentacle
 {
 public:
@@ -13,11 +15,15 @@ public:
     void act();
 
     Rectangle getPos();
+    tnd::vector<Rectangle> getProjectiles() const;
 
 private:
     tnd::shared_ptr<Animation> m_animation;
     int m_posX;
     int m_posY;
+    tnd::vector<Rectangle> m_projectiles;
+    tnd::vector<Point> m_projectileSpeeds;
+    int m_frame;
 };
 
 

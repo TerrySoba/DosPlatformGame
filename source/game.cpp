@@ -500,6 +500,18 @@ void Game::drawFrame()
         m_vgaGfx->draw(*m_animations.tentacleAnimation, SUBPIXEL_TO_PIXEL(tentacle.x), SUBPIXEL_TO_PIXEL(tentacle.y));
         tentacle.shrink(32);
         enemyDeath.push_back(tentacle);
+
+
+        tnd::vector<Rectangle> projectiles = tentaclePtr->getProjectiles();
+
+        // draw projectiles
+        for (int j = 0; j < projectiles.size(); ++j)
+        {
+            Rectangle& projectile = projectiles[j];
+            enemyDeath.push_back(projectile);
+            m_vgaGfx->draw(*m_animations.projectileAnimation, SUBPIXEL_TO_PIXEL(projectile.x), SUBPIXEL_TO_PIXEL(projectile.y));
+        }
+
     }
 
     for (int i = 0; i < m_seekerEnemies.size(); ++i)
@@ -607,6 +619,7 @@ void Game::drawFrame()
         m_animations.seekerEnemyAnimation->nextFrame();
         m_animations.fireBallAnimation->nextFrame();
         m_animations.jetPackAnimation->nextFrame();
+        m_animations.projectileAnimation->nextFrame();
     }
 
     if (m_frames % 16 == 0)

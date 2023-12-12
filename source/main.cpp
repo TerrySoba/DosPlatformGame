@@ -98,12 +98,13 @@ int main(int argc, char* argv[])
         tnd::shared_ptr<Animation> fireBall = new Animation("fire.ani", "fire.tga");
         tnd::shared_ptr<Animation> jetPack = new Animation("jet.ani", "jet.tga");
         tnd::shared_ptr<Animation> tentacle = new Animation("tentacle.ani", "tentacle.tga");
+        tnd::shared_ptr<Animation> projectile = new Animation("bullet.ani", "bullet.tga");
 
         tnd::shared_ptr<VgaGfx> gfx = new VgaGfx();
 
         tnd::shared_ptr<MusicController> music = new MusicController();
 
-        GameAnimations animations = {guy, enemy, seekerEnemy, guffin, fireBall, jetPack, tentacle};
+        GameAnimations animations = {guy, enemy, seekerEnemy, guffin, fireBall, jetPack, tentacle, projectile};
 
         Game game(gfx, sound, music, animations, "%02x%02x", params.level);
 
