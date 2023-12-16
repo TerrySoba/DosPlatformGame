@@ -7,6 +7,8 @@ Tentacle::Tentacle(int posX, int posY, tnd::shared_ptr<Animation> animation)
     m_posX = posX;
     m_posY = posY;
     m_frame = 0;
+    m_projectileLockoutTimer = 0;
+    m_frame = 0;
 }
 
 Tentacle::~Tentacle()
@@ -24,11 +26,22 @@ const int SPEED_TABLE_SIZE = sizeof(SPEED_TABLE) / sizeof(SPEED_TABLE[0]);
 
 void Tentacle::act()
 {
-    ++m_frame;
-    if (m_projectiles.size() == 0)
+    if (m_projectileLockoutTimer > 0)
     {
-        m_projectiles.push_back(Rectangle(m_posX + PIXEL_TO_SUBPIXEL(4), m_posY - PIXEL_TO_SUBPIXEL(4), PROJECTILE_SIZE, PROJECTILE_SIZE));
-        m_projectileSpeeds.push_back(Point(SPEED_TABLE[m_frame % SPEED_TABLE_SIZE], -60));
+        --m_projectileLockoutTimer;
+    }
+   
+    if (m_projectiles.size() < 5 && m_projectileLockoutTimer == 0)
+    {
+        m_projectiles.push_back(Rectangle(m_posX + PIXEL_TO_SUBPIXEL(4), m_posY - PIXEL_TO_SUBPIXEL(0), PROJECTILE_SIZE, PROJECTILE_SIZE));
+        
+        if (++m_frame >= SPEED_TABLE_SIZE)
+        {
+            m_frame = 0;
+        }
+        m_projectileSpeeds.push_back(Point(SPEED_TABLE[m_frame], -60));
+
+        m_projectileLockoutTimer = 10;
     }
 
     // apply gravity

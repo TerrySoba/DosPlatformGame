@@ -16,6 +16,7 @@ enum
     TILE_SUN_CENTER = 11,
     TILE_SUN_ITEM = 12,
     TILE_TENTACLE = 13,
+    TILE_TENTACLE_ARM = 14,
 };
 
 enum

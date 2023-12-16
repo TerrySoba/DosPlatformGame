@@ -1,0 +1,80 @@
+{ "frames": {
+   "ten_arm 0.ase": {
+    "frame": { "x": 0, "y": 0, "w": 15, "h": 13 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 15, "h": 13 },
+    "sourceSize": { "w": 15, "h": 13 },
+    "duration": 100
+   },
+   "ten_arm 1.ase": {
+    "frame": { "x": 15, "y": 0, "w": 15, "h": 13 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 15, "h": 13 },
+    "sourceSize": { "w": 15, "h": 13 },
+    "duration": 100
+   },
+   "ten_arm 2.ase": {
+    "frame": { "x": 30, "y": 0, "w": 15, "h": 13 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 15, "h": 13 },
+    "sourceSize": { "w": 15, "h": 13 },
+    "duration": 100
+   },
+   "ten_arm 3.ase": {
+    "frame": { "x": 45, "y": 0, "w": 15, "h": 13 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 15, "h": 13 },
+    "sourceSize": { "w": 15, "h": 13 },
+    "duration": 100
+   },
+   "ten_arm 4.ase": {
+    "frame": { "x": 60, "y": 0, "w": 15, "h": 13 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 15, "h": 13 },
+    "sourceSize": { "w": 15, "h": 13 },
+    "duration": 100
+   },
+   "ten_arm 5.ase": {
+    "frame": { "x": 75, "y": 0, "w": 15, "h": 13 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 15, "h": 13 },
+    "sourceSize": { "w": 15, "h": 13 },
+    "duration": 100
+   },
+   "ten_arm 6.ase": {
+    "frame": { "x": 90, "y": 0, "w": 15, "h": 13 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 15, "h": 13 },
+    "sourceSize": { "w": 15, "h": 13 },
+    "duration": 100
+   },
+   "ten_arm 7.ase": {
+    "frame": { "x": 105, "y": 0, "w": 15, "h": 13 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 15, "h": 13 },
+    "sourceSize": { "w": 15, "h": 13 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "https://github.com/LibreSprite/LibreSprite/",
+  "version": "1.0-dev",
+  "image": "/home/yoshi252/program_source/DosPlatformGame/images/ten_arm.png",
+  "format": "I8",
+  "size": { "w": 120, "h": 13 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   { "name": "Layer 1", "opacity": 255, "blendMode": "normal" }
+  ]
+ }
+}

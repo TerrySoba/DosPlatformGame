@@ -38,39 +38,40 @@ public:
 
     virtual ~Level();
 
+    // Interface Drawable
     virtual int16_t width() const;
     virtual int16_t height() const;
     virtual void draw(char* target, int16_t targetWidth, int16_t targetHeight, int16_t targetX, int16_t targetY) const;
 
-    virtual tnd::vector<Rectangle> getWalls() { return m_walls; }
-    virtual tnd::vector<Rectangle> getGhostWalls() { return m_ghostWalls; }
-    virtual tnd::vector<Rectangle> getDeath() { return m_death; }
-    virtual tnd::vector<Rectangle> getFallThrough() { return m_fallThrough; }
-    virtual tnd::vector<Rectangle> getEnemies() { return m_enemies; }
-    virtual tnd::vector<Rectangle> getSeekerEnemies() { return m_seekerEnemies; }
-    virtual tnd::vector<Rectangle> getMacGuffins() { return m_guffins; }
-    virtual tnd::vector<Rectangle> getJetPacks() { return m_jetPacks; }
-    virtual tnd::vector<Rectangle> getSunItems() { return m_sunItems; }
-    virtual tnd::vector<MessageBox> getMessageBoxes() { return m_messageBoxes; }
-    virtual tnd::vector<Rectangle> getFireBalls() { return m_fireBalls; }
-    virtual tnd::vector<Rectangle> getBoss1() { return m_boss1; }
-    virtual tnd::vector<Rectangle> getBoss2() { return m_boss2; }
-    virtual tnd::vector<Rectangle> getPlayTime() { return m_playTime; }
-    virtual tnd::vector<Rectangle> getTentacles() { return m_tentacles; }
-    virtual tnd::vector<Button> getButtons() { return m_buttons; }
-    virtual uint16_t getMusicIndex() { return m_musicIndex; }
+    tnd::vector<Rectangle> getWalls() { return m_walls; }
+    tnd::vector<Rectangle> getGhostWalls() { return m_ghostWalls; }
+    tnd::vector<Rectangle> getDeath() { return m_death; }
+    tnd::vector<Rectangle> getFallThrough() { return m_fallThrough; }
+    tnd::vector<Rectangle> getEnemies() { return m_enemies; }
+    tnd::vector<Rectangle> getSeekerEnemies() { return m_seekerEnemies; }
+    tnd::vector<Rectangle> getMacGuffins() { return m_guffins; }
+    tnd::vector<Rectangle> getJetPacks() { return m_jetPacks; }
+    tnd::vector<Rectangle> getSunItems() { return m_sunItems; }
+    tnd::vector<MessageBox> getMessageBoxes() { return m_messageBoxes; }
+    tnd::vector<Rectangle> getFireBalls() { return m_fireBalls; }
+    tnd::vector<Rectangle> getBoss1() { return m_boss1; }
+    tnd::vector<Rectangle> getBoss2() { return m_boss2; }
+    tnd::vector<Rectangle> getPlayTime() { return m_playTime; }
+    tnd::vector<Rectangle> getTentacles() { return m_tentacles; }
+    tnd::vector<Rectangle> getTentacleArms() { return m_tentacleArms; }
+    tnd::vector<Button> getButtons() { return m_buttons; }
+    uint16_t getMusicIndex() { return m_musicIndex; }
 
 
-    virtual Point getSpawnPoint() { return m_spawn; };
+    Point getSpawnPoint() { return m_spawn; };
 
-    virtual Point getSunPoint() { return m_sun; };
+    Point getSunPoint() { return m_sun; };
 
+    tnd::vector<uint8_t>& getMapData() { return m_mapData; }
 
-    virtual tnd::vector<uint8_t>& getMapData() { return m_mapData; }
+    uint16_t getGuffinGate() { return m_guffinGate; }
 
-    virtual uint16_t getGuffinGate() { return m_guffinGate; }
-
-    virtual TinyString getTileset() { return m_tileset; }
+    TinyString getTileset() { return m_tileset; }
 
 private:
     tnd::shared_ptr<ImageBase> m_tilesImage;
@@ -98,6 +99,7 @@ private:
     tnd::vector<Rectangle> m_boss2;
     tnd::vector<Rectangle> m_playTime;
     tnd::vector<Rectangle> m_tentacles;
+    tnd::vector<Rectangle> m_tentacleArms;
     tnd::vector<Button> m_buttons;
 
     TinyString m_tileset;

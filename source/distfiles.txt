@@ -28,6 +28,8 @@ title.exe
 ../images/jet.ani
 ../images/tentacle.ani
 ../images/tentacle.tga
+../images/ten_arm.ani
+../images/ten_arm.tga
 ../images/bullet.ani
 ../images/bullet.tga
 ../levels/0101.map
@@ -103,6 +105,7 @@ title.exe
 ../levels/0C06b1.map
 ../levels/0C07.map
 ../levels/0C08.map
+../levels/0B09.map
 ../levels/0C09.map
 ../levels/0D01.map
 ../levels/0D02.map

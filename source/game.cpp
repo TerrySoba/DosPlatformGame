@@ -148,36 +148,53 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     }
 
     // now load enemies
-    m_enemies.clear();
-    tnd::vector<Rectangle> enemyRectangles = level.getEnemies();
-    for (int i = 0; i < enemyRectangles.size(); ++i)
     {
-        m_enemies.push_back(new Enemy(enemyRectangles[i], m_animations.enemyAnimation));
+        m_enemies.clear();
+        tnd::vector<Rectangle> enemyRectangles = level.getEnemies();
+        for (int i = 0; i < enemyRectangles.size(); ++i)
+        {
+            m_enemies.push_back(new Enemy(enemyRectangles[i], m_animations.enemyAnimation));
+        }
     }
 
     // now load tentacles
-    m_tentacles.clear();
-    tnd::vector<Rectangle> tentacleRectangles = level.getTentacles();
-    for (int i = 0; i < tentacleRectangles.size(); ++i)
     {
-        m_tentacles.push_back(new Tentacle(tentacleRectangles[i].x, tentacleRectangles[i].y, m_animations.tentacleAnimation));
+        m_tentacles.clear();
+        tnd::vector<Rectangle> tentacleRectangles = level.getTentacles();
+        for (int i = 0; i < tentacleRectangles.size(); ++i)
+        {
+            m_tentacles.push_back(new Tentacle(tentacleRectangles[i].x, tentacleRectangles[i].y, m_animations.tentacleAnimation));
+        }
+    }
+
+    // now load tentacleArms
+    {
+        m_tentacleArms.clear();
+        tnd::vector<Rectangle> tentacleArmRectangles = level.getTentacleArms();
+        for (int i = 0; i < tentacleArmRectangles.size(); ++i)
+        {
+            m_tentacleArms.push_back(new TentacleArm(tentacleArmRectangles[i].x, tentacleArmRectangles[i].y, m_animations.tentacleAnimation));
+        }
     }
 
     // now load seeker enemies
-    m_seekerEnemies.clear();
-    tnd::vector<Rectangle> seekerEnemyRectangles = level.getSeekerEnemies();
-    for (int i = 0; i < seekerEnemyRectangles.size(); ++i)
     {
-        m_seekerEnemies.push_back(new SeekerEnemy(seekerEnemyRectangles[i], m_animations.seekerEnemyAnimation));
+        m_seekerEnemies.clear();
+        tnd::vector<Rectangle> seekerEnemyRectangles = level.getSeekerEnemies();
+        for (int i = 0; i < seekerEnemyRectangles.size(); ++i)
+        {
+            m_seekerEnemies.push_back(new SeekerEnemy(seekerEnemyRectangles[i], m_animations.seekerEnemyAnimation));
+        }
     }
 
-
     // now load fireballs if any exist
-    m_fireBalls.clear();
-    tnd::vector<Rectangle> fireBalls = level.getFireBalls();
-    for (int i = 0; i < fireBalls.size(); ++i)
     {
-        m_fireBalls.push_back(new FireBall(fireBalls[i], m_animations.fireBallAnimation));
+        m_fireBalls.clear();
+        tnd::vector<Rectangle> fireBalls = level.getFireBalls();
+        for (int i = 0; i < fireBalls.size(); ++i)
+        {
+            m_fireBalls.push_back(new FireBall(fireBalls[i], m_animations.fireBallAnimation));
+        }
     }
 
     m_guffins.clear();
@@ -514,6 +531,23 @@ void Game::drawFrame()
 
     }
 
+    for (int i = 0; i < m_tentacleArms.size(); ++i)
+    {
+        TentacleArm* tentacleArmPtr = m_tentacleArms[i];
+        tentacleArmPtr->act(playerX, playerY);
+      
+        tnd::vector<Rectangle> tentacleArmSegments = tentacleArmPtr->getSegments();
+
+        // draw projectiles
+        for (int j = 0; j < tentacleArmSegments.size(); ++j)
+        {
+            Rectangle& segment = tentacleArmSegments[j];
+            enemyDeath.push_back(segment);
+            m_vgaGfx->draw(*m_animations.tentacleArmAnimation, SUBPIXEL_TO_PIXEL(segment.x), SUBPIXEL_TO_PIXEL(segment.y));
+        }
+
+    }
+
     for (int i = 0; i < m_seekerEnemies.size(); ++i)
     {
         SeekerEnemy* enemyPtr = m_seekerEnemies[i];
@@ -612,7 +646,7 @@ void Game::drawFrame()
         m_physics->activateSunPull(m_player);
     }
 
-    if (m_frames % 4 == 0)
+    if ((m_frames & 3) == 0)
     {
         m_animations.actorAnimation->nextFrame();
         m_animations.enemyAnimation->nextFrame();
@@ -620,9 +654,10 @@ void Game::drawFrame()
         m_animations.fireBallAnimation->nextFrame();
         m_animations.jetPackAnimation->nextFrame();
         m_animations.projectileAnimation->nextFrame();
+        m_animations.tentacleArmAnimation->nextFrame();
     }
 
-    if (m_frames % 16 == 0)
+    if ((m_frames & 15) == 0)
     {
         m_animations.guffinAnimation->nextFrame();
         m_animations.tentacleAnimation->nextFrame();

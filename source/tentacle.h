@@ -23,7 +23,8 @@ private:
     int m_posY;
     tnd::vector<Rectangle> m_projectiles;
     tnd::vector<Point> m_projectileSpeeds;
-    int m_frame;
+    uint8_t m_projectileLockoutTimer;
+    uint8_t m_frame;
 };
 
 
