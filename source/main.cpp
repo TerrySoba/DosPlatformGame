@@ -88,8 +88,6 @@ int main(int argc, char* argv[])
         }
 
         Keyboard keyboard;
-
-        // tnd::shared_ptr<ImageBase> tiles = new TgaImage("tiles.tga");
     
         tnd::shared_ptr<Animation> enemy = new Animation("enemy.ani", "enemy.tga");
         tnd::shared_ptr<Animation> seekerEnemy = new Animation("enemy2.ani", "enemy2.tga");

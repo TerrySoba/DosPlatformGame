@@ -6,6 +6,7 @@ title.exe
 ../music/FIRST.RAD
 ../music/SECOND.RAD
 ../music/THIRD.RAD
+../music/furexus.rad
 ../images/tiles.tga
 ../images/tiles2.tga
 ../images/tiles3.tga
