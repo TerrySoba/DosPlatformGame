@@ -52,6 +52,20 @@ static uint32_t SoundBlaster::s_nextDmaSize;
 static uint8_t SoundBlaster::s_nextPlaybackCommand;
 
 
+extern void disableInterrupts();
+#pragma aux disableInterrupts =    \
+    "cli"            \
+    modify []            \
+    parm [];
+
+extern void enableInterrupts();
+#pragma aux enableInterrupts =    \
+    "sti"            \
+    modify []            \
+    parm [];
+
+
+
 bool reset_dsp(uint16_t port)
 {
     outp( port + SB_RESET, 1 );
@@ -270,14 +284,14 @@ void SoundBlaster::singlePlayData(uint8_t __far * data, uint32_t length, uint8_t
 
 void SoundBlaster::singlePlay(const SbSample& sample)
 {
-    __asm { cli }
+    disableInterrupts();
     if (s_playing)
     {
         // As DMA is currently running we need to pause it.
         // If this is not done, then the PC hangs.
         writeDsp(SB_PAUSE_DMA);
     }
-    __asm { sti }
+    enableInterrupts();
 
     writeDsp(SB_SET_PLAYBACK_FREQUENCY);
     writeDsp(sample.timeConstant);
@@ -464,7 +478,7 @@ SbSample SoundBlaster::loadVocFile(const char* filename)
 
 void __interrupt SoundBlaster::sbIrqHandler()
 {
-    __asm { cli }
+    disableInterrupts();
     inp(s_base + SB_READ_DATA_STATUS);
     outp(0x20, 0x20); // satisfy PIC
     if (isHighIrq(s_irq)) {
@@ -480,5 +494,5 @@ void __interrupt SoundBlaster::sbIrqHandler()
         s_playing = 0;
     }
 
-    __asm { sti }
+    enableInterrupts();
 }
