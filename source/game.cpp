@@ -20,7 +20,7 @@ Game::Game(tnd::shared_ptr<VgaGfx> vgaGfx, tnd::shared_ptr<SoundController> soun
            const char* levelBasename, LevelNumber startLevel) :
     m_vgaGfx(vgaGfx), m_animations(animations), m_frames(0), m_levelBasename(levelBasename),
     m_animationController(animations.actorAnimation, sound), m_lastButtonPressed(false), m_sound(sound), m_music(music),
-    m_jetpackCollected(0), m_sunItemCollected(0), m_button1(0), m_levelMustReload(false), m_deathCounter(0),
+    m_jetpackCollected(1), m_sunItemCollected(1), m_button1(0), m_levelMustReload(false), m_deathCounter(0),
     m_frameCounter(0)
 {
 
