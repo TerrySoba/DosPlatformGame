@@ -139,6 +139,10 @@
         "en": "This is you last chance to turn back. If you continue onwards you'll have to face the evil boss.\n\nAre you ready?",
         "de": "Dies ist deine letzte Chance umzukehren. Wenn du weiter gehst musst du dich dem bösen Boss stellen.\n\nBist du bereit?"
     },
+    "36": {
+        "en": "This currently the end of the game. I'm working on a big second boss encounter. Stay tuned for more!",
+        "de": "Dies ist aktuell das Ende des Spiels. Ich arbeite gerade an einem großen zweiten Bosskampf. Bis dann!"
+    },
     "65": {
         "en": "Welcome to the game!",
         "de": "Willkommen im Spiel!"
