@@ -28,12 +28,12 @@
         "de": "Leider ist dies aktuell das Ende des Spiels. Wenn das Spiel fertig ist wirst du die Welt weiter erkunden können und hoffentlich das Geheimnis des Artefakts ergründen können.\n\nFortsetzung folgt!"
     },
     "8": {
-        "en": "A mysterious object. What might happen when you collect it?",
-        "de": "Ein mystriöses Objekt. Was könnte wohl passieren wenn du es einsammelst?"
+        "en": "This is the jetpack! You can use it to collect the apple up there. Hold the jump button to hover.",
+        "de": "Dies ist das Jetpack! Damit kannst du den Apfel da oben einsammeln. Halte die Sprungtaste gedrückt um zu schweben."
     },
     "9": {
-        "en": "Entrance SIGMA is blocked because of repair work. Use route XI up above to enter facility.",
-        "de": "Eingang SIGMA ist aufgrund von Reparaturarbeiten gesperrt. Benutzen Sie den Eingang XI oberhalb dieses Raumes."
+        "en": "Entrance SIGMA is blocked because of repair work. Use route XI up above to enter facility.\n(Apparently you can't get past here even with the jetpack.)",
+        "de": "Eingang SIGMA ist aufgrund von Reparaturarbeiten gesperrt. Benutzen Sie den Eingang XI oberhalb dieses Raumes.\n(Offenbar kommt man hier sogar mit Jetpack nicht weiter.)"
     },
     "10": {
         "en": "You may have escaped the dark city, but you may have to return...",
