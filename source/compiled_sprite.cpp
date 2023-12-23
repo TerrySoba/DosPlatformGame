@@ -28,7 +28,7 @@ void write8Bit(char* functionBuffer, size_t functionBufferSize, int& functionPos
 
 void write16Bit(char* functionBuffer, size_t functionBufferSize, int& functionPos, uint16_t offset, uint16_t data)
 {
-    if (functionPos + WRITE_8BIT_SIZE + 1 >= functionBufferSize)
+    if (functionPos + WRITE_16BIT_SIZE + 1 >= functionBufferSize)
     {
         return;
     }
@@ -60,12 +60,11 @@ size_t compileData(char* dst, size_t dstSize, const PixelSource& image, int16_t 
     char lastPixel = 0;
 
     const char* functionHeader =
-        "\x53"      // push bx
-        "\x89\xc3"  // mov bx,ax
+        "\x93"      // xchg ax,bx
         "\x8E\xDA"; // mov ds,dx
 
     const char* functionEnd =
-        "\x5b"      // pop bx
+        "\x93"      // xchg ax,bx
         "\xcb";     // retf
 
     char transparentColor = image.transparentColor();
@@ -202,13 +201,13 @@ int16_t CompiledSprite::height() const
     return m_height;
 }
 
-/*
-void sprite2(char* img)
-{
-    img[0 * 320 + 6] = 4;
-    img[1 * 320 + 3] = 4;
-}
-*/
+
+// void sprite2(char* img)
+// {
+//     img[0 * 320 + 6] = 4;
+//     img[1 * 320 + 3] = 4;
+// }
+
 
 void CompiledSprite::draw(char* target, int16_t targetWidth, int16_t targetHeight, int16_t targetX, int16_t targetY) const
 {

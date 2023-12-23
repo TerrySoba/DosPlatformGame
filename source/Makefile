@@ -66,7 +66,7 @@ $(radtest):
 
 #compiled_sprite.o : compiled_sprite.cpp
 #	wpp $(coptions) compiled_sprite.cpp
-#	wdis compiled_sprite.o
+#	wdis compiled_sprite.o > compiled_sprite.asm
 
 #joystick.o : joystick.cpp
 #	wpp $(coptions) joystick.cpp
