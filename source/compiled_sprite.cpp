@@ -7,8 +7,6 @@
 const int WRITE_8BIT_SIZE = 5;
 const int WRITE_16BIT_SIZE = 6;
 
-typedef void (*DrawCompiledSpritePtr)(char* img);
-
 void write8Bit(char* functionBuffer, size_t functionBufferSize, int& functionPos, uint16_t offset, uint8_t data)
 {
     if (functionPos + WRITE_8BIT_SIZE + 1 >= functionBufferSize)
@@ -53,7 +51,7 @@ void write16Bit(char* functionBuffer, size_t functionBufferSize, int& functionPo
  * image: The image to compile.
  * targetWidth: The width of the target screen (usually 320).
  */
-size_t compileData(char* dst, size_t dstSize, const PixelSource& image, int16_t targetWidth)
+uint32_t compileData(char* dst, uint32_t dstSize, const PixelSource& image, int16_t targetWidth)
 {
     int functionSize = 0;
     int functionPos = 0;

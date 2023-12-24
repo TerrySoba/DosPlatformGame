@@ -14,7 +14,7 @@ objects_test = \
 	physics_test.o tga_image_test.o shared_ptr_test.o \
 	blit_test.o vector_test.o rectangle_test.o tiny_string_test.o animation_test.o \
 	text_layout_test.o i18n_test.o level_test.o raii_ptr_test.o ptr_vector_test.o test_class.o \
-	time_tools_test.o
+	time_tools_test.o compiled_sprite_test.o
 
 rad_tester = \
 	keyboard.o rad_tester.o timer.o rad_player.o rad_player_asm.o exception.o tiny_string.o
@@ -67,6 +67,10 @@ $(radtest):
 #compiled_sprite.o : compiled_sprite.cpp
 #	wpp $(coptions) compiled_sprite.cpp
 #	wdis compiled_sprite.o > compiled_sprite.asm
+
+# compiled_sprite_test.o : compiled_sprite_test.cpp
+# 	wpp $(coptions) compiled_sprite_test.cpp
+# 	wdis compiled_sprite_test.o > compiled_sprite_test.asm
 
 #joystick.o : joystick.cpp
 #	wpp $(coptions) joystick.cpp

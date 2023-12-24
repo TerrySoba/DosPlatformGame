@@ -2,6 +2,7 @@
 #define _COMPILED_SPRITE_H_INCLUDED
 
 #include "drawable.h"
+#include <stdint.h>
 
 class PixelSource
 {
@@ -42,5 +43,8 @@ private:
     int16_t m_width, m_height;
     char* m_compiledFunction;
 };
+
+typedef void (*DrawCompiledSpritePtr)(char* img);
+uint32_t compileData(char* dst, uint32_t dstSize, const PixelSource& image, int16_t targetWidth);
 
 #endif
