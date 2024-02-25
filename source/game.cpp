@@ -187,6 +187,16 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
         }
     }
 
+    // now load eyes
+    {
+        m_eyes.clear();
+        tnd::vector<Rectangle> eyeRectangles = level.getEyes();
+        for (int i = 0; i < eyeRectangles.size(); ++i)
+        {
+            m_eyes.push_back(new Eye(eyeRectangles[i], m_animations.eyeAnimation));
+        }
+    }
+    
     // now load fireballs if any exist
     {
         m_fireBalls.clear();
@@ -555,6 +565,15 @@ void Game::drawFrame()
         Rectangle enemy = enemyPtr->getPos();
         enemyDeath.push_back(enemy);
         m_vgaGfx->draw(*m_animations.seekerEnemyAnimation, SUBPIXEL_TO_PIXEL(enemy.x), SUBPIXEL_TO_PIXEL(enemy.y));
+    }
+
+    for (int i = 0; i < m_eyes.size(); ++i)
+    {
+        Eye* eyePtr = m_eyes[i];
+        eyePtr->walk(Rectangle(playerX, playerY, 1, 1));
+        Rectangle enemy = eyePtr->getPos();
+        enemyDeath.push_back(enemy);
+        m_vgaGfx->draw(*m_animations.eyeAnimation, SUBPIXEL_TO_PIXEL(enemy.x), SUBPIXEL_TO_PIXEL(enemy.y));
     }
 
     for (int i = 0; i < m_fireBalls.size(); ++i)

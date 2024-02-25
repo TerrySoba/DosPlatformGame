@@ -16,6 +16,8 @@ title.exe
 ../images/enemy.ani
 ../images/enemy2.tga
 ../images/enemy2.ani
+../images/eye.tga
+../images/eye.ani
 ../images/guffin.tga
 ../images/guffin.ani
 ../images/guyframe.tga
@@ -97,6 +99,7 @@ title.exe
 ../levels/0A06.map
 ../levels/0A09.map
 ../levels/0A09b1.map
+../levels/0A0A.map
 ../levels/0B01.map
 ../levels/0B01b1.map
 ../levels/0B02.map

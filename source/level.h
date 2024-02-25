@@ -60,6 +60,7 @@ public:
     tnd::vector<Rectangle> getTentacles() { return m_tentacles; }
     tnd::vector<Rectangle> getTentacleArms() { return m_tentacleArms; }
     tnd::vector<Button> getButtons() { return m_buttons; }
+    tnd::vector<Rectangle> getEyes() { return m_eyes; }
     uint16_t getMusicIndex() { return m_musicIndex; }
 
 
@@ -101,6 +102,7 @@ private:
     tnd::vector<Rectangle> m_tentacles;
     tnd::vector<Rectangle> m_tentacleArms;
     tnd::vector<Button> m_buttons;
+    tnd::vector<Rectangle> m_eyes;
 
     TinyString m_tileset;
 

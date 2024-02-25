@@ -160,6 +160,7 @@ if __name__ == "__main__":
         "music"       : 9,
         "boss2"       : 10,
         "tileset"     : 11,
+        "eye"         : 12,
     }
 
     with open(base_name + ".map", "wb") as map_file:

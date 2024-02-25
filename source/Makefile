@@ -6,7 +6,7 @@ objects_game_lib = \
 	joystick.o enemy.o game_save.o text.o i18n.o fire_ball.o \
 	soundblaster.o sound_controller.o seeker_enemy.o \
 	boss1.o time_tools.o music_controller.o key_mapper.o \
-	tentacle.o tentacle_arm.o
+	tentacle.o tentacle_arm.o eye.o
 objects_game = \
 	main.o $(objects_game_lib)
 objects_test = \

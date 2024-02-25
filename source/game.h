@@ -19,6 +19,7 @@
 #include "boss1.h"
 #include "shared_ptr.h"
 #include "key_mapper.h"
+#include "eye.h"
 
 
 namespace ActorPosition
@@ -55,6 +56,7 @@ struct GameAnimations
 	tnd::shared_ptr<Animation> tentacleAnimation;
 	tnd::shared_ptr<Animation> projectileAnimation;
 	tnd::shared_ptr<Animation> tentacleArmAnimation;
+	tnd::shared_ptr<Animation> eyeAnimation;
 };
 
 
@@ -107,6 +109,7 @@ private:
 	tnd::ptr_vector<Boss1> m_boss1;
 	tnd::ptr_vector<Tentacle> m_tentacles;
 	tnd::ptr_vector<TentacleArm> m_tentacleArms;
+	tnd::ptr_vector<Eye> m_eyes;
 	tnd::vector<Rectangle> m_guffins;
 	tnd::vector<Rectangle> m_jetPacks;
 	tnd::vector<Rectangle> m_sunItems;

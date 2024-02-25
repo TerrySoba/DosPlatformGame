@@ -26,6 +26,7 @@ enum LayerType
     LAYER_MUSIC    = 9,
     LAYER_BOSS2    = 10,
     LAYER_TILESET  = 11,
+    LAYER_EYE      = 12,
 };
 
 
@@ -128,6 +129,13 @@ Level::Level(const char* mapFilename,
                 readRectangleLayer(fp, rect, offsetX, offsetY);
                 rect *= 16;
                 m_seekerEnemies.push_back(rect);
+                break;
+            }
+            case LAYER_EYE:
+            {
+                readRectangleLayer(fp, rect, offsetX, offsetY);
+                rect *= 16;
+                m_eyes.push_back(rect);
                 break;
             }
             case LAYER_GUFFIN_GATE:
