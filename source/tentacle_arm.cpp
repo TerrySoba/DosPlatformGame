@@ -7,13 +7,21 @@ TentacleArm::TentacleArm(int posX, int posY, tnd::shared_ptr<Animation> animatio
     m_posX = posX;
     m_posY = posY;
     m_animation = animation;
+    
+    reset();
+}
+
+void TentacleArm::reset()
+{
     m_armExtension = 0;
 
+    m_segments.clear();
     m_segments.push_back(Rectangle(m_posX, m_posY, PIXEL_TO_SUBPIXEL(m_animation->width()), PIXEL_TO_SUBPIXEL(m_animation->height())));
     m_segments.push_back(Rectangle(m_posX, m_posY, PIXEL_TO_SUBPIXEL(m_animation->width()), PIXEL_TO_SUBPIXEL(m_animation->height())));
     m_segments.push_back(Rectangle(m_posX, m_posY, PIXEL_TO_SUBPIXEL(m_animation->width()), PIXEL_TO_SUBPIXEL(m_animation->height())));
     m_segments.push_back(Rectangle(m_posX, m_posY, PIXEL_TO_SUBPIXEL(m_animation->width()), PIXEL_TO_SUBPIXEL(m_animation->height())));
 }
+
 
 TentacleArm::~TentacleArm()
 {

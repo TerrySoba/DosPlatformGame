@@ -17,6 +17,8 @@ public:
     Rectangle getPos();
     tnd::vector<Rectangle> getProjectiles() const;
 
+    void reset();
+
 private:
     tnd::shared_ptr<Animation> m_animation;
     int m_posX;

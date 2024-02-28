@@ -2,15 +2,12 @@
 #include "physics.h"
 #include <stdlib.h>
 
+
 FireBall::FireBall(Rectangle collision, tnd::shared_ptr<Animation> animation) :
     m_collision(collision),
-    m_animation(animation),
-    m_posX(collision.x),
-    m_posY(collision.y),
-    m_speedX(16),
-    m_speedY(13)
+    m_animation(animation)
 {
-
+    reset();
 }
 
 FireBall::~FireBall()
@@ -46,4 +43,12 @@ void FireBall::walk()
 Rectangle FireBall::getPos()
 {
     return Rectangle(m_posX, m_posY, PIXEL_TO_SUBPIXEL(m_animation->width()), PIXEL_TO_SUBPIXEL(m_animation->height()));
+}
+
+void FireBall::reset()
+{
+    m_speedX = 16;
+    m_speedY = 13;
+    m_posX = m_collision.x;
+    m_posY = m_collision.y;
 }

@@ -6,6 +6,15 @@ Tentacle::Tentacle(int posX, int posY, tnd::shared_ptr<Animation> animation)
     m_animation = animation;
     m_posX = posX;
     m_posY = posY;
+
+    reset();   
+}
+
+void Tentacle::reset()
+{
+    m_projectiles.clear();
+    m_projectileSpeeds.clear();
+   
     m_frame = 0;
     m_projectileLockoutTimer = 0;
     m_frame = 0;

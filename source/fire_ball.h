@@ -15,6 +15,8 @@ public:
 
     Rectangle getPos();
 
+    void reset();
+
 private:
     const Rectangle m_collision;
     tnd::shared_ptr<Animation> m_animation;

@@ -20,14 +20,22 @@ int32_t manhattanNorm(int32_t x, int32_t y)
 Boss1::Boss1(Rectangle enemyRectangle, tnd::shared_ptr<Animation> animation, const tnd::vector<Rectangle>& walls) :
     m_enemyRectangle(enemyRectangle),
     m_animation(animation),
-    m_state(BOSS1_STATE_INITIAL),
-    m_idleFrames(0),
-    m_actionFrame(0),
-    m_lastPlayerPosX(-1),
-    m_lastPlayerPosY(-1),
     m_walls(walls)
 {
+    reset();
 }
+
+
+void Boss1::reset()
+{
+    m_projectiles.clear();
+    m_state = BOSS1_STATE_INITIAL;
+    m_idleFrames = 0;
+    m_actionFrame = 0;
+    m_lastPlayerPosX = -1;
+    m_lastPlayerPosY = -1;
+}
+
 
 Boss1::~Boss1()
 {

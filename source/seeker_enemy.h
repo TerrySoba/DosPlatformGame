@@ -20,6 +20,8 @@ public:
 
     Rectangle getPos();
 
+    void reset();
+
 private:
     Rectangle m_enemyWalkArea;
     tnd::shared_ptr<Animation> m_animation;

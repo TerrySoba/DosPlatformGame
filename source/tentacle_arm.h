@@ -14,6 +14,8 @@ public:
 
     tnd::vector<Rectangle> getSegments();
 
+    void reset();
+
 private:
     int m_posX;
     int m_posY;

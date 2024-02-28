@@ -29,6 +29,8 @@ public:
 
     tnd::vector<Rectangle> getProjectiles() const;
 
+    void reset();
+
 private:
     void moveProjectiles();
 

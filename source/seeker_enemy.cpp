@@ -1,10 +1,19 @@
 #include "seeker_enemy.h"
 
 SeekerEnemy::SeekerEnemy(Rectangle enemyWalkArea, tnd::shared_ptr<Animation> animation) :
-    m_enemyWalkArea(enemyWalkArea), m_animation(animation), m_walkSpeed(10), m_oldDirection(WALK_LEFT), m_direction(WALK_RIGHT), m_firstLoop(true)
+    m_enemyWalkArea(enemyWalkArea), m_animation(animation)
 {
-    m_posX = enemyWalkArea.x;
-    m_posY = enemyWalkArea.y + enemyWalkArea.height - animation->height() * 16;
+    reset();
+}
+
+void SeekerEnemy::reset()
+{
+    m_walkSpeed = 10;
+    m_oldDirection = WALK_LEFT;
+    m_direction = WALK_RIGHT;
+    m_firstLoop = true;
+    m_posX = m_enemyWalkArea.x;
+    m_posY = m_enemyWalkArea.y + m_enemyWalkArea.height - m_animation->height() * 16;
     m_animation->useTag("WalkL");
 }
 
@@ -60,3 +69,4 @@ Rectangle SeekerEnemy::getPos()
 {
     return Rectangle(m_posX, m_posY, m_animation->width() * 16, m_animation->height() * 16);
 }
+

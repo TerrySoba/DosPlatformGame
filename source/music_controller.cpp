@@ -42,10 +42,10 @@ void MusicController::playMusic(SongIndex index)
         // do nothing, so that the music stops
         break;
     case MUSIC_INDEX_TITLE_MUSIC:
-        modulePath = "FUREXUS.RAD";
+        modulePath = "FIRST.RAD";
         break;
     case MUSIC_INDEX_LEVEL_MUSIC:
-        modulePath = "FUREXUS.RAD";
+        modulePath = "SECOND.RAD";
         break;
     case MUSIC_INDEX_BOSS_MUSIC:
         modulePath = "THIRD.RAD";

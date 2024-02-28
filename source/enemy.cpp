@@ -33,3 +33,9 @@ Rectangle Enemy::getPos()
 Enemy::~Enemy()
 {
 }
+
+void Enemy::reset()
+{
+    m_posX = m_enemyWalkArea.x;
+    m_posY = m_enemyWalkArea.y;
+}
