@@ -16,8 +16,8 @@ T manhattanNorm(T x, T y)
 }
 
 
-template <class T>
-void setVectorLength(T& x, T& y, T length)
+template <class T, class L>
+void setVectorLength(T& x, T& y, L length)
 {
     T len = manhattanNorm(x, y);
     if (len != 0)
