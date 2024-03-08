@@ -1,21 +1,11 @@
 #include "boss1.h"
 
 #include "physics.h"
+#include "vector_math.h"
 
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 200
 #define PROJECTILE_SPEED 50
-
-template <class T>
-T abs(T val)
-{
-    return val < 0 ? -val : val;
-}
-
-int32_t manhattanNorm(int32_t x, int32_t y)
-{
-    return abs(x) + abs(y);
-}
 
 Boss1::Boss1(Rectangle enemyRectangle, tnd::shared_ptr<Animation> animation, const tnd::vector<Rectangle>& walls) :
     m_enemyRectangle(enemyRectangle),
@@ -24,7 +14,6 @@ Boss1::Boss1(Rectangle enemyRectangle, tnd::shared_ptr<Animation> animation, con
 {
     reset();
 }
-
 
 void Boss1::reset()
 {
@@ -43,15 +32,6 @@ Boss1::~Boss1()
 }
 
 
-void setVectorLength(int32_t& x, int32_t& y, int32_t length)
-{
-    int32_t len = manhattanNorm(x, y);
-    if (len != 0)
-    {
-        x = (x * length) / len;
-        y = (y * length) / len;
-    }
-}
 
 
 Projectile createProjectile(int16_t startX, int16_t startY, int16_t targetX, int16_t targetY, int16_t speed)

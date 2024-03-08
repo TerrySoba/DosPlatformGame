@@ -76,9 +76,11 @@ title.exe
 ../levels/0701.map
 ../levels/0702.map
 ../levels/0705.map
+../levels/0705b1.map
 ../levels/0706.map
 ../levels/0709.map
-../levels/0705b1.map
+../levels/070A.map
+../levels/080A.map
 ../levels/0801.map
 ../levels/0802.map
 ../levels/0803.map
@@ -93,6 +95,7 @@ title.exe
 ../levels/0905.map
 ../levels/0906.map
 ../levels/0909.map
+../levels/090A.map
 ../levels/0A01.map
 ../levels/0A04.map
 ../levels/0A05.map

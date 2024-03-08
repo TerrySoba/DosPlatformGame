@@ -20,7 +20,7 @@ Game::Game(tnd::shared_ptr<VgaGfx> vgaGfx, tnd::shared_ptr<SoundController> soun
            const char* levelBasename, LevelNumber startLevel) :
     m_vgaGfx(vgaGfx), m_animations(animations), m_frames(0), m_levelBasename(levelBasename),
     m_animationController(animations.actorAnimation, sound), m_lastButtonPressed(false), m_sound(sound), m_music(music),
-    m_jetpackCollected(0), m_sunItemCollected(0), m_button1(1), m_levelMustReload(false), m_deathCounter(0),
+    m_jetpackCollected(0), m_sunItemCollected(0), m_button1(0), m_levelMustReload(false), m_deathCounter(0),
     m_frameCounter(0)
 {
 
@@ -255,13 +255,13 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
 
     // now load boss2 if any exist
     {
-        // m_boss1.clear();
+        m_boss2.clear();
         tnd::vector<Rectangle> boss2Rects = level.getBoss2();
         
-        // create boss1 instances
+        // create boss2 instances
         for (int i = 0; i < boss2Rects.size(); ++i)
         {
-            m_boss1.push_back(new Boss1(boss2Rects[i], m_animations.fireBallAnimation, level.getWalls()));
+            m_boss2.push_back(new Boss2(boss2Rects[i], m_animations.fireBallAnimation, level.getWalls()));
         }
     }
 
@@ -496,6 +496,7 @@ void Game::onDeath()
     resetEnemies(m_fireBalls);
     resetEnemies(m_seekerEnemies);
     resetEnemies(m_boss1);
+    resetEnemies(m_boss2);
     resetEnemies(m_tentacles);
     resetEnemies(m_tentacleArms);
 }
@@ -624,6 +625,22 @@ void Game::drawFrame()
         Boss1* boss1Ptr = m_boss1[i];
         boss1Ptr->walk(Rectangle(playerX, playerY, 1, 1));
         tnd::vector<Rectangle> projectiles = boss1Ptr->getProjectiles();
+
+        // draw projectiles
+        for (int j = 0; j < projectiles.size(); ++j)
+        {
+            Rectangle& projectile = projectiles[j];
+            enemyDeath.push_back(projectile);
+            m_vgaGfx->draw(*m_animations.fireBallAnimation, SUBPIXEL_TO_PIXEL(projectile.x), SUBPIXEL_TO_PIXEL(projectile.y));
+        }
+    }
+
+    // iterate over boss2 instances and call walk() on them
+    for (int i = 0; i < m_boss2.size(); ++i)
+    {
+        Boss2* boss2Ptr = m_boss2[i];
+        boss2Ptr->walk(Rectangle(playerX, playerY, 1, 1));
+        tnd::vector<Rectangle> projectiles = boss2Ptr->getProjectiles();
 
         // draw projectiles
         for (int j = 0; j < projectiles.size(); ++j)

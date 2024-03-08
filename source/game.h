@@ -17,6 +17,7 @@
 #include "fire_ball.h"
 #include "rectangle.h"
 #include "boss1.h"
+#include "boss2.h"
 #include "shared_ptr.h"
 #include "key_mapper.h"
 #include "eye.h"
@@ -107,6 +108,7 @@ private:
 	tnd::ptr_vector<SeekerEnemy> m_seekerEnemies;
 	tnd::ptr_vector<FireBall> m_fireBalls;
 	tnd::ptr_vector<Boss1> m_boss1;
+	tnd::ptr_vector<Boss2> m_boss2;
 	tnd::ptr_vector<Tentacle> m_tentacles;
 	tnd::ptr_vector<TentacleArm> m_tentacleArms;
 	tnd::ptr_vector<Eye> m_eyes;
