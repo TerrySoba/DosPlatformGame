@@ -19,7 +19,7 @@ MusicController::~MusicController()
 
 void MusicController::playMusic(SongIndex index)
 {
-    return;
+    // return;
     // do not reload music if it is already playing
     if (index == MUSIC_INDEX_NO_CHANGE || index == m_currentSong)
     {
@@ -42,10 +42,10 @@ void MusicController::playMusic(SongIndex index)
         // do nothing, so that the music stops
         break;
     case MUSIC_INDEX_TITLE_MUSIC:
-        modulePath = "FIRST.RAD";
+        modulePath = "FUREXUS2.RAD";
         break;
     case MUSIC_INDEX_LEVEL_MUSIC:
-        modulePath = "SECOND.RAD";
+        modulePath = "FUREXUS2.RAD";
         break;
     case MUSIC_INDEX_BOSS_MUSIC:
         modulePath = "THIRD.RAD";
