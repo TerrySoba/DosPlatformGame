@@ -50,6 +50,9 @@ void MusicController::playMusic(SongIndex index)
     case MUSIC_INDEX_BOSS_MUSIC:
         modulePath = "THIRD.RAD";
         break;
+    case MUSIC_INDEX_ENDING_MUSIC:
+        modulePath = "CELT.RAD";
+        break;
     }
 
     if (modulePath)
