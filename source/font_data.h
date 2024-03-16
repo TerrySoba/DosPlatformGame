@@ -499,6 +499,15 @@ char characterParenthesesClose[] = {
       0,  0,  0,  0,  0,
 };
 
+char characterSemicolon[] = { 
+     0,  0,  0,  0,  0,
+     0,  15,  0,  0,  0,
+     0,  0,  0,  0,  0,
+     0,  15,  0,  0,  0,
+     15,  0,  0,  0,  0,
+     0,  0,  0,  0,  0,
+};
+
 char characterUnknown[] = { 
     15, 15, 15, 15,  0,
     15,  0,  0, 15,  0,
@@ -523,7 +532,8 @@ char* alphabet[] = {
     characterExclamationmark, characterColon, characterPlus, characterMinus,
     characterPercent, characterLower, characterGreater, characterAe,
     characterOe, characterUe, characterSS, characterApostrophe, characterQuotes,
-    characterParenthesesOpen, characterParenthesesClose, characterUnknown,
+    characterParenthesesOpen, characterParenthesesClose, characterSemicolon,
+    characterUnknown,
 };
 
 int getCharacterIndex(char ch)
@@ -585,9 +595,10 @@ int getCharacterIndex(char ch)
         case '\"': return 52;
         case '(': return 53;
         case ')': return 54;
+        case ';': return 55;
     }
 
-    return 55;
+    return 56;
 }
 
 
