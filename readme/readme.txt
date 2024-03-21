@@ -20,7 +20,7 @@ https://github.com/TerrySoba/DosPlatformGame
 Credits
 -------
 Programming and graphics: Torsten Stremlau
-Music: Matias Sosa
+Music: Sebastian Breitenbach, Matias Sosa, Torsten Stremlau
 Additional graphics: Lisa Stremlau
 
 Git Revision

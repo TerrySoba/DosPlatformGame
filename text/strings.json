@@ -140,8 +140,8 @@
         "de": "Dies ist deine letzte Chance umzukehren. Wenn du weiter gehst musst du dich dem bösen Boss stellen.\n\nBist du bereit?"
     },
     "36": {
-        "en": "This currently the end of the game. I'm working on a big second boss encounter. Stay tuned for more!",
-        "de": "Dies ist aktuell das Ende des Spiels. Ich arbeite gerade an einem großen zweiten Bosskampf. Bis dann!"
+        "en": "You have defeated the evil lovecraftian boss from the internet. Thanks for playing!\n\n --TerrySoba\n\n\nSpecial Thanks to:\ntara_tor, furexus, and all the other people who helped me with this game!",
+        "de": "Du hast den bösen lovecraftianischen Boss aus dem Internet besiegt. Danke fürs Spielen!\n\n --TerrySoba\n\n\nBesonderer Dank an:\ntara_tor, furexus und alle anderen die mir bei diesem Spiel geholfen haben!"
     },
     "65": {
         "en": "Welcome to the game!",
@@ -540,8 +540,8 @@
         "de": "Augen im Himmel"
     },
     "651": {
-        "en": "The end for real this time ;)",
-        "de": "Das Ende, diesmal wirklich ;)"
+        "en": "The last button ;)",
+        "de": "Der letzte Knopf ;)"
     },
     "12345": {
         "en": "This is a test",

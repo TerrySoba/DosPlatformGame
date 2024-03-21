@@ -113,6 +113,7 @@ title.exe
 ../levels/0B04.map
 ../levels/0B06.map
 ../levels/0B0A.map
+../levels/0B0Ab1.map
 ../levels/0C01.map
 ../levels/0C01b1.map
 ../levels/0C03.map

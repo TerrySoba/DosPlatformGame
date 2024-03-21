@@ -508,6 +508,16 @@ char characterSemicolon[] = {
      0,  0,  0,  0,  0,
 };
 
+
+char characterUnderscore[] = { 
+     0,  0,  0,  0,  0,
+     0,  0,  0,  0,  0,
+     0,  0,  0,  0,  0,
+     0,  0,  0,  0,  0,
+    15, 15, 15, 15,  0,
+     0,  0,  0,  0,  0,
+};
+
 char characterUnknown[] = { 
     15, 15, 15, 15,  0,
     15,  0,  0, 15,  0,
@@ -516,9 +526,6 @@ char characterUnknown[] = {
     15, 15, 15, 15,  0,
      0,  0,  0,  0,  0,
 };
-
-
-
 
 
 char* alphabet[] = {
@@ -533,7 +540,7 @@ char* alphabet[] = {
     characterPercent, characterLower, characterGreater, characterAe,
     characterOe, characterUe, characterSS, characterApostrophe, characterQuotes,
     characterParenthesesOpen, characterParenthesesClose, characterSemicolon,
-    characterUnknown,
+    characterUnderscore, characterUnknown,
 };
 
 int getCharacterIndex(char ch)
@@ -596,9 +603,10 @@ int getCharacterIndex(char ch)
         case '(': return 53;
         case ')': return 54;
         case ';': return 55;
+        case '_': return 56;
     }
 
-    return 56;
+    return 57;
 }
 
 
