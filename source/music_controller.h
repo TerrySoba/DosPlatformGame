@@ -22,6 +22,8 @@ public:
 
     void playMusic(SongIndex index);
 
+    SongIndex getCurrentSong() const { return m_currentSong; }
+
 private:
     SongIndex m_currentSong;
     RadPlayer* m_player;

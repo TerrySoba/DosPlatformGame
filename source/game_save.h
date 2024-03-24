@@ -2,7 +2,7 @@
 #define _INCLUDE_GAME_SAVE_H
 
 #include "game.h"
-
+#include "music_controller.h"
 
 struct GameState
 {
@@ -21,6 +21,7 @@ struct GameState
     uint8_t button1; // 0 == button not pressed, 1 == button pressed
     uint32_t deathCounter;
     uint32_t frameCounter; // frame of gameplay (usually 70 frames per second)
+    SongIndex musicIndex;  // music that was playing when saved
 };
 
 void saveGameState(const GameState& gameState, const char* filename);

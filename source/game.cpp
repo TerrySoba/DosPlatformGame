@@ -23,7 +23,6 @@ Game::Game(tnd::shared_ptr<VgaGfx> vgaGfx, tnd::shared_ptr<SoundController> soun
     m_jetpackCollected(0), m_sunItemCollected(0), m_button1(0), m_levelMustReload(false), m_deathCounter(0),
     m_frameCounter(0)
 {
-
     m_nextLevel.x = -1;
     m_nextLevel.y = -1;
 
@@ -39,6 +38,8 @@ Game::Game(tnd::shared_ptr<VgaGfx> vgaGfx, tnd::shared_ptr<SoundController> soun
         m_button1 = state.button1;
         m_deathCounter = state.deathCounter;
         m_frameCounter = state.frameCounter;
+
+        m_music->playMusic((SongIndex)state.musicIndex);
 
         loadLevel(state.level, ActorPosition::LoadSaveGame);   
 
@@ -105,7 +106,6 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     }
 
     level.setTilesImage(m_tiles);
-
 
     m_music->playMusic((SongIndex)level.getMusicIndex());
 
@@ -368,6 +368,7 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     state.button1 = m_button1;
     state.deathCounter = m_deathCounter;
     state.frameCounter = m_frameCounter;
+    state.musicIndex = m_music->getCurrentSong();
     
     if (actorPosition != ActorPosition::LoadSaveGame)
     {
