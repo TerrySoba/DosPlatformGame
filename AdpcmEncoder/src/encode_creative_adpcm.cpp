@@ -10,6 +10,11 @@ uint64_t getNthNibble(int n, uint64_t value)
     return (0xf & (value >> (4 * n)));
 }
 
+uint64_t getNth2bit(int n, uint64_t value)
+{
+    return (0x3 & (value >> (2 * n)));
+}
+
 constexpr uint64_t constPow(uint64_t val, uint64_t exp)
 {
     uint64_t res = 1;
@@ -197,6 +202,80 @@ std::vector<uint8_t> createAdpcm4BitFromRaw(const std::vector<uint8_t>& raw, uin
     for (size_t n = 0; n < nibbles.size() / 2; ++n)
     {
         binaryResult[n] = ((nibbles[2 * n] << 4) + (nibbles[2 * n + 1]));
+    }
+
+    binaryResult.insert(binaryResult.begin(), raw[0]);
+
+    return binaryResult;
+}
+
+struct Best2bit
+{
+    uint64_t bestIndex = 0;
+    uint64_t bestDiff = std::numeric_limits<uint64_t>::max();
+    CreativeAdpcmDecoder2Bit bestDecoder = CreativeAdpcmDecoder2Bit(0);
+};
+
+std::vector<uint8_t> createAdpcm2BitFromRaw(const std::vector<uint8_t>& raw, uint64_t combinedSamples)
+{
+    uint64_t squaredSum = 0u;
+
+    CreativeAdpcmDecoder2Bit decoder(raw[0]);
+    
+    std::vector<uint64_t> result(raw.size() / combinedSamples);
+
+    for (size_t i = 1; i < raw.size() / combinedSamples; ++i)
+    {
+        Best2bit bestResults;
+
+        // try every possible input for the decoder
+        for (uint64_t n = 0; n < constPow(4, combinedSamples); ++n)
+        {
+            CreativeAdpcmDecoder2Bit decoderCopy = decoder;
+            uint64_t diffSum = 0;
+            for (size_t nib = 0; nib < combinedSamples; ++nib)
+            {
+                int diff = decoderCopy.decode2bits(getNth2bit(nib, n)) - raw[i*combinedSamples + nib - combinedSamples + 1];
+                diffSum += diff * diff;
+            }
+ 
+            if (diffSum < bestResults.bestDiff)
+            {
+                bestResults.bestDiff = diffSum;
+                bestResults.bestIndex = n;
+                bestResults.bestDecoder = decoderCopy;
+            }
+        }
+
+        decoder = bestResults.bestDecoder; 
+        result[i-1] = bestResults.bestIndex;
+        squaredSum += bestResults.bestDiff;
+
+
+        // if (i % 10 == 0) printf("%d\n", i);
+    }
+
+    printf("sum: %ld\n", squaredSum);
+
+    std::vector<uint8_t> nibbles(result.size() * combinedSamples);
+    for (size_t i = 0; i < result.size(); ++i)
+    {
+        for (size_t nib = 0; nib < combinedSamples; ++nib)
+        {
+            nibbles[i * combinedSamples + nib] = getNth2bit(nib, result[i]);
+        }
+    }
+
+    std::vector<uint8_t> binaryResult(nibbles.size() / 4);
+
+    // merge 2bit values into bytes
+    for (size_t n = 0; n < nibbles.size() / 4; ++n)
+    {
+        binaryResult[n] = (
+            (nibbles[4 * n    ] << 6) +
+            (nibbles[4 * n + 1] << 4) +
+            (nibbles[4 * n + 2] << 2) +
+            (nibbles[4 * n + 3] << 0));
     }
 
     binaryResult.insert(binaryResult.begin(), raw[0]);

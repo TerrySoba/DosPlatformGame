@@ -65,4 +65,53 @@ std::vector<uint8_t> decodeAdpcm4(uint8_t initial, std::vector<uint8_t> nibbles)
     return decoded;
 }
 
+
+class CreativeAdpcmDecoder2Bit
+{
+public:
+    CreativeAdpcmDecoder2Bit(uint8_t firstValue) :
+        m_scale(0),          
+        m_previous(firstValue)
+    {}
+
+    // imported from https://github.com/joncampbell123/dosbox-x/blob/master/src/hardware/sblaster.cpp
+    uint8_t decode2bits(uint8_t sample)
+    {
+        static const int8_t scaleMap[24] = {
+            0, 1, 0, -1, 1, 3, -1, -3,
+            2, 6, -2, -6, 4, 12, -4, -12,
+            8, 24, -8, -24, 16, 48, -16, -48};
+        static const uint8_t adjustMap[24] = {
+            0, 4, 0, 4,
+            252, 4, 252, 4, 252, 4, 252, 4,
+            252, 4, 252, 4, 252, 4, 252, 4,
+            252, 0, 252, 0};
+
+        int32_t samp = sample + m_scale;
+        if ((samp < 0) || (samp > 23))
+        {
+            if (samp < 0)
+                samp = 0;
+            if (samp > 23)
+                samp = 23;
+        }
+
+        int32_t ref = m_previous + scaleMap[samp];
+        if (ref > 0xff)
+            m_previous = 0xff;
+        else if (ref < 0x00)
+            m_previous = 0x00;
+        else
+            m_previous = (uint8_t)(ref & 0xff);
+        m_scale = (m_scale + adjustMap[samp]) & 0xff;
+
+        return m_previous;
+    }
+
+private:
+    uint32_t m_scale;
+    uint8_t m_previous;
+};
+
+
 #endif

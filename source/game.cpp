@@ -35,6 +35,7 @@ Game::Game(tnd::shared_ptr<VgaGfx> vgaGfx, tnd::shared_ptr<SoundController> soun
     {
         m_collectedGuffins = state.colectedGuffins;
         m_jetpackCollected = state.jetpackCollected;
+        m_sunItemCollected = state.sunItemCollected;
         m_button1 = state.button1;
         m_deathCounter = state.deathCounter;
         m_frameCounter = state.frameCounter;
@@ -365,6 +366,7 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     state.spawnPoint = Point(actorPosX, actorPosY);
     state.colectedGuffins = m_collectedGuffins;
     state.jetpackCollected = m_jetpackCollected;
+    state.sunItemCollected = m_sunItemCollected;
     state.button1 = m_button1;
     state.deathCounter = m_deathCounter;
     state.frameCounter = m_frameCounter;

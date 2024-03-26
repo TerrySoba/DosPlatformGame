@@ -2,6 +2,7 @@
 #include "command_line_parser.h"
 #include "voc_format.h"
 #include "encode_creative_adpcm_simd.h"
+#include "encode_creative_adpcm.h"
 #include "read_wave.h"
 #include "resampling.h"
 
@@ -12,6 +13,7 @@ std::map <std::string, VocSampleFormat> compressionFormats =
 {
     {"PCM", VOC_FORMAT_PCM_8BIT},
     {"ADPCM4", VOC_FORMAT_ADPCM_4BIT},
+    {"ADPCM2", VOC_FORMAT_ADPCM_2BIT},
 };
 
 int main(int argc, char* argv[])
@@ -24,11 +26,12 @@ int main(int argc, char* argv[])
             "to the given frequency. Otherwise the sample frequency of the WAVE file is kept.\n\n"
             "Compression formats:\n"
             "  PCM    - unsigned integer 8-bit per sample\n"
-            "  ADPCM4 - ADPCM 4-bit per sample\n");
+            "  ADPCM4 - ADPCM 4-bit per sample\n"
+            "  ADPCM2 - ADPCM 2-bit per sample\n");
         parser.addParameter("input", "i", "Name of the input file", clp::ParameterRequired::yes);
         parser.addParameter("frequency", "f", "Frequency of output file in hertz", clp::ParameterRequired::no, "-1");
         parser.addParameter("output", "o", "Name of the output file", clp::ParameterRequired::yes);
-        parser.addParameter("compression", "c", "Compression to be used. Options: PCM, ADPCM4", clp::ParameterRequired::no, "ADPCM4");
+        parser.addParameter("compression", "c", "Compression to be used. Options: PCM, ADPCM4, ADPCM2", clp::ParameterRequired::no, "ADPCM4");
         parser.addParameter("normalize", "n", "Normalize audio to given fraction, e.g. 0.9", clp::ParameterRequired::no, "-1.0");
         parser.addParameter("level", "l", "Level of compression. Must be integer. 1 = lowest quality but fast. Bigger values than 5 probably make no sense and are terribly slow.", clp::ParameterRequired::no, "4");
 
@@ -75,6 +78,12 @@ int main(int argc, char* argv[])
                 sampleData = createAdpcm4BitFromRawSIMD(raw, parser.getValue<uint64_t>("level"));
                 break;
             }
+            case VOC_FORMAT_ADPCM_2BIT:
+            {
+                printf("Output format: ADPCM 2-bit\n");
+                sampleData = createAdpcm2BitFromRaw(raw, parser.getValue<uint64_t>("level"));
+                break;
+            }
             case VOC_FORMAT_PCM_8BIT:
             {
                 printf("Output format: PCM 8-bit\n");
@@ -82,7 +91,6 @@ int main(int argc, char* argv[])
                 break;
             }
             case VOC_FORMAT_ADPCM_3BIT:
-            case VOC_FORMAT_ADPCM_2BIT:
             {
                 printf("compression format not implemented\n");
                 return 1;
