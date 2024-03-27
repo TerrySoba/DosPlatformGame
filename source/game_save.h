@@ -7,7 +7,12 @@
 struct GameState
 {
     GameState() :
-        jetpackCollected(0), sunItemCollected(0), button1(0), deathCounter(0), frameCounter(0)
+        jetpackCollected(0),
+        sunItemCollected(0),
+        button1(0),
+        deathCounter(0),
+        frameCounter(0),
+        musicIndex(MUSIC_INDEX_NO_CHANGE)
     {
         level.x = 0;
         level.y = 0;

@@ -54,20 +54,20 @@ void Tentacle::act()
     }
 
     // apply gravity
-    for (size_t i = 0; i < m_projectiles.size(); ++i)
+    for (int i = 0; i < m_projectiles.size(); ++i)
     {
         m_projectileSpeeds[i].y += GRAVITY;
     }
 
     // Move projectiles
-    for (size_t i = 0; i < m_projectiles.size(); ++i)
+    for (int i = 0; i < m_projectiles.size(); ++i)
     {
         m_projectiles[i].x += m_projectileSpeeds[i].x;
         m_projectiles[i].y += m_projectileSpeeds[i].y;
     }
 
     // Check if projectiles are out of screen
-    for (size_t i = 0; i < m_projectiles.size(); ++i)
+    for (int i = 0; i < m_projectiles.size(); ++i)
     {
         if (m_projectiles[i].x + PROJECTILE_SIZE < 0 || m_projectiles[i].x > PIXEL_TO_SUBPIXEL(SCREEN_WIDTH) ||
             m_projectiles[i].y + PROJECTILE_SIZE < 0 || m_projectiles[i].y > PIXEL_TO_SUBPIXEL(SCREEN_HEIGHT))
