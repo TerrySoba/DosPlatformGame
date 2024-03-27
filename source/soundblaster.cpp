@@ -291,8 +291,7 @@ void SoundBlaster::singlePlay(const SbSample& sample)
         // If this is not done, then the PC hangs.
         writeDsp(SB_PAUSE_DMA);
     }
-    enableInterrupts();
-
+    
     writeDsp(SB_SET_PLAYBACK_FREQUENCY);
     writeDsp(sample.timeConstant);
 
@@ -319,6 +318,7 @@ void SoundBlaster::singlePlay(const SbSample& sample)
     }
 
     singlePlayData(sample.data, sample.length, playCommand);
+    enableInterrupts();
 }
 
 
