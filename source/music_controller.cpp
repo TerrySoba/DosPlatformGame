@@ -3,18 +3,12 @@
 #include "rad_player.h"
 
 MusicController::MusicController() :
-    m_currentSong(MUSIC_INDEX_NO_MUSIC),
-    m_player(0)
+    m_currentSong(MUSIC_INDEX_NO_MUSIC)
 {
 }
 
 MusicController::~MusicController()
 {
-    if (m_player)
-    {
-        delete m_player;
-        m_player = 0;
-    }
 }
 
 void MusicController::playMusic(SongIndex index)
@@ -26,12 +20,6 @@ void MusicController::playMusic(SongIndex index)
     }
 
     m_currentSong = index;
-
-    if (m_player)
-    {
-        delete m_player;
-        m_player = 0;
-    }
 
     const char* modulePath = 0;
 
@@ -61,7 +49,11 @@ void MusicController::playMusic(SongIndex index)
 
     if (modulePath)
     {
-        m_player = new RadPlayer(modulePath);
+        m_player.playModule(modulePath);
+    }
+    else
+    {
+        m_player.stopModule();
     }
 
     return;

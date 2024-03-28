@@ -14,7 +14,8 @@ int main(int argc, char* argv[])
     try
     {
         Keyboard keyboard;
-        RadPlayer player(argv[1]);
+        RadPlayer player;
+        player.playModule(argv[1]);
         printf("Playing module %s\n", argv[1]);
         printf("Press ESC to stop.\n");
         while (!s_keyEsc);

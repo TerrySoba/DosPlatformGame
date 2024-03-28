@@ -1,6 +1,8 @@
 #ifndef MUSIC_CONTROLLER_INCLUDED_H
 #define MUSIC_CONTROLLER_INCLUDED_H
 
+#include "rad_player.h"
+
 enum SongIndex
 {
     MUSIC_INDEX_NO_CHANGE = 0,   // do not change the current song, if any
@@ -11,9 +13,6 @@ enum SongIndex
     MUSIC_INDEX_DIGITAL_MUSIC = 5,
     MUSIC_INDEX_BOSS2_MUSIC = 6,
 };
-
-// forward declaration
-class RadPlayer;
 
 class MusicController
 {
@@ -27,7 +26,7 @@ public:
 
 private:
     SongIndex m_currentSong;
-    RadPlayer* m_player;
+    RadPlayer m_player;
 };
 
 #endif

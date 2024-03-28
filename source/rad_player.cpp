@@ -25,7 +25,7 @@ static void* allignedMalloc(int size, void** origBlock = NULL)
 	return (void*)ptr;
 }
 
-void* radLoadModule(const char* filename)
+void RadPlayer::radLoadModuleInternal(const char* filename)
 {
 	FILE* fp = fopen(filename, "rb");
     if (!fp)
@@ -37,26 +37,30 @@ void* radLoadModule(const char* filename)
     int len = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
 
-	void* origBlock;
-	uint8_t* songData = (uint8_t*)allignedMalloc(len, &origBlock);
-	uint8_t* buf = songData;
-
+	if (m_songDataSize < len)
+	{
+		if (m_songDataOrigBlock)
+		{
+			free(m_songDataOrigBlock);
+		}
+		m_songData = (uint8_t*)allignedMalloc(len, &m_songDataOrigBlock);
+		m_songDataSize = len;
+	}
+	
+	uint8_t* buf = (uint8_t*)m_songData;
 	while (!feof(fp))
 	{
 		int bytes = fread(buf, 1, 1000, fp);
 		buf += bytes;
 	}
 
-	if (!radInitPlayer(songData))
+	if (!radInitPlayer((uint8_t*)m_songData))
 	{
 		printStr("Could not initialize RAD player. Maybe file is corrupted.\r\n");
-		free(origBlock);
 		fclose(fp);
-		return NULL;
 	}
 
 	fclose(fp);
-	return origBlock;
 }
 
 static void timerFunction()
@@ -64,19 +68,32 @@ static void timerFunction()
 	radPlayMusic();
 }
 
-RadPlayer::RadPlayer(const char* modulePath)
+RadPlayer::RadPlayer() :
+	m_songDataOrigBlock(0),
+	m_songData(0),
+	m_songDataSize(0)
 {
-	m_songData = radLoadModule(modulePath);
+}
+
+void RadPlayer::playModule(const char* filename)
+{
+	stopModule();
+	radLoadModuleInternal(filename);
 	if (!m_songData)
 	{
-		throw Exception("Error loading rad module: ", modulePath);
+		throw Exception("Error loading rad module: ", filename);
 	}
 	m_timer = new DosTimer(timerFunction, 50);
 }
 
+void RadPlayer::stopModule()
+{
+	m_timer.reset();
+	radEndPlayer();
+}
+
 RadPlayer::~RadPlayer()
 {
-	delete m_timer;
-	radEndPlayer();
-	free(m_songData);
+	stopModule();
+	free(m_songDataOrigBlock);
 }
