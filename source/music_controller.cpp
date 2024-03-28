@@ -37,20 +37,25 @@ void MusicController::playMusic(SongIndex index)
 
     switch (index)
     {
-    case MUSIC_INDEX_NO_MUSIC:
-        // do nothing, so that the music stops
-        break;
-    case MUSIC_INDEX_TITLE_MUSIC:
+    case MUSIC_INDEX_MAIN_MUSIC:
         modulePath = "FUREXUS2.RAD";
         break;
-    case MUSIC_INDEX_LEVEL_MUSIC:
-        modulePath = "FUREXUS2.RAD";
+    case MUSIC_INDEX_DARK_MUSIC:
+        modulePath = "FIRST.RAD";
         break;
     case MUSIC_INDEX_BOSS_MUSIC:
         modulePath = "THIRD.RAD";
         break;
-    case MUSIC_INDEX_ENDING_MUSIC:
+    case MUSIC_INDEX_DIGITAL_MUSIC:
         modulePath = "CELT.RAD";
+        break;
+    case MUSIC_INDEX_BOSS2_MUSIC:
+        modulePath = "SECOND.RAD";
+        break;
+    case MUSIC_INDEX_NO_MUSIC:
+        // fallthrough
+    default:
+        // do nothing, so that the music stops
         break;
     }
 
