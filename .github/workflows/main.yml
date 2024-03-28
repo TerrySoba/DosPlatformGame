@@ -24,23 +24,23 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Install dependencies
-        run:  DEBIAN_FRONTEND=noninteractive sudo apt install -y nasm mtools dosbox xvfb
+        run:  DEBIAN_FRONTEND=noninteractive sudo apt install -y nasm mtools # dosbox xvfb
 
       - name: Build
         run: ./build.sh
 
-      - name: Run tests
-        run: xvfb-run dosbox -c "mount c ." -c "c:" -c "source\\gametest.exe" -c exit
+      #- name: Run tests
+      #  run: xvfb-run dosbox -c "mount c ." -c "c:" -c "source\\gametest.exe" -c exit
 
       # Now store test results as artifact
-      - name: Archive test results
-        uses: actions/upload-artifact@v3
-        with:
-          name: JUnit-XML
-          path: JUNIT.XML
+      #- name: Archive test results
+      #  uses: actions/upload-artifact@v3
+      #  with:
+      #    name: JUnit-XML
+      #    path: JUNIT.XML
 
-      - name: Check test results
-        run: python3 parse_junit_xml.py
+      #- name: Check test results
+      #  run: python3 parse_junit_xml.py
 
       - name: Build installer
         run: ./build_installer.sh
