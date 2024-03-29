@@ -6,7 +6,16 @@
 #include <string.h>
 #include <malloc.h>
 
-TgaImage::TgaImage(const char* filename)
+TgaImage::TgaImage(const char* filename) : 
+    m_data(NULL),
+    m_dataSize(0),
+    m_width(0),
+    m_height(0)
+{
+    loadImage(filename);
+}
+
+void TgaImage::loadImage(const char* filename)
 {
     FILE* fp = fopen(filename, "rb");
     if (!fp)
@@ -69,9 +78,14 @@ TgaImage::TgaImage(const char* filename)
     }
 
     size_t size = width * height;
-    m_data = (int8_t*)malloc(size);
 
-
+    if (size > m_dataSize)
+    {
+        free(m_data);
+        m_data = (int8_t*)malloc(size);
+        m_dataSize = size;
+    }
+    
     if (imageType == 1) // uncompressed indexed
     {
         fread(m_data, 1, size, fp);
@@ -115,7 +129,7 @@ TgaImage::TgaImage(const char* filename)
         }
 
         free(lineStore);
-    }	
+    }
 
     fclose(fp);
 }

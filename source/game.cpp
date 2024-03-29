@@ -102,8 +102,16 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     if (m_loadedTilesetName != level.getTileset())
     {
         m_loadedTilesetName = level.getTileset();
-        m_tiles.reset();
-        m_tiles = new TgaImage(m_loadedTilesetName.c_str());
+
+        TgaImage* tgaImg = dynamic_cast<TgaImage*>(m_tiles.get());
+        if (!tgaImg)
+        {
+            m_tiles = new TgaImage(m_loadedTilesetName.c_str());
+        }
+        else
+        {
+            tgaImg->loadImage(m_loadedTilesetName.c_str());
+        }
     }
 
     level.setTilesImage(m_tiles);
