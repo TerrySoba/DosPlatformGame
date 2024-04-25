@@ -14,6 +14,8 @@
 #define SCREEN_H 200L
 
 
+#define CGA_COLOR_COUNT 16
+
 static const uint8_t rgbiColors[] = { // colors are in BGR order
     0x00,0x00,0x00,
     0xAA,0x00,0x00,
@@ -322,4 +324,138 @@ void VgaGfx::drawDeathEffect()
             line[x] = (line[x] - 16);
         }
     }
+}
+
+void setFancyWipePalette()
+{
+    outp(0x3C8, 0);
+    for (int i = 0; i < 16; ++i)
+    {
+        // Colors need to be set in RGB order. As rgbiColors is in BGR order, we need to reverse the order.
+        // As VGA only supports 6 bits per color, we need to shift the values by 2 bits.
+        outp(0x3C9, rgbiColors[i * 3 + 2] >> 2);
+        outp(0x3C9, rgbiColors[i * 3 + 1] >> 2);
+        outp(0x3C9, rgbiColors[i * 3 + 0] >> 2);
+    }
+    for (int i = 0; i < 16; ++i)
+    {
+        // Colors need to be set in RGB order. As rgbiColors is in BGR order, we need to reverse the order.
+        // As VGA only supports 6 bits per color, we need to shift the values by 2 bits.
+        outp(0x3C9, rgbiColors[i * 3 + 2] >> 2);
+        outp(0x3C9, rgbiColors[i * 3 + 1] >> 2);
+        outp(0x3C9, rgbiColors[i * 3 + 0] >> 2);
+    }
+
+}
+
+
+void createFadeToBlackPalette(uint8_t* palette, uint8_t frameCount, uint8_t frame)
+{
+    for (int i = 0; i < CGA_COLOR_COUNT; ++i)
+    {
+        palette[i * 3 + 0] = ((uint16_t)rgbiColors[i * 3 + 0] * frame) / frameCount;
+        palette[i * 3 + 1] = ((uint16_t)rgbiColors[i * 3 + 1] * frame) / frameCount;
+        palette[i * 3 + 2] = ((uint16_t)rgbiColors[i * 3 + 2] * frame) / frameCount;
+    }
+}
+
+
+void fadeSecondPalette(uint8_t frameCount, bool fadeToBlack)
+{
+    uint8_t palette[CGA_COLOR_COUNT * 3];
+    for (int frame = 0; frame < frameCount; ++frame)
+    {
+        createFadeToBlackPalette(palette, frameCount, fadeToBlack?(frameCount - frame - 1):frame);
+        waitForVsync();
+        outp(0x3C8, 16);
+        for (int i = 0; i < CGA_COLOR_COUNT; ++i)
+        {
+            outp(0x3C9, palette[i * 3 + 2] >> 2);
+            outp(0x3C9, palette[i * 3 + 1] >> 2);
+            outp(0x3C9, palette[i * 3 + 0] >> 2);
+        }
+    }
+}
+
+
+#define randomShuffleLength 200
+static const uint8_t randomShuffle[] = {
+    176, 85, 48, 86, 60, 199, 173, 179, 198, 16, 20, 132, 172, 81, 46, 62, 144, 186, 158, 182, 196, 162, 59, 28, 38, 76, 188, 98, 89, 168, 37, 180, 44, 113, 165, 122, 51, 90, 112, 11, 35, 138, 142, 139, 55, 178, 75, 134, 50, 49, 161, 88, 80, 159, 7, 2, 130, 195, 116, 47, 42, 8, 187, 152, 74, 23, 57, 171, 97, 36, 127, 18, 40, 33, 177, 6, 39, 53, 117, 67, 64, 58, 83, 114, 92, 154, 184, 69, 19, 137, 94, 174, 65, 31, 10, 157, 9, 96, 129, 43, 30, 41, 119, 123, 25, 15, 66, 167, 12, 13, 136, 118, 22, 155, 111, 106, 121, 104, 147, 140, 105, 133, 32, 45, 100, 156, 135, 110, 52, 29, 61, 3, 181, 150, 79, 84, 143, 72, 73, 185, 166, 108, 56, 93, 26, 82, 14, 160, 189, 153, 0, 109, 24, 70, 63, 68, 5, 1, 101, 54, 192, 4, 170, 107, 169, 131, 141, 27, 193, 197, 151, 91, 124, 102, 21, 191, 77, 190, 87, 183, 34, 103, 71, 95, 126, 145, 149, 148, 99, 194, 78, 128, 164, 146, 120, 163, 17, 175, 125, 115
+};
+
+
+void calcNthRectangle(Rectangle& rect, uint16_t n)
+{
+    rect.width = 16;
+    rect.height = 20;
+
+    rect.x = (n * rect.width) % SCREEN_W;
+    rect.y = (n * rect.width) / SCREEN_W * rect.height;
+}
+
+#define SCREEN_FADE_FRAMES 10
+#define TILES_AT_A_TIME 4
+
+void VgaGfx::fancyWipe(const ImageBase& image)
+{
+    setFancyWipePalette();
+
+    char* imgData = image.data();
+    char* screenData = getScreenLine(0);
+
+    uint16_t rectangleNumber = 0;
+
+    for (uint16_t loop = 0; loop < (200 / TILES_AT_A_TIME); ++loop)
+    {
+
+        // first fade out the old image
+        for (uint16_t n = 0; n < TILES_AT_A_TIME; ++n)
+        {
+            Rectangle rect;
+            calcNthRectangle(rect, randomShuffle[rectangleNumber + n]);
+            for (uint16_t y = 0; y < rect.height; ++y)
+            {
+                uint16_t offset = (rect.y + y) * SCREEN_W + rect.x;
+                for (uint16_t x = 0; x < rect.width; ++x)
+                {
+                    screenData[offset + x] += 16;
+                }
+            }
+        }
+        fadeSecondPalette(SCREEN_FADE_FRAMES, true);
+
+        // now copy the new image
+        for (uint16_t n = 0; n < TILES_AT_A_TIME; ++n)
+        {
+            Rectangle rect;
+            calcNthRectangle(rect, randomShuffle[rectangleNumber + n]);
+            for (uint16_t y = 0; y < rect.height; ++y)
+            {
+                uint16_t offset = (rect.y + y) * SCREEN_W + rect.x;
+                for (uint16_t x = 0; x < rect.width; ++x)
+                {
+                    screenData[offset + x] = imgData[offset + x] + 16;
+                }
+            }
+        }
+        fadeSecondPalette(SCREEN_FADE_FRAMES, false);
+
+        // now fix colors of copied data
+        for (uint16_t n = 0; n < TILES_AT_A_TIME; ++n)
+        {
+            Rectangle rect;
+            calcNthRectangle(rect, randomShuffle[rectangleNumber + n]);
+            for (uint16_t y = 0; y < rect.height; ++y)
+            {
+                uint16_t offset = (rect.y + y) * SCREEN_W + rect.x;
+                for (uint16_t x = 0; x < rect.width; ++x)
+                {
+                    screenData[offset + x] -= 16;
+                }
+            }
+        }
+
+        rectangleNumber += TILES_AT_A_TIME;
+    }
+
 }

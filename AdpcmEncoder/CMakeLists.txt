@@ -16,6 +16,7 @@ add_library(adpcm_encoder_lib STATIC
     src/file_tools.cpp
     src/voc_format.cpp
     src/read_wave.cpp
+    src/write_wave.cpp
     src/resampling.cpp
     src/encode_creative_adpcm.cpp
     src/encode_creative_adpcm_simd.cpp
@@ -40,6 +41,14 @@ add_executable(adpcm_encoder_test
 target_link_libraries(adpcm_encoder_test
     adpcm_encoder_lib
     Catch2::Catch2WithMain)
+
+add_executable(adpcm_decoder
+    src/decode_main.cpp
+)
+
+target_link_libraries(adpcm_decoder
+    adpcm_encoder_lib
+)
 
 target_include_directories(adpcm_encoder_test PRIVATE 
     ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty

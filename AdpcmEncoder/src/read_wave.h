@@ -14,10 +14,10 @@ enum WaveAudioFormat : uint16_t
 
 struct WaveFileHeader
 {
-    std::array<char, 4> chunkId;
+    std::array<uint8_t, 4> chunkId;
     uint32_t chunkSize;
-    std::array<char, 4> format;
-    std::array<char, 4> subChunk1Id;
+    std::array<uint8_t, 4> format;
+    std::array<uint8_t, 4> subChunk1Id;
     uint32_t subChunk1Size;
     uint16_t audioFormat;
     uint16_t numChannels;
@@ -25,7 +25,7 @@ struct WaveFileHeader
     uint32_t byteRate;
     uint16_t bytesPerSample;
     uint16_t bitsPerSample;
-};
+} __attribute__((packed));
 
 struct WaveFile
 {

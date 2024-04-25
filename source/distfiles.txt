@@ -9,6 +9,7 @@ title.exe
 ../music/THIRD.RAD
 ../music/furexus.rad
 ../music/FUREXUS2.RAD
+../images/sungrav.tga
 ../images/tiles.tga
 ../images/tiles2.tga
 ../images/tiles3.tga
@@ -168,3 +169,4 @@ title.exe
 ../sound/guffin.voc
 ../sound/jetpack.voc
 ../sound/switch2.voc
+../source/dissolve.exe

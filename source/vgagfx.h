@@ -34,6 +34,8 @@ public:
 
 	void drawDeathEffect();
 
+	void fancyWipe(const ImageBase& image);
+
 private:
 	char* m_backgroundImage;
 	char* m_screenBuffer;

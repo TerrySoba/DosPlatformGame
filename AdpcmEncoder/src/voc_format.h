@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <cstdint>
+#include <string>
 
 enum VocSampleFormat
 {
@@ -15,5 +16,20 @@ enum VocSampleFormat
 std::vector<uint8_t> createVocFile(uint32_t frequency,
                                    const std::vector<uint8_t> &sampleData,
                                    VocSampleFormat sampleFormat);
+
+
+struct VocFile
+{
+    uint8_t timeConstant;
+    uint8_t majorVersion;
+    uint8_t minorVersion;
+    VocSampleFormat sampleFormat;
+    std::vector<uint8_t> sampleData;
+};
+
+uint32_t timeConstantToFrequency(uint8_t timeConstant);
+VocFile readVocFile(const std::string &filename);
+VocFile decodeToPcm(const VocFile& compressed);
+
 
 #endif

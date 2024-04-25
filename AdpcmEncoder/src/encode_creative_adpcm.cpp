@@ -116,9 +116,6 @@ std::vector<uint8_t> createAdpcm4BitFromRawOpenMP(const std::vector<uint8_t>& ra
         }
     }
 
-    // auto decoded = decodeAdpcm4(raw[0], nibbles);
-    // dumpRaw(decoded);
-
     std::vector<uint8_t> binaryResult(nibbles.size() / 2);
 
     // merge nibbles into bytes

@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <algorithm>
 
+namespace {
+
 /**
  * This class is a decoder for 4bit Creative ADPCM
  * 
@@ -50,8 +52,50 @@ private:
 };
 
 
-std::vector<uint8_t> decodeAdpcm4(uint8_t initial, std::vector<uint8_t> nibbles)
+
+std::vector<uint8_t> breakBytes(const std::vector<uint8_t>& data, uint8_t bitsPerNibble)
 {
+    uint32_t nibbleCount = 0;
+    if (bitsPerNibble == 4)
+    {
+        nibbleCount = data.size() * 2;
+    }
+    else if (bitsPerNibble == 2)
+    {
+        nibbleCount = data.size() * 4;
+    }
+    else
+    {
+        throw std::runtime_error("Unsupported bits per nibble");
+    }
+    
+    std::vector<uint8_t> nibbles;
+    nibbles.reserve(nibbleCount);
+
+    for (uint8_t byte : data)
+    {
+        if (bitsPerNibble == 4)
+        {
+            nibbles.push_back(byte >> 4);
+            nibbles.push_back(byte & 0x0F);
+        }
+        else if (bitsPerNibble == 2)
+        {
+            nibbles.push_back((byte >> 6) & 0x03);
+            nibbles.push_back((byte >> 4) & 0x03);
+            nibbles.push_back((byte >> 2) & 0x03);
+            nibbles.push_back((byte >> 0) & 0x03);
+        }
+    }
+
+    return nibbles;
+}
+
+
+std::vector<uint8_t> decodeAdpcm4(uint8_t initial, std::vector<uint8_t> data)
+{
+    auto nibbles = breakBytes(data, 4);
+
     CreativeAdpcmDecoder4Bit decoder(initial);
 
     std::vector<uint8_t> decoded(nibbles.size() + 1);
@@ -113,5 +157,24 @@ private:
     uint8_t m_previous;
 };
 
+
+std::vector<uint8_t> decodeAdpcm2(uint8_t initial, std::vector<uint8_t> data)
+{
+    auto nibbles = breakBytes(data, 2);
+
+    CreativeAdpcmDecoder2Bit decoder(initial);
+
+    std::vector<uint8_t> decoded(nibbles.size() + 1);
+    decoded[0] = initial;
+
+    for (size_t i = 0; i < nibbles.size(); ++i)
+    {
+        decoded[i + 1] = decoder.decode2bits(nibbles[i]);
+    }
+
+    return decoded;
+}
+
+}
 
 #endif

@@ -19,6 +19,10 @@ objects_test = \
 rad_tester = \
 	keyboard.o rad_tester.o timer.o rad_player.o rad_player_asm.o exception.o tiny_string.o
 	
+
+dissolve_objs = \
+	vgagfx.o image.o tiny_string.o exception.o dissolve.o timer.o keyboard.o tga_image.o
+
 title_screen = \
     title.o vgagfx.o image.o tga_image.o exception.o rectangle.o keyboard.o \
 	tiny_string.o animation.o compiled_sprite.o tiny_string.o
@@ -35,11 +39,12 @@ test     = gametest.exe
 title    = title.exe
 radtest = radtest.exe
 launcher = game.exe
+dissolve = dissolve.exe
 
 
 BUILD_DATE=`date -R`
 
-all: $(dest) $(test) $(title) $(launcher) $(radtest)
+all: $(dest) $(test) $(title) $(launcher) $(radtest) $(dissolve)
 
 $(dest): _$(dest)
 	upx -9 --ultra-brute -f --8086 -o$(dest) _$(dest)
@@ -47,6 +52,7 @@ $(dest): _$(dest)
 $(title): _$(title)
 	upx -9 --ultra-brute -f --8086 -o$(title) _$(title)
 
+$(dissolve): 
 
 $(radtest): 
 
@@ -119,3 +125,9 @@ $(radtest): $(rad_tester)
 	echo "SYSTEM DOS" >> radtest.lnk
 	echo "FILE   {$(rad_tester)}" >> radtest.lnk
 	wlink  @radtest.lnk
+
+$(dissolve): $(dissolve_objs)
+	echo "NAME   $@" > dissolve.lnk
+	echo "SYSTEM DOS" >> dissolve.lnk
+	echo "FILE   {$(dissolve_objs)}" >> dissolve.lnk
+	wlink  @dissolve.lnk
