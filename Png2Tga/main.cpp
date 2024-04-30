@@ -4,7 +4,8 @@
 
 #include <iostream>
 #include <exception>
-#include <stdio.h>
+#include <cstdio>
+#include <cstdint>
 #include <cmath>
 #include <vector>
 #include <forward_list>

@@ -13,7 +13,7 @@ nosound=false
 
 [render]
 aspect=true
-glshader = crt/geom.tweaked
+glshader = crt/vga-4k
 
 [cpu]
 core=auto
