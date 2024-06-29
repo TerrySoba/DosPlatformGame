@@ -7,7 +7,7 @@ set -e
 mkdir -p Png2Tga/build
 pushd Png2Tga/build
 cmake .. -DCMAKE_BUILD_TYPE=Release
-make
+make -j
 popd
 png2tga=Png2Tga/build/Png2Tga
 
@@ -16,7 +16,7 @@ png2tga=Png2Tga/build/Png2Tga
 mkdir -p TextCompiler/build
 pushd TextCompiler/build
 cmake ..
-make
+make -j
 popd
 textcompiler=TextCompiler/build/TextCompiler
 
@@ -24,11 +24,18 @@ textcompiler=TextCompiler/build/TextCompiler
 $textcompiler text/strings.json text/strings
 
 
-# build VocTool
+## build VocTool
+
+# if no CMakelists.txt is present, we need output an error message
+if [ ! -f VocTool/CMakeLists.txt ]; then
+    echo "Submodule VocTool is not present. You should run \"git submodule update --init --recursive\" to fetch it."
+    exit 1
+fi
+
 mkdir -p VocTool/build
 pushd VocTool/build
 cmake .. -DCMAKE_BUILD_TYPE=Release
-make
+make -j
 popd
 wav2adpcm=VocTool/build/voctool
 
