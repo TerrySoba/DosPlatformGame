@@ -24,13 +24,13 @@ textcompiler=TextCompiler/build/TextCompiler
 $textcompiler text/strings.json text/strings
 
 
-# build AdpcmEncoder
-mkdir -p AdpcmEncoder/build
-pushd AdpcmEncoder/build
+# build VocTool
+mkdir -p VocTool/build
+pushd VocTool/build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make
 popd
-wav2adpcm=AdpcmEncoder/build/adpcm_encoder
+wav2adpcm=VocTool/build/voctool
 
 $wav2adpcm -i sound/death.wav -f 8000 -c ADPCM4 -o sound/death.voc -n 0.7
 $wav2adpcm -i sound/jump.wav -f 8000 -c ADPCM4 -o sound/jump.voc -n 0.2

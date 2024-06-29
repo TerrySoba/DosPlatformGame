@@ -1,0 +1,3 @@
+[submodule "VocTool"]
+	path = VocTool
+	url = https://github.com/TerrySoba/VocTool.git
