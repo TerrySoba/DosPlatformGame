@@ -136,6 +136,15 @@ if __name__ == "__main__":
         except:
             pass
 
+    # read cutscene property
+    cutscene = None
+    cutsceneElement = root.find("./properties/property[@name='cutscene']")
+    if cutsceneElement is not None:
+        try:
+            cutscene = int(cutsceneElement.attrib["value"])
+        except:
+            pass
+
     # read filename of tileset
     tilesetFilename = None
     tilesetFilenameElement = root.find("./tileset[@firstgid='1']")
@@ -161,6 +170,7 @@ if __name__ == "__main__":
         "boss2"       : 10,
         "tileset"     : 11,
         "eye"         : 12,
+        "cutscene"    : 13,
     }
 
     with open(base_name + ".map", "wb") as map_file:
@@ -171,6 +181,9 @@ if __name__ == "__main__":
             layerCount = layerCount + 1
 
         if music is not None:
+            layerCount = layerCount + 1
+
+        if cutscene is not None:
             layerCount = layerCount + 1
 
         if tilesetFilename is not None:
@@ -216,6 +229,13 @@ if __name__ == "__main__":
             layerData = bytearray()
             layerData += struct.pack("<H", music)
             map_file.write(struct.pack("B", layerTypeMap["music"]))
+            map_file.write(struct.pack("<H", len(layerData)))           # size of layer
+            map_file.write(layerData)
+
+        if cutscene is not None:
+            layerData = bytearray()
+            layerData += struct.pack("<H", cutscene)
+            map_file.write(struct.pack("B", layerTypeMap["cutscene"]))
             map_file.write(struct.pack("<H", len(layerData)))           # size of layer
             map_file.write(layerData)
 

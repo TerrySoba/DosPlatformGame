@@ -11,7 +11,7 @@ image:https://github.com/TerrySoba/DosPlatformGame/actions/workflows/main.yml/ba
 The build system is designed for Linux.
 You might get it to build using Windows or MacOS, but YMMV.
 
-. Install git. On Ubuntu 22.04 the following command line may be used:
+. Install git. On Ubuntu 24.04 the following command line may be used:
 +
 [source,bash]
 ----

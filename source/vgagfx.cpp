@@ -458,4 +458,6 @@ void VgaGfx::fancyWipe(const ImageBase& image)
         rectangleNumber += TILES_AT_A_TIME;
     }
 
+    // restore normal palette
+    setDefaultVgaPalette();
 }

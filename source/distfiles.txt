@@ -13,6 +13,7 @@ title.exe
 ../images/tiles.tga
 ../images/tiles2.tga
 ../images/tiles3.tga
+../images/tiles4.tga
 ../images/guy.tga
 ../images/guy.ani
 ../images/enemy.tga
@@ -142,12 +143,14 @@ title.exe
 ../levels/1003.map
 ../levels/1003b1.map
 ../levels/1004.map
+../levels/1006.map
 ../levels/1004b1.map
 ../levels/1103.map
 ../levels/1103b1.map
 ../levels/1101.map
 ../levels/1101b1.map
 ../levels/1104.map
+../levels/1106.map
 ../levels/1104b1.map
 ../levels/1204.map
 ../levels/1201.map

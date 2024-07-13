@@ -62,6 +62,7 @@ public:
     tnd::vector<Button> getButtons() { return m_buttons; }
     tnd::vector<Rectangle> getEyes() { return m_eyes; }
     uint16_t getMusicIndex() { return m_musicIndex; }
+    uint16_t getCutscene() { return m_cutscene; }
 
 
     Point getSpawnPoint() { return m_spawn; };
@@ -110,6 +111,7 @@ private:
     Point m_sun;
     uint16_t m_guffinGate;
     uint16_t m_musicIndex;
+    uint16_t m_cutscene;
 };
 
 #endif

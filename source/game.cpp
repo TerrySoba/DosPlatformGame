@@ -98,8 +98,18 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
 
     Level level(levelMap.c_str(), 16, 16, -8, -8);
 
+    if (level.getCutscene() == 1)
+    {
+        TgaImage* tgaImg = dynamic_cast<TgaImage*>(m_tiles.get());
+        if (tgaImg)
+        {
+            tgaImg->loadImage("sungrav.tga");
+            m_vgaGfx->fancyWipe(*m_tiles.get());
+        }
+    }
+
     // load new tileset if it has changed
-    if (m_loadedTilesetName != level.getTileset())
+    if (m_loadedTilesetName != level.getTileset() || level.getCutscene() != 0)
     {
         m_loadedTilesetName = level.getTileset();
 
@@ -119,7 +129,6 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     m_music->playMusic((SongIndex)level.getMusicIndex());
 
     m_animations.actorAnimation->useTag("LoopR");
-
 
     int16_t actorPosX, actorPosY;
     if (actorPosition == ActorPosition::KeepActorPos ||

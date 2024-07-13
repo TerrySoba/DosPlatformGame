@@ -27,6 +27,7 @@ enum LayerType
     LAYER_BOSS2    = 10,
     LAYER_TILESET  = 11,
     LAYER_EYE      = 12,
+    LAYER_CUTSCENE = 13,
 };
 
 
@@ -62,7 +63,8 @@ Level::Level(const char* mapFilename,
     m_offsetY(offsetY),
     m_guffinGate(10),
     m_sun(-1, -1),
-    m_musicIndex(0)
+    m_musicIndex(0),
+    m_cutscene(0)
 {
     FILE* fp = fopen(mapFilename, "rb");
     if (!fp)
@@ -166,6 +168,11 @@ Level::Level(const char* mapFilename,
             case LAYER_MUSIC:
             {
                 fread(&m_musicIndex, sizeof(m_musicIndex), 1, fp);
+                break;
+            }
+            case LAYER_CUTSCENE:
+            {
+                fread(&m_cutscene, sizeof(m_cutscene), 1, fp);
                 break;
             }
             case LAYER_TILESET:
