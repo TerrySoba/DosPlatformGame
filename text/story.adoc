@@ -1,0 +1,58 @@
+= Story of the game
+
+== Introduction
+
+== Items
+
+This table of items shows the sigificant items in the game.
+|===
+|Item |Description | Origin
+
+| Apples
+| Just Apples 😉
+| Found throughout the game. The are mainly a guffin, the player can collect them to increase the score and to open certain doors.
+
+| Jetpack
+| A device that allows the player to hover for a short while
+| Devloped by the engineers in the pyramid
+
+| Sungravity object
+| A mysterious object that can manipulate gravity. While active the player is pulled towards the sun if it is surrounded by stars.
+| Found in the pyramid. Brough by the aliens from outer space.
+
+| Idol of light 
+| This item is sought by the aliens. They need it as a replacement core for their reactor that has become unstable. Unfortunately removing the idol from its place will cause the village to be destroyed.
+| Found in the village of the devout people.
+
+| Reactor core
+| When broken, it releases "evil" energy that changes the world and generates a parallel reality. Using switches the reality can be restored.
+| Found in the pyramid. 
+
+
+|===
+
+== Interrested parties
+
+This table shows the parties that are involved in the game.
+
+|===
+|Party |Description | Origin
+
+| Aliens
+| Extraterrestrial beings from outer space
+| They are the ones who brought the Sungravity object and are seeking the Idol of light.
+
+| Devout villagers
+| The inhabitants of the village who worship the Idol of light
+| They are protective of the Idol and will do anything to prevent it from being taken.
+
+| Normal people
+| Regular individuals who are caught in the middle of the conflict
+| They are unaware of the true nature of the items and are just trying to survive.
+
+| Scientists
+| Researchers who are trying to understand the Sungravity object
+| They are the ones who developed the Jetpack.
+
+
+|===

@@ -393,7 +393,7 @@ void calcNthRectangle(Rectangle& rect, uint16_t n)
     rect.y = (n * rect.width) / SCREEN_W * rect.height;
 }
 
-#define SCREEN_FADE_FRAMES 10
+#define SCREEN_FADE_FRAMES 5
 #define TILES_AT_A_TIME 4
 
 void VgaGfx::fancyWipe(const ImageBase& image)
