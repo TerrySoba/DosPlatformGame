@@ -68,17 +68,34 @@ extern void enableInterrupts();
 
 bool reset_dsp(uint16_t port)
 {
-    outp( port + SB_RESET, 1 );
-    delay(10);
-    outp( port + SB_RESET, 0 );
-    delay(10);
-    if( ((inp(port + SB_READ_DATA_STATUS) & 0x80) == 0x80) &&
-         (inp(port + SB_READ_DATA) == 0x0AA )) 
-    {
-        return true;
+    // Reset port
+    outp(port + SB_RESET, 1);
+
+    delay(1);
+
+    // Write a 0 to the DSP reset port
+    outp(port + SB_RESET, 0);
+
+    // Maximum of 64000 tries
+    for (uint16_t i = 0; i < 64000; i++) {
+        // Read-Buffer Status port
+        uint8_t status = inp(port + SB_READ_DATA_STATUS);
+
+        // Data available?
+        if (!(status & 0x80)) {
+            // Read Data port
+            uint8_t data = inp(port + SB_READ_DATA);
+
+            // Receive success code, 0xAA?
+            if (data == 0xAA) {
+                return true; // SUCCESS!
+            }
+        }
     }
-    return false;
+
+    return false; // Failed to reset DSP: Sound Blaster not detected!
 }
+
 
 uint16_t readInteger(const char* number, int& len, int base)
 {
