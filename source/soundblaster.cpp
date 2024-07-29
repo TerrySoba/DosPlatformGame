@@ -65,13 +65,16 @@ extern void enableInterrupts();
     parm [];
 
 
-
 bool reset_dsp(uint16_t port)
 {
     // Reset port
     outp(port + SB_RESET, 1);
 
-    delay(1);
+    // wait using inp() calls
+    for (int i = 0; i < 4; ++i)
+    {
+        inp(port + SB_RESET);
+    }
 
     // Write a 0 to the DSP reset port
     outp(port + SB_RESET, 0);
@@ -82,7 +85,7 @@ bool reset_dsp(uint16_t port)
         uint8_t status = inp(port + SB_READ_DATA_STATUS);
 
         // Data available?
-        if (!(status & 0x80)) {
+        if ((status & 0x80) == 0x80) {
             // Read Data port
             uint8_t data = inp(port + SB_READ_DATA);
 
