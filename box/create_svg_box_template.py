@@ -3,9 +3,6 @@ import cairosvg
 
 paper_sizes = { "A0": (841, 1189), "A1": (594, 841), "A2": (420, 594), "A3": (297, 420), "A4": (210, 297), "A5": (148, 210), "A6": (105, 148) }
 
-A3_WIDTH_MM = 297
-A3_HEIGHT_MM = 420
-
 def get_center_polygon_offset(polygon, width_mm, height_mm):
     # find bounding box
     min_x = min([point[0] for point in polygon])
@@ -33,50 +30,101 @@ def apply_offset(polygon, offset):
 def mm_to_px(polygon, dpi=96):
     return [(point[0] * dpi / 25.4, point[1] * dpi / 25.4) for point in polygon]
 
+
+def get_cardboard_template_polygons(width_mm, height_mm, depth_mm, overlap_mm):
+    cardboard_polygons = []
+
+    # Define the polygons for the cardboard box template
+    # front_rectangle = ((0, 0), (width_mm, 0), (width_mm, height_mm), (0, height_mm), (0, 0))
+    top_flap = ((0,0), (0, -depth_mm), (width_mm, -depth_mm), (width_mm, 0))
+    right_flap = ((width_mm, height_mm), (width_mm + depth_mm, height_mm), (width_mm + depth_mm, 0), (width_mm, 0))  
+    bottom_flap = ((0, height_mm), (0, height_mm + depth_mm), (width_mm, height_mm + depth_mm), (width_mm, height_mm))  
+    left_flap = ((0, 0), (-depth_mm, 0), (-depth_mm, height_mm), (0, height_mm))    
+    #cardboard_polygons.append(front_rectangle)
+    cardboard_polygons.append(top_flap)
+    cardboard_polygons.append(right_flap)
+    cardboard_polygons.append(bottom_flap)
+    cardboard_polygons.append(left_flap)
+
+    return cardboard_polygons
+
+def get_color_overlay_polygons(width_mm, height_mm, depth_mm, overlap_mm):
+    polygons = []
+    left_sleeve = ((0, 0),(-overlap_mm-depth_mm, -overlap_mm-depth_mm),(-overlap_mm-depth_mm, height_mm+overlap_mm+depth_mm),(0, height_mm))
+    right_sleeve = ((width_mm, 0),(width_mm+overlap_mm+depth_mm, -overlap_mm-depth_mm),(width_mm+overlap_mm+depth_mm, height_mm+overlap_mm+depth_mm),(width_mm, height_mm)) 
+    top_sleeve = ((0,0), (0, -overlap_mm-depth_mm), (width_mm, -overlap_mm-depth_mm), (width_mm, 0))
+    bottom_sleeve = ((0, height_mm), (0, height_mm + depth_mm + overlap_mm), (width_mm, height_mm + depth_mm + overlap_mm), (width_mm, height_mm))  
+
+
+    polygons.append(left_sleeve)
+    polygons.append(right_sleeve)
+    polygons.append(top_sleeve)
+    polygons.append(bottom_sleeve)
+
+    return polygons
+
 def create_svg_box_template(
         filename,
         text,
         width_mm,
         height_mm,
         depth_mm,
-        paper_size='A3'):
+        overlap_mm,
+        paper_size='A3',
+        stroke_width='0.5mm'):
     # Create an SVG drawing object
     paper_width = paper_sizes[paper_size][0]
     paper_height = paper_sizes[paper_size][1]
     dwg = svgwrite.Drawing(filename, profile='tiny', size=(f'{paper_width}mm', f'{paper_height}mm'))
 
-    # Add a rectangle without fill
-    # dwg.add(dwg.rect(insert=(10, 10), size=(f'{width_mm}mm', f'{height_mm}mm'), fill='none', stroke='black', stroke_width="1mm"))
+    cardboard_polygons = get_cardboard_template_polygons(width_mm, height_mm, depth_mm, overlap_mm)
+    color_overlay_polygons = get_color_overlay_polygons(width_mm, height_mm, depth_mm, overlap_mm)
 
-    front_rectangle = ((0, 0), (width_mm, 0), (width_mm, height_mm), (0, height_mm), (0, 0))
-    top_flap = ((0,0), (0, -depth_mm), (width_mm, -depth_mm), (width_mm, 0))
-    right_flap = ((width_mm, height_mm), (width_mm + depth_mm, height_mm), (width_mm + depth_mm, 0), (width_mm, 0))  
-    bottom_flap = ((0, height_mm), (0, height_mm + depth_mm), (width_mm, height_mm + depth_mm), (width_mm, height_mm))  
-    left_flap = ((0, 0), (-depth_mm, 0), (-depth_mm, height_mm), (0, height_mm))    
-
-    # join the two polygons
-    all_polygons = front_rectangle + top_flap + right_flap + bottom_flap + left_flap
+    # join the polygons
+    all_polygons = []
+    all_polygons += [point for polygon in cardboard_polygons for point in polygon]
+    all_polygons += [point for polygon in color_overlay_polygons for point in polygon]
 
     offset = get_center_polygon_offset(all_polygons, paper_width, paper_height)
 
-    centered_front_rectangle = apply_offset(front_rectangle, offset)
-    centered_top_flap = apply_offset(top_flap, offset)
-    centered_right_flap = apply_offset(right_flap, offset)
-    centered_bottom_flap = apply_offset(bottom_flap, offset)
-    centered_left_flap = apply_offset(left_flap, offset)
+    # Create a group element for cardboard template
+    cardboard = dwg.g(id='cardboard_template')
 
-    dwg.add(dwg.polyline(points=mm_to_px(centered_front_rectangle), fill='none', stroke='black', stroke_width="0.5mm", stroke_dasharray="5,5"))
-    dwg.add(dwg.polyline(points=mm_to_px(centered_top_flap), fill='none', stroke='black', stroke_width="0.5mm"))
-    dwg.add(dwg.polyline(points=mm_to_px(centered_right_flap), fill='none', stroke='black', stroke_width="0.5mm"))
-    dwg.add(dwg.polyline(points=mm_to_px(centered_bottom_flap), fill='none', stroke='black', stroke_width="0.5mm"))
-    dwg.add(dwg.polyline(points=mm_to_px(centered_left_flap), fill='none', stroke='black', stroke_width="0.5mm"))
+    # Add a stroked rectangle to the cardboard template
+    cardboard.add(dwg.rect(insert=(f'{offset[0]}mm', f'{offset[1]}mm'), size=(f'{width_mm}mm', f'{height_mm}mm'), fill='none', stroke='black', stroke_width=stroke_width, stroke_dasharray="5,5"))
 
-    # Add centered text "Outer Box"
-    dwg.add(dwg.text(text, insert=(f'{paper_width / 2}mm', f'{paper_height / 2}mm'), text_anchor="middle", font_size="10mm", fill='black'))
+    for polygon in cardboard_polygons:
+        centered_polygon = apply_offset(polygon, offset)
+        cardboard.add(dwg.polyline(points=mm_to_px(centered_polygon), fill='none', stroke='black', stroke_width=stroke_width))
 
-    # Add text containing dimensions of the box
+    # Add the group to the drawing
+    dwg.add(cardboard)
+
+    # Create a group element for the color printed cover
+    cover = dwg.g(id='color_overlay')
+
+    for polygon in color_overlay_polygons:
+        centered_polygon = apply_offset(polygon, offset)
+        cover.add(dwg.polyline(points=mm_to_px(centered_polygon), fill='none', stroke='black', stroke_width=stroke_width))   
+   
+    # Add the group to the drawing
+    dwg.add(cover)
+
+    text_layer = dwg.g(id='text')
+
+    # Add centered text "Outer Box" to the top of the page
+    text_layer.add(dwg.text(text, insert=(f'{paper_width / 2}mm', '10mm'), text_anchor="middle", font_size="10mm", fill='black'))
+
+    # Add text containing dimensions of the box to the top of the page
     dimensions_text = f'{width_mm}mm x {height_mm}mm x {depth_mm}mm'
-    dwg.add(dwg.text(dimensions_text, insert=(f'{paper_width / 2}mm', f'{paper_height / 2 + 15}mm'), text_anchor="middle", font_size="7mm", fill='black'))
+    text_layer.add(dwg.text(dimensions_text, insert=(f'{paper_width / 2}mm', '18mm'), text_anchor="middle", font_size="7mm", fill='black'))
+
+
+    # Add text to bottom of page telling the user to use svg layers to hide/show the cardboard and color overlay
+    text_layer.add(dwg.text('Use SVG layers to hide/show cardboard and color overlay', insert=(f'{paper_width / 2}mm', f'{paper_height - 5}mm'), text_anchor="middle", font_size="5mm", fill='black'))
+
+    # Add the group to the drawing
+    dwg.add(text_layer)
 
     # Save the SVG file
     dwg.save()
@@ -86,6 +134,8 @@ box_height_mm = 230
 box_depth_mm = 40
 box_cardboard_thickness_mm = 1
 box_gap_size_mm = 1
+box_overlap_size_mm = 15
+stroke_width = '0.25mm'
 paper_size = 'A3'
 
 
@@ -95,7 +145,9 @@ create_svg_box_template(
     box_width_mm,
     box_height_mm,
     box_depth_mm,
-    paper_size)
+    box_overlap_size_mm,
+    paper_size,
+    stroke_width)
 
 create_svg_box_template(
     'generated/box_cardboard_template_inner.svg',
@@ -103,8 +155,10 @@ create_svg_box_template(
     box_width_mm - box_cardboard_thickness_mm * 2 - box_gap_size_mm * 2,
     box_height_mm - box_cardboard_thickness_mm * 2 - box_gap_size_mm * 2,
     box_depth_mm - box_cardboard_thickness_mm,
-    paper_size)
+    box_overlap_size_mm,
+    paper_size,
+    stroke_width)
 
 # Convert the generated SVG files to PDF
-cairosvg.svg2pdf(url='generated/box_cardboard_template_outer.svg', write_to='generated/box_cardboard_template_outer.pdf')
-cairosvg.svg2pdf(url='generated/box_cardboard_template_inner.svg', write_to='generated/box_cardboard_template_inner.pdf')
+#cairosvg.svg2pdf(url='generated/box_cardboard_template_outer.svg', write_to='generated/box_cardboard_template_outer.pdf')
+#cairosvg.svg2pdf(url='generated/box_cardboard_template_inner.svg', write_to='generated/box_cardboard_template_inner.pdf')
