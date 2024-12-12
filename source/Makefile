@@ -47,10 +47,10 @@ BUILD_DATE=`date -R`
 all: $(dest) $(test) $(title) $(launcher) $(radtest) $(dissolve)
 
 $(dest): _$(dest)
-	upx -9 --ultra-brute -f --8086 -o$(dest) _$(dest)
+	./upx_compress.sh -9 --ultra-brute -f --8086 -o$(dest) _$(dest)
 
 $(title): _$(title)
-	upx -9 --ultra-brute -f --8086 -o$(title) _$(title)
+	./upx_compress.sh -9 --ultra-brute -f --8086 -o$(title) _$(title)
 
 $(dissolve): 
 
