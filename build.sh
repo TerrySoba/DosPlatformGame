@@ -3,7 +3,7 @@
 set -e
 
 
-if [ "$HOSTTYPE" = "aarch64" ]
+if [ $(uname -m) = "aarch64" ]
 then
     # Install amd64 emulation using qemu, so that the build may also run on
     # non x86 platforms like arm.
