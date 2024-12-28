@@ -23,6 +23,13 @@
 #include "eye.h"
 
 
+enum StoryStatus
+{
+    STORY_STATUS_INITIAL = 0,
+    STORY_STATUS_INTRO_SHOWN = 1,
+};
+
+
 namespace ActorPosition
 {
 	enum ActorPositionT
@@ -136,6 +143,7 @@ private:
 	uint32_t m_frameCounter;
 	KeyMapper m_keyMapper;
 	TinyString m_loadedTilesetName;
+	StoryStatus m_storyStatus;
 };
 
 

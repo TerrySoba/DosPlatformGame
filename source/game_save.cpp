@@ -24,6 +24,7 @@ void saveGameState(const GameState& gameState, const char* filename)
     fwrite(&gameState.deathCounter, sizeof(gameState.deathCounter), 1, fp);
     fwrite(&gameState.frameCounter, sizeof(gameState.frameCounter), 1, fp);
     fwrite(&gameState.musicIndex, sizeof(gameState.musicIndex), 1, fp);
+    fwrite(&gameState.storyStatus, sizeof(gameState.storyStatus), 1, fp);
 
     size_t collectedCount = gameState.colectedGuffins.size();
     fwrite(&collectedCount, sizeof(collectedCount), 1, fp);
@@ -68,6 +69,7 @@ bool loadGameState(GameState& gameState, const char* filename)
     fread(&gameState.deathCounter, sizeof(gameState.deathCounter), 1, fp);
     fread(&gameState.frameCounter, sizeof(gameState.frameCounter), 1, fp);
     fread(&gameState.musicIndex, sizeof(gameState.musicIndex), 1, fp);
+    fread(&gameState.storyStatus, sizeof(gameState.storyStatus), 1, fp);
 
     size_t collectedCount;
     fread(&collectedCount, sizeof(collectedCount), 1, fp);

@@ -12,7 +12,8 @@ struct GameState
         button1(0),
         deathCounter(0),
         frameCounter(0),
-        musicIndex(MUSIC_INDEX_NO_CHANGE)
+        musicIndex(MUSIC_INDEX_NO_CHANGE),
+        storyStatus(STORY_STATUS_INITIAL)
     {
         level.x = 0;
         level.y = 0;
@@ -27,6 +28,7 @@ struct GameState
     uint32_t deathCounter;
     uint32_t frameCounter; // frame of gameplay (usually 70 frames per second)
     SongIndex musicIndex;  // music that was playing when saved
+    StoryStatus storyStatus;
 };
 
 void saveGameState(const GameState& gameState, const char* filename);

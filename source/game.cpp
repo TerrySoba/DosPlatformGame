@@ -21,7 +21,7 @@ Game::Game(tnd::shared_ptr<VgaGfx> vgaGfx, tnd::shared_ptr<SoundController> soun
     m_vgaGfx(vgaGfx), m_animations(animations), m_frames(0), m_levelBasename(levelBasename),
     m_animationController(animations.actorAnimation, sound), m_lastButtonPressed(false), m_sound(sound), m_music(music),
     m_jetpackCollected(0), m_sunItemCollected(0), m_button1(0), m_levelMustReload(false), m_deathCounter(0),
-    m_frameCounter(0)
+    m_frameCounter(0), m_storyStatus(STORY_STATUS_INITIAL)
 {
     m_nextLevel.x = -1;
     m_nextLevel.y = -1;
@@ -39,6 +39,7 @@ Game::Game(tnd::shared_ptr<VgaGfx> vgaGfx, tnd::shared_ptr<SoundController> soun
         m_button1 = state.button1;
         m_deathCounter = state.deathCounter;
         m_frameCounter = state.frameCounter;
+        m_storyStatus = state.storyStatus;
 
         m_music->playMusic((SongIndex)state.musicIndex);
 
@@ -98,7 +99,7 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
 
     Level level(levelMap.c_str(), 16, 16, -8, -8);
 
-    if (level.getCutscene() == 1)
+    if (level.getCutscene() == 1 && m_storyStatus == STORY_STATUS_INITIAL)
     {
         TgaImage* tgaImg = dynamic_cast<TgaImage*>(m_tiles.get());
         if (tgaImg)
@@ -106,6 +107,7 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
             tgaImg->loadImage("sungrav.tga");
             m_vgaGfx->fancyWipe(*m_tiles.get());
         }
+        m_storyStatus = STORY_STATUS_INTRO_SHOWN;
     }
 
     // load new tileset if it has changed
@@ -388,6 +390,7 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     state.deathCounter = m_deathCounter;
     state.frameCounter = m_frameCounter;
     state.musicIndex = m_music->getCurrentSong();
+    state.storyStatus = m_storyStatus;
     
     if (actorPosition != ActorPosition::LoadSaveGame)
     {

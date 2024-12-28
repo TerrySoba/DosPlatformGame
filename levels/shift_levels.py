@@ -31,14 +31,14 @@ parser.add_argument('-i', '--input-rect', required=True, help='Input rectangle i
 parser.add_argument('-o', '--output-pos', required=True, help='Output position in the format "1010"', type=parse_output_pos)
 args = parser.parse_args()
 
-print("Input rectangle: {}".format(args.input_rect))
-print("Output position: {}".format(args.output_pos))
-
 x1, y1, x2, y2 = args.input_rect
 outx, outy = args.output_pos
 
 files_in_directory = os.listdir(".")  # Get all files in the current directory
 
+
+# According to the input rectangle and the output position, we can determine the direction of the shift
+# so that the renaming of the files can be done without the need for a temporary copy of the files
 direction = 1
 if outy > y1:
     direction = -1
@@ -49,9 +49,6 @@ else: # outy == y1
         direction = -1
     else:
         direction = 1
-
-print("Direction: {}".format(direction))
-
 
 def directable_range(start, end, direction):
     if direction == 1:
@@ -70,21 +67,3 @@ for x in directable_range(x1, x2, direction):
                 new_filename = new_filename_base + ext
                 print("rename:{} to:{}".format(filename, new_filename))
                 os.rename(filename, new_filename)
-
-# exit()
-
-# files = []
-
-# for filename in os.listdir("."):
-#     m = re.fullmatch("([0-9A-F]{2})([0-9A-F]{2})(b1)*\.tmx", filename)
-#     if m:
-#         x = int(m.group(1),16)
-#         y = int(m.group(2),16)
-#         files.append([x,y,filename])
-
-# desc = sorted(files, key=lambda item: -item[0])
-# asc = sorted(files, key=lambda item: item[0])
-
-# for file in desc:
-#     # os.rename(file[2], "{:02}{:02}.tmx".format(file[0] + 1, file[1]))
-#     print("rename:{} to:{:02}{:02}.tmx".format(file[2], file[0] + 1, file[1]))
