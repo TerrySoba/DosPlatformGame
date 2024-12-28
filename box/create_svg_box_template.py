@@ -1,5 +1,6 @@
 import svgwrite
 import cairosvg
+import argparse
 
 paper_sizes = { "A0": (841, 1189), "A1": (594, 841), "A2": (420, 594), "A3": (297, 420), "A4": (210, 297), "A5": (148, 210), "A6": (105, 148) }
 
@@ -139,26 +140,81 @@ stroke_width = '0.25mm'
 paper_size = 'A3'
 
 
-create_svg_box_template(
-    'generated/box_cardboard_template_outer.svg',
-    'Outer Box Cardboard',
-    box_width_mm,
-    box_height_mm,
-    box_depth_mm,
-    box_overlap_size_mm,
-    paper_size,
-    stroke_width)
+# create_svg_box_template(
+#     'generated/box_cardboard_template_outer.svg',
+#     'Outer Box Cardboard',
+#     box_width_mm,
+#     box_height_mm,
+#     box_depth_mm,
+#     box_overlap_size_mm,
+#     paper_size,
+#     stroke_width)
 
-create_svg_box_template(
-    'generated/box_cardboard_template_inner.svg',
-    'Inner Box Cardboard',
-    box_width_mm - box_cardboard_thickness_mm * 2 - box_gap_size_mm * 2,
-    box_height_mm - box_cardboard_thickness_mm * 2 - box_gap_size_mm * 2,
-    box_depth_mm - box_cardboard_thickness_mm,
-    box_overlap_size_mm,
-    paper_size,
-    stroke_width)
+# create_svg_box_template(
+#     'generated/box_cardboard_template_inner.svg',
+#     'Inner Box Cardboard',
+#     box_width_mm - box_cardboard_thickness_mm * 2 - box_gap_size_mm * 2,
+#     box_height_mm - box_cardboard_thickness_mm * 2 - box_gap_size_mm * 2,
+#     box_depth_mm - box_cardboard_thickness_mm,
+#     box_overlap_size_mm,
+#     paper_size,
+#     stroke_width)
 
 # Convert the generated SVG files to PDF
 #cairosvg.svg2pdf(url='generated/box_cardboard_template_outer.svg', write_to='generated/box_cardboard_template_outer.pdf')
 #cairosvg.svg2pdf(url='generated/box_cardboard_template_inner.svg', write_to='generated/box_cardboard_template_inner.pdf')
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Generate SVG box templates.')
+    parser.add_argument('--width', type=int, default=box_width_mm, help='Width of the box in mm')
+    parser.add_argument('--height', type=int, default=box_height_mm, help='Height of the box in mm')
+    parser.add_argument('--depth', type=int, default=box_depth_mm, help='Depth of the box in mm')
+    parser.add_argument('--overlap', type=int, default=box_overlap_size_mm, help='Overlap size in mm')
+    parser.add_argument('--thickness', type=int, default=box_cardboard_thickness_mm, help='Cardboard thickness in mm')
+    parser.add_argument('--gap', type=int, default=box_gap_size_mm, help='Gap size in mm')
+    parser.add_argument('--stroke_width', type=str, default=stroke_width, help='Stroke width for the SVG lines')
+    parser.add_argument('--paper_size', type=str, default=paper_size, help='Paper size for the SVG')
+    args = parser.parse_args()
+
+
+    print(f'Creating template with parameters:')
+    print(f'  Width: {args.width}mm')
+    print(f'  Height: {args.height}mm')
+    print(f'  Depth: {args.depth}mm')
+    print(f'  Overlap: {args.overlap}mm')
+    print(f'  Thickness: {args.thickness}mm')
+    print(f'  Gap: {args.gap}mm')
+    print(f'  Stroke Width: {args.stroke_width}')
+    print(f'  Paper Size: {args.paper_size}')
+
+
+    create_svg_box_template(
+        'generated/box_cardboard_template_outer.svg',
+        'Outer Box Cardboard',
+        args.width,
+        args.height,
+        args.depth,
+        args.overlap,
+        args.paper_size,
+        args.stroke_width)
+
+    create_svg_box_template(
+        'generated/box_cardboard_template_inner.svg',
+        'Inner Box Cardboard',
+        args.width - args.thickness * 2 - args.gap * 2,
+        args.height - args.thickness * 2 - args.gap * 2,
+        args.depth - args.thickness,
+        args.overlap,
+        args.paper_size,
+        args.stroke_width)
+
+
+    
+
+    # Convert the generated SVG files to PDF
+    # cairosvg.svg2pdf(url='generated/box_cardboard_template_outer.svg', write_to='generated/box_cardboard_template_outer.pdf')
+    # cairosvg.svg2pdf(url='generated/box_cardboard_template_inner.svg', write_to='generated/box_cardboard_template_inner.pdf')
+
+if __name__ == '__main__':
+    main()
