@@ -48,7 +48,15 @@ fi
 # Iterate over all parameters and copy the files to the image
 for file in "$@"; do
     echo "Adding file: $file"
-    MTOOLS_NO_VFAT=1 mcopy -Q -i $temp_partition_file $file ::$file
+    # if file is a directory, copy all files in the directory
+    if [ -d "$file" ]; then
+        MTOOLS_NO_VFAT=1 mcopy -Q -i $temp_partition_file $file ::$file
+    fi
+
+    # if file is a regular file, copy the file
+    if [ -f "$file" ]; then
+        MTOOLS_NO_VFAT=1 mcopy -Q -i $temp_partition_file $file ::
+    fi
 done
 
 # Reintegrate the partition into the disk image

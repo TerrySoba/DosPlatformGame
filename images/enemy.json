@@ -51,7 +51,7 @@
  "meta": {
   "app": "https://github.com/LibreSprite/LibreSprite/",
   "version": "1.0-dev",
-  "image": "/home/yoshi252/program_files/TandyGame/images/enemy.png",
+  "image": "/home/yoshi252/program_sources/DosPlatformGame/images/enemy.png",
   "format": "I8",
   "size": { "w": 48, "h": 15 },
   "scale": "1",
