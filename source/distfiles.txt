@@ -120,10 +120,12 @@
 ../levels/0D04.map
 ../levels/0D04b1.map
 ../levels/0D07.map
+../levels/0D07b1.map
 ../levels/0E01.map
 ../levels/0E03.map
 ../levels/0E04.map
 ../levels/0E07.map
+../levels/0E07b1.map
 ../levels/0F01.map
 ../levels/0F03.map
 ../levels/0F03b1.map
@@ -157,6 +159,7 @@
 ../music/FIRST.RAD
 ../music/FUREXUS2.RAD
 ../music/SECOND.RAD
+../music/STRANGE.RAD
 ../music/THIRD.RAD
 ../music/furexus.rad
 ../readme/readme.txt

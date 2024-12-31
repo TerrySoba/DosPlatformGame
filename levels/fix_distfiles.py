@@ -11,7 +11,7 @@ def read_distfile(file_path):
 def read_map_files(directory):
     files = []
     for filename in os.listdir(directory):
-        m = re.fullmatch("(.*)\.tmx", filename)
+        m = re.fullmatch('(.*)\\.tmx', filename)
         if m:
             files.append(m.group(1) + ".map")
 
