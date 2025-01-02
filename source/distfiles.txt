@@ -158,6 +158,7 @@
 ../music/CELT.RAD
 ../music/FIRST.RAD
 ../music/FUREXUS2.RAD
+../music/INTRO.RAD
 ../music/SECOND.RAD
 ../music/STRANGE.RAD
 ../music/THIRD.RAD

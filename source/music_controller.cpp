@@ -43,6 +43,9 @@ void MusicController::playMusic(SongIndex index)
     case MUSIC_INDEX_STRANGE_MUSIC:
         modulePath = "STRANGE.RAD";
         break;
+    case MUSIC_INDEX_INTRO_MUSIC:
+        modulePath = "INTRO.RAD";
+        break;
     case MUSIC_INDEX_NO_MUSIC:
         // fallthrough
     default:

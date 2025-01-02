@@ -101,6 +101,8 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
 
     if (level.getCutscene() == 1 && m_storyStatus == STORY_STATUS_INITIAL)
     {
+        // play intro music
+        m_music->playMusic(MUSIC_INDEX_INTRO_MUSIC);
         TgaImage* tgaImg = dynamic_cast<TgaImage*>(m_tiles.get());
         if (tgaImg)
         {
@@ -108,6 +110,12 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
             m_vgaGfx->fancyWipe(*m_tiles.get());
         }
         m_storyStatus = STORY_STATUS_INTRO_SHOWN;
+
+        // wait for jump button to be pressed
+        while (!(m_keyMapper.getKeys() & KEY_JUMP))
+        {
+            m_vgaGfx->vsync();
+        }
     }
 
     // load new tileset if it has changed
