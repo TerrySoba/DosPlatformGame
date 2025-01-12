@@ -83,7 +83,7 @@ void FontWriter::calculateBoundingBox()
         if (character)
         {
             m_textWidth += character->horizontalAdvance;
+            m_textHeight = character->verticalAdvance;
         }
-        m_textHeight = character->verticalAdvance;
     }
 }

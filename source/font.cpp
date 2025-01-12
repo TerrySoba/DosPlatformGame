@@ -27,54 +27,63 @@ Font::Font(const char* fontFilename) :
         throw Exception("Cannot open font file: ", fontFilename);
     }
 
-    uint8_t signature[6];
-    safeRead(signature, 1, 6, fp);
-    if (memcmp(signature, "stf252", 6) != 0)
+    try
     {
-        throw Exception("Invalid font file header");
-    }
-
-    uint16_t formatVersion;
-    safeRead(&formatVersion, 1, sizeof(uint16_t), fp);
-    if (formatVersion != 1)
-    {
-        throw Exception("Invalid font file version");
-    }
-
-    safeRead(&m_imageWidth, 1, sizeof(uint16_t), fp);
-    safeRead(&m_imageHeight, 1, sizeof(uint16_t), fp);
-
-    uint32_t imageDataSize = m_imageWidth * m_imageHeight;
-
-    m_imageData = new uint8_t[imageDataSize];
-    safeRead(m_imageData, 1, imageDataSize, fp);
-
-    safeRead(&m_numCharacters, 1, sizeof(uint16_t), fp);
-    m_characters = new Character[m_numCharacters];
-
-    for (int i = 0; i < m_numCharacters; ++i)
-    {
-        Character& character = m_characters[i];
-        safeRead(&character.character, 1, sizeof(uint8_t), fp);
-        safeRead(&character.bearingLeft, 1, sizeof(int16_t), fp);
-        safeRead(&character.bearingTop, 1, sizeof(int16_t), fp);
-        safeRead(&character.horizontalAdvance, 1, sizeof(int16_t), fp);
-        safeRead(&character.verticalAdvance, 1, sizeof(int16_t), fp);
-        safeRead(&character.leftOffset, 1, sizeof(int16_t), fp);
-        safeRead(&character.topOffset, 1, sizeof(int16_t), fp);
-        safeRead(&character.width, 1, sizeof(int16_t), fp);
-        safeRead(&character.height, 1, sizeof(int16_t), fp);
-    }
-
-    // loop over pixels and change everything != 0 to 0x0f
-    for (int i = 0; i < imageDataSize; ++i)
-    {
-        if (m_imageData[i] != 0)
+        uint8_t signature[6];
+        safeRead(signature, 1, 6, fp);
+        if (memcmp(signature, "stf252", 6) != 0)
         {
-            m_imageData[i] =0x0f;
+            throw Exception("Invalid font file header");
         }
-    }
 
+        uint16_t formatVersion;
+        safeRead(&formatVersion, 1, sizeof(uint16_t), fp);
+        if (formatVersion != 1)
+        {
+            throw Exception("Invalid font file version");
+        }
+
+        safeRead(&m_imageWidth, 1, sizeof(uint16_t), fp);
+        safeRead(&m_imageHeight, 1, sizeof(uint16_t), fp);
+
+        uint32_t imageDataSize = m_imageWidth * m_imageHeight;
+
+        m_imageData = new uint8_t[imageDataSize];
+        safeRead(m_imageData, 1, imageDataSize, fp);
+
+        safeRead(&m_numCharacters, 1, sizeof(uint16_t), fp);
+        m_characters = new Character[m_numCharacters];
+
+        for (int i = 0; i < m_numCharacters; ++i)
+        {
+            Character& character = m_characters[i];
+            safeRead(&character.character, 1, sizeof(uint8_t), fp);
+            safeRead(&character.bearingLeft, 1, sizeof(int16_t), fp);
+            safeRead(&character.bearingTop, 1, sizeof(int16_t), fp);
+            safeRead(&character.horizontalAdvance, 1, sizeof(int16_t), fp);
+            safeRead(&character.verticalAdvance, 1, sizeof(int16_t), fp);
+            safeRead(&character.leftOffset, 1, sizeof(int16_t), fp);
+            safeRead(&character.topOffset, 1, sizeof(int16_t), fp);
+            safeRead(&character.width, 1, sizeof(int16_t), fp);
+            safeRead(&character.height, 1, sizeof(int16_t), fp);
+        }
+
+        // loop over pixels and change everything != 0 to 0x0f
+        for (int i = 0; i < imageDataSize; ++i)
+        {
+            if (m_imageData[i] != 0)
+            {
+                m_imageData[i] =0x0f;
+            }
+        }
+
+        fclose(fp);
+    }
+    catch(...)
+    {
+        fclose(fp);
+        throw;
+    }
 }
 
 Font::~Font()
