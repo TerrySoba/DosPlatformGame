@@ -163,6 +163,18 @@
         "en": "Good job finding this hidden village. Take these apples as a reward.",
         "de": "Sehr schön, dass du dieses versteckte Dorf gefunden hast. Nimm diese Äpfel als Belohnung."
     },
+    "42": {
+        "en": "Start Game",
+        "de": "Spiel Starten"
+    },
+    "43": {
+        "en": "Delete Save",
+        "de": "Save Löschen"
+    },
+    "44": {
+        "en": "Exit to DOS",
+        "de": "Zurück zu DOS"
+    },
     "65": {
         "en": "Welcome to the game!",
         "de": "Willkommen im Spiel!"

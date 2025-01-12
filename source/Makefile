@@ -6,7 +6,7 @@ objects_game_lib = \
 	joystick.o enemy.o game_save.o text.o i18n.o fire_ball.o \
 	soundblaster.o sound_controller.o seeker_enemy.o \
 	boss1.o time_tools.o music_controller.o key_mapper.o \
-	tentacle.o tentacle_arm.o eye.o boss2.o
+	tentacle.o tentacle_arm.o eye.o boss2.o font.o font_writer.o
 objects_game = \
 	main.o $(objects_game_lib)
 objects_test = \
@@ -14,7 +14,7 @@ objects_test = \
 	physics_test.o tga_image_test.o shared_ptr_test.o \
 	blit_test.o vector_test.o rectangle_test.o tiny_string_test.o animation_test.o \
 	text_layout_test.o i18n_test.o level_test.o raii_ptr_test.o ptr_vector_test.o test_class.o \
-	time_tools_test.o compiled_sprite_test.o
+	time_tools_test.o compiled_sprite_test.o font_test.o font_writer_test.o 
 
 rad_tester = \
 	keyboard.o rad_tester.o timer.o rad_player.o rad_player_asm.o exception.o tiny_string.o
@@ -25,8 +25,14 @@ dissolve_objs = \
 
 title_screen = \
     title.o vgagfx.o image.o tga_image.o exception.o rectangle.o keyboard.o \
-	tiny_string.o animation.o compiled_sprite.o tiny_string.o
+	tiny_string.o animation.o compiled_sprite.o tiny_string.o font.o font_writer.o \
+	blit.o i18n.o
 
+
+credits_objs = \
+	credits.o vgagfx.o image.o tga_image.o exception.o rectangle.o keyboard.o \
+	tiny_string.o animation.o compiled_sprite.o tiny_string.o font.o font_writer.o \
+	blit.o i18n.o
 
 # coptions = -0 -ml -xs -onatx -oh -oi+ -ei -zp8 -fpi87
 # coptions = -0 -ml -xs -onatx -oh -ol -ol+ -ox
@@ -37,14 +43,15 @@ coptions_launcher = -ms -oneatx -xd -zp4 -0 -ad -os
 dest     = game2.exe
 test     = gametest.exe
 title    = title.exe
-radtest = radtest.exe
+radtest  = radtest.exe
 launcher = game.exe
 dissolve = dissolve.exe
+credits  = credits.exe
 
 
 BUILD_DATE=`date -R`
 
-all: $(dest) $(test) $(title) $(launcher) $(radtest) $(dissolve)
+all: $(dest) $(test) $(title) $(launcher) $(radtest) $(dissolve) $(credits)
 
 $(dest): _$(dest)
 	./upx_compress.sh -9 --ultra-brute -f --8086 -o$(dest) _$(dest)
@@ -131,3 +138,9 @@ $(dissolve): $(dissolve_objs)
 	echo "SYSTEM DOS" >> dissolve.lnk
 	echo "FILE   {$(dissolve_objs)}" >> dissolve.lnk
 	wlink  @dissolve.lnk
+
+$(credits): $(credits_objs)
+	echo "NAME   $@" > credits.lnk
+	echo "SYSTEM DOS" >> credits.lnk
+	echo "FILE   {$(credits_objs)}" >> credits.lnk
+	wlink  @credits.lnk

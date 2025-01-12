@@ -49,6 +49,11 @@ void TinyString::operator=(const TinyString& other)
     m_data = strdup(other.m_data);
 }
 
+char TinyString::operator[](int index) const
+{
+    return m_data[index];
+}
+
 int TinyString::size() const
 {
     return strlen(m_data);

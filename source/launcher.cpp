@@ -37,48 +37,13 @@ void printStr(const char* str)
 // }
 
 
-bool stringsEqual(const char* str1, const char* str2)
-{
-    if (str1 == 0 || str2 == 0)
-    {
-        return false;
-    }
-
-    while (*str1 && *str2)
-    {
-        if (*str1 != *str2){
-            return false;
-        } 
-    
-        ++str1; ++str2;
-    }
-    return (*str1 == 0 && *str2 == 0);
-}
-
 int main(int argc, char* argv[])
 {
-    bool german = false;
-    
-    for (int i = 1; i < argc; ++i)
-    {
-        if (stringsEqual(argv[i], "--german"))
-        {
-            german = true;
-        }
-    }
-
-    int ret = spawnl(P_WAIT, "title.exe", 0);
+    int ret = spawnv(P_WAIT, "title.exe", argv);
     if (ret == 1)
     {
         printStr("Launching game, please wait...\r\n");
-        if (german)
-        {
-            system("game2.exe --german");
-        }
-        else
-        {
-            system("game2.exe");
-        }
+        int ret = spawnv(P_WAIT, "game2.exe", argv);
     }
     return 0;
 }

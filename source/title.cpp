@@ -1,8 +1,11 @@
 #include "vgagfx.h"
 #include "tga_image.h"
 #include "keyboard.h"
-
+#include "font.h"
+#include "font_writer.h"
 #include "animation.h"
+#include "exception.h"
+#include "i18n.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,13 +32,13 @@ enum ExitCode
 };
 
 
-#define START_GAME_POS_X 182
+#define START_GAME_POS_X 162
 #define START_GAME_POS_Y 88
 
-#define DELETE_SAVE_POS_X 182
+#define DELETE_SAVE_POS_X 162
 #define DELETE_SAVE_POS_Y 108
 
-#define EXIT_POS_X 182
+#define EXIT_POS_X 162
 #define EXIT_POS_Y 128
 
 
@@ -47,14 +50,39 @@ void deleteSavegame()
 
 int main(int argc, char* argv[])
 {
+    bool useGerman = false;
+
+    for (int i = 1; i < argc; ++i)
+    {
+        if (strcmp("--german", argv[i]) == 0)	
+        {
+            useGerman = true;
+        }
+    }
+
     try
     {
+        if (useGerman) I18N::loadTranslations("strings.de");
+        else I18N::loadTranslations("strings.en");
+
         Keyboard keys;
         VgaGfx vga;
         Animation arrow("arrow2.ani", "arrow2.tga", true);
         TgaImage image("pyramid.tga");
+        Font font("lib18.stf");
+        FontWriter fontWriter(&font);
+        
 
         vga.setBackground(image);
+
+        fontWriter.setText(I18N::getString(42).c_str());
+        vga.drawBackground(fontWriter, START_GAME_POS_X + 17, START_GAME_POS_Y - 2);
+
+        fontWriter.setText(I18N::getString(43).c_str());
+        vga.drawBackground(fontWriter, DELETE_SAVE_POS_X + 17, DELETE_SAVE_POS_Y - 2);
+
+        fontWriter.setText(I18N::getString(44).c_str());
+        vga.drawBackground(fontWriter, EXIT_POS_X + 17, EXIT_POS_Y - 2);
 
         TitleState state = STATE_INIT;
 
@@ -159,6 +187,11 @@ int main(int argc, char* argv[])
         }
 
         return exitCode;
+    }
+    catch(const Exception& e)
+    {
+        fprintf(stderr, "Exception: %s\n", e.what());
+        return 1;
     }
     catch(const std::exception& e)
     {

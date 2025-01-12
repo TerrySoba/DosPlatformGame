@@ -18,6 +18,7 @@ public:
     bool operator!=(const TinyString& other) { return !(*this == other); };
     void operator=(const char* str);
     void operator=(const TinyString& other);
+    char operator[](int index) const;
 
     int size() const;
     const char* c_str() const;

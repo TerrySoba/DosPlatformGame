@@ -94,3 +94,27 @@ TEST(IntToStringTest)
     ASSERT_TRUE(intToString(1234, 10, buffer, 10, 5, ' ') == 5);
     ASSERT_TRUE(intToString(1234, 10, buffer, 10, 5, '0') == 5);
 }
+
+
+TEST(TinyStringOperatorTest)
+{
+    TinyString str1 = "Hello";
+    TinyString str2 = "World";
+    ASSERT_TRUE(str1 == "Hello");
+    ASSERT_TRUE(str2 == "World");
+    ASSERT_TRUE(str1 != "World");
+    ASSERT_TRUE(str2 != "Hello");
+    ASSERT_TRUE(str1 == str1);
+    ASSERT_TRUE(str2 == str2);
+    ASSERT_TRUE(str1 != str2);
+    ASSERT_TRUE(str2 != str1);
+    ASSERT_FALSE(str1 != str1);
+    ASSERT_FALSE(str2 != str2);
+
+    ASSERT_TRUE(str1[0] == 'H');
+    ASSERT_TRUE(str1[1] == 'e');
+    ASSERT_TRUE(str1[2] == 'l');
+    ASSERT_TRUE(str1[3] == 'l');
+    ASSERT_TRUE(str1[4] == 'o');
+    ASSERT_TRUE(str1[5] == 0);
+}
