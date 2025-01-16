@@ -6,6 +6,8 @@
 #include "font_writer.h"
 #include "animation.h"
 #include "tga_image.h"
+#include "vector.h"
+#include "tiny_string.h"
 
 #include <string.h>
 #include <stdio.h>
