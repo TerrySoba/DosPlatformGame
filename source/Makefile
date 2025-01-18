@@ -26,13 +26,13 @@ dissolve_objs = \
 
 title_screen = \
     title.o vgagfx.o image.o tga_image.o exception.o rectangle.o keyboard.o \
-	tiny_string.o animation.o compiled_sprite.o tiny_string.o font.o font_writer.o \
+	tiny_string.o animation.o compiled_sprite.o font.o font_writer.o \
 	blit.o i18n.o
 
 
 credits_objs = \
 	credits.o vgagfx.o image.o tga_image.o exception.o rectangle.o keyboard.o \
-	tiny_string.o animation.o compiled_sprite.o tiny_string.o font.o font_writer.o \
+	tiny_string.o animation.o compiled_sprite.o font.o font_writer.o \
 	blit.o i18n.o credits_loader.o
 
 # coptions = -0 -ml -xs -onatx -oh -oi+ -ei -zp8 -fpi87

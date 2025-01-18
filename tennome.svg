@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="tennome.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="2.2904195"
+     inkscape:cx="271.12938"
+     inkscape:cy="243.8418"
+     inkscape:window-width="1854"
+     inkscape:window-height="1011"
+     inkscape:window-x="66"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g126414" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333333px;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';text-align:justify;fill:#000080;stroke:none;stroke-width:2.66499;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal"
+       x="81.101791"
+       y="51.257206"
+       id="text236"><tspan
+         sodipodi:role="line"
+         id="tspan234"
+         style="stroke-width:2.665;-inkscape-font-specification:'DejaVu Sans Bold';font-family:'DejaVu Sans';font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal;stroke:none;font-size:4.23333333px"
+         x="81.101791"
+         y="51.257206">10</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:4.23333px;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';text-align:justify;fill:#000080;stroke:none;stroke-width:2.66499"
+       x="81.090446"
+       y="56.35881"
+       id="text898"><tspan
+         sodipodi:role="line"
+         id="tspan896"
+         style="stroke-width:2.665"
+         x="81.090446"
+         y="56.35881">NOME</tspan></text>
+    <g
+       id="g125946-5"
+       transform="matrix(0.46411649,0,0,0.46411649,167.665,-4.6528126)">
+      <rect
+         style="fill:#ffff55;fill-opacity:1;stroke:none;stroke-width:1.925;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect122170-2"
+         width="5.3697047"
+         height="1.1066879"
+         x="-167.14992"
+         y="113.37416" />
+      <rect
+         style="fill:#ffff55;fill-opacity:1;stroke:none;stroke-width:1.925;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect125862-5"
+         width="1.073702"
+         height="4.248199"
+         x="-164.97089"
+         y="111.81164" />
+    </g>
+    <g
+       id="g126304"
+       transform="matrix(0.46411649,0,0,0.46411649,188.30686,-4.5324411)">
+      <rect
+         style="fill:#ffff55;fill-opacity:1;stroke:none;stroke-width:1.925;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect126009"
+         width="0.78202212"
+         height="5.0740848"
+         x="-235.71422"
+         y="-67.635803"
+         transform="rotate(-45)" />
+      <rect
+         style="fill:#ffff55;fill-opacity:1;stroke:none;stroke-width:1.925;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect126009-4"
+         width="0.78202212"
+         height="5.0740848"
+         x="-65.489777"
+         y="232.78616"
+         transform="rotate(45)" />
+    </g>
+    <g
+       id="g126414"
+       transform="matrix(0.46411649,0,0,0.46411649,188.56929,-14.626135)">
+      <rect
+         style="fill:#ffff55;fill-opacity:1;stroke:none;stroke-width:1.925;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect126328"
+         width="4.2157812"
+         height="1.0461127"
+         x="-206.70255"
+         y="141.10811" />
+      <rect
+         style="fill:#ffff55;fill-opacity:1;stroke:none;stroke-width:1.925;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect126330"
+         width="0.54440749"
+         height="3.1943765"
+         x="-205.66914"
+         y="140.04054" />
+      <rect
+         style="fill:none;stroke:#2f3cff;stroke-width:2.51015;stroke-dasharray:none;stroke-opacity:1"
+         id="rect3242"
+         width="39.659885"
+         height="27.782156"
+         x="-235.51727"
+         y="129.97078"
+         ry="5.4383202" />
+    </g>
+  </g>
+</svg>

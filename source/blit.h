@@ -5,9 +5,9 @@
 #include "rectangle.h"
 
 void blit(
-    const void* source, uint16_t sourceWidth, uint16_t sourceHeight,
+    const uint8_t* source, uint16_t sourceWidth, uint16_t sourceHeight,
     const Rectangle& sourceRect,
-    void* target, uint16_t targetWidth, uint16_t targetHeight,
+    uint8_t* target, uint16_t targetWidth, uint16_t targetHeight,
     const Point& targetPos);
 
 void blit(
@@ -17,9 +17,9 @@ void blit(
     const Point& targetPos);
 
 void blitTransparent(
-    const void* source, uint16_t sourceWidth, uint16_t sourceHeight,
+    const uint8_t* source, uint16_t sourceWidth, uint16_t sourceHeight,
     const Rectangle& sourceRect,
-    void* target, uint16_t targetWidth, uint16_t targetHeight,
+    uint8_t* target, uint16_t targetWidth, uint16_t targetHeight,
     const Point& targetPos,
     uint8_t transparentColor);
 

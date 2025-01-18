@@ -62,9 +62,9 @@ void FontWriter::draw(char* target, int16_t targetWidth, int16_t targetHeight, i
         if (character)
         {
             blitTransparent(
-                fontData, fontWidth, fontHeight,
+                reinterpret_cast<const uint8_t*>(fontData), fontWidth, fontHeight,
                 Rectangle(character->leftOffset, character->topOffset, character->width, character->height),
-                target, targetWidth, targetHeight,
+                reinterpret_cast<uint8_t*>(target), targetWidth, targetHeight,
                 Point(x + xPos + character->bearingLeft, y - character->bearingTop + m_maxBearingTop),
                 0);
             xPos += character->horizontalAdvance;
