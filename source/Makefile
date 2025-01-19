@@ -33,7 +33,7 @@ title_screen = \
 credits_objs = \
 	credits.o vgagfx.o image.o tga_image.o exception.o rectangle.o keyboard.o \
 	tiny_string.o animation.o compiled_sprite.o font.o font_writer.o \
-	blit.o i18n.o credits_loader.o
+	blit.o i18n.o credits_loader.o credits_scroller.o
 
 # coptions = -0 -ml -xs -onatx -oh -oi+ -ei -zp8 -fpi87
 # coptions = -0 -ml -xs -onatx -oh -ol -ol+ -ox
@@ -103,7 +103,7 @@ version.h: FORCE
 _$(dest): $(objects_game)
 	echo "NAME   $@" > game.lnk
 	echo "SYSTEM DOS" >> game.lnk
-	echo "OPTION STACK=16000" >> game.lnk
+	echo "OPTION STACK=20000" >> game.lnk
 	echo "FILE   {$(objects_game)}" >> game.lnk
 	wlink  @game.lnk
 
