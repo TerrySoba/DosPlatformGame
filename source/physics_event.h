@@ -21,6 +21,7 @@ public:
     virtual void collectSunItem(Point point) = 0;
     virtual void touchButton(uint16_t id, ButtonType type) = 0;
     virtual void onDeath() = 0;
+    virtual void onCreditsWarp() = 0;
 };
 
 #endif

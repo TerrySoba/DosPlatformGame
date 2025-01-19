@@ -11,6 +11,7 @@
 #include "i18n.h"
 #include "tile_definitions.h"
 #include "time_tools.h"
+#include "keyboard.h"
 
 #include <stdio.h>
 
@@ -21,7 +22,7 @@ Game::Game(tnd::shared_ptr<VgaGfx> vgaGfx, tnd::shared_ptr<SoundController> soun
     m_vgaGfx(vgaGfx), m_animations(animations), m_frames(0), m_levelBasename(levelBasename),
     m_animationController(animations.actorAnimation, sound), m_lastButtonPressed(false), m_sound(sound), m_music(music),
     m_jetpackCollected(0), m_sunItemCollected(0), m_button1(0), m_levelMustReload(false), m_deathCounter(0),
-    m_frameCounter(0), m_storyStatus(STORY_STATUS_INITIAL)
+    m_frameCounter(0), m_storyStatus(STORY_STATUS_INITIAL), m_exitCode(GAME_EXIT_QUIT)
 {
     m_nextLevel.x = -1;
     m_nextLevel.y = -1;
@@ -348,6 +349,7 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
 
     m_physics->setWalls(walls);
     m_physics->setDeath(level.getDeath());
+    m_physics->setCreditsWarps(level.getCreditsWarps());
     m_physics->setFallThrough(level.getFallThrough());
     m_physics->setButtons(level.getButtons());
     m_physics->setGuffins(m_guffins);
@@ -530,6 +532,11 @@ void Game::onDeath()
     resetEnemies(m_boss2);
     resetEnemies(m_tentacles);
     resetEnemies(m_tentacleArms);
+}
+
+void Game::onCreditsWarp()
+{
+    m_exitCode = GAME_EXIT_CREDITS;
 }
 
 void Game::drawFrame()
@@ -769,4 +776,14 @@ void Game::levelTransition(LevelTransition transition)
             m_nextLevel.y -= 1;
             break;
     }
+}
+
+GameExitCode Game::runGameLoop()
+{
+    while (!s_keyEsc && m_exitCode != GAME_EXIT_CREDITS)
+    {
+        drawFrame();
+    }
+
+    return m_exitCode;
 }

@@ -60,6 +60,7 @@ public:
 
     void setWalls(const tnd::vector<Rectangle>& walls);
     void setDeath(const tnd::vector<Rectangle>& death);
+    void setCreditsWarps(const tnd::vector<Rectangle>& creditsWarps);
     void setEnemyDeath(const tnd::vector<Rectangle>& death);
     void setFallThrough(const tnd::vector<Rectangle>& fallThrough);
     void setGuffins(const tnd::vector<Rectangle>& guffins);
@@ -84,6 +85,7 @@ public:
 public:
     tnd::vector<Rectangle> m_walls;
     tnd::vector<Rectangle> m_death;
+    tnd::vector<Rectangle> m_creditsWarps;
     tnd::vector<Rectangle> m_enemyDeath;
     tnd::vector<Rectangle> m_fallThrough;
     tnd::vector<Rectangle> m_guffins;

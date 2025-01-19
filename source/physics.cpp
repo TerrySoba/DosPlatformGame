@@ -50,6 +50,11 @@ void Physics::setDeath(const tnd::vector<Rectangle>& death)
     m_death = death;
 }
 
+void Physics::setCreditsWarps(const tnd::vector<Rectangle>& creditsWarps)
+{
+    m_creditsWarps = creditsWarps;
+}
+
 void Physics::setEnemyDeath(const tnd::vector<Rectangle>& death)
 {
     m_enemyDeath = death;
@@ -206,6 +211,18 @@ void Physics::calc()
                         actor.rect.y = wall.y + wall.height;
                         actor.dy = abs(actor.dy);
                         break;
+                }
+            }
+        }
+
+        for (int n = 0; n < m_creditsWarps.size(); ++n)
+        {
+            Rectangle& creditsWarp = m_creditsWarps[n];
+            if (intersectRect(creditsWarp, actor.rect))
+            {
+                if (m_callback.get())
+                {
+                    m_callback->onCreditsWarp();
                 }
             }
         }

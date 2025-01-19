@@ -74,6 +74,12 @@ struct CollectedGuffin
 	Point pos;
 };
 
+enum GameExitCode
+{
+	GAME_EXIT_QUIT,
+	GAME_EXIT_CREDITS
+};
+
 
 class Game : public PhysicsCallback
 {
@@ -93,6 +99,8 @@ public:
 	void loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT actorPosition);
     void drawFrame();
 
+	GameExitCode runGameLoop();
+
 	uint32_t getFrameCount() const { return m_frameCounter; }
 
 	// PhysicsCallback interface
@@ -102,6 +110,7 @@ public:
 	virtual void collectSunItem(Point point);
 	virtual void touchButton(uint16_t id, ButtonType type);
 	virtual void onDeath();
+	virtual void onCreditsWarp();
 
 private:
 	virtual void drawAppleCount();
@@ -144,6 +153,7 @@ private:
 	KeyMapper m_keyMapper;
 	TinyString m_loadedTilesetName;
 	StoryStatus m_storyStatus;
+	GameExitCode m_exitCode;
 };
 
 

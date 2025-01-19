@@ -12,6 +12,7 @@
 #include "i18n.h"
 #include "sound_controller.h"
 #include "shared_ptr.h"
+#include "credits_scroller.h"
 #include <dos.h>
 
 #include "exception.h"
@@ -87,61 +88,66 @@ int main(int argc, char* argv[])
                 I18N::loadTranslations("strings.en");
         }
 
+        tnd::shared_ptr<VgaGfx> gfx = new VgaGfx();
         Keyboard keyboard;
     
-        tnd::shared_ptr<Animation> enemy = new Animation("enemy.ani", "enemy.tga");
-        tnd::shared_ptr<Animation> seekerEnemy = new Animation("enemy2.ani", "enemy2.tga");
-        tnd::shared_ptr<Animation> guffin = new Animation("guffin.ani", "guffin.tga");
-        tnd::shared_ptr<Animation> guy = new Animation("guy.ani", "guy.tga");
-        tnd::shared_ptr<Animation> fireBall = new Animation("fire.ani", "fire.tga");
-        tnd::shared_ptr<Animation> jetPack = new Animation("jet.ani", "jet.tga");
-        tnd::shared_ptr<Animation> tentacle = new Animation("tentacle.ani", "tentacle.tga");
-        tnd::shared_ptr<Animation> projectile = new Animation("bullet.ani", "bullet.tga");
-        tnd::shared_ptr<Animation> tentacleArm = new Animation("ten_arm.ani", "ten_arm.tga");
-        tnd::shared_ptr<Animation> eye = new Animation("eye.ani", "eye.tga");
+        GameExitCode exitCode = GAME_EXIT_QUIT;
 
-        tnd::shared_ptr<VgaGfx> gfx = new VgaGfx();
-
-        tnd::shared_ptr<MusicController> music = new MusicController();
-
-        GameAnimations animations = {guy, enemy, seekerEnemy, guffin, fireBall, jetPack, tentacle, projectile, tentacleArm, eye};
-
-        Game game(gfx, sound, music, animations, "%02x%02x", params.level);
-
-        if (params.dumpLevelImages)
         {
-            for (int x = 0; x < 32; ++x)
+            tnd::shared_ptr<Animation> enemy = new Animation("enemy.ani", "enemy.tga");
+            tnd::shared_ptr<Animation> seekerEnemy = new Animation("enemy2.ani", "enemy2.tga");
+            tnd::shared_ptr<Animation> guffin = new Animation("guffin.ani", "guffin.tga");
+            tnd::shared_ptr<Animation> guy = new Animation("guy.ani", "guy.tga");
+            tnd::shared_ptr<Animation> fireBall = new Animation("fire.ani", "fire.tga");
+            tnd::shared_ptr<Animation> jetPack = new Animation("jet.ani", "jet.tga");
+            tnd::shared_ptr<Animation> tentacle = new Animation("tentacle.ani", "tentacle.tga");
+            tnd::shared_ptr<Animation> projectile = new Animation("bullet.ani", "bullet.tga");
+            tnd::shared_ptr<Animation> tentacleArm = new Animation("ten_arm.ani", "ten_arm.tga");
+            tnd::shared_ptr<Animation> eye = new Animation("eye.ani", "eye.tga");
+
+            tnd::shared_ptr<MusicController> music = new MusicController();
+
+            GameAnimations animations = {guy, enemy, seekerEnemy, guffin, fireBall, jetPack, tentacle, projectile, tentacleArm, eye};
+
+            Game game(gfx, sound, music, animations, "%02x%02x", params.level);
+
+            if (params.dumpLevelImages)
             {
-                for (int y = 0; y < 16; ++y)
+                for (int x = 0; x < 32; ++x)
                 {
-                    LevelNumber level = {x,y};
-                    try {
-                        game.loadLevel(level, ActorPosition::LevelTransition);
-                        game.drawFrame();
-                        char xBuf[3];
-                        char yBuf[3];
-                        intToString(x, 16, xBuf, 3, 2, '0');
-                        intToString(y, 16, yBuf, 3, 2, '0');
-                        TinyString filename = TinyString(xBuf) + TinyString(yBuf) + TinyString(".tmx");
-                        Text t(filename.c_str(), 10, false);
-                        gfx->draw(t, 100, 100);
-                        gfx->drawScreen();
-                        filename = TinyString(xBuf) + TinyString(yBuf) + TinyString(".tga");
-                        gfx->saveAsTgaImage(filename.c_str());
-                    } catch (...)
-                    {}
+                    for (int y = 0; y < 16; ++y)
+                    {
+                        LevelNumber level = {x,y};
+                        try {
+                            game.loadLevel(level, ActorPosition::LevelTransition);
+                            game.drawFrame();
+                            char xBuf[3];
+                            char yBuf[3];
+                            intToString(x, 16, xBuf, 3, 2, '0');
+                            intToString(y, 16, yBuf, 3, 2, '0');
+                            TinyString filename = TinyString(xBuf) + TinyString(yBuf) + TinyString(".tmx");
+                            Text t(filename.c_str(), 10, false);
+                            gfx->draw(t, 100, 100);
+                            gfx->drawScreen();
+                            filename = TinyString(xBuf) + TinyString(yBuf) + TinyString(".tga");
+                            gfx->saveAsTgaImage(filename.c_str());
+                        } catch (...)
+                        {}
+                    }
                 }
             }
-        }
-        else
-        {
-            while (!s_keyEsc)
-            {	
-                game.drawFrame();
+            else
+            {
+                exitCode = game.runGameLoop();
             }
+            frameCounter = game.getFrameCount();
+        }
+
+        if (exitCode == GAME_EXIT_CREDITS)
+        {
+            runCredits(*gfx, "credits.txt");
         }
         
-        frameCounter = game.getFrameCount();
     }
     catch(const Exception& e)
     {
