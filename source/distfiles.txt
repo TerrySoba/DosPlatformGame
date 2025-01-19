@@ -178,12 +178,9 @@
 ../source/dissolve.exe
 ../text/strings.de
 ../text/strings.en
-../fonts/ubuntu10.stf
-../fonts/geo15.stf
 ../fonts/lib18.stf
 ../fonts/title.stf
 game.exe
 game2.exe
 title.exe
-credits.exe
 credits.txt
