@@ -1,10 +1,12 @@
 #include "unit_test.h"
 #include "credits_loader.h"
 
-TEST(MapTestInt)
+#include "test_data.h"
+
+TEST(CreditsLoaderTest)
 {
-    CreditsLoader loader("source/credits.txt");
-    ASSERT_EQ_INT(loader.size(), 13);
+    CreditsLoader loader(TEST_DATA_DIR "credits.txt");
+    ASSERT_EQ_INT(loader.size(), 14);
     ASSERT_EQ_INT(loader.getEntry(0).type, CREDITS_TYPE_ROLE);
     ASSERT_TRUE(loader.getEntry(0).text == "- Programming -");
     ASSERT_EQ_INT(loader.getEntry(1).type, CREDITS_TYPE_PERSON);

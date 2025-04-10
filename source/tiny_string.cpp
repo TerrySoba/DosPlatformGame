@@ -54,6 +54,11 @@ char TinyString::operator[](int index) const
     return m_data[index];
 }
 
+char& TinyString::operator[](int index)
+{
+    return m_data[index];
+}
+
 int TinyString::size() const
 {
     return strlen(m_data);
@@ -165,12 +170,25 @@ int intToString(int32_t value, int base, char* buffer, int bufferSize, int minLe
     return buffer - originalBuffer + digits;
 }
 
+#ifdef __WATCOMC__
+
 void printCh(char ch);
 #pragma aux printCh = \
-        "mov ah, 02h"   \
-        "int 0x21"      \
-        parm    [dl]    \
-        modify  [ax];
+    "mov ah, 02h"   \
+    "int 0x21"      \
+    parm    [dl]    \
+    modify  [ax];
+
+#else
+
+#include <stdio.h>
+
+void printCh(char ch)
+{
+    putchar(ch);
+}
+
+#endif
 
 void printStr(const char* str)
 {

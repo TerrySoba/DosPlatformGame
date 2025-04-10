@@ -1,8 +1,20 @@
 #ifndef SHARED_PTR_INCLUDED
 #define SHARED_PTR_INCLUDED
 
+#ifdef __GNUC__
+#include <memory>
+#endif
+
 namespace tnd // TaNDy game
 {
+
+
+#ifdef __GNUC__
+
+template <class T>
+using shared_ptr = std::shared_ptr<T>;
+
+#else
 
 template <class T>
 struct shared_ptr_storage
@@ -56,10 +68,14 @@ public:
         delete_storage();
     }
 
-    void reset()
+    void reset(ValueT* ptr = 0)
     {
         delete_storage();
         m_storage = (shared_ptr_storage<ValueT>*)0;
+        if (ptr)
+        {
+            *this = shared_ptr<ValueT>(ptr);
+        }
     }
 
     ValueT* get()
@@ -120,6 +136,8 @@ private:
 private:
     shared_ptr_storage<ValueT>* m_storage;
 };
+
+#endif
 
 } // namespace tnd
 

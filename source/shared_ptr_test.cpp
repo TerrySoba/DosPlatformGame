@@ -22,13 +22,13 @@ struct TestThingy
 
     ~TestThingy()
     {
-        printf("~TestThingy: %s\n", m_text);
+        // printf("~TestThingy: %s\n", m_text);
         s_destructorRan = true;
         --s_instanceCount;
     }
 
     void doIt() {
-        printf("doIt: %s\n", m_text);
+        // printf("doIt: %s\n", m_text);
     }
 
     const char* m_text;
@@ -51,7 +51,7 @@ TEST(SharedPtrTest2)
     shared_ptr<TestThingy> i(new TestThingy("test1"));
     shared_ptr<TestThingy> j = i;
 
-    i = new TestThingy("test2");
+    i.reset(new TestThingy("test2"));
 
     j->doIt();
     i->doIt();
@@ -62,8 +62,8 @@ TEST(SharedPtrTest3)
     shared_ptr<TestThingy> i(new TestThingy("test1"));
     shared_ptr<TestThingy> j = i;
 
-    i = new TestThingy("test2");
-    j = new TestThingy("test3");
+    i.reset(new TestThingy("test2"));
+    j.reset(new TestThingy("test3"));
 
     j->doIt();
     i->doIt();
@@ -118,9 +118,9 @@ TEST(SharedPtrVectorTest2)
 
         for (int i = 0; i< 100; ++i)
         {
-            vec.push_back(new TestThingy("test1"));
-            vec.push_back(new TestThingy("test2"));
-            vec.push_back(new TestThingy("test3"));
+            vec.push_back(shared_ptr<TestThingy>(new TestThingy("test1")));
+            vec.push_back(shared_ptr<TestThingy>(new TestThingy("test2")));
+            vec.push_back(shared_ptr<TestThingy>(new TestThingy("test3")));
             ASSERT_TRUE(vec.size() == 3);
             s_destructorRan = false;
             vec.clear();
@@ -128,7 +128,7 @@ TEST(SharedPtrVectorTest2)
             ASSERT_TRUE(vec.size() == 0);
         }
 
-        printf("done\n");
+        // printf("done\n");
         s_destructorRan = false;
     }
     // ASSERT_FALSE(s_destructorRan);

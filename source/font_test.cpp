@@ -2,9 +2,11 @@
 #include "exception.h"
 #include "font.h"
 
+#include "test_data.h"
+
 TEST(FontTest1)
 {
-    Font font("fonts\\ubuntu10.stf");
+    Font font(TEST_DATA_DIR "ubuntu10.stf");
     const Character* characters = font.getCharacters();
     int numCharacters = font.getNumCharacters();
     ASSERT_EQ_INT(numCharacters, 102);

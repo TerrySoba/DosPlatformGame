@@ -89,10 +89,13 @@ rad_player_asm.o: 3rd_party/rad_tracker/c_interface.asm 3rd_party/rad_tracker/pl
 
 FORCE:
 
-main.o: version.h
+main.o: version.h test_data.h
 
 version.h: FORCE
 	echo \#define BUILD_DATE \"$(BUILD_DATE)\" > version.h
+
+test_data.h: FORCE
+	echo \#define TEST_DATA_DIR \"..\\\\\\\\testdata\\\\\\\\\" > test_data.h
 
 _$(dest): $(objects_game)
 	echo "NAME   $@" > game.lnk
@@ -101,7 +104,7 @@ _$(dest): $(objects_game)
 	echo "FILE   {$(objects_game)}" >> game.lnk
 	wlink  @game.lnk
 
-$(test): $(objects_test)
+$(test): $(objects_test) 
 	echo "NAME   $@" > gametest.lnk
 	echo "SYSTEM DOS" >> gametest.lnk
 	echo "OPTION STACK=8192" >> gametest.lnk

@@ -7,14 +7,22 @@
 #include <string.h>
 #include <stdlib.h>
 
+
+#ifdef __WATCOMC__
 #pragma pack(0);
+#endif
 
 struct StringEntry
 {
     uint16_t id;
     uint32_t offset;
     uint16_t length;
+
+#ifdef __WATCOMC__
 };
+#else
+} __attribute__((packed));
+#endif
 
 I18N* I18N::s_instance = NULL;
 

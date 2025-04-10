@@ -4,7 +4,14 @@
 
 #include <string.h>
 #include <iostream>
+
+
+#ifdef __GNUC__
+#include <sstream>
+#else
 #include <strstrea>
+#endif
+
 
 char s_lastMessageBuffer[s_lastMessageBufferSize];
 

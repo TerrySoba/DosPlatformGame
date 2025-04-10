@@ -3,9 +3,11 @@
 #include "font.h"
 #include "font_writer.h"
 
+#include "test_data.h"
+
 TEST(FontWriterTest1)
 {
-    Font font("fonts\\ubuntu10.stf");
+    Font font(TEST_DATA_DIR "ubuntu10.stf");
     FontWriter writer(&font);
 
     writer.setText("Hello World");

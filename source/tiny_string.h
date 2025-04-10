@@ -19,6 +19,7 @@ public:
     void operator=(const char* str);
     void operator=(const TinyString& other);
     char operator[](int index) const;
+    char& operator[](int index);
 
     int size() const;
     const char* c_str() const;

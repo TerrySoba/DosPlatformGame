@@ -12,14 +12,14 @@ TestThingy2::TestThingy2(const char *text) : m_text(text)
 
 TestThingy2::~TestThingy2()
 {
-    printf("~TestThingy2: %s\n", m_text);
+    // printf("~TestThingy2: %s\n", m_text);
     s_destructorRan2 = true;
     --s_instanceCount2;
 }
 
 void TestThingy2::doIt()
 {
-    printf("doIt: %s\n", m_text);
+    // printf("doIt: %s\n", m_text);
 }
 
 

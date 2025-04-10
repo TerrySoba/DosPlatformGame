@@ -6,6 +6,8 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "test_data.h"
+
 class TgaPixelSource : public PixelSource
 {
 public:
@@ -55,6 +57,7 @@ uint32_t countZeroes(const char* data, uint32_t size)
 
 uint32_t getCurrentTime()
 {
+#ifdef __WATCOMC__
     // use bios rtc to get current time
     uint16_t timeLow;
     uint16_t timeHigh;
@@ -72,6 +75,10 @@ uint32_t getCurrentTime()
         pop ax
     }
     return ((uint32_t)timeHigh) << 16 | timeLow;
+#else
+    // use clock() to get current time
+    return (uint32_t)clock();
+#endif
 }
 
 
@@ -81,7 +88,7 @@ const uint32_t TARGET_SIZE = TARGET_WIDTH * TARGET_HEIGHT;
 
 TEST(CompiledSpriteTest)
 {
-    TgaImage image("images\\guyframe.tga");
+    TgaImage image(TEST_DATA_DIR "guyframe.tga");
     TgaPixelSource pixels(image);
 
     uint32_t spriteSize = compileData(NULL, 0, pixels, 320);

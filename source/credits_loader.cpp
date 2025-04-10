@@ -38,6 +38,16 @@ CreditsLoader::CreditsLoader(const char *filename)
                 break;
             }
 
+            // remove trailing '\n' or '\r'
+            for (int i = 0; i < entry.text.size(); ++i)
+            {
+                if (entry.text[i] == '\n' || entry.text[i] == '\r')
+                {
+                    entry.text[i] = 0;
+                    break;
+                }
+            }
+
             m_entries.push_back(entry);
         }
     }

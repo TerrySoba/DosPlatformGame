@@ -4,7 +4,12 @@
 #include "rectangle.h"
 #include "button.h"
 #include "physics_event.h"
+
+#ifdef __WATCOMC__
 #include "sound_controller.h"
+#else
+#include "sound_controller_null.h"
+#endif
 
 #include "vector.h"
 #include "shared_ptr.h"
