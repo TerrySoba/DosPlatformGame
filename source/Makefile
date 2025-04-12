@@ -143,3 +143,8 @@ $(dissolve): $(dissolve_objs)
 	echo "FILE   {$(dissolve_objs)}" >> dissolve.lnk
 	wlink  @dissolve.lnk
 
+clean:
+	find . -name "*.d" -type f -delete
+	find . -name "*.o" -type f -delete
+	find . -name "*.lnk" -type f -delete
+	find . -name "*.exe" -type f -delete
