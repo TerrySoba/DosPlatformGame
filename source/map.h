@@ -29,6 +29,11 @@ public:
         m_end = m_entries;
     }
 
+    ~map()
+    {
+        delete[] m_entries;
+    }
+
 
     ValueT& operator[](const KeyT& key)
     {

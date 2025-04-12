@@ -10,6 +10,12 @@
 #define inport(px) inpw(px)
 #define inportb(px) inp(px)
 
+
+static const uint16_t DEATH_ANIMATION_PALETTE_FRAMES = 16;
+static const uint16_t DEATH_ANIMATION_PALETTE_ENTRIES = 16;
+static const uint16_t DEATH_ANIMATION_PALETTE_BYTES = DEATH_ANIMATION_PALETTE_ENTRIES * 3;
+
+
 #define SCREEN_W 320L
 #define SCREEN_H 200L
 

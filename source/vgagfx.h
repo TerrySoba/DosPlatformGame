@@ -6,14 +6,11 @@
 #include "image_base.h"
 #include "drawable.h"
 #include "rectangle.h"
+#include "gfx_output.h"
 
 #include <stdint.h>
 
-static const uint16_t DEATH_ANIMATION_PALETTE_FRAMES = 16;
-static const uint16_t DEATH_ANIMATION_PALETTE_ENTRIES = 16;
-static const uint16_t DEATH_ANIMATION_PALETTE_BYTES = DEATH_ANIMATION_PALETTE_ENTRIES * 3;
-
-class VgaGfx
+class VgaGfx : public GfxOutput
 {
 public:
 	VgaGfx();
