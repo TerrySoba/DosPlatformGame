@@ -1,13 +1,19 @@
 objects_game_lib = \
-    vgagfx.o image.o animation.o keyboard.o rad_player.o \
-    rad_player_asm.o timer.o physics.o tga_image.o \
+    image.o animation.o rad_player.o \
+    rad_player_asm.o physics.o tga_image.o \
     level.o blit.o detect_lines.o exception.o \
-	rectangle.o tiny_string.o game.o compiled_sprite.o \
-	joystick.o enemy.o game_save.o text.o i18n.o fire_ball.o \
-	soundblaster.o sound_controller.o seeker_enemy.o \
+	rectangle.o tiny_string.o game.o  \
+	enemy.o game_save.o text.o i18n.o fire_ball.o \
+	sound_controller.o seeker_enemy.o \
 	boss1.o time_tools.o music_controller.o key_mapper.o \
 	tentacle.o tentacle_arm.o eye.o boss2.o font.o font_writer.o \
-	credits_loader.o credits_scroller.o
+	credits_loader.o credits_scroller.o \
+	platform/dos/vgagfx.o \
+	platform/dos/compiled_sprite.o \
+	platform/dos/soundblaster.o \
+	platform/dos/dos_timer.o \
+	platform/dos/keyboard.o \
+	platform/dos/joystick.o
 
 objects_game = \
 	main.o $(objects_game_lib)
@@ -19,15 +25,15 @@ objects_test = \
 	time_tools_test.o compiled_sprite_test.o font_test.o font_writer_test.o credits_loader_test.o
 
 rad_tester = \
-	keyboard.o rad_tester.o timer.o rad_player.o rad_player_asm.o exception.o tiny_string.o
+	platform/dos/keyboard.o rad_tester.o platform/dos/dos_timer.o rad_player.o rad_player_asm.o exception.o tiny_string.o
 	
 
 dissolve_objs = \
-	vgagfx.o image.o tiny_string.o exception.o dissolve.o timer.o keyboard.o tga_image.o
+	platform/dos/vgagfx.o image.o tiny_string.o exception.o dissolve.o platform/dos/dos_timer.o platform/dos/keyboard.o tga_image.o
 
 title_screen = \
-    title.o vgagfx.o image.o tga_image.o exception.o rectangle.o keyboard.o \
-	tiny_string.o animation.o compiled_sprite.o font.o font_writer.o \
+    title.o platform/dos/vgagfx.o image.o tga_image.o exception.o rectangle.o platform/dos/keyboard.o \
+	tiny_string.o animation.o platform/dos/compiled_sprite.o font.o font_writer.o \
 	blit.o i18n.o
 
 # coptions = -0 -ml -xs -onatx -oh -oi+ -ei -zp8 -fpi87
@@ -59,7 +65,7 @@ $(dissolve):
 $(radtest): 
 
 %.o : %.cpp
-	wpp $(coptions) $<
+	wpp $(coptions) -fo=$@ $<
 
 -include *.d
 
@@ -136,3 +142,4 @@ $(dissolve): $(dissolve_objs)
 	echo "SYSTEM DOS" >> dissolve.lnk
 	echo "FILE   {$(dissolve_objs)}" >> dissolve.lnk
 	wlink  @dissolve.lnk
+

@@ -1,7 +1,7 @@
 #ifndef _FRAME_IMAGE_H_INCLUDED
 #define _FRAME_IMAGE_H_INCLUDED
 
-#include "compiled_sprite.h"
+#include "platform/dos/compiled_sprite.h"
 #include "tga_image.h"
 
 #include <stdint.h>

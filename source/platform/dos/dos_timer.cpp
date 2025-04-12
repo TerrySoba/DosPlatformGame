@@ -1,4 +1,4 @@
-#include "timer.h"
+#include "dos_timer.h"
 
 #include <dos.h>
 #include <stdint.h>

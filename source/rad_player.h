@@ -1,7 +1,7 @@
 #ifndef RAD_PLAYER_H_INCLUDED
 #define RAD_PLAYER_H_INCLUDED
 
-#include "timer.h"
+#include "platform/dos/dos_timer.h"
 #include "stdint.h"
 
 #include "shared_ptr.h"

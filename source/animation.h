@@ -4,7 +4,7 @@
 #include "tga_image.h"
 #include "image.h"
 #include "drawable.h"
-#include "compiled_sprite.h"
+#include "platform/dos/compiled_sprite.h"
 
 #include <stdint.h>
 #include <string.h>

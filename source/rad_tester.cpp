@@ -1,5 +1,5 @@
 #include "rad_player.h"
-#include "keyboard.h"
+#include "platform/dos/keyboard.h"
 #include "exception.h"
 #include <stdio.h>
 

@@ -1,6 +1,6 @@
 #include "unit_test.h"
 
-#include "compiled_sprite.h"
+#include "platform/dos/compiled_sprite.h"
 #include "tga_image.h"
 
 #include <string.h>

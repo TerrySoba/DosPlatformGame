@@ -1,7 +1,7 @@
 #include "key_mapper.h"
 
-#include "keyboard.h"
-#include "joystick.h"
+#include "platform/dos/keyboard.h"
+#include "platform/dos/joystick.h"
 
 KeyBits KeyMapper::getKeys() const
 {

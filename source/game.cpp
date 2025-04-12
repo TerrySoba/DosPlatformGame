@@ -5,13 +5,14 @@
 #include "version.h"
 #include "vector.h"
 #include "exception.h"
-#include "compiled_sprite.h"
 #include "game_save.h"
 #include "text.h"
 #include "i18n.h"
 #include "tile_definitions.h"
 #include "time_tools.h"
-#include "keyboard.h"
+
+#include "platform/dos/compiled_sprite.h"
+#include "platform/dos/keyboard.h"
 
 #include <stdio.h>
 

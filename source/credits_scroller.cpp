@@ -1,9 +1,8 @@
 #include "credits_scroller.h"
 
-#include "vgagfx.h"
 #include "exception.h"
 #include "i18n.h"
-#include "keyboard.h"
+#include "platform/dos/keyboard.h"
 #include "font.h"
 #include "font_writer.h"
 #include "animation.h"

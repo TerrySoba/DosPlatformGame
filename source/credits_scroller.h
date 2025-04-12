@@ -1,7 +1,7 @@
 #ifndef CREDITS_SCROLLER_H
 #define CREDITS_SCROLLER_H
 
-#include "vgagfx.h"
+#include "platform/dos/vgagfx.h"
 
 void runCredits(VgaGfx& vga, const char *creditsFile);
 

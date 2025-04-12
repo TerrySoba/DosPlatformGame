@@ -1,7 +1,7 @@
 #ifndef SOUND_CONTROLLER_INCLUDED_H
 #define SOUND_CONTROLLER_INCLUDED_H
 
-#include "soundblaster.h"
+#include "platform/dos/soundblaster.h"
 
 class SoundController
 {

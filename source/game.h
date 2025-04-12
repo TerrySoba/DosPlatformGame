@@ -9,7 +9,7 @@
 #include "music_controller.h"
 #include "ptr_vector.h"
 #include "animation.h"
-#include "vgagfx.h"
+#include "platform/dos/vgagfx.h"
 #include "enemy.h"
 #include "tentacle.h"
 #include "tentacle_arm.h"
