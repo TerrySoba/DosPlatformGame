@@ -4,7 +4,12 @@
 #include "tga_image.h"
 #include "image.h"
 #include "drawable.h"
+
+#ifdef PLATFORM_DOS
 #include "platform/dos/compiled_sprite.h"
+#else
+#include "sprite.h"
+#endif
 
 #include <stdint.h>
 #include <string.h>
@@ -46,7 +51,12 @@ private:
     int16_t m_height;
 
     tnd::vector<Frame> m_frames;
+    #ifdef PLATFORM_DOS
     tnd::vector<tnd::shared_ptr<CompiledSprite> > m_frameSprites;
+    #else
+    tnd::vector<tnd::shared_ptr<Sprite> > m_frameSprites;
+    #endif
+
     tnd::vector<FrameTag> m_tags;
     int m_currentFrame;
     int m_minFrame;

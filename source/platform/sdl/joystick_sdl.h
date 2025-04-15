@@ -1,5 +1,5 @@
-#ifndef _INCLUDE_JOYSTICK_H
-#define _INCLUDE_JOYSTICK_H
+#ifndef _INCLUDE_JOYSTICK_SDL_H
+#define _INCLUDE_JOYSTICK_SDL_H
 
 #include <stdint.h>
 

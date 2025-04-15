@@ -11,16 +11,22 @@
 #include "tile_definitions.h"
 #include "time_tools.h"
 
+#ifdef PLATFORM_DOS
 #include "platform/dos/compiled_sprite.h"
-#include "platform/dos/keyboard.h"
+#include "platform/dos/keyboard_dos.h"
+#endif
+
+#ifdef PLATFORM_SDL
+#include "platform/sdl/keyboard_sdl.h"
+#endif
 
 #include <stdio.h>
 
-Game::Game(tnd::shared_ptr<VgaGfx> vgaGfx, tnd::shared_ptr<SoundController> sound,
+Game::Game(tnd::shared_ptr<GfxOutput> vgaGfx, tnd::shared_ptr<SoundController> sound,
            tnd::shared_ptr<MusicController> music,
            GameAnimations animations,
            const char* levelBasename, LevelNumber startLevel) :
-    m_vgaGfx(vgaGfx), m_animations(animations), m_frames(0), m_levelBasename(levelBasename),
+    m_vgaGfx(vgaGfx), m_animations(animations), m_frames(0), m_player(0), m_levelBasename(levelBasename),
     m_animationController(animations.actorAnimation, sound), m_lastButtonPressed(false), m_sound(sound), m_music(music),
     m_jetpackCollected(0), m_sunItemCollected(0), m_button1(0), m_levelMustReload(false), m_deathCounter(0),
     m_frameCounter(0), m_storyStatus(STORY_STATUS_INITIAL), m_exitCode(GAME_EXIT_QUIT)
@@ -128,7 +134,7 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
         TgaImage* tgaImg = dynamic_cast<TgaImage*>(m_tiles.get());
         if (!tgaImg)
         {
-            m_tiles = new TgaImage(m_loadedTilesetName.c_str());
+            m_tiles.reset(new TgaImage(m_loadedTilesetName.c_str()));
         }
         else
         {

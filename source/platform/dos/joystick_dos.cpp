@@ -1,4 +1,4 @@
-#include "joystick.h"
+#include "joystick_dos.h"
 
 #include "tiny_string.h"
 

@@ -1,6 +1,6 @@
-#include "sound_controller.h"
+#include "platform/dos/sound_controller_dos.h"
 
-SoundController::SoundController() :
+SoundControllerDos::SoundControllerDos() :
     m_soundPriority(0)
 {
 
@@ -14,7 +14,7 @@ SoundController::SoundController() :
     m_switchSound = m_sb.loadVocFile("SWITCH2.VOC");
 }
 
-SoundController::~SoundController()
+SoundControllerDos::~SoundControllerDos()
 {
     m_sb.freeSample(m_jumpSound);
     m_sb.freeSample(m_deathSound);
@@ -30,7 +30,7 @@ SoundController::~SoundController()
 #define priority(x) ((x) > (m_soundPriority) || !m_sb.isPlaying())
 
 
-void SoundController::playJumpSound()
+void SoundControllerDos::playJumpSound()
 {
     if (m_sbFound)
     {
@@ -42,7 +42,7 @@ void SoundController::playJumpSound()
     }
 }
 
-void SoundController::playWalkSound()
+void SoundControllerDos::playWalkSound()
 {
     if (m_sbFound)
     {
@@ -54,7 +54,7 @@ void SoundController::playWalkSound()
     }
 }
 
-void SoundController::playStandSound()
+void SoundControllerDos::playStandSound()
 {
     if (m_sbFound)
     {
@@ -66,7 +66,7 @@ void SoundController::playStandSound()
     }
 }
 
-void SoundController::playSwitchSound()
+void SoundControllerDos::playSwitchSound()
 {
     if (m_sbFound)
     {
@@ -79,7 +79,7 @@ void SoundController::playSwitchSound()
 }
 
 
-void SoundController::playGuffinSound()
+void SoundControllerDos::playGuffinSound()
 {
     if (m_sbFound)
     {
@@ -88,7 +88,7 @@ void SoundController::playGuffinSound()
     }
 }
 
-void SoundController::playJetpackSound()
+void SoundControllerDos::playJetpackSound()
 {
     if (m_sbFound)
     {
@@ -97,7 +97,7 @@ void SoundController::playJetpackSound()
     }
 }
 
-void SoundController::playDeathSound()
+void SoundControllerDos::playDeathSound()
 {
     if (m_sbFound)
     {

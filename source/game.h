@@ -9,7 +9,7 @@
 #include "music_controller.h"
 #include "ptr_vector.h"
 #include "animation.h"
-#include "platform/dos/vgagfx.h"
+#include "gfx_output.h"
 #include "enemy.h"
 #include "tentacle.h"
 #include "tentacle_arm.h"
@@ -43,6 +43,10 @@ namespace ActorPosition
 
 struct LevelNumber
 {
+
+	LevelNumber() : x(0), y(0) {}
+	LevelNumber(int8_t x, int8_t y) : x(x), y(y) {}
+
 	int8_t x;
 	int8_t y;
 
@@ -85,7 +89,7 @@ class Game : public PhysicsCallback
 {
 public:
 	Game(
-	    tnd::shared_ptr<VgaGfx> vgaGfx,
+	    tnd::shared_ptr<GfxOutput> vgaGfx,
 		tnd::shared_ptr<SoundController> sound, 
 		tnd::shared_ptr<MusicController> music,
 		GameAnimations animations,
@@ -117,7 +121,7 @@ private:
     virtual void drawDeathCount();
 
 private:
-	tnd::shared_ptr<VgaGfx> m_vgaGfx;
+	tnd::shared_ptr<GfxOutput> m_vgaGfx;
 	tnd::shared_ptr<ImageBase> m_tiles;
 	GameAnimations m_animations;
 	tnd::ptr_vector<Enemy> m_enemies;

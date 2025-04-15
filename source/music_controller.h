@@ -1,8 +1,6 @@
 #ifndef MUSIC_CONTROLLER_INCLUDED_H
 #define MUSIC_CONTROLLER_INCLUDED_H
 
-#include "rad_player.h"
-
 enum SongIndex
 {
     MUSIC_INDEX_NO_CHANGE = 0,   // do not change the current song, if any
@@ -19,16 +17,9 @@ enum SongIndex
 class MusicController
 {
 public:
-    MusicController();
-    ~MusicController();
-
-    void playMusic(SongIndex index);
-
-    SongIndex getCurrentSong() const { return m_currentSong; }
-
-private:
-    SongIndex m_currentSong;
-    RadPlayer m_player;
+    virtual ~MusicController() {}
+    virtual void playMusic(SongIndex index) = 0;
+    virtual SongIndex getCurrentSong() const = 0;
 };
 
 #endif

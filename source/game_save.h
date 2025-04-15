@@ -7,6 +7,7 @@
 struct GameState
 {
     GameState() :
+        level(0,0),
         jetpackCollected(0),
         sunItemCollected(0),
         button1(0),
@@ -15,8 +16,6 @@ struct GameState
         musicIndex(MUSIC_INDEX_NO_CHANGE),
         storyStatus(STORY_STATUS_INITIAL)
     {
-        level.x = 0;
-        level.y = 0;
     }
 
     LevelNumber level;

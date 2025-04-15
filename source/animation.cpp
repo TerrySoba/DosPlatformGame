@@ -43,7 +43,11 @@ Animation::Animation(const char* animFilename, const char* tgaFilename, bool tra
 
         m_frames.push_back(f);
         FrameImage frameImage(image, f.x, f.y, f.width, f.height);
+        #ifdef PLATFORM_DOS
         m_frameSprites.push_back(new CompiledSprite(frameImage, 320));
+        #else
+        m_frameSprites.push_back(tnd::shared_ptr<Sprite>(new Sprite(frameImage, 320)));
+        #endif
     }
 
     uint16_t tagNumber;

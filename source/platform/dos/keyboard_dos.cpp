@@ -1,4 +1,4 @@
-#include "keyboard.h"
+#include "keyboard_dos.h"
 
 #include <dos.h>
 #include <stdint.h>

@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include "platform/dos/vgagfx.h"
-#include "platform/dos/keyboard.h"
+#include "platform/dos/keyboard_dos.h"
 #include "tga_image.h"
 
 int main(int argc, char *argv[]) {

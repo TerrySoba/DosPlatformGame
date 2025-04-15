@@ -1,17 +1,17 @@
-#include "music_controller.h"
+#include "music_controller_dos.h"
 
 #include "rad_player.h"
 
-MusicController::MusicController() :
+MusicControllerDos::MusicControllerDos() :
     m_currentSong(MUSIC_INDEX_NO_MUSIC)
 {
 }
 
-MusicController::~MusicController()
+MusicControllerDos::~MusicControllerDos()
 {
 }
 
-void MusicController::playMusic(SongIndex index)
+void MusicControllerDos::playMusic(SongIndex index)
 {
     // do not reload music if it is already playing
     if (index == MUSIC_INDEX_NO_CHANGE || index == m_currentSong)

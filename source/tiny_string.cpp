@@ -28,11 +28,21 @@ TinyString::TinyString(int size)
 
 bool TinyString::operator==(const char* str)
 {
+    if (m_data == NULL || str == NULL)
+    {
+        return false;
+    }
+    
     return strcmp(str, m_data) == 0;
 }
 
 bool TinyString::operator==(const TinyString& other)
 {
+    if (m_data == NULL || other.m_data == NULL)
+    {
+        return false;
+    }
+
     return strcmp(other.m_data, m_data) == 0;
 }
 

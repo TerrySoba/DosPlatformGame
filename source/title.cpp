@@ -1,6 +1,6 @@
 #include "platform/dos/vgagfx.h"
 #include "tga_image.h"
-#include "platform/dos/keyboard.h"
+#include "platform/dos/keyboard_dos.h"
 #include "font.h"
 #include "font_writer.h"
 #include "animation.h"

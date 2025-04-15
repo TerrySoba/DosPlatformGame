@@ -5,11 +5,7 @@
 #include "button.h"
 #include "physics_event.h"
 
-#ifdef __WATCOMC__
 #include "sound_controller.h"
-#else
-#include "sound_controller_null.h"
-#endif
 
 #include "vector.h"
 #include "shared_ptr.h"
@@ -49,7 +45,7 @@ enum IntersectionType
 class Physics
 {
 public:
-    Physics(tnd::shared_ptr<PhysicsCallback> callback, tnd::shared_ptr<SoundController> sound);
+    Physics(PhysicsCallback* callback, tnd::shared_ptr<SoundController> sound);
     ~Physics();
     int addActor(const Actor& rect);
     void setActor(int index, const Actor& rect);
@@ -106,7 +102,7 @@ public:
     Point m_spawn;
     Point m_sun;
     tnd::vector<Actor> m_actors;
-    tnd::shared_ptr<PhysicsCallback> m_callback;
+    PhysicsCallback* m_callback;
     tnd::shared_ptr<SoundController> m_sound;
     bool m_jetpackActive;
     bool m_lastFrameJetpackActive;

@@ -1,10 +1,12 @@
 #include "platform/dos/vgagfx.h"
-#include "platform/dos/keyboard.h"
+#include "platform/dos/keyboard_dos.h"
 #include "platform/dos/joystick.h"
+#include "platform/dos/sound_controller_dos.h"
+#include "platform/dos/music_controller_dos.h"
 
 #include "image.h"
 #include "animation.h"
-#include "music_controller.h"
+
 #include "tga_image.h"
 #include "level.h"
 #include "game.h"
@@ -23,18 +25,18 @@ enum Language {
     LANGUAGE_GERMAN,
 };
 
-struct CommandLineParametes {
+struct CommandLineParameters {
     LevelNumber level;
     Language language;
     bool dumpLevelImages; // if set to true the game will dump each map as a graphics image
 };
 
 
-CommandLineParametes parseCommandline(int argc, char* argv[])
+CommandLineParameters parseCommandline(int argc, char* argv[])
 {
-    CommandLineParametes params;
+    CommandLineParameters params;
     params.language = LANGUAGE_ENGLISH;
-    LevelNumber level = {1, 1};
+    LevelNumber level(1, 1);
     params.dumpLevelImages = false;
 
     for (int i = 1; i < argc; ++i)
@@ -74,9 +76,9 @@ int main(int argc, char* argv[])
 
     try
     {
-        tnd::shared_ptr<SoundController> sound = new SoundController();
+        tnd::shared_ptr<SoundController> sound = new SoundControllerDos();
 
-        CommandLineParametes params = parseCommandline(argc, argv);
+        CommandLineParameters params = parseCommandline(argc, argv);
         calibrateJoystick();
         
         switch(params.language)
@@ -89,7 +91,7 @@ int main(int argc, char* argv[])
                 I18N::loadTranslations("strings.en");
         }
 
-        tnd::shared_ptr<VgaGfx> gfx = new VgaGfx();
+        tnd::shared_ptr<GfxOutput> gfx(new VgaGfx());
         Keyboard keyboard;
     
         GameExitCode exitCode = GAME_EXIT_QUIT;
@@ -106,7 +108,7 @@ int main(int argc, char* argv[])
             tnd::shared_ptr<Animation> tentacleArm = new Animation("ten_arm.ani", "ten_arm.tga");
             tnd::shared_ptr<Animation> eye = new Animation("eye.ani", "eye.tga");
 
-            tnd::shared_ptr<MusicController> music = new MusicController();
+            tnd::shared_ptr<MusicController> music(new MusicControllerDos());
 
             GameAnimations animations = {guy, enemy, seekerEnemy, guffin, fireBall, jetPack, tentacle, projectile, tentacleArm, eye};
 
@@ -118,7 +120,7 @@ int main(int argc, char* argv[])
                 {
                     for (int y = 0; y < 16; ++y)
                     {
-                        LevelNumber level = {x,y};
+                        LevelNumber level(x,y);
                         try {
                             game.loadLevel(level, ActorPosition::LevelTransition);
                             game.drawFrame();

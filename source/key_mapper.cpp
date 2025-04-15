@@ -1,12 +1,18 @@
 #include "key_mapper.h"
 
-#include "platform/dos/keyboard.h"
-#include "platform/dos/joystick.h"
+#ifdef PLATFORM_DOS
+#include "platform/dos/keyboard_dos.h"
+#include "platform/dos/joystick_dos.h"
+#endif
+
+#ifdef PLATFORM_SDL
+#include "platform/sdl/keyboard_sdl.h"
+#include "platform/sdl/joystick_sdl.h"
+#endif
 
 KeyBits KeyMapper::getKeys() const
 {
     uint8_t joystick = readJoystick();
-
     KeyBits keys = 0;
 
     if (s_keyDown || joystick & JOY_DOWN)

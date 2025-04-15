@@ -2,7 +2,7 @@
 
 #include "exception.h"
 #include "i18n.h"
-#include "platform/dos/keyboard.h"
+#include "platform/dos/keyboard_dos.h"
 #include "font.h"
 #include "font_writer.h"
 #include "animation.h"
@@ -28,7 +28,7 @@ struct TextEntry
 class TextBlock
 {
 public:
-    void draw(VgaGfx& vga, int16_t x, int16_t y)
+    void draw(GfxOutput& vga, int16_t x, int16_t y)
     {
         for (int i = 0; i < m_entries.size(); ++i)
         {
@@ -50,7 +50,7 @@ private:
 
 };
 
-void runCredits(VgaGfx& vga, const char *creditsFile)
+void runCredits(GfxOutput& vga, const char *creditsFile)
 {
     Keyboard keys;
     Animation arrow("arrow2.ani", "arrow2.tga", true);
