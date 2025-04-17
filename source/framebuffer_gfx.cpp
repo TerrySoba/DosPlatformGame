@@ -176,6 +176,25 @@ void FramebufferGfx::saveAsTgaImage(const char* filename)
     convertToTga(m_screenBuffer, filename);
 }
 
+void FramebufferGfx::renderToMemory(void *buffer, uint32_t pitch, PixelFormat format)
+{
+    if (format == PIXEL_FORMAT_RGB888)
+    {
+        char* rgbBuffer = (char*)buffer;
+        for (int y = 0; y < SCREEN_H; ++y)
+        {
+            for (int x = 0; x < SCREEN_W; ++x)
+            {
+                char pixel = m_screenBuffer[y * SCREEN_W + x];
+                char* rgb = rgbBuffer + (y * pitch) + (x * 3);
+                rgb[0] = rgbiColors[pixel * 3 + 2]; // B
+                rgb[1] = rgbiColors[pixel * 3 + 1]; // G
+                rgb[2] = rgbiColors[pixel * 3 + 0]; // R
+            }
+        }
+    }
+}
+
 void FramebufferGfx::drawDeathEffect()
 {
     

@@ -7,6 +7,10 @@
 
 #include <stdint.h>
 
+enum PixelFormat
+{
+	PIXEL_FORMAT_RGB888 = 1,
+};
 
 class GfxOutput
 {
@@ -19,6 +23,7 @@ public:
 	virtual void vsync() = 0;
 	virtual void clear() = 0;
 	virtual void saveAsTgaImage(const char* filename) = 0;
+	virtual void renderToMemory(void* buffer, uint32_t pitch, PixelFormat format) = 0;
 	virtual void drawDeathEffect() = 0;
 	virtual void fancyWipe(const ImageBase& image) = 0;
 };
