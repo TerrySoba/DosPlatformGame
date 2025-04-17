@@ -13,7 +13,7 @@ objects_game_lib = \
 	platform/dos/soundblaster.o \
 	platform/dos/dos_timer.o \
 	platform/dos/keyboard_dos.o \
-	platform/dos/joystick.o \
+	platform/dos/joystick_dos.o \
 	platform/dos/sound_controller_dos.o \
 	platform/dos/music_controller_dos.o
 

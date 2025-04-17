@@ -149,19 +149,21 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     m_animations.actorAnimation->useTag("LoopR");
 
     int16_t actorPosX, actorPosY;
-    if (actorPosition == ActorPosition::KeepActorPos ||
+   
+    if (m_physics.get() == 0 ||
+        actorPosition == ActorPosition::UseSpawnPoint ||
         actorPosition == ActorPosition::LoadSaveGame)
-    {
-        m_physics->getActorPos(m_player, actorPosX, actorPosY);
-    }
-    else if (m_physics.get() == 0 || actorPosition == ActorPosition::UseSpawnPoint)
     {
         // so no previous position existed, or use of spawn point was explicitly requested
         // because of that we just put the actor to the defined spawn point of the level
         actorPosX = PIXEL_TO_SUBPIXEL(level.getSpawnPoint().x);
         actorPosY = PIXEL_TO_SUBPIXEL(level.getSpawnPoint().y);
     }
-    else
+    else if (actorPosition == ActorPosition::KeepActorPos)
+    {
+        m_physics->getActorPos(m_player, actorPosX, actorPosY);
+    }
+    else // actorPosition == ActorPosition::LevelTransition
     {
         // we use the y position of the actor from the previous level
         m_physics->getActorPos(m_player, actorPosX, actorPosY);

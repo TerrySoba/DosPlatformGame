@@ -1,6 +1,6 @@
 #include "platform/dos/vgagfx.h"
 #include "platform/dos/keyboard_dos.h"
-#include "platform/dos/joystick.h"
+#include "platform/dos/joystick_dos.h"
 #include "platform/dos/sound_controller_dos.h"
 #include "platform/dos/music_controller_dos.h"
 
