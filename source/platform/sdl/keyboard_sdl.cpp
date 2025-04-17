@@ -14,7 +14,14 @@ volatile uint8_t s_keyEsc;
 
 Keyboard::Keyboard()
 {
-
+    s_keyLeft = 0;
+    s_keyRight = 0;
+    s_keyUp = 0;
+    s_keyDown = 0;
+    s_keyCtrl = 0;
+    s_keyAlt = 0;
+    s_keySpace = 0;
+    s_keyEsc = 0;
 }
 
 Keyboard::~Keyboard()
