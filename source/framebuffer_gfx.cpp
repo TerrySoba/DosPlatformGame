@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "exception.h"
 
 
 static const uint16_t DEATH_ANIMATION_PALETTE_FRAMES = 16;
@@ -35,6 +36,26 @@ static const uint8_t rgbiColors[] = { // colors are in BGR order
     0x55,0xFF,0xFF,
     0xFF,0xFF,0xFF,
 };
+
+static const uint32_t rgbiColorsToRgba8888[] = { // colors are in RGBA order
+    0x000000FF,
+    0x0000AAFF,
+    0x00AA00FF,
+    0x00AAAAFF,
+    0xAA0000FF,
+    0xAA00AAFF,
+    0xAA5500FF,
+    0xAAAAAAFF,
+    0x555555FF,
+    0x5555FFFF,
+    0x55FF55FF,
+    0x55FFFFFF,
+    0xFF5555FF,
+    0xFF55FFFF,
+    0xFFFF55FF,
+    0xFFFFFFFF,
+};
+
 
 int compareRectangles(const void* a, const void* b) {
    return ( ((Rectangle*)a)->y > ((Rectangle*)b)->y );
@@ -178,20 +199,23 @@ void FramebufferGfx::saveAsTgaImage(const char* filename)
 
 void FramebufferGfx::renderToMemory(void *buffer, uint32_t pitch, PixelFormat format)
 {
-    if (format == PIXEL_FORMAT_RGB888)
+    if (format == PIXEL_FORMAT_RGBA8888)
     {
-        char* rgbBuffer = (char*)buffer;
+        char* rgbaBuffer = (char*)buffer;
         for (int y = 0; y < SCREEN_H; ++y)
         {
-            for (int x = 0; x < SCREEN_W; ++x)
-            {
-                char pixel = m_screenBuffer[y * SCREEN_W + x];
-                char* rgb = rgbBuffer + (y * pitch) + (x * 3);
-                rgb[0] = rgbiColors[pixel * 3 + 2]; // B
-                rgb[1] = rgbiColors[pixel * 3 + 1]; // G
-                rgb[2] = rgbiColors[pixel * 3 + 0]; // R
+            char* screenLine = m_screenBuffer + y * SCREEN_W;
+            uint32_t* rgbaLine = (uint32_t*)(rgbaBuffer + y * pitch);
+            for (int x = 0; x < SCREEN_W; ++x, ++screenLine, ++rgbaLine)
+            {  
+                *rgbaLine = rgbiColorsToRgba8888[*screenLine];
             }
         }
+    }
+    else
+    {
+        // unsupported format, throw an exception
+        throw Exception("FramebufferGfx::renderToMemory: Unsupported pixel format");
     }
 }
 

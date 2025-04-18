@@ -9,7 +9,7 @@
 
 enum PixelFormat
 {
-	PIXEL_FORMAT_RGB888 = 1,
+	PIXEL_FORMAT_RGBA8888 = 1,
 };
 
 class GfxOutput
