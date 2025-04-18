@@ -206,9 +206,11 @@ void FramebufferGfx::renderToMemory(void *buffer, uint32_t pitch, PixelFormat fo
         {
             char* screenLine = m_screenBuffer + y * SCREEN_W;
             uint32_t* rgbaLine = (uint32_t*)(rgbaBuffer + y * pitch);
-            for (int x = 0; x < SCREEN_W; ++x, ++screenLine, ++rgbaLine)
+            for (int x = 0; x < SCREEN_W; ++x)
             {  
                 *rgbaLine = rgbiColorsToRgba8888[*screenLine];
+                ++screenLine;
+                ++rgbaLine;
             }
         }
     }
