@@ -29,6 +29,8 @@ public:
 	
 	void saveAsTgaImage(const char* filename);
 
+	void renderToMemory(void* buffer, uint32_t pitch, PixelFormat format) {}
+
 	void drawDeathEffect();
 
 	void fancyWipe(const ImageBase& image);
