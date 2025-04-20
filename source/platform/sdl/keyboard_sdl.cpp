@@ -1,31 +1,31 @@
 #include "keyboard_sdl.h"
 
-volatile uint8_t s_scancode;
+#include <SDL3/SDL.h>
+#include <map>
 
-volatile uint8_t s_keyLeft;
-volatile uint8_t s_keyRight;
-volatile uint8_t s_keyUp;
-volatile uint8_t s_keyDown;
-volatile uint8_t s_keyCtrl;
-volatile uint8_t s_keyAlt;
-volatile uint8_t s_keySpace;
-volatile uint8_t s_keyEsc;
+static const std::map<SDL_Keycode, volatile uint8_t *> keyMap{
+    {SDLK_UP, &s_keyUp},
+    {SDLK_DOWN, &s_keyDown},
+    {SDLK_LEFT, &s_keyLeft},
+    {SDLK_RIGHT, &s_keyRight},
+    {SDLK_LCTRL, &s_keyCtrl},
+    {SDLK_LALT, &s_keyAlt},
+    {SDLK_SPACE, &s_keySpace},
+    {SDLK_ESCAPE, &s_keyEsc},
+};
 
-
-Keyboard::Keyboard()
+void KeyboardSdl::keyDown(uint32_t keyCode)
 {
-    s_keyLeft = 0;
-    s_keyRight = 0;
-    s_keyUp = 0;
-    s_keyDown = 0;
-    s_keyCtrl = 0;
-    s_keyAlt = 0;
-    s_keySpace = 0;
-    s_keyEsc = 0;
+    auto it = keyMap.find(static_cast<SDL_Keycode>(keyCode));
+    if (it != keyMap.end()) {
+        *(it->second) = true;
+    }
 }
 
-Keyboard::~Keyboard()
+void KeyboardSdl::keyUp(uint32_t keyCode)
 {
-
+    auto it = keyMap.find(static_cast<SDL_Keycode>(keyCode));
+    if (it != keyMap.end()) {
+        *(it->second) = false;
+    }
 }
-

@@ -3,23 +3,13 @@
 
 #include <stdint.h>
 
-volatile extern uint8_t s_scancode;
+#include "keyboard.h"
 
-extern volatile uint8_t s_keyLeft;
-extern volatile uint8_t s_keyRight;
-extern volatile uint8_t s_keyUp;
-extern volatile uint8_t s_keyDown;
-
-extern volatile uint8_t s_keyCtrl;
-extern volatile uint8_t s_keyAlt;
-extern volatile uint8_t s_keySpace;
-extern volatile uint8_t s_keyEsc;
-
-class Keyboard
+class KeyboardSdl
 {
 public:
-    Keyboard();
-    ~Keyboard();
+    void keyDown(uint32_t keyCode);
+    void keyUp(uint32_t keyCode);
 };
 
 
