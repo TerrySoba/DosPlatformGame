@@ -24,7 +24,9 @@ public:
 	virtual void clear() = 0;
 	virtual void saveAsTgaImage(const char* filename) = 0;
 	virtual void renderToMemory(void* buffer, uint32_t pitch, PixelFormat format) = 0;
-	virtual void drawDeathEffect() = 0;
+
+	// Draws the death effect on the screen, returns the number of frames that the effect will take
+	virtual uint32_t drawDeathEffect() = 0;
 	virtual void fancyWipe(const ImageBase& image) = 0;
 };
 

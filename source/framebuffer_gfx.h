@@ -9,6 +9,8 @@
 #include "gfx_output.h"
 
 #include <stdint.h>
+#include <array>
+
 
 class FramebufferGfx : public GfxOutput
 {
@@ -31,7 +33,7 @@ public:
 
 	void renderToMemory(void* buffer, uint32_t pitch, PixelFormat format);
 
-	void drawDeathEffect();
+	uint32_t drawDeathEffect();
 
 	void fancyWipe(const ImageBase &image);
 
@@ -43,6 +45,8 @@ private:
 	char *m_backgroundImage;
 	char *m_screenBuffer;
 	tnd::vector<Rectangle> m_dirtyRects;
+	std::array<uint32_t, 32> m_rgbiColorsToRgba8888;
+	uint32_t m_deathEffectFramesLeft = 0;
 };
 
 #endif

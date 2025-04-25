@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include "exception.h"
 
+#include "rgbi_colors.h"
+#include "palette_tools.h"
 
 static const uint16_t DEATH_ANIMATION_PALETTE_FRAMES = 16;
 static const uint16_t DEATH_ANIMATION_PALETTE_ENTRIES = 16;
@@ -18,44 +20,8 @@ static const uint16_t DEATH_ANIMATION_PALETTE_BYTES = DEATH_ANIMATION_PALETTE_EN
 
 #define CGA_COLOR_COUNT 16
 
-static const uint8_t rgbiColors[] = { // colors are in BGR order
-    0x00,0x00,0x00,
-    0xAA,0x00,0x00,
-    0x00,0xAA,0x00,
-    0xAA,0xAA,0x00,
-    0x00,0x00,0xAA,
-    0xAA,0x00,0xAA,
-    0x00,0x55,0xAA,
-    0xAA,0xAA,0xAA,
-    0x55,0x55,0x55,
-    0xFF,0x55,0x55,
-    0x55,0xFF,0x55,
-    0xFF,0xFF,0x55,
-    0x55,0x55,0xFF,
-    0xFF,0x55,0xFF,
-    0x55,0xFF,0xFF,
-    0xFF,0xFF,0xFF,
-};
 
-static const uint32_t rgbiColorsToRgba8888[] = { // colors are in RGBA order
-    0x000000FF,
-    0x0000AAFF,
-    0x00AA00FF,
-    0x00AAAAFF,
-    0xAA0000FF,
-    0xAA00AAFF,
-    0xAA5500FF,
-    0xAAAAAAFF,
-    0x555555FF,
-    0x5555FFFF,
-    0x55FF55FF,
-    0x55FFFFFF,
-    0xFF5555FF,
-    0xFF55FFFF,
-    0xFFFF55FF,
-    0xFFFFFFFF,
-};
-
+const uint32_t DEATH_ANIMATION_FRAMES = 32;
 
 int compareRectangles(const void* a, const void* b) {
    return ( ((Rectangle*)a)->y > ((Rectangle*)b)->y );
@@ -79,6 +45,29 @@ FramebufferGfx::FramebufferGfx()
 
     Rectangle rect(0, 0, SCREEN_W, SCREEN_H);
     m_dirtyRects.push_back(rect);
+
+    // Initialize the palette
+    for (int i = 0; i < CGA_COLOR_COUNT; ++i)
+    {
+        m_rgbiColorsToRgba8888[i] = 
+            (rgbiColors[i * 3 + 2] << 24) | // Red
+            (rgbiColors[i * 3 + 1] << 16) | // Green
+            (rgbiColors[i * 3 + 0] <<  8) | // Blue
+            0xFF /* alpha */;
+    }
+
+    // set the following 16 colors to an inverted grayscale versions of the first 16 colors
+    // This pallette is used by the death animation of the game.
+    for (int i = 0; i < CGA_COLOR_COUNT; ++i)
+    {
+        uint8_t gray = 255 - rgbToGray(rgbiColors[i * 3 + 2], rgbiColors[i * 3 + 1], rgbiColors[i * 3 + 0]);
+
+        m_rgbiColorsToRgba8888[i + CGA_COLOR_COUNT] = 
+            (gray << 24) | // Red
+            (gray << 16) | // Green
+            (gray <<  8) | // Blue
+            0xFF /* alpha */;
+    }
 }
 
 FramebufferGfx::~FramebufferGfx()
@@ -137,8 +126,44 @@ void FramebufferGfx::clear()
     m_dirtyRects.clear();
 }
 
+
+void addToBlock(char* screenBuffer, uint16_t startLine, uint16_t endLine, int16_t value)
+{
+    if (endLine > SCREEN_H) endLine = SCREEN_H;
+    for (uint16_t y = startLine; y < endLine; ++y)
+    {
+        char* line = screenBuffer + y * SCREEN_W;
+        for (uint16_t x = 0; x < SCREEN_W; ++x)
+        {
+            line[x] += value;
+        }
+    }
+}
+
 void FramebufferGfx::drawScreen()
-{   
+{
+    // death effect animation
+    if (m_deathEffectFramesLeft > 0)
+    {
+        int halfDeathEffectFrames = DEATH_ANIMATION_FRAMES / 2;
+        int blockHeight = SCREEN_H / (halfDeathEffectFrames - 1);
+
+        if (m_deathEffectFramesLeft > halfDeathEffectFrames)
+        {
+            int effectiveLeft = m_deathEffectFramesLeft - halfDeathEffectFrames - 1;
+            int startLine = effectiveLeft * blockHeight;
+            int endLine = (effectiveLeft + 1) * blockHeight;
+            addToBlock(m_screenBuffer, startLine, endLine, 16);
+        }
+        else
+        {
+            int effectiveLeft = m_deathEffectFramesLeft - 1;
+            int startLine = effectiveLeft * blockHeight;
+            int endLine = (effectiveLeft + 1) * blockHeight;
+            addToBlock(m_screenBuffer, startLine, endLine, -16);
+        }
+        m_deathEffectFramesLeft--;
+    }
 }
 
 void FramebufferGfx::setBackground(const ImageBase& image)
@@ -208,7 +233,7 @@ void FramebufferGfx::renderToMemory(void *buffer, uint32_t pitch, PixelFormat fo
             uint32_t* rgbaLine = (uint32_t*)(rgbaBuffer + y * pitch);
             for (int x = 0; x < SCREEN_W; ++x)
             {  
-                *rgbaLine = rgbiColorsToRgba8888[*screenLine];
+                *rgbaLine = m_rgbiColorsToRgba8888[*screenLine];
                 ++screenLine;
                 ++rgbaLine;
             }
@@ -221,9 +246,11 @@ void FramebufferGfx::renderToMemory(void *buffer, uint32_t pitch, PixelFormat fo
     }
 }
 
-void FramebufferGfx::drawDeathEffect()
+
+uint32_t FramebufferGfx::drawDeathEffect()
 {
-    
+    m_deathEffectFramesLeft = DEATH_ANIMATION_FRAMES;
+    return m_deathEffectFramesLeft;
 }
 
 void createFadeToBlackPalette(uint8_t* palette, uint8_t frameCount, uint8_t frame)

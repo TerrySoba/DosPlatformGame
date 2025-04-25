@@ -158,6 +158,7 @@ private:
 	TinyString m_loadedTilesetName;
 	StoryStatus m_storyStatus;
 	GameExitCode m_exitCode;
+	uint32_t m_deathFramesLeft;
 };
 
 

@@ -31,7 +31,7 @@ public:
 
 	void renderToMemory(void* buffer, uint32_t pitch, PixelFormat format) {}
 
-	void drawDeathEffect();
+	uint32_t drawDeathEffect();
 
 	void fancyWipe(const ImageBase& image);
 

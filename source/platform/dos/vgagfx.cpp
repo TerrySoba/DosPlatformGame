@@ -7,6 +7,9 @@
 #include <conio.h>
 #include <stdio.h>
 
+#include "rgbi_colors.h"
+#include "palette_tools.h"
+
 #define inport(px) inpw(px)
 #define inportb(px) inp(px)
 
@@ -22,24 +25,6 @@ static const uint16_t DEATH_ANIMATION_PALETTE_BYTES = DEATH_ANIMATION_PALETTE_EN
 
 #define CGA_COLOR_COUNT 16
 
-static const uint8_t rgbiColors[] = { // colors are in BGR order
-    0x00,0x00,0x00,
-    0xAA,0x00,0x00,
-    0x00,0xAA,0x00,
-    0xAA,0xAA,0x00,
-    0x00,0x00,0xAA,
-    0xAA,0x00,0xAA,
-    0x00,0x55,0xAA,
-    0xAA,0xAA,0xAA,
-    0x55,0x55,0x55,
-    0xFF,0x55,0x55,
-    0x55,0xFF,0x55,
-    0xFF,0xFF,0x55,
-    0x55,0x55,0xFF,
-    0xFF,0x55,0xFF,
-    0x55,0xFF,0xFF,
-    0xFF,0xFF,0xFF,
-};
 
 extern void videoInit(uint8_t mode);
 #pragma aux videoInit =    \
@@ -56,14 +41,6 @@ int compareRectangles(const void* a, const void* b) {
 void sortRects(tnd::vector<Rectangle>& rects)
 {
     qsort(&rects[0], rects.size(), sizeof(Rectangle), compareRectangles);
-}
-
-
-// convert RGB to grayscale according to rec601 luma
-uint8_t rgbToGray(uint8_t r, uint8_t g, uint8_t b)
-{
-    // return 0.299 * r + 0.587 * g + 0.114 * b; // rec601 luma
-    return 0.133 * r + 0.433 * g + 0.433 * b; // more artistic luma
 }
 
 
@@ -306,7 +283,7 @@ void VgaGfx::saveAsTgaImage(const char* filename)
     convertToTga(screen, filename);
 }
 
-void VgaGfx::drawDeathEffect()
+uint32_t VgaGfx::drawDeathEffect()
 {
     for (int y = 0; y < SCREEN_H; ++y)
     {
@@ -330,6 +307,8 @@ void VgaGfx::drawDeathEffect()
             line[x] = (line[x] - 16);
         }
     }
+
+    return 0;
 }
 
 void setFancyWipePalette()

@@ -7,7 +7,7 @@ objects_game_lib = \
 	seeker_enemy.o \
 	boss1.o time_tools.o  key_mapper.o \
 	tentacle.o tentacle_arm.o eye.o boss2.o font.o font_writer.o \
-	credits_loader.o credits_scroller.o \
+	credits_loader.o credits_scroller.o palette_tools.o \
 	platform/dos/vgagfx.o \
 	platform/dos/compiled_sprite.o \
 	platform/dos/soundblaster.o \
@@ -30,12 +30,12 @@ rad_tester = \
 	platform/dos/keyboard_dos.o rad_tester.o platform/dos/dos_timer.o rad_player.o rad_player_asm.o exception.o tiny_string.o
 	
 dissolve_objs = \
-	platform/dos/vgagfx.o image.o tiny_string.o exception.o dissolve.o platform/dos/dos_timer.o platform/dos/keyboard_dos.o tga_image.o
+	platform/dos/vgagfx.o palette_tools.o image.o tiny_string.o exception.o dissolve.o platform/dos/dos_timer.o platform/dos/keyboard_dos.o tga_image.o
 
 title_screen = \
     title.o platform/dos/vgagfx.o image.o tga_image.o exception.o rectangle.o platform/dos/keyboard_dos.o \
 	tiny_string.o animation.o platform/dos/compiled_sprite.o font.o font_writer.o \
-	blit.o i18n.o
+	blit.o i18n.o palette_tools.o
 
 # coptions = -0 -ml -xs -onatx -oh -oi+ -ei -zp8 -fpi87
 # coptions = -0 -ml -xs -onatx -oh -ol -ol+ -ox
