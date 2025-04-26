@@ -47,6 +47,7 @@ private:
 	tnd::vector<Rectangle> m_dirtyRects;
 	std::array<uint32_t, 32> m_rgbiColorsToRgba8888;
 	uint32_t m_deathEffectFramesLeft = 0;
+	uint32_t m_colorRegenerationFramesLeft = 0;
 };
 
 #endif

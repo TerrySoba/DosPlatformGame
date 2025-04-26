@@ -13,6 +13,7 @@ static const uint16_t DEATH_ANIMATION_PALETTE_FRAMES = 16;
 static const uint16_t DEATH_ANIMATION_PALETTE_ENTRIES = 16;
 static const uint16_t DEATH_ANIMATION_PALETTE_BYTES = DEATH_ANIMATION_PALETTE_ENTRIES * 3;
 
+static const uint16_t COLOR_REGENERATION_FRAMES = 32;
 
 #define SCREEN_W 320L
 #define SCREEN_H 200L
@@ -33,6 +34,43 @@ void sortRects(tnd::vector<Rectangle>& rects)
     qsort(&rects[0], rects.size(), sizeof(Rectangle), compareRectangles);
 }
 
+void setDefaultPalette(uint32_t* palette)
+{
+    for (int i = 0; i < CGA_COLOR_COUNT; ++i)
+    {
+        palette[i] = 
+            (rgbiColors[i * 3 + 2] << 24) | // Red
+            (rgbiColors[i * 3 + 1] << 16) | // Green
+            (rgbiColors[i * 3 + 0] <<  8) | // Blue
+            0xFF /* alpha */;
+    }
+}
+
+enum GrayscalePaletteType
+{
+    NON_INVERTED = 1,
+    INVERTED = 2
+};
+
+void setGrayscalePalette(uint32_t* palette, GrayscalePaletteType inverted)
+{
+    for (int i = 0; i < CGA_COLOR_COUNT; ++i)
+    {
+        auto transform = (inverted == INVERTED) ?
+            [](uint8_t val)->uint8_t{ return 255 - val;} :
+            [](uint8_t val)->uint8_t{ return val;};
+
+        uint8_t gray = transform(rgbToGray(rgbiColors[i * 3 + 2], rgbiColors[i * 3 + 1], rgbiColors[i * 3 + 0]));
+
+        palette[i] = 
+            (gray << 24) | // Red
+            (gray << 16) | // Green
+            (gray <<  8) | // Blue
+            0xFF /* alpha */;
+    }
+}
+
+
 FramebufferGfx::FramebufferGfx()
 {
     long int screenBytes = SCREEN_W * SCREEN_H;
@@ -47,27 +85,11 @@ FramebufferGfx::FramebufferGfx()
     m_dirtyRects.push_back(rect);
 
     // Initialize the palette
-    for (int i = 0; i < CGA_COLOR_COUNT; ++i)
-    {
-        m_rgbiColorsToRgba8888[i] = 
-            (rgbiColors[i * 3 + 2] << 24) | // Red
-            (rgbiColors[i * 3 + 1] << 16) | // Green
-            (rgbiColors[i * 3 + 0] <<  8) | // Blue
-            0xFF /* alpha */;
-    }
-
+    setDefaultPalette(m_rgbiColorsToRgba8888.data());
+    
     // set the following 16 colors to an inverted grayscale versions of the first 16 colors
     // This pallette is used by the death animation of the game.
-    for (int i = 0; i < CGA_COLOR_COUNT; ++i)
-    {
-        uint8_t gray = 255 - rgbToGray(rgbiColors[i * 3 + 2], rgbiColors[i * 3 + 1], rgbiColors[i * 3 + 0]);
-
-        m_rgbiColorsToRgba8888[i + CGA_COLOR_COUNT] = 
-            (gray << 24) | // Red
-            (gray << 16) | // Green
-            (gray <<  8) | // Blue
-            0xFF /* alpha */;
-    }
+    setGrayscalePalette(m_rgbiColorsToRgba8888.data() + CGA_COLOR_COUNT, INVERTED);
 }
 
 FramebufferGfx::~FramebufferGfx()
@@ -140,6 +162,39 @@ void addToBlock(char* screenBuffer, uint16_t startLine, uint16_t endLine, int16_
     }
 }
 
+void transitionToNormalPalette(uint32_t* palette, uint8_t frameCount, uint8_t frame)
+{
+    // generate a grayscale palette
+    std::array<uint32_t, CGA_COLOR_COUNT> grayPalette;
+    setGrayscalePalette(grayPalette.data(), NON_INVERTED);
+
+    // generate a normal palette
+    std::array<uint32_t, CGA_COLOR_COUNT> normalPalette;
+    setDefaultPalette(normalPalette.data());
+
+    // generate a transition palette
+    for (int i = 0; i < CGA_COLOR_COUNT; ++i)
+    {
+        uint8_t grayR = (grayPalette[i] >> 24) & 0xFF;
+        uint8_t grayG = (grayPalette[i] >> 16) & 0xFF;
+        uint8_t grayB = (grayPalette[i] >> 8) & 0xFF;
+
+        uint8_t normalR = (normalPalette[i] >> 24) & 0xFF;
+        uint8_t normalG = (normalPalette[i] >> 16) & 0xFF;
+        uint8_t normalB = (normalPalette[i] >> 8) & 0xFF;
+
+        uint8_t transitionR = grayR + ((normalR - grayR) * frame / frameCount);
+        uint8_t transitionG = grayG + ((normalG - grayG) * frame / frameCount);
+        uint8_t transitionB = grayB + ((normalB - grayB) * frame / frameCount);
+
+        palette[i] =
+            (transitionR << 24) |
+            (transitionG << 16) |
+            (transitionB << 8) |
+            0xFF /* alpha */;
+    }
+}
+
 void FramebufferGfx::drawScreen()
 {
     // death effect animation
@@ -157,12 +212,20 @@ void FramebufferGfx::drawScreen()
         }
         else
         {
+            m_colorRegenerationFramesLeft = COLOR_REGENERATION_FRAMES;
+            // setGrayscalePalette(m_rgbiColorsToRgba8888.data(), NON_INVERTED);
             int effectiveLeft = m_deathEffectFramesLeft - 1;
             int startLine = effectiveLeft * blockHeight;
             int endLine = (effectiveLeft + 1) * blockHeight;
             addToBlock(m_screenBuffer, startLine, endLine, -16);
         }
         m_deathEffectFramesLeft--;
+    }
+
+    if (m_colorRegenerationFramesLeft > 0)
+    {
+        m_colorRegenerationFramesLeft--;
+        transitionToNormalPalette(m_rgbiColorsToRgba8888.data(), COLOR_REGENERATION_FRAMES, COLOR_REGENERATION_FRAMES - m_colorRegenerationFramesLeft);
     }
 }
 
