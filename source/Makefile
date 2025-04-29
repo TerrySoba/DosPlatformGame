@@ -19,6 +19,7 @@ objects_game_lib = \
 
 objects_game = \
 	platform/dos/main.o $(objects_game_lib)
+	
 objects_test = \
     $(objects_game_lib) test_main.o unit_test.o \
 	physics_test.o tga_image_test.o shared_ptr_test.o \
@@ -26,14 +27,11 @@ objects_test = \
 	text_layout_test.o i18n_test.o level_test.o raii_ptr_test.o ptr_vector_test.o test_class.o \
 	time_tools_test.o compiled_sprite_test.o font_test.o font_writer_test.o credits_loader_test.o
 
-rad_tester = \
-	platform/dos/keyboard_dos.o rad_tester.o platform/dos/dos_timer.o rad_player.o rad_player_asm.o exception.o tiny_string.o
-	
 dissolve_objs = \
-	platform/dos/vgagfx.o palette_tools.o image.o tiny_string.o exception.o dissolve.o platform/dos/dos_timer.o platform/dos/keyboard_dos.o tga_image.o
+	platform/dos/vgagfx.o palette_tools.o image.o tiny_string.o exception.o platform/dos/dissolve.o platform/dos/dos_timer.o platform/dos/keyboard_dos.o tga_image.o
 
 title_screen = \
-    title.o platform/dos/vgagfx.o image.o tga_image.o exception.o rectangle.o platform/dos/keyboard_dos.o \
+    platform/dos/title.o platform/dos/vgagfx.o image.o tga_image.o exception.o rectangle.o platform/dos/keyboard_dos.o \
 	tiny_string.o animation.o platform/dos/compiled_sprite.o font.o font_writer.o \
 	blit.o i18n.o palette_tools.o
 
@@ -50,7 +48,6 @@ coptions_launcher = -ms -oneatx -xd -zp4 -0 -ad -os
 dest     = game2.exe
 test     = gametest.exe
 title    = title.exe
-radtest  = radtest.exe
 launcher = game.exe
 dissolve = dissolve.exe
 
@@ -64,8 +61,6 @@ $(title): _$(title)
 	./upx_compress.sh -9 --ultra-brute -f --8086 -o$(title) _$(title)
 
 $(dissolve): 
-
-$(radtest): 
 
 %.o : %.cpp
 	wpp $(coptions) -fo=$@ $<
@@ -128,10 +123,10 @@ _$(title): $(title_screen)
 	echo "FILE   {$(title_screen)}" >> title.lnk
 	wlink  @title.lnk
 
-$(launcher): launcher.o
+$(launcher): platform/dos/launcher.o
 	echo "NAME   $@" > launcher.lnk
 	echo "SYSTEM DOS" >> launcher.lnk
-	echo "FILE   {launcher.o}" >> launcher.lnk
+	echo "FILE   {platform/dos/launcher.o}" >> launcher.lnk
 	wlink  @launcher.lnk
 
 $(radtest): $(rad_tester)
