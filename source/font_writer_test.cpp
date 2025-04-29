@@ -3,7 +3,6 @@
 #include "font.h"
 #include "font_writer.h"
 
-#include "test_data.h"
 
 TEST(FontWriterTest1)
 {

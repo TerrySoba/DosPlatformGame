@@ -1,9 +1,6 @@
 #include "unit_test.h"
 #include "tga_image.h"
 
-#include "test_data.h"
-
-
 TEST(TgaImageTest)
 {
     TgaImage tgaImage1(TEST_DATA_DIR "gradient.tga");

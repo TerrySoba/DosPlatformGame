@@ -6,8 +6,6 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "test_data.h"
-
 class TgaPixelSource : public PixelSource
 {
 public:

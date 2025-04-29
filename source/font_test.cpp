@@ -2,7 +2,6 @@
 #include "exception.h"
 #include "font.h"
 
-#include "test_data.h"
 
 TEST(FontTest1)
 {

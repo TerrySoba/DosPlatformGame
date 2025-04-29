@@ -1,7 +1,6 @@
 #include "unit_test.h"
 #include "i18n.h"
 
-#include "test_data.h"
 
 TEST(I18NTest)
 {

@@ -1,7 +1,6 @@
 #include "unit_test.h"
 #include "sprite.h"
 #include "tga_image.h"
-#include "test_data.h"
 #include "framebuffer_gfx.h"
 
 #include "vector.h"

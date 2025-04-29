@@ -1,8 +1,6 @@
 #include "unit_test.h"
 #include "credits_loader.h"
 
-#include "test_data.h"
-
 TEST(CreditsLoaderTest)
 {
     CreditsLoader loader(TEST_DATA_DIR "credits.txt");

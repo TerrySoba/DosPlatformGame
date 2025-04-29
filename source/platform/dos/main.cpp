@@ -10,7 +10,6 @@
 #include "tga_image.h"
 #include "level.h"
 #include "game.h"
-#include "version.h"
 #include "text.h"
 #include "i18n.h"
 #include "sound_controller.h"

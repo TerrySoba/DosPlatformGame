@@ -2,7 +2,6 @@
 #include "level.h"
 #include "image_base.h"
 #include "physics.h"
-#include "version.h"
 #include "vector.h"
 #include "exception.h"
 #include "game_save.h"

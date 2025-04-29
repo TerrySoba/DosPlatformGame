@@ -18,7 +18,7 @@ objects_game_lib = \
 	platform/dos/music_controller_dos.o
 
 objects_game = \
-	main.o $(objects_game_lib)
+	platform/dos/main.o $(objects_game_lib)
 objects_test = \
     $(objects_game_lib) test_main.o unit_test.o \
 	physics_test.o tga_image_test.o shared_ptr_test.o \
@@ -37,10 +37,14 @@ title_screen = \
 	tiny_string.o animation.o platform/dos/compiled_sprite.o font.o font_writer.o \
 	blit.o i18n.o palette_tools.o
 
+BUILD_DATE=$(shell date -R)
+TEST_DATA_DIR=..\\\\\\\\testdata\\\\\\\\\
+
 # coptions = -0 -ml -xs -onatx -oh -oi+ -ei -zp8 -fpi87
 # coptions = -0 -ml -xs -onatx -oh -ol -ol+ -ox
-coptions = -ml -oneatx -xs -xr -zp4 -0 -ad -dPLATFORM_DOS
-
+coptions = -ml -oneatx -xs -xr -zp4 -0 -ad -dPLATFORM_DOS \
+           -dBUILD_DATE="\"$(BUILD_DATE)\"" \
+		   -dTEST_DATA_DIR="\"$(TEST_DATA_DIR)\""
 coptions_launcher = -ms -oneatx -xd -zp4 -0 -ad -os
 
 dest     = game2.exe
@@ -50,8 +54,6 @@ radtest  = radtest.exe
 launcher = game.exe
 dissolve = dissolve.exe
 
-
-BUILD_DATE=`date -R`
 
 all: $(dest) $(test) $(title) $(launcher) $(radtest) $(dissolve) $(credits)
 
@@ -96,13 +98,13 @@ rad_player_asm.o: 3rd_party/rad_tracker/c_interface.asm 3rd_party/rad_tracker/pl
 
 FORCE:
 
-main.o: version.h test_data.h
+# platform/dos/main.o: version.h test_data.h
 
-version.h: FORCE
-	echo \#define BUILD_DATE \"$(BUILD_DATE)\" > version.h
+#version.h: FORCE
+#	echo \#define BUILD_DATE \"$(BUILD_DATE)\" > version.h
 
-test_data.h: FORCE
-	echo \#define TEST_DATA_DIR \"..\\\\\\\\testdata\\\\\\\\\" > test_data.h
+#test_data.h: FORCE
+#	echo \#define TEST_DATA_DIR \"..\\\\\\\\testdata\\\\\\\\\" > test_data.h
 
 _$(dest): $(objects_game)
 	echo "NAME   $@" > game.lnk
