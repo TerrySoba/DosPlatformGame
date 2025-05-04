@@ -36,13 +36,16 @@ title_screen = \
 	blit.o i18n.o palette_tools.o
 
 BUILD_DATE=$(shell date -R)
+ABS_SOURCE_DIR=$(realpath $(SRC_DIR))
 TEST_DATA_DIR=..\\\\\\\\testdata\\\\\\\\\
 
 # coptions = -0 -ml -xs -onatx -oh -oi+ -ei -zp8 -fpi87
 # coptions = -0 -ml -xs -onatx -oh -ol -ol+ -ox
-coptions = -ml -oneatx -xs -xr -zp4 -0 -ad -dPLATFORM_DOS \
+coptions = -ml -oneatx -xs -xr -zp4 -0 -ad \
+		   -dPLATFORM_DOS \
            -dBUILD_DATE="\"$(BUILD_DATE)\"" \
 		   -dTEST_DATA_DIR="\"$(TEST_DATA_DIR)\""
+
 coptions_launcher = -ms -oneatx -xd -zp4 -0 -ad -os
 
 dest     = game2.exe
@@ -63,6 +66,7 @@ $(title): _$(title)
 $(dissolve): 
 
 %.o : %.cpp
+	@mkdir -p $(dir $@)
 	wpp $(coptions) -fo=$@ $<
 
 -include *.d
@@ -89,7 +93,7 @@ $(dissolve):
 #	wdis joystick.o
 
 rad_player_asm.o: 3rd_party/rad_tracker/c_interface.asm 3rd_party/rad_tracker/player_nasm.asm
-	nasm -f obj -i 3rd_party/rad_tracker  3rd_party/rad_tracker/c_interface.asm -o rad_player_asm.o -DRAD_NO_DEFAULT_PLAYER
+	nasm -f obj -i 3rd_party/rad_tracker 3rd_party/rad_tracker/c_interface.asm -o rad_player_asm.o -DRAD_NO_DEFAULT_PLAYER
 
 FORCE:
 
@@ -146,3 +150,4 @@ clean:
 	find . -name "*.o" -type f -delete
 	find . -name "*.lnk" -type f -delete
 	find . -name "*.exe" -type f -delete
+	find . -name "*.err" -type f -delete

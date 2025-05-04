@@ -4,12 +4,16 @@
 
 // #include <stdio.h>
 
-// void print(char *string);
-// #pragma aux print = \
-//         "mov ah, 09h"   \
-//         "int 0x21"      \
-//         parm    [dx]    \
-//         modify  [ax];
+/*
+
+void print(char *string);
+#pragma aux print = \
+        "mov ah, 09h"   \
+        "int 0x21"      \
+        parm    [dx]    \
+        modify  [ax];
+
+*/
 
 void printCh(char ch);
 #pragma aux printCh = \

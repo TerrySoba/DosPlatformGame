@@ -13,7 +13,7 @@ TextCompiler/build
 source/version.h
 Png2Tga/build
 AdpcmEncoder/build
-build/
+build/opt/
 sound/attic
 *.zip
 *.mmpz.bak
@@ -27,3 +27,4 @@ world.tga
 JUNIT.XML
 box/generated
 source/test_data.h
+dos_build/
