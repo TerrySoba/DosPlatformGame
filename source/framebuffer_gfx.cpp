@@ -305,7 +305,7 @@ void FramebufferGfx::renderToMemory(void *buffer, uint32_t pitch, PixelFormat fo
     else
     {
         // unsupported format, throw an exception
-        throw Exception("FramebufferGfx::renderToMemory: Unsupported pixel format");
+        THROW_EXCEPTION("FramebufferGfx::renderToMemory: Unsupported pixel format");
     }
 }
 

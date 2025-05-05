@@ -10,7 +10,7 @@
         size_t readElements = fread(dest, elemSize, count, stream); \
         if (readElements != count) \
         { \
-            throw Exception("Invalid number of bytes read"); \
+            THROW_EXCEPTION("Invalid number of bytes read"); \
         } \
     }
 
@@ -24,7 +24,7 @@ Font::Font(const char* fontFilename) :
     FILE* fp = fopen(fontFilename, "rb");
     if (!fp)
     {
-        throw Exception("Cannot open font file: ", fontFilename);
+        THROW_EXCEPTION("Cannot open font file: ", fontFilename);
     }
 
     try
@@ -33,14 +33,14 @@ Font::Font(const char* fontFilename) :
         safeRead(signature, 1, 6, fp);
         if (memcmp(signature, "stf252", 6) != 0)
         {
-            throw Exception("Invalid font file header");
+            THROW_EXCEPTION("Invalid font file header");
         }
 
         uint16_t formatVersion;
         safeRead(&formatVersion, 1, sizeof(uint16_t), fp);
         if (formatVersion != 1)
         {
-            throw Exception("Invalid font file version");
+            THROW_EXCEPTION("Invalid font file version");
         }
 
         safeRead(&m_imageWidth, 1, sizeof(uint16_t), fp);

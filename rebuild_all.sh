@@ -4,4 +4,4 @@ set -e
 
 ./regenerate_assets.sh
 ./build.sh
-./run_game.sh
+./run_game_dos.sh

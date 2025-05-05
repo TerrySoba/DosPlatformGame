@@ -1,10 +1,13 @@
 #include "tga_image.h"
 
 #include "exception.h"
+#include "safe_read.h"
 
 #include <stdio.h>
 #include <string.h>
 #include <malloc.h>
+
+
 
 TgaImage::TgaImage(const char* filename) : 
     m_data(NULL),
@@ -20,7 +23,7 @@ void TgaImage::loadImage(const char* filename)
     FILE* fp = fopen(filename, "rb");
     if (!fp)
     {
-        throw Exception("Could not open file:", filename);
+        THROW_EXCEPTION("Could not open file:", filename);
     }
 
     uint8_t idLength;
@@ -36,31 +39,31 @@ void TgaImage::loadImage(const char* filename)
     uint8_t bitsPerPixel;
     uint8_t imageDescriptor;
     
-    fread(&idLength, 1, 1, fp);
-    fread(&colorMapType, 1, 1, fp);
-    fread(&imageType, 1, 1, fp);
-    fread(&colorMapOrigin, 2, 1, fp);
-    fread(&colorMapLength, 2, 1, fp);
-    fread(&colorMapDepth, 1, 1, fp);
-    fread(&xOrigin, 2, 1, fp);
-    fread(&yOrigin, 2, 1, fp);
-    fread(&width, 2, 1, fp);
-    fread(&height, 2, 1, fp);
-    fread(&bitsPerPixel, 1, 1, fp);
-    fread(&imageDescriptor, 1, 1, fp);
+    safeRead(&idLength, 1, 1, fp);
+    safeRead(&colorMapType, 1, 1, fp);
+    safeRead(&imageType, 1, 1, fp);
+    safeRead(&colorMapOrigin, 2, 1, fp);
+    safeRead(&colorMapLength, 2, 1, fp);
+    safeRead(&colorMapDepth, 1, 1, fp);
+    safeRead(&xOrigin, 2, 1, fp);
+    safeRead(&yOrigin, 2, 1, fp);
+    safeRead(&width, 2, 1, fp);
+    safeRead(&height, 2, 1, fp);
+    safeRead(&bitsPerPixel, 1, 1, fp);
+    safeRead(&imageDescriptor, 1, 1, fp);
 
     // make sure we have palette data
     if (colorMapType != 1 )
     {
         fclose(fp);
-        throw Exception("Invalid image colorMapType.");
+        THROW_EXCEPTION("Invalid image colorMapType.");
     }
     
     // make sure this is a Color-mapped Image
     if (imageType != 1 && imageType != 9)
     {
         fclose(fp);
-        throw Exception("Invalid image imageType.");
+        THROW_EXCEPTION("Invalid image imageType.");
     }
 
     uint16_t paletteEntrySize = (colorMapDepth == 15)? 16 : colorMapDepth;
@@ -74,7 +77,7 @@ void TgaImage::loadImage(const char* filename)
     if (bitsPerPixel != 8)
     {
         fclose(fp);
-        throw Exception("Invalid image bitsPerPixel.");
+        THROW_EXCEPTION("Invalid image bitsPerPixel.");
     }
 
     size_t size = width * height;
@@ -88,7 +91,7 @@ void TgaImage::loadImage(const char* filename)
     
     if (imageType == 1) // uncompressed indexed
     {
-        fread(m_data, 1, size, fp);
+        safeRead(m_data, 1, size, fp);
     } else if (imageType == 9) { // compressed indexed
         uint32_t readBytes = 0;
         while (readBytes < size)
@@ -101,7 +104,7 @@ void TgaImage::loadImage(const char* filename)
                 uint8_t color = fgetc(fp);
                 memset(&m_data[readBytes], color, chunkLength);
             } else {
-                fread(&m_data[readBytes], 1, chunkLength, fp);
+                safeRead(&m_data[readBytes], 1, chunkLength, fp);
             }
 
             readBytes += chunkLength;

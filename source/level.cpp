@@ -3,6 +3,7 @@
 #include "detect_lines.h"
 #include "tile_definitions.h"
 #include "exception.h"
+#include "safe_read.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -33,19 +34,19 @@ enum LayerType
 
 void readDataLayer(FILE* fp, int16_t& layerWidth, int16_t& layerHeight, tnd::vector<uint8_t>& layerData)
 {
-    fread(&layerWidth, sizeof(layerWidth), 1, fp);
-    fread(&layerHeight, sizeof(layerHeight), 1, fp);
+    safeRead(&layerWidth, sizeof(layerWidth), 1, fp);
+    safeRead(&layerHeight, sizeof(layerHeight), 1, fp);
     layerData.resize(layerWidth * layerHeight);
-    fread(layerData.data(), layerWidth * layerHeight, 1, fp);
+    safeRead(layerData.data(), layerWidth * layerHeight, 1, fp);
 }
 
 void readRectangleLayer(FILE* fp, Rectangle& rect, int16_t offsetX, int16_t offsetY)
 {
     uint16_t x,y,w,h;
-    fread(&x, sizeof(x), 1, fp);
-    fread(&y, sizeof(y), 1, fp);
-    fread(&w, sizeof(w), 1, fp);
-    fread(&h, sizeof(h), 1, fp);
+    safeRead(&x, sizeof(x), 1, fp);
+    safeRead(&y, sizeof(y), 1, fp);
+    safeRead(&w, sizeof(w), 1, fp);
+    safeRead(&h, sizeof(h), 1, fp);
     rect = Rectangle(x+offsetX, y+offsetY, w, h);
 }
 
@@ -69,23 +70,23 @@ Level::Level(const char* mapFilename,
     FILE* fp = fopen(mapFilename, "rb");
     if (!fp)
     {
-        throw Exception("Could not open file:", mapFilename);
+        THROW_EXCEPTION("Could not open file:", mapFilename);
     }
 
     const char* header = "MAP";
 
     char buf[10];
-    fread(buf, strlen(header), 1, fp);
+    safeRead(buf, strlen(header), 1, fp);
     buf[strlen(header)] = 0;
 
     if (strcmp(buf, header) != 0)
     {
         fclose(fp);
-        throw Exception("Incorrect map header", mapFilename);
+        THROW_EXCEPTION("Incorrect map header", mapFilename);
     }
 
     uint16_t layerCount;
-    fread(&layerCount, sizeof(layerCount), 1, fp);
+    safeRead(&layerCount, sizeof(layerCount), 1, fp);
 
     tnd::vector<uint8_t> collisionData;
     int16_t collisionWidth = 0;
@@ -94,9 +95,9 @@ Level::Level(const char* mapFilename,
     for (int i = 0; i < layerCount; ++i)
     {
         uint8_t layerType;
-        fread(&layerType, sizeof(layerType), 1, fp);
+        safeRead(&layerType, sizeof(layerType), 1, fp);
         uint16_t layerDataSize;
-        fread(&layerDataSize, sizeof(layerDataSize), 1, fp);
+        safeRead(&layerDataSize, sizeof(layerDataSize), 1, fp);
 
         Rectangle rect;
         switch(layerType)
@@ -114,7 +115,7 @@ Level::Level(const char* mapFilename,
             case LAYER_TEXT:
             {
                 uint16_t textId;
-                fread(&textId, sizeof(textId), 1, fp);
+                safeRead(&textId, sizeof(textId), 1, fp);
                 readRectangleLayer(fp, rect, offsetX, offsetY);
                 m_messageBoxes.push_back(MessageBox(textId, rect.x, rect.y, rect.width, rect.height));
                 break;
@@ -142,7 +143,7 @@ Level::Level(const char* mapFilename,
             }
             case LAYER_GUFFIN_GATE:
             {
-                fread(&m_guffinGate, sizeof(m_guffinGate), 1, fp);
+                safeRead(&m_guffinGate, sizeof(m_guffinGate), 1, fp);
                 break;
             }
             case LAYER_BOSS1:
@@ -167,24 +168,24 @@ Level::Level(const char* mapFilename,
             }
             case LAYER_MUSIC:
             {
-                fread(&m_musicIndex, sizeof(m_musicIndex), 1, fp);
+                safeRead(&m_musicIndex, sizeof(m_musicIndex), 1, fp);
                 break;
             }
             case LAYER_CUTSCENE:
             {
-                fread(&m_cutscene, sizeof(m_cutscene), 1, fp);
+                safeRead(&m_cutscene, sizeof(m_cutscene), 1, fp);
                 break;
             }
             case LAYER_TILESET:
             {
                 uint16_t tilesetFilenameLength;
                 char tilesetFilename[13]; // 8.3 filename + null terminator
-                fread(&tilesetFilenameLength, sizeof(tilesetFilenameLength), 1, fp);
+                safeRead(&tilesetFilenameLength, sizeof(tilesetFilenameLength), 1, fp);
                 if (tilesetFilenameLength > 12)
                 {
-                    throw Exception("Tileset filename too long", mapFilename);
+                    THROW_EXCEPTION("Tileset filename too long", mapFilename);
                 }
-                fread(tilesetFilename, tilesetFilenameLength, 1, fp);
+                safeRead(tilesetFilename, tilesetFilenameLength, 1, fp);
                 tilesetFilename[tilesetFilenameLength] = 0;
                 m_tileset = tilesetFilename;
             }

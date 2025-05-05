@@ -8,7 +8,7 @@ CreditsLoader::CreditsLoader(const char *filename)
     FILE *file = fopen(filename, "r");
     if (!file)
     {
-        throw Exception("Could not open file:", filename);
+        THROW_EXCEPTION("Could not open file:", filename);
     }
 
     char line[256];

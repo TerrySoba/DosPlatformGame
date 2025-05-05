@@ -163,13 +163,13 @@ int main(int argc, char* argv[]) {
         }
         else
         {
-            throw Exception("Unknown language: ", params->language.c_str());
+            THROW_EXCEPTION("Unknown language: ", params->language.c_str());
         }
 
         SDL_Log("Initializing SDL.");
 
         if (!SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
-            throw Exception("SDL_InitSubSystem Error: ", SDL_GetError());
+            THROW_EXCEPTION("SDL_InitSubSystem Error: ", SDL_GetError());
         }
 
         std::shared_ptr<void> sdlCleanup(nullptr, [](void*) { SDL_Quit(); });
@@ -203,14 +203,14 @@ int main(int argc, char* argv[]) {
 
         std::shared_ptr<SDL_Window> win(SDL_CreateWindow("SdlPlatformGame", gameWindowResolutionWidth, gameWindowResolutionHeight, windowFlags), SDL_DestroyWindow);
         if (!win) {
-            throw Exception("SDL_CreateWindow Error: ", SDL_GetError());
+            THROW_EXCEPTION("SDL_CreateWindow Error: ", SDL_GetError());
         }
 
         const char* rendererName = params->sdlRenderer.empty() ? nullptr : params->sdlRenderer.c_str();
 
         std::shared_ptr<SDL_Renderer> ren(SDL_CreateRenderer(win.get(), rendererName), SDL_DestroyRenderer);
         if (!ren) {
-            throw Exception("SDL_CreateRenderer Error: ", SDL_GetError());
+            THROW_EXCEPTION("SDL_CreateRenderer Error: ", SDL_GetError());
         }
 
         // if (!SDL_SetRenderVSync(ren.get(), 2))
@@ -231,7 +231,7 @@ int main(int argc, char* argv[]) {
         
         std::shared_ptr<SDL_Texture> tex(SDL_CreateTexture(ren.get(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, 320, 200), SDL_DestroyTexture);
         if (!tex) {
-            throw Exception("SDL_CreateTextureFromSurface Error: ", SDL_GetError());
+            THROW_EXCEPTION("SDL_CreateTextureFromSurface Error: ", SDL_GetError());
         }
 
         SDL_SetTextureScaleMode(tex.get(), SDL_SCALEMODE_NEAREST);

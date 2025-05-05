@@ -1,5 +1,6 @@
 #include "game_save.h"
 #include "exception.h"
+#include "safe_read.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -11,7 +12,7 @@ void saveGameState(const GameState& gameState, const char* filename)
     FILE* fp = fopen(filename, "wb");
     if (!fp)
     {
-        throw Exception("Could not save game.");
+        THROW_EXCEPTION("Could not save game.");
     }
     fwrite(gameSaveHeader, strlen(gameSaveHeader), 1, fp);
     fwrite(&gameState.level.x, sizeof(gameState.level.x), 1, fp);
@@ -50,7 +51,7 @@ bool loadGameState(GameState& gameState, const char* filename)
     }
 
     char buf[10];
-    fread(buf, strlen(gameSaveHeader), 1, fp);
+    safeRead(buf, strlen(gameSaveHeader), 1, fp);
 
     // check for save file header
     if (0 != memcmp(buf, gameSaveHeader, strlen(gameSaveHeader)))
@@ -59,28 +60,28 @@ bool loadGameState(GameState& gameState, const char* filename)
         return false;
     }
 
-    fread(&gameState.level.x, sizeof(gameState.level.x), 1, fp);
-    fread(&gameState.level.y, sizeof(gameState.level.y), 1, fp);
-    fread(&gameState.spawnPoint.x, sizeof(gameState.spawnPoint.x), 1, fp);
-    fread(&gameState.spawnPoint.y, sizeof(gameState.spawnPoint.y), 1, fp);
-    fread(&gameState.jetpackCollected, sizeof(gameState.jetpackCollected), 1, fp);
-    fread(&gameState.sunItemCollected, sizeof(gameState.sunItemCollected), 1, fp);
-    fread(&gameState.button1, sizeof(gameState.button1), 1, fp);
-    fread(&gameState.deathCounter, sizeof(gameState.deathCounter), 1, fp);
-    fread(&gameState.frameCounter, sizeof(gameState.frameCounter), 1, fp);
-    fread(&gameState.musicIndex, sizeof(gameState.musicIndex), 1, fp);
-    fread(&gameState.storyStatus, sizeof(gameState.storyStatus), 1, fp);
+    safeRead(&gameState.level.x, sizeof(gameState.level.x), 1, fp);
+    safeRead(&gameState.level.y, sizeof(gameState.level.y), 1, fp);
+    safeRead(&gameState.spawnPoint.x, sizeof(gameState.spawnPoint.x), 1, fp);
+    safeRead(&gameState.spawnPoint.y, sizeof(gameState.spawnPoint.y), 1, fp);
+    safeRead(&gameState.jetpackCollected, sizeof(gameState.jetpackCollected), 1, fp);
+    safeRead(&gameState.sunItemCollected, sizeof(gameState.sunItemCollected), 1, fp);
+    safeRead(&gameState.button1, sizeof(gameState.button1), 1, fp);
+    safeRead(&gameState.deathCounter, sizeof(gameState.deathCounter), 1, fp);
+    safeRead(&gameState.frameCounter, sizeof(gameState.frameCounter), 1, fp);
+    safeRead(&gameState.musicIndex, sizeof(gameState.musicIndex), 1, fp);
+    safeRead(&gameState.storyStatus, sizeof(gameState.storyStatus), 1, fp);
 
     size_t collectedCount;
-    fread(&collectedCount, sizeof(collectedCount), 1, fp);
+    safeRead(&collectedCount, sizeof(collectedCount), 1, fp);
     gameState.colectedGuffins.clear();
     for (size_t i = 0; i < collectedCount; ++i)
     {
         CollectedGuffin guffin;
-        fread(&guffin.level.x, sizeof(guffin.level.x), 1, fp);
-        fread(&guffin.level.y, sizeof(guffin.level.y), 1, fp);
-        fread(&guffin.pos.x, sizeof(guffin.pos.x), 1, fp);
-        fread(&guffin.pos.y, sizeof(guffin.pos.y), 1, fp);
+        safeRead(&guffin.level.x, sizeof(guffin.level.x), 1, fp);
+        safeRead(&guffin.level.y, sizeof(guffin.level.y), 1, fp);
+        safeRead(&guffin.pos.x, sizeof(guffin.pos.x), 1, fp);
+        safeRead(&guffin.pos.y, sizeof(guffin.pos.y), 1, fp);
 
         gameState.colectedGuffins.push_back(guffin);
     }

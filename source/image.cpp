@@ -27,7 +27,7 @@ Image::Image(const char* filename)
     FILE* fp = fopen(filename, "rb");
     if (!fp)
     {
-        throw Exception("Could not open file:", filename);
+        THROW_EXCEPTION("Could not open file:", filename);
     }
 
     fread(&m_width, 2, 1, fp);

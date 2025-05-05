@@ -125,5 +125,5 @@ bool runTests(const char* filter)
     fprintf(junit, "</testsuites>\n");
     fclose(junit);
     std::cout << "Failed tests: " << failureCount << std::endl;
-    return (failureCount > 0);
+    return (failureCount == 0);
 }

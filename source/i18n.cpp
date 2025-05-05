@@ -2,6 +2,7 @@
 
 
 #include "exception.h"
+#include "safe_read.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -45,20 +46,20 @@ I18N::I18N(const char* path)
 
     if (!m_file)
     {
-        throw Exception("Could not open file: ", path);
+        THROW_EXCEPTION("Could not open file: ", path);
     }
 
     char buffer[16];
 
-    fread(buffer, 4, 1, m_file);
+    safeRead(buffer, 4, 1, m_file);
     if (memcmp(buffer, "TEXT", 4) != 0)
     {
-        throw Exception("I18N file has incorrect header: ", path);
+        THROW_EXCEPTION("I18N file has incorrect header: ", path);
     }
 
-    fread(&m_entryCount, 2, 1, m_file);
+    safeRead(&m_entryCount, 2, 1, m_file);
     m_entries = new StringEntry[m_entryCount];
-    fread(m_entries, sizeof(StringEntry), m_entryCount, m_file);
+    safeRead(m_entries, sizeof(StringEntry), m_entryCount, m_file);
 }
 
 I18N::~I18N()
@@ -78,7 +79,7 @@ TinyString I18N::_getString(uint16_t id)
         {
             fseek(m_file, m_entries[i].offset, SEEK_SET);
             TinyString str(m_entries[i].length);
-            fread(str.data(), m_entries[i].length, 1, m_file);
+            safeRead(str.data(), m_entries[i].length, 1, m_file);
             return str;
         }
     }

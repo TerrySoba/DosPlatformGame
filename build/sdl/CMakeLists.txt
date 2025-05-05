@@ -101,28 +101,29 @@ set(TEST_DATA_DIR "${GAME_BASE_DIR}/testdata/")
 
 # Create test executable target
 add_executable(test
-    ${SOURCE_DIR}/test_main.cpp
-    ${SOURCE_DIR}/test_class.cpp
     ${SOURCE_DIR}/blit_test.cpp
-    ${SOURCE_DIR}/sprite_test.cpp
     ${SOURCE_DIR}/credits_loader_test.cpp
+    ${SOURCE_DIR}/exception_test.cpp
     ${SOURCE_DIR}/font_test.cpp
     ${SOURCE_DIR}/font_writer_test.cpp
     ${SOURCE_DIR}/i18n_test.cpp
     ${SOURCE_DIR}/level_test.cpp
     ${SOURCE_DIR}/map_test.cpp
     ${SOURCE_DIR}/physics_test.cpp
+    ${SOURCE_DIR}/platform/sdl/decode_opus_test.cpp
     ${SOURCE_DIR}/ptr_vector_test.cpp
     ${SOURCE_DIR}/raii_ptr_test.cpp
     ${SOURCE_DIR}/rectangle_test.cpp
     ${SOURCE_DIR}/shared_ptr_test.cpp
+    ${SOURCE_DIR}/sprite_test.cpp
+    ${SOURCE_DIR}/test_class.cpp
+    ${SOURCE_DIR}/test_main.cpp
     ${SOURCE_DIR}/text_layout_test.cpp
     ${SOURCE_DIR}/tga_image_test.cpp
     ${SOURCE_DIR}/time_tools_test.cpp
     ${SOURCE_DIR}/tiny_string_test.cpp
     ${SOURCE_DIR}/unit_test.cpp
     ${SOURCE_DIR}/vector_test.cpp
-    ${SOURCE_DIR}/platform/sdl/decode_opus_test.cpp
 )
 
 target_include_directories(test PRIVATE

@@ -2,6 +2,7 @@
 
 #include "exception.h"
 #include "tiny_string.h"
+#include "safe_read.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,7 +31,7 @@ void RadPlayer::radLoadModuleInternal(const char* filename)
 	FILE* fp = fopen(filename, "rb");
     if (!fp)
     {
-        throw Exception("Could not open file:", filename);
+        THROW_EXCEPTION("Could not open file:", filename);
     }
 
     fseek(fp, 0, SEEK_END);
@@ -50,7 +51,7 @@ void RadPlayer::radLoadModuleInternal(const char* filename)
 	uint8_t* buf = (uint8_t*)m_songData;
 	while (!feof(fp))
 	{
-		int bytes = fread(buf, 1, 1000, fp);
+		int bytes = safeRead(buf, 1, 1000, fp);
 		buf += bytes;
 	}
 
@@ -81,7 +82,7 @@ void RadPlayer::playModule(const char* filename)
 	radLoadModuleInternal(filename);
 	if (!m_songData)
 	{
-		throw Exception("Error loading rad module: ", filename);
+		THROW_EXCEPTION("Error loading rad module: ", filename);
 	}
 	m_timer = new DosTimer(timerFunction, 50);
 }

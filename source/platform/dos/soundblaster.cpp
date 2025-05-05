@@ -397,7 +397,7 @@ SbSample SoundBlaster::loadRawSample(const char* filename, uint16_t sampleRate /
     rawFile = fopen(filename, "rb");
     if (!rawFile)
     {
-        throw Exception("Could not open file: ", filename);
+        THROW_EXCEPTION("Could not open file: ", filename);
     }
     fseek(rawFile, 0L, SEEK_END);
     fileSize = ftell(rawFile);
@@ -429,7 +429,7 @@ SbSample SoundBlaster::loadVocFile(const char* filename)
     FILE *rawFile = fopen(filename, "rb");
     if (!rawFile)
     {
-        throw Exception("Could not open file: ", filename);
+        THROW_EXCEPTION("Could not open file: ", filename);
     }
 
     char buffer[VOC_FILE_ID_LENGTH];
@@ -439,7 +439,7 @@ SbSample SoundBlaster::loadVocFile(const char* filename)
     if (strncmp(buffer, VOC_FILE_ID, VOC_FILE_ID_LENGTH) != 0)
     {
         fclose(rawFile);
-        throw Exception("Invalid File ID.");
+        THROW_EXCEPTION("Invalid File ID.");
     }
 
     uint16_t version;
@@ -450,7 +450,7 @@ SbSample SoundBlaster::loadVocFile(const char* filename)
     if (~version + 0x1234 != versionCheck)
     {
         fclose(rawFile);
-        throw Exception("Validation failure.");
+        THROW_EXCEPTION("Validation failure.");
     }
 
 
@@ -487,7 +487,7 @@ SbSample SoundBlaster::loadVocFile(const char* filename)
                 break;
             default:
                 fclose(rawFile);
-                throw Exception("Unsupported block type");
+                THROW_EXCEPTION("Unsupported block type");
         }
     }
 

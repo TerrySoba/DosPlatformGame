@@ -1,12 +1,11 @@
 #include "animation.h"
 #include "exception.h"
+#include "safe_read.h"
 
 #include "frame_image.h"
 
 #include <stdio.h>
 #include <string.h>
-
-
 
 
 Animation::Animation(const char* animFilename, const char* tgaFilename, bool transparent) :
@@ -17,29 +16,29 @@ Animation::Animation(const char* animFilename, const char* tgaFilename, bool tra
     FILE* fp = fopen(animFilename, "rb");
     if (!fp)
     {
-        throw Exception("Could not open animation: ", animFilename);
+        THROW_EXCEPTION("Could not open animation: ", animFilename);
     }
 
     char header[5];
     header[4] = 0;
-    fread(header, 4, 1, fp);
+    safeRead(header, 4, 1, fp);
     if (strcmp("ANIM", header) != 0)
     {
         fclose(fp);
-        throw Exception("File header incorrect: ", animFilename);
+        THROW_EXCEPTION("File header incorrect: ", animFilename);
     }
 
     uint16_t frameNumber;
-    fread(&frameNumber, sizeof(uint16_t), 1, fp);
+    safeRead(&frameNumber, sizeof(uint16_t), 1, fp);
 
     for (uint16_t i = 0; i < frameNumber; ++i)
     {
         Frame f;
 
-        fread(&f.x, sizeof(uint16_t), 1, fp);
-        fread(&f.y, sizeof(uint16_t), 1, fp);
-        fread(&f.width, sizeof(uint16_t), 1, fp);
-        fread(&f.height, sizeof(uint16_t), 1, fp);
+        safeRead(&f.x, sizeof(uint16_t), 1, fp);
+        safeRead(&f.y, sizeof(uint16_t), 1, fp);
+        safeRead(&f.width, sizeof(uint16_t), 1, fp);
+        safeRead(&f.height, sizeof(uint16_t), 1, fp);
 
         m_frames.push_back(f);
         FrameImage frameImage(image, f.x, f.y, f.width, f.height);
@@ -51,26 +50,26 @@ Animation::Animation(const char* animFilename, const char* tgaFilename, bool tra
     }
 
     uint16_t tagNumber;
-    fread(&tagNumber, sizeof(uint16_t), 1, fp);
+    safeRead(&tagNumber, sizeof(uint16_t), 1, fp);
 
     for (uint16_t i = 0; i < tagNumber; ++i)
     {
         FrameTag frameTag;
 
-        fread(&frameTag.startFrame, sizeof(uint16_t), 1, fp);
-        fread(&frameTag.endFrame, sizeof(uint16_t), 1, fp);
+        safeRead(&frameTag.startFrame, sizeof(uint16_t), 1, fp);
+        safeRead(&frameTag.endFrame, sizeof(uint16_t), 1, fp);
 
         uint16_t nameLen;
-        fread(&nameLen, sizeof(uint16_t), 1, fp);
+        safeRead(&nameLen, sizeof(uint16_t), 1, fp);
 
         char str[64];
         if (nameLen > 63)
         {
             fclose(fp);
-            throw Exception("tag name is too long:", animFilename);
+            THROW_EXCEPTION("tag name is too long:", animFilename);
         }
 
-        fread(str, 1, nameLen, fp);
+        safeRead(str, 1, nameLen, fp);
         str[nameLen] = 0;
 
         frameTag.name = str;
