@@ -16,43 +16,43 @@ set(SOURCE_DIR "${GAME_BASE_DIR}/source")
 message(STATUS "Source: ${SOURCE_DIR}")
 
 add_library(game_lib STATIC
-    ${SOURCE_DIR}/tga_image.cpp
-    ${SOURCE_DIR}/credits_loader.cpp
-    ${SOURCE_DIR}/tiny_string.cpp
-    ${SOURCE_DIR}/font.cpp
-    ${SOURCE_DIR}/font_writer.cpp
-    ${SOURCE_DIR}/blit.cpp
-    ${SOURCE_DIR}/i18n.cpp
-    ${SOURCE_DIR}/exception.cpp
-    ${SOURCE_DIR}/level.cpp
-    ${SOURCE_DIR}/detect_lines.cpp
-    ${SOURCE_DIR}/rectangle.cpp
-    ${SOURCE_DIR}/physics.cpp
-    ${SOURCE_DIR}/time_tools.cpp
-    ${SOURCE_DIR}/sprite.cpp
-    ${SOURCE_DIR}/framebuffer_gfx.cpp
     ${SOURCE_DIR}/animation.cpp
-    ${SOURCE_DIR}/game.cpp
-    ${SOURCE_DIR}/enemy.cpp
-    ${SOURCE_DIR}/tentacle.cpp
-    ${SOURCE_DIR}/tentacle_arm.cpp
-    ${SOURCE_DIR}/eye.cpp
-    ${SOURCE_DIR}/fire_ball.cpp
+    ${SOURCE_DIR}/blit.cpp
     ${SOURCE_DIR}/boss1.cpp
     ${SOURCE_DIR}/boss2.cpp
-    ${SOURCE_DIR}/seeker_enemy.cpp
-    ${SOURCE_DIR}/text.cpp
-    ${SOURCE_DIR}/key_mapper.cpp
+    ${SOURCE_DIR}/credits_loader.cpp
+    ${SOURCE_DIR}/detect_lines.cpp
+    ${SOURCE_DIR}/enemy.cpp
+    ${SOURCE_DIR}/exception.cpp
+    ${SOURCE_DIR}/eye.cpp
+    ${SOURCE_DIR}/fire_ball.cpp
+    ${SOURCE_DIR}/font_writer.cpp
+    ${SOURCE_DIR}/font.cpp
+    ${SOURCE_DIR}/framebuffer_gfx.cpp
     ${SOURCE_DIR}/game_save.cpp
+    ${SOURCE_DIR}/game.cpp
+    ${SOURCE_DIR}/i18n.cpp
+    ${SOURCE_DIR}/key_mapper.cpp
     ${SOURCE_DIR}/keyboard.cpp
+    ${SOURCE_DIR}/level.cpp
     ${SOURCE_DIR}/palette_tools.cpp
-
-    ${SOURCE_DIR}/platform/sdl/keyboard_sdl.cpp
-    ${SOURCE_DIR}/platform/sdl/joystick_sdl.cpp
-
-    ${SOURCE_DIR}/platform/sdl/sdl_gfx.cpp
+    ${SOURCE_DIR}/physics.cpp
     ${SOURCE_DIR}/platform/sdl/commandline_parser.cpp
     ${SOURCE_DIR}/platform/sdl/decode_opus.cpp
+    ${SOURCE_DIR}/platform/sdl/joystick_sdl.cpp
+    ${SOURCE_DIR}/platform/sdl/keyboard_sdl.cpp
+    ${SOURCE_DIR}/platform/sdl/sdl_gfx.cpp
+    ${SOURCE_DIR}/platform/sdl/sound_controller_sdl.cpp
+    ${SOURCE_DIR}/rectangle.cpp
+    ${SOURCE_DIR}/seeker_enemy.cpp
+
+    ${SOURCE_DIR}/sprite.cpp
+    ${SOURCE_DIR}/tentacle_arm.cpp
+    ${SOURCE_DIR}/tentacle.cpp
+    ${SOURCE_DIR}/text.cpp
+    ${SOURCE_DIR}/tga_image.cpp
+    ${SOURCE_DIR}/time_tools.cpp
+    ${SOURCE_DIR}/tiny_string.cpp
 )
 
 target_include_directories(game_lib PRIVATE
@@ -95,6 +95,11 @@ install(DIRECTORY "${GAME_BASE_DIR}/images/"
 install(DIRECTORY "${GAME_BASE_DIR}/text/"
     DESTINATION bin
     FILES_MATCHING PATTERN "*.en" PATTERN "*.de" 
+)
+
+install(DIRECTORY "${GAME_BASE_DIR}/sound/"
+    DESTINATION bin
+    FILES_MATCHING PATTERN "*.opus"
 )
 
 set(TEST_DATA_DIR "${GAME_BASE_DIR}/testdata/")

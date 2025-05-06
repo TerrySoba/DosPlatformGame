@@ -49,3 +49,31 @@ TEST(OpusDecoderTestException)
         Exception
     );
 }
+
+TEST(OpusDecoderTestDecodeOpusFile)
+{
+    const std::string opusFilename = TEST_DATA_DIR "guffin.opus";
+    const std::string referenceFilename = TEST_DATA_DIR "guffin.raw";
+
+    // read decodedFilename file into a buffer
+    std::ifstream referenceFile(referenceFilename, std::ios::binary);
+    ASSERT_TRUE(referenceFile);
+
+    std::vector<uint8_t> referenceBuffer((std::istreambuf_iterator<char>(referenceFile)), std::istreambuf_iterator<char>());
+    referenceFile.close();
+    ASSERT_TRUE(!referenceBuffer.empty());
+    int16_t* referenceBufferPtr = reinterpret_cast<int16_t*>(referenceBuffer.data());
+
+    SampleData outputBuffer = decodeOpusFile(opusFilename);
+
+    ASSERT_TRUE(!outputBuffer.empty());
+
+    ASSERT_EQ_INT((int)outputBuffer.size(), (int)referenceBuffer.size() / 2);
+
+    // compare the decoded samples with the decodedBuffer
+    for (size_t i = 0; i < outputBuffer.size(); ++i)
+    {
+        int32_t diff = static_cast<int32_t>(outputBuffer[i]) - static_cast<int32_t>(referenceBufferPtr[i]);
+        ASSERT_TRUE(std::abs(diff) < 15);
+    }
+}

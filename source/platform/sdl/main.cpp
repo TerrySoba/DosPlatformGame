@@ -23,7 +23,7 @@ public:
     GameWrapper(std::shared_ptr<SDL_Texture> renderTexture) :
         m_renderTexture(renderTexture)
     {
-        tnd::shared_ptr<SoundController> sound(new SoundControllerSdl());
+        tnd::shared_ptr<SoundController> sound(new SoundControllerSdl(nullptr));
 
         m_gfx.reset(new FramebufferGfx());
         

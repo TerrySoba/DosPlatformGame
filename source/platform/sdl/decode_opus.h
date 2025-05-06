@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <string>
 #include <memory>
+#include <vector>
 
 struct OggOpusFile; // Forward declaration of OggOpusFile struct
 
@@ -32,6 +33,10 @@ private:
     std::string m_filename;
     std::shared_ptr<OggOpusFile> m_opusFile;
 };
+
+using SampleData = std::vector<int16_t>;
+
+SampleData decodeOpusFile(const std::string& inputFilePath);
 
 
 

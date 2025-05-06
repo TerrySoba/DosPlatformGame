@@ -27,6 +27,22 @@ uint32_t OpusDecoder::decode(int16_t* outputBuffer, uint32_t bufferSize)
     return op_read_stereo(m_opusFile.get(), outputBuffer, bufferSize);
 }
 
+SampleData decodeOpusFile(const std::string& inputFilePath)
+{
+    OpusDecoder decoder(inputFilePath);
+    SampleData outputBuffer;
+
+    SampleData tmpBuffer(960 * 2); // 960 samples, 2 channels, 16-bit PCM
+
+    uint32_t samplesDecoded = 0;
+    
+    do {
+        samplesDecoded = decoder.decode(tmpBuffer.data(), tmpBuffer.size());
+        outputBuffer.insert(outputBuffer.end(), tmpBuffer.begin(), tmpBuffer.begin() + samplesDecoded * 2);
+    } while (samplesDecoded > 0);
+
+    return outputBuffer;
+}
 
 
 // bool decodeOpusFile(const std::string& inputFilePath, const std::string& outputFilePath) {
