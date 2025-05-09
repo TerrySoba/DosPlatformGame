@@ -20,10 +20,10 @@
 
 class GameWrapper {
 public:
-    GameWrapper(std::shared_ptr<SDL_Texture> renderTexture) :
+    GameWrapper(std::shared_ptr<SDL_Texture> renderTexture, std::shared_ptr<SDL_AudioStream> audioStream) :
         m_renderTexture(renderTexture)
     {
-        tnd::shared_ptr<SoundController> sound(new SoundControllerSdl(nullptr));
+        tnd::shared_ptr<SoundController> sound(new SoundControllerSdl(audioStream));
 
         m_gfx.reset(new FramebufferGfx());
         
@@ -174,14 +174,45 @@ int main(int argc, char* argv[]) {
 
         std::shared_ptr<void> sdlCleanup(nullptr, [](void*) { SDL_Quit(); });
 
-
         SDL_AudioSpec spec;
         spec.freq = 48000;
         spec.format = SDL_AUDIO_S16;
         spec.channels = 2;
 
-        SDL_AudioStream *stream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, NULL, NULL);
-        SDL_ResumeAudioStreamDevice(stream);
+        // SDL_AudioStream *stream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, NULL, NULL);
+        // SDL_ResumeAudioStreamDevice(stream);
+
+        SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec);
+        if (deviceId == 0) {
+            SDL_LogError(1, "SDL_OpenAudioDevice Error: %s", SDL_GetError());
+            THROW_EXCEPTION("SDL_OpenAudioDevice Error: ", SDL_GetError());
+        }
+        SDL_ResumeAudioDevice(deviceId);
+
+        auto bgmStream = std::shared_ptr<SDL_AudioStream>(SDL_CreateAudioStream(&spec, &spec), SDL_DestroyAudioStream);
+        if (!bgmStream) {
+            SDL_LogError(1, "SDL_CreateAudioStream Error: %s", SDL_GetError());
+            THROW_EXCEPTION("SDL_CreateAudioStream Error: ", SDL_GetError());
+        }
+
+        if (!SDL_BindAudioStream(deviceId, bgmStream.get()))
+        {
+            SDL_LogError(1, "SDL_BindAudioStream Error: %s", SDL_GetError());
+            THROW_EXCEPTION("SDL_BindAudioStream Error: ", SDL_GetError());
+        }
+
+        auto sfxStream = std::shared_ptr<SDL_AudioStream>(SDL_CreateAudioStream(&spec, &spec), SDL_DestroyAudioStream);
+        if (!sfxStream) {
+            SDL_LogError(1, "SDL_CreateAudioStream Error: %s", SDL_GetError());
+            THROW_EXCEPTION("SDL_CreateAudioStream Error: ", SDL_GetError());
+        }
+
+        if (!SDL_BindAudioStream(deviceId, sfxStream.get()))
+        {
+            SDL_LogError(1, "SDL_BindAudioStream Error: %s", SDL_GetError());
+            THROW_EXCEPTION("SDL_BindAudioStream Error: ", SDL_GetError());
+        }
+
 
         OpusDecoder decoder("/home/yoshi252/Documents/lmms/projects/opl2_explort_filters.opus");
 
@@ -240,7 +271,7 @@ int main(int argc, char* argv[]) {
         SDL_Event e;
 
 
-        GameWrapper gameWrapper(tex);
+        GameWrapper gameWrapper(tex, sfxStream);
 
         uint32_t targetFps = 70;
 
@@ -306,7 +337,7 @@ int main(int argc, char* argv[]) {
                 quit = true;
             }
 
-            int queueSize = SDL_GetAudioStreamQueued(stream);
+            int queueSize = SDL_GetAudioStreamQueued(bgmStream.get());
             constexpr int halfSecond = (48000 * sizeof(int16_t) * 2) / 2;
             while (queueSize < halfSecond)
             {
@@ -316,8 +347,8 @@ int main(int argc, char* argv[]) {
                     decoder.rewind();
                 }
                 // SDL_Log("decodedSamples: %d", decodedSamples);
-                SDL_PutAudioStreamData(stream, musicBuffer.data(), decodedSamples * sizeof(int16_t) * 2);
-                queueSize = SDL_GetAudioStreamQueued(stream);
+                SDL_PutAudioStreamData(bgmStream.get(), musicBuffer.data(), decodedSamples * sizeof(int16_t) * 2);
+                queueSize = SDL_GetAudioStreamQueued(bgmStream.get());
             }
             
             // wait for the next frame
@@ -335,8 +366,10 @@ int main(int argc, char* argv[]) {
         SDL_Log("FPS: %f", fps);
         SDL_Log("Frames: %ld", frames);
 
+        SDL_CloseAudioDevice(deviceId);
+
         SDL_Log("Quitting SDL.");
-        SDL_Quit();
+        
 
         SDL_Log("Goodbye, frames: %d", gameWrapper.getFrameCount());
     }

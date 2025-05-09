@@ -22,7 +22,7 @@ static const uint16_t COLOR_REGENERATION_FRAMES = 24;
 #define CGA_COLOR_COUNT 16
 
 
-const uint32_t DEATH_ANIMATION_FRAMES = 32;
+const uint32_t DEATH_ANIMATION_FRAMES = 28;
 
 int compareRectangles(const void* a, const void* b) {
    return ( ((Rectangle*)a)->y > ((Rectangle*)b)->y );

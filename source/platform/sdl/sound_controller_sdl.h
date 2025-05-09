@@ -23,6 +23,10 @@ public:
     virtual bool isPlaying();
 
 private:
+    void playSound(const SampleData& sound, int32_t priority);
+
+private:
+
     std::shared_ptr<SDL_AudioStream> m_audioStream;
 
     SampleData m_jumpSound;
@@ -34,6 +38,7 @@ private:
     SampleData m_switchSound;
     uint16_t m_soundPriority;
 
+    int32_t m_lastPriority = 0;
 };
 
 #endif
