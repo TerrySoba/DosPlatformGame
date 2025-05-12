@@ -5,13 +5,13 @@
 SoundControllerSdl::SoundControllerSdl(std::shared_ptr<SDL_AudioStream> audioStream) :
     m_audioStream(audioStream)
 {
-    m_jumpSound = decodeOpusFile("jump.opus");
-    m_walkSound = decodeOpusFile("steps.opus");
-    m_deathSound = decodeOpusFile("death.opus");
-    m_standSound = decodeOpusFile("stand.opus");
-    m_guffinSound = decodeOpusFile("guffin.opus");
-    m_jetpackSound = decodeOpusFile("jetpack.opus");
-    m_switchSound = decodeOpusFile("switch2.opus");
+    m_jumpSound = decodeVorbisFile("jump.ogg");
+    m_walkSound = decodeVorbisFile("steps.ogg");
+    m_deathSound = decodeVorbisFile("death.ogg");
+    m_standSound = decodeVorbisFile("stand.ogg");
+    m_guffinSound = decodeVorbisFile("guffin.ogg");
+    m_jetpackSound = decodeVorbisFile("jetpack.ogg");
+    m_switchSound = decodeVorbisFile("switch2.ogg");
 }
 
 SoundControllerSdl::~SoundControllerSdl()

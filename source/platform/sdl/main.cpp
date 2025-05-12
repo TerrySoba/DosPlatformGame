@@ -40,7 +40,7 @@ public:
             tnd::shared_ptr<Animation> tentacleArm(new Animation("ten_arm.ani", "ten_arm.tga"));
             tnd::shared_ptr<Animation> eye(new Animation("eye.ani", "eye.tga"));
 
-            tnd::shared_ptr<MusicController> music(new MusicControllerSdl());
+            tnd::shared_ptr<MusicController> music(new MusicControllerSdl(audioStream));
 
             GameAnimations animations = {guy, enemy, seekerEnemy, guffin, fireBall, jetPack, tentacle, projectile, tentacleArm, eye};
 
@@ -337,19 +337,19 @@ int main(int argc, char* argv[]) {
                 quit = true;
             }
 
-            int queueSize = SDL_GetAudioStreamQueued(bgmStream.get());
-            constexpr int halfSecond = (48000 * sizeof(int16_t) * 2) / 2;
-            while (queueSize < halfSecond)
-            {
-                // SDL_Log("Audio queue size: %d < %d", queueSize, halfSecond);
-                uint32_t decodedSamples = decoder.decode(musicBuffer.data(), musicBuffer.size());
-                if (decodedSamples == 0) {
-                    decoder.rewind();
-                }
-                // SDL_Log("decodedSamples: %d", decodedSamples);
-                SDL_PutAudioStreamData(bgmStream.get(), musicBuffer.data(), decodedSamples * sizeof(int16_t) * 2);
-                queueSize = SDL_GetAudioStreamQueued(bgmStream.get());
-            }
+            // int queueSize = SDL_GetAudioStreamQueued(bgmStream.get());
+            // constexpr int halfSecond = (48000 * sizeof(int16_t) * 2) / 2;
+            // while (queueSize < halfSecond)
+            // {
+            //     // SDL_Log("Audio queue size: %d < %d", queueSize, halfSecond);
+            //     uint32_t decodedSamples = decoder.decode(musicBuffer.data(), musicBuffer.size());
+            //     if (decodedSamples == 0) {
+            //         decoder.rewind();
+            //     }
+            //     // SDL_Log("decodedSamples: %d", decodedSamples);
+            //     SDL_PutAudioStreamData(bgmStream.get(), musicBuffer.data(), decodedSamples * sizeof(int16_t) * 2);
+            //     queueSize = SDL_GetAudioStreamQueued(bgmStream.get());
+            // }
             
             // wait for the next frame
             int64_t sleepTimeNs = targetFrameTimeNs - (SDL_GetTicksNS() - lastFrameTimeNs);

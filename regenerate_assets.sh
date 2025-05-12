@@ -40,6 +40,7 @@ popd
 wav2adpcm=VocTool/build/voctool
 encodeopus="opusenc --bitrate 128"
 
+encodevorbis="oggenc --resample 48000 -b 128"
 
 
 $wav2adpcm -i sound/death.wav -f 8000 -c ADPCM4 -o sound/death.voc -n 0.7
@@ -57,6 +58,16 @@ $encodeopus sound/stand.wav sound/stand.opus
 $encodeopus sound/guffin.wav sound/guffin.opus
 $encodeopus sound/jetpack.wav sound/jetpack.opus
 $encodeopus sound/switch2.wav sound/switch2.opus
+
+echo lala 123
+
+$encodevorbis sound/death.wav -o sound/death.ogg
+$encodevorbis sound/jump.wav -o sound/jump.ogg
+$encodevorbis sound/steps.wav -o sound/steps.ogg
+$encodevorbis sound/stand.wav -o sound/stand.ogg
+$encodevorbis sound/guffin.wav -o sound/guffin.ogg
+$encodevorbis sound/jetpack.wav -o sound/jetpack.ogg
+$encodevorbis sound/switch2.wav -o sound/switch2.ogg
 
 convertImage () {
     local pngfile=$1

@@ -3,15 +3,26 @@
 
 #include "music_controller.h"
 
+#include <thread>
+#include <memory>
+
+#include <SDL3/SDL.h>
 
 class MusicControllerSdl : public MusicController
 {
 public:
-    ~MusicControllerSdl() {}
+    MusicControllerSdl(std::shared_ptr<SDL_AudioStream> audioStream);
+    ~MusicControllerSdl();
 
-    void playMusic(SongIndex index) {}
+    // void handleAudioStreamCallback(SDL_AudioStream* stream, void* userdata, uint8_t* streamBuffer, int32_t length); 
 
-    SongIndex getCurrentSong() const { return MUSIC_INDEX_NO_MUSIC; }
+    // MusicController interface
+    void playMusic(SongIndex index);
+    SongIndex getCurrentSong() const;
+
+private:
+    std::mutex m_mutex;
+    std::shared_ptr<SDL_AudioStream> m_audioStream;
 };
 
 #endif

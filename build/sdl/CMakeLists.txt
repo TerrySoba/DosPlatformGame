@@ -39,13 +39,14 @@ add_library(game_lib STATIC
     ${SOURCE_DIR}/physics.cpp
     ${SOURCE_DIR}/platform/sdl/commandline_parser.cpp
     ${SOURCE_DIR}/platform/sdl/decode_opus.cpp
+    ${SOURCE_DIR}/platform/sdl/decode_vorbis.cpp
     ${SOURCE_DIR}/platform/sdl/joystick_sdl.cpp
     ${SOURCE_DIR}/platform/sdl/keyboard_sdl.cpp
+    ${SOURCE_DIR}/platform/sdl/music_controller_sdl.cpp
     ${SOURCE_DIR}/platform/sdl/sdl_gfx.cpp
     ${SOURCE_DIR}/platform/sdl/sound_controller_sdl.cpp
     ${SOURCE_DIR}/rectangle.cpp
     ${SOURCE_DIR}/seeker_enemy.cpp
-
     ${SOURCE_DIR}/sprite.cpp
     ${SOURCE_DIR}/tentacle_arm.cpp
     ${SOURCE_DIR}/tentacle.cpp
@@ -53,6 +54,8 @@ add_library(game_lib STATIC
     ${SOURCE_DIR}/tga_image.cpp
     ${SOURCE_DIR}/time_tools.cpp
     ${SOURCE_DIR}/tiny_string.cpp
+
+    ${SOURCE_DIR}/3rd_party/stb/stb_vorbis.c
 )
 
 target_include_directories(game_lib PRIVATE
@@ -99,7 +102,7 @@ install(DIRECTORY "${GAME_BASE_DIR}/text/"
 
 install(DIRECTORY "${GAME_BASE_DIR}/sound/"
     DESTINATION bin
-    FILES_MATCHING PATTERN "*.opus"
+    FILES_MATCHING PATTERN "*.opus" PATTERN "*.ogg"
 )
 
 set(TEST_DATA_DIR "${GAME_BASE_DIR}/testdata/")
@@ -116,6 +119,7 @@ add_executable(test
     ${SOURCE_DIR}/map_test.cpp
     ${SOURCE_DIR}/physics_test.cpp
     ${SOURCE_DIR}/platform/sdl/decode_opus_test.cpp
+    ${SOURCE_DIR}/platform/sdl/decode_vorbis_test.cpp
     ${SOURCE_DIR}/ptr_vector_test.cpp
     ${SOURCE_DIR}/raii_ptr_test.cpp
     ${SOURCE_DIR}/rectangle_test.cpp

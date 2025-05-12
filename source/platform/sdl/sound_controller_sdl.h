@@ -2,7 +2,7 @@
 #define SOUND_CONTROLLER_SDL_INCLUDED_H
 
 #include "sound_controller.h"
-#include "decode_opus.h"
+#include "decode_vorbis.h"
 
 #include <SDL3/SDL_audio.h>
 #include <memory>
