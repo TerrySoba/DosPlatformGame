@@ -1,6 +1,6 @@
 #include "commandline_parser.h"
 
-#include <CLI/CLI.hpp>
+#include "3rd_party/CLI11/CLI11.hpp"
 
 std::optional<CommandLineParameters> parseCommandLine(int argc, char* argv[])
 {

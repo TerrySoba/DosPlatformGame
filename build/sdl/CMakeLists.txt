@@ -54,6 +54,8 @@ add_library(game_lib STATIC
     ${SOURCE_DIR}/3rd_party/stb/stb_vorbis.c
 )
 
+target_link_libraries(game_lib PRIVATE SDL3::SDL3)
+
 string(TIMESTAMP CMAKE_BUILD_DATE "%Y-%m-%d")
 target_compile_definitions(game_lib PRIVATE PLATFORM_SDL BUILD_DATE="${CMAKE_BUILD_DATE}")
 
