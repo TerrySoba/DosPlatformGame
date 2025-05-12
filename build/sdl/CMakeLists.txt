@@ -3,9 +3,6 @@ project(SdlPlatformGame)
 
 set(CMAKE_CXX_STANDARD 23)
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(OPUS REQUIRED opusfile)
-
 find_package(SDL3 REQUIRED)
 
 set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}")
@@ -38,7 +35,6 @@ add_library(game_lib STATIC
     ${SOURCE_DIR}/palette_tools.cpp
     ${SOURCE_DIR}/physics.cpp
     ${SOURCE_DIR}/platform/sdl/commandline_parser.cpp
-    ${SOURCE_DIR}/platform/sdl/decode_opus.cpp
     ${SOURCE_DIR}/platform/sdl/decode_vorbis.cpp
     ${SOURCE_DIR}/platform/sdl/joystick_sdl.cpp
     ${SOURCE_DIR}/platform/sdl/keyboard_sdl.cpp
@@ -56,14 +52,6 @@ add_library(game_lib STATIC
     ${SOURCE_DIR}/tiny_string.cpp
 
     ${SOURCE_DIR}/3rd_party/stb/stb_vorbis.c
-)
-
-target_include_directories(game_lib PRIVATE
-    ${OPUS_INCLUDE_DIRS}
-)
-
-target_link_libraries(game_lib PRIVATE
-    ${OPUS_LIBRARIES}
 )
 
 string(TIMESTAMP CMAKE_BUILD_DATE "%Y-%m-%d")
@@ -102,7 +90,7 @@ install(DIRECTORY "${GAME_BASE_DIR}/text/"
 
 install(DIRECTORY "${GAME_BASE_DIR}/sound/"
     DESTINATION bin
-    FILES_MATCHING PATTERN "*.opus" PATTERN "*.ogg"
+    FILES_MATCHING PATTERN "*.ogg"
 )
 
 set(TEST_DATA_DIR "${GAME_BASE_DIR}/testdata/")
@@ -118,7 +106,6 @@ add_executable(test
     ${SOURCE_DIR}/level_test.cpp
     ${SOURCE_DIR}/map_test.cpp
     ${SOURCE_DIR}/physics_test.cpp
-    ${SOURCE_DIR}/platform/sdl/decode_opus_test.cpp
     ${SOURCE_DIR}/platform/sdl/decode_vorbis_test.cpp
     ${SOURCE_DIR}/ptr_vector_test.cpp
     ${SOURCE_DIR}/raii_ptr_test.cpp

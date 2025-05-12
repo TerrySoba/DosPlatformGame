@@ -38,7 +38,6 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 make -j
 popd
 wav2adpcm=VocTool/build/voctool
-encodeopus="opusenc --bitrate 128"
 
 encodevorbis="oggenc --resample 48000 -b 128"
 
@@ -51,15 +50,6 @@ $wav2adpcm -i sound/guffin.wav -f 8000 -c ADPCM4 -o sound/guffin.voc -n 0.5
 # $wav2adpcm -i sound/jetpack.wav -f 8000 -c ADPCM2 -o sound/jetpack.voc -n 0.9 -l 10
 $wav2adpcm -i sound/switch2.wav -f 11000 -c ADPCM4 -o sound/switch2.voc -n 0.9
 
-$encodeopus sound/death.wav sound/death.opus
-$encodeopus sound/jump.wav sound/jump.opus
-$encodeopus sound/steps.wav sound/steps.opus
-$encodeopus sound/stand.wav sound/stand.opus
-$encodeopus sound/guffin.wav sound/guffin.opus
-$encodeopus sound/jetpack.wav sound/jetpack.opus
-$encodeopus sound/switch2.wav sound/switch2.opus
-
-echo lala 123
 
 $encodevorbis sound/death.wav -o sound/death.ogg
 $encodevorbis sound/jump.wav -o sound/jump.ogg

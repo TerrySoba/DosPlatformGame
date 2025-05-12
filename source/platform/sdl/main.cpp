@@ -9,7 +9,7 @@
 #include "exception.h"
 #include "sdl_gfx.h"
 #include "commandline_parser.h"
-#include "decode_opus.h"
+#include "decode_vorbis.h"
 
 #include <SDL3/SDL.h>
 
@@ -214,7 +214,7 @@ int main(int argc, char* argv[]) {
         }
 
 
-        OpusDecoder decoder("/home/yoshi252/Documents/lmms/projects/opl2_explort_filters.opus");
+        VorbisDecoder decoder("/home/yoshi252/Documents/lmms/projects/opl2_explort_filters.ogg");
 
         const char *videoDriver = SDL_GetCurrentVideoDriver();
         if (videoDriver)
