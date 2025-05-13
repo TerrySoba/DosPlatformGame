@@ -28,6 +28,4 @@ ENV RANLIB=x86_64-w64-mingw32-ranlib
 ENV PKG_CONFIG_PATH=/usr/x86_64-w64-mingw32/lib/pkgconfig
 
 ADD cross_build.sh /cross_build.sh
-
-
-    
+RUN chmod +x /cross_build.sh

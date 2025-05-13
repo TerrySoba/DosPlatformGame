@@ -85,7 +85,11 @@ install(TARGETS SdlPlatformGame DESTINATION bin)
 
 if (IS_WIN64_CROSS_BUILD)
     # Copy the SDL DLLs to the bin directory
-    install(FILES "/usr/local/bin/SDL3.dll" DESTINATION bin)
+    install(FILES
+        "/usr/local/bin/SDL3.dll"
+        "/usr/lib/gcc/x86_64-w64-mingw32/13-win32/libgcc_s_seh-1.dll"
+        "/usr/lib/gcc/x86_64-w64-mingw32/13-win32/libstdc++-6.dll"
+        DESTINATION bin)
 endif()
 
 install(DIRECTORY "${GAME_BASE_DIR}/levels/"

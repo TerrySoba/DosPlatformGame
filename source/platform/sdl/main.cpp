@@ -214,7 +214,7 @@ int main(int argc, char* argv[]) {
         }
 
 
-        VorbisDecoder decoder("/home/yoshi252/Documents/lmms/projects/opl2_explort_filters.ogg");
+        // VorbisDecoder decoder("/home/yoshi252/Documents/lmms/projects/opl2_explort_filters.ogg");
 
         const char *videoDriver = SDL_GetCurrentVideoDriver();
         if (videoDriver)
