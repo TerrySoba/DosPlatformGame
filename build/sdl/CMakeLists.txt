@@ -1,6 +1,15 @@
 cmake_minimum_required(VERSION 3.31)
 project(SdlPlatformGame)
 
+if(CMAKE_CXX_COMPILER MATCHES ".*mingw.*")
+    message(STATUS "Is window cross build")
+    set(IS_WIN64_CROSS_BUILD TRUE)
+else()
+    message(STATUS "Native build")
+    set(IS_WIN64_CROSS_BUILD FALSE)
+endif()
+
+
 set(CMAKE_CXX_STANDARD 23)
 
 find_package(SDL3 REQUIRED)
@@ -71,9 +80,13 @@ target_link_libraries(SdlPlatformGame PRIVATE game_lib)
 target_compile_definitions(SdlPlatformGame PRIVATE PLATFORM_SDL BUILD_DATE="${CMAKE_BUILD_DATE}")
 target_link_libraries(SdlPlatformGame PRIVATE SDL3::SDL3)
 
-# install(TARGETS SDL3-shared DESTINATION bin)
 
 install(TARGETS SdlPlatformGame DESTINATION bin)
+
+if (IS_WIN64_CROSS_BUILD)
+    # Copy the SDL DLLs to the bin directory
+    install(FILES "/usr/local/bin/SDL3.dll" DESTINATION bin)
+endif()
 
 install(DIRECTORY "${GAME_BASE_DIR}/levels/"
     DESTINATION bin
@@ -94,6 +107,7 @@ install(DIRECTORY "${GAME_BASE_DIR}/sound/"
     DESTINATION bin
     FILES_MATCHING PATTERN "*.ogg"
 )
+
 
 set(TEST_DATA_DIR "${GAME_BASE_DIR}/testdata/")
 
@@ -132,8 +146,16 @@ target_compile_definitions(test PRIVATE TEST_DATA_DIR="${TEST_DATA_DIR}")
 
 target_link_libraries(test PRIVATE game_lib)
 
-# Enable AddressSanitizer for the test target
-target_compile_options(test PRIVATE -fsanitize=address)
-target_link_options(test PRIVATE -fsanitize=address)
+# Print the compiler executable name
+message(STATUS "C++ Compiler: ${CMAKE_CXX_COMPILER}")
+message(STATUS "C Compiler: ${CMAKE_C_COMPILER}")
+
+if(NOT IS_WIN64_CROSS_BUILD)
+    # Enable AddressSanitizer for the test target
+    target_compile_options(test PRIVATE -fsanitize=address)
+    target_link_options(test PRIVATE -fsanitize=address)
+endif()
+
+
 
 
