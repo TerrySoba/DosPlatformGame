@@ -20,10 +20,13 @@
 
 class GameWrapper {
 public:
-    GameWrapper(std::shared_ptr<SDL_Texture> renderTexture, std::shared_ptr<SDL_AudioStream> audioStream) :
+    GameWrapper(
+        std::shared_ptr<SDL_Texture> renderTexture,
+        std::shared_ptr<SDL_AudioStream> sfxAudioStream,
+        std::shared_ptr<SDL_AudioStream> musicAudioStream) :
         m_renderTexture(renderTexture)
     {
-        tnd::shared_ptr<SoundController> sound(new SoundControllerSdl(audioStream));
+        tnd::shared_ptr<SoundController> sound(new SoundControllerSdl(sfxAudioStream));
 
         m_gfx.reset(new FramebufferGfx());
         
@@ -40,7 +43,7 @@ public:
             tnd::shared_ptr<Animation> tentacleArm(new Animation("ten_arm.ani", "ten_arm.tga"));
             tnd::shared_ptr<Animation> eye(new Animation("eye.ani", "eye.tga"));
 
-            tnd::shared_ptr<MusicController> music(new MusicControllerSdl(audioStream));
+            tnd::shared_ptr<MusicController> music(new MusicControllerSdl(musicAudioStream));
 
             GameAnimations animations = {guy, enemy, seekerEnemy, guffin, fireBall, jetPack, tentacle, projectile, tentacleArm, eye};
 
@@ -271,7 +274,7 @@ int main(int argc, char* argv[]) {
         SDL_Event e;
 
 
-        GameWrapper gameWrapper(tex, sfxStream);
+        GameWrapper gameWrapper(tex, sfxStream, bgmStream);
 
         uint32_t targetFps = 70;
 

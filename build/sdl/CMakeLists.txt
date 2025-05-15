@@ -112,6 +112,11 @@ install(DIRECTORY "${GAME_BASE_DIR}/sound/"
     FILES_MATCHING PATTERN "*.ogg"
 )
 
+install(DIRECTORY "${GAME_BASE_DIR}/music/"
+    DESTINATION bin
+    FILES_MATCHING PATTERN "*.ogg"
+)
+
 
 set(TEST_DATA_DIR "${GAME_BASE_DIR}/testdata/")
 
