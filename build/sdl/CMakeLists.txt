@@ -61,6 +61,12 @@ add_library(game_lib STATIC
     ${SOURCE_DIR}/tiny_string.cpp
 
     ${SOURCE_DIR}/3rd_party/stb/stb_vorbis.c
+    ${SOURCE_DIR}/3rd_party/imgui-1.91.9b/imgui.cpp
+    ${SOURCE_DIR}/3rd_party/imgui-1.91.9b/imgui_tables.cpp
+    ${SOURCE_DIR}/3rd_party/imgui-1.91.9b/imgui_widgets.cpp
+    ${SOURCE_DIR}/3rd_party/imgui-1.91.9b/imgui_draw.cpp
+    ${SOURCE_DIR}/3rd_party/imgui-1.91.9b//backends/imgui_impl_sdl3.cpp
+    ${SOURCE_DIR}/3rd_party/imgui-1.91.9b//backends/imgui_impl_sdlrenderer3.cpp
 )
 
 target_link_libraries(game_lib PRIVATE SDL3::SDL3)
@@ -71,7 +77,10 @@ target_compile_definitions(game_lib PRIVATE PLATFORM_SDL BUILD_DATE="${CMAKE_BUI
 #target_compile_options(game_lib PRIVATE -fsanitize=address)
 #target_link_options(game_lib PRIVATE -fsanitize=address)
 
-target_include_directories(game_lib PUBLIC ${SOURCE_DIR})
+target_include_directories(game_lib PUBLIC
+    ${SOURCE_DIR}
+    ${SOURCE_DIR}/3rd_party/imgui-1.91.9b/)
+    
 
 # Create your game executable target as usual
 add_executable(SdlPlatformGame 

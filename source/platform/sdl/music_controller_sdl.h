@@ -32,6 +32,8 @@ private:
     std::shared_ptr<SDL_AudioStream> m_audioStream;
     std::shared_ptr<VorbisDecoder> m_currentSongDecoder;
     std::vector<int16_t> m_musicBuffer;
+
+    SongIndex m_currentSong = MUSIC_INDEX_NO_CHANGE;
 };
 
 #endif

@@ -11,6 +11,10 @@
 #include "commandline_parser.h"
 #include "decode_vorbis.h"
 
+#include "imgui.h"
+#include "backends/imgui_impl_sdl3.h"
+#include "backends/imgui_impl_sdlrenderer3.h"
+
 #include <SDL3/SDL.h>
 
 #include <memory>
@@ -133,7 +137,37 @@ private:
 
 };
 
+void setupImGui(SDL_Window* window, SDL_Renderer* renderer)
+{
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO &io = ImGui::GetIO();
+    (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls
 
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+    // ImGui::StyleColorsLight();
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplSDL3_InitForSDLRenderer(window, renderer);
+    ImGui_ImplSDLRenderer3_Init(renderer);
+}
+
+void startImGuiFrame()
+{
+    ImGui_ImplSDLRenderer3_NewFrame();
+    ImGui_ImplSDL3_NewFrame();
+    ImGui::NewFrame();
+}
+
+void renderImGui(SDL_Renderer* renderer)
+{
+    ImGui::Render();
+    ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), renderer);
+}
 
 int main(int argc, char* argv[]) {
     auto params = parseCommandLine(argc, argv);
@@ -270,6 +304,8 @@ int main(int argc, char* argv[]) {
 
         SDL_SetTextureScaleMode(tex.get(), SDL_SCALEMODE_NEAREST);
 
+        setupImGui(win.get(), ren.get());
+
         bool quit = false;
         SDL_Event e;
 
@@ -292,6 +328,7 @@ int main(int argc, char* argv[]) {
         uint64_t lastFrameTimeNs = SDL_GetTicksNS();
         uint64_t frameCounterStartTime = lastFrameTimeNs;
         std::vector<int16_t> musicBuffer(960 * 2);
+        bool runGame = true;
         while (!quit)
         {
             int64_t now = SDL_GetTicksNS();
@@ -305,17 +342,33 @@ int main(int argc, char* argv[]) {
 
             ++frames;
             
-            gameWrapper.drawFrame();
+            startImGuiFrame();
+
+            ImGui::Begin("Game Stats");
+            ImGui::Text("FPS: %f", (double)frames / ((double)(now - frameCounterStartTime) / 1e9));
+            ImGui::Text("Frame counter: %ld", frames);
+            ImGui::Checkbox("Run Game", &runGame);
+            ImGui::End();
+
+            if (runGame)
+            {
+                gameWrapper.drawFrame();
+            }
+            
 
             SDL_RenderClear(ren.get());
             SDL_FRect dst = {
                 (float)screenSizeHelper.getRenderOffsetX(), (float)screenSizeHelper.getRenderOffsetY(),
                 (float)screenSizeHelper.getRenderWidth(), (float)screenSizeHelper.getRenderHeight()};
             SDL_RenderTexture(ren.get(), tex.get(), nullptr, &dst);
+
+            renderImGui(ren.get());
+
             SDL_RenderPresent(ren.get());
 
             // handle events
             while (SDL_PollEvent(&e)) {
+                ImGui_ImplSDL3_ProcessEvent(&e);
                 switch (e.type) {
                     case SDL_EVENT_QUIT:
                         quit = true;

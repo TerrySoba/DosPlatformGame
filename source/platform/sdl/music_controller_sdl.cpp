@@ -49,27 +49,38 @@ MusicControllerSdl::~MusicControllerSdl()
 void MusicControllerSdl::playMusic(SongIndex index)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
+
+    if (index == MUSIC_INDEX_NO_CHANGE)
+    {
+        return;
+    }
+
+    if (index == getCurrentSong())
+    {
+        return;
+    }
+
+    m_currentSong = index;
+
     switch (index)
     {
-        case MUSIC_INDEX_NO_CHANGE:
-            break;
         case MUSIC_INDEX_NO_MUSIC:
             m_currentSongDecoder.reset();
             break;
         case MUSIC_INDEX_MAIN_MUSIC:
-            m_currentSongDecoder = std::make_shared<VorbisDecoder>("celt.ogg");
+            m_currentSongDecoder = std::make_shared<VorbisDecoder>("furexus.ogg");
             break;
         case MUSIC_INDEX_DARK_MUSIC:
-            m_currentSongDecoder = std::make_shared<VorbisDecoder>("dark.ogg");
+            m_currentSongDecoder = std::make_shared<VorbisDecoder>("first.ogg");
             break;
         case MUSIC_INDEX_BOSS_MUSIC:
-            m_currentSongDecoder = std::make_shared<VorbisDecoder>("boss.ogg");
+            m_currentSongDecoder = std::make_shared<VorbisDecoder>("third.ogg");
             break;
         case MUSIC_INDEX_DIGITAL_MUSIC:
-            m_currentSongDecoder = std::make_shared<VorbisDecoder>("digital.ogg");
+            m_currentSongDecoder = std::make_shared<VorbisDecoder>("celt.ogg");
             break;
         case MUSIC_INDEX_BOSS2_MUSIC:
-            m_currentSongDecoder = std::make_shared<VorbisDecoder>("boss2.ogg");
+            m_currentSongDecoder = std::make_shared<VorbisDecoder>("second.ogg");
             break;
         case MUSIC_INDEX_STRANGE_MUSIC:
             m_currentSongDecoder = std::make_shared<VorbisDecoder>("strange.ogg");
@@ -82,5 +93,5 @@ void MusicControllerSdl::playMusic(SongIndex index)
 
 SongIndex MusicControllerSdl::getCurrentSong() const
 {
-    return MUSIC_INDEX_NO_MUSIC;
+    return m_currentSong;
 }
