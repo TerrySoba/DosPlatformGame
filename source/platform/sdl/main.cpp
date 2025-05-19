@@ -169,6 +169,101 @@ void renderImGui(SDL_Renderer* renderer)
     ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), renderer);
 }
 
+
+std::vector<std::string> getAvailableRenderDrivers()
+{
+    std::vector<std::string> drivers;
+    int numDrivers = SDL_GetNumRenderDrivers();
+    for (int i = 0; i < numDrivers; i++)
+    {
+        const char* name = SDL_GetRenderDriver(i);
+        if (name)
+        {
+            drivers.push_back(name);
+        }
+    }
+    return drivers;
+}
+
+void displayGameSettingsWindow(
+    std::vector<std::string> &renderDrivers,
+    std::string &selectedRenderer,
+    bool& quitGame,
+    bool& displayMenu)
+{
+    static bool music = true;
+    static bool effects = true;
+    static bool fullscreen = false;
+    static bool settingsOpen = false;
+
+    ImGui::Begin("Game Menu", &displayMenu);
+
+    if (ImGui::Button("Settings"))
+    {
+        settingsOpen = true;
+    }
+
+    if (ImGui::Button("Continue"))
+    {
+        displayMenu = false;
+    }
+
+    ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0, 0.6f, 0.6f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0, 0.7f, 0.7f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0, 0.8f, 0.8f));
+    if (ImGui::Button("Quit Game"))
+    {
+        quitGame = true;
+    }
+    ImGui::PopStyleColor(3);
+
+
+    ImGui::End();
+
+    if (settingsOpen)
+    {
+        ImGui::Begin("Game Settings", &settingsOpen);
+        if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None))
+        {
+            if (ImGui::BeginTabItem("Sound"))
+            {
+                ImGui::Checkbox("Music", &music);
+                ImGui::Checkbox("Effects", &effects);
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("Graphics"))
+            {
+                ImGui::Checkbox("Fullscreen", &fullscreen);
+
+                if (ImGui::BeginCombo("Renderer", selectedRenderer.c_str()))
+                {
+                    for (const auto &driver : renderDrivers)
+                    {
+                        bool isSelected = (driver == selectedRenderer);
+                        if (ImGui::Selectable(driver.c_str(), isSelected))
+                        {
+                            selectedRenderer = driver;
+                        }
+                        if (isSelected)
+                        {
+                            ImGui::SetItemDefaultFocus();
+                        }
+                    }
+
+                    ImGui::EndCombo();
+                }
+
+                ImGui::Button("Apply");
+                ImGui::EndTabItem();
+            }
+            ImGui::EndTabBar();
+        }
+        ImGui::End();
+    }
+
+    
+}
+
 int main(int argc, char* argv[]) {
     auto params = parseCommandLine(argc, argv);
 
@@ -177,14 +272,20 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    auto renderDrivers = getAvailableRenderDrivers();
+    
+
     if (params->sdlRenderer == "list") {
         SDL_Log("Available renderer drivers:");
-        for (int i = 0; i < SDL_GetNumRenderDrivers(); i++)
+        // for (int i = 0; i < SDL_GetNumRenderDrivers(); i++)
+        int i = 1;
+        for (auto renderer : renderDrivers)
         {
-            SDL_Log("%d. %s", i + 1, SDL_GetRenderDriver(i));
+            SDL_Log("%d. %s", i++, renderer.c_str());
         }
         return 1;
     }
+
 
     const uint32_t gameWindowResolutionWidth = params->screenWidth;
     const uint32_t gameWindowResolutionHeight = params->screenHeight;
@@ -215,9 +316,6 @@ int main(int argc, char* argv[]) {
         spec.freq = 48000;
         spec.format = SDL_AUDIO_S16;
         spec.channels = 2;
-
-        // SDL_AudioStream *stream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, NULL, NULL);
-        // SDL_ResumeAudioStreamDevice(stream);
 
         SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec);
         if (deviceId == 0) {
@@ -281,22 +379,9 @@ int main(int argc, char* argv[]) {
             THROW_EXCEPTION("SDL_CreateRenderer Error: ", SDL_GetError());
         }
 
-        // if (!SDL_SetRenderVSync(ren.get(), 2))
-        // {
-        //     std::cerr << "SDL_SetRenderVSync Error: " << SDL_GetError() << std::endl;
-        //     SDL_Quit();
-        //     return 1;
-        // }
+        // get name of renderer
+        std::string selectedRenderer = SDL_GetRendererName(ren.get());
 
-        // std::shared_ptr<SDL_Surface> bmp(SDL_LoadBMP("example.bmp"), SDL_DestroySurface);
-        // if (!bmp) {
-        //     std::cerr << "SDL_LoadBMP Error: " << SDL_GetError() << std::endl;
-        //     SDL_Quit();
-        //     return 1;
-        // }
-
-        // std::shared_ptr<SDL_Texture> tex(SDL_CreateTextureFromSurface(ren.get(), bmp.get()), SDL_DestroyTexture);
-        
         std::shared_ptr<SDL_Texture> tex(SDL_CreateTexture(ren.get(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, 320, 200), SDL_DestroyTexture);
         if (!tex) {
             THROW_EXCEPTION("SDL_CreateTextureFromSurface Error: ", SDL_GetError());
@@ -328,7 +413,8 @@ int main(int argc, char* argv[]) {
         uint64_t lastFrameTimeNs = SDL_GetTicksNS();
         uint64_t frameCounterStartTime = lastFrameTimeNs;
         std::vector<int16_t> musicBuffer(960 * 2);
-        bool runGame = true;
+
+        bool displayMenu = false;
         while (!quit)
         {
             int64_t now = SDL_GetTicksNS();
@@ -344,18 +430,18 @@ int main(int argc, char* argv[]) {
             
             startImGuiFrame();
 
-            ImGui::Begin("Game Stats");
-            ImGui::Text("FPS: %f", (double)frames / ((double)(now - frameCounterStartTime) / 1e9));
-            ImGui::Text("Frame counter: %ld", frames);
-            ImGui::Checkbox("Run Game", &runGame);
-            ImGui::End();
+            if (displayMenu)
+            {
+                displayGameSettingsWindow(renderDrivers, selectedRenderer, quit, displayMenu);
+            }
+            
+            // ImGui::ShowDemoWindow();
 
-            if (runGame)
+            if (!displayMenu)
             {
                 gameWrapper.drawFrame();
             }
             
-
             SDL_RenderClear(ren.get());
             SDL_FRect dst = {
                 (float)screenSizeHelper.getRenderOffsetX(), (float)screenSizeHelper.getRenderOffsetY(),
@@ -390,27 +476,12 @@ int main(int argc, char* argv[]) {
 
             if (s_keyEsc)
             {
-                quit = true;
+                displayMenu = true;
             }
-
-            // int queueSize = SDL_GetAudioStreamQueued(bgmStream.get());
-            // constexpr int halfSecond = (48000 * sizeof(int16_t) * 2) / 2;
-            // while (queueSize < halfSecond)
-            // {
-            //     // SDL_Log("Audio queue size: %d < %d", queueSize, halfSecond);
-            //     uint32_t decodedSamples = decoder.decode(musicBuffer.data(), musicBuffer.size());
-            //     if (decodedSamples == 0) {
-            //         decoder.rewind();
-            //     }
-            //     // SDL_Log("decodedSamples: %d", decodedSamples);
-            //     SDL_PutAudioStreamData(bgmStream.get(), musicBuffer.data(), decodedSamples * sizeof(int16_t) * 2);
-            //     queueSize = SDL_GetAudioStreamQueued(bgmStream.get());
-            // }
-            
+ 
             // wait for the next frame
             int64_t sleepTimeNs = targetFrameTimeNs - (SDL_GetTicksNS() - lastFrameTimeNs);
             if (sleepTimeNs > 0) {
-                // std::cout << "Sleeping for " << sleepAdjustment << " ns" << std::endl;
                 SDL_DelayPrecise(sleepTimeNs + sleepAdjustment);
             }
         }

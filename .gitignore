@@ -29,3 +29,4 @@ box/generated
 source/test_data.h
 dos_build/
 sdl_build/
+result/

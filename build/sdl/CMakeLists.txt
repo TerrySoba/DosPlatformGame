@@ -65,6 +65,7 @@ add_library(game_lib STATIC
     ${SOURCE_DIR}/3rd_party/imgui-1.91.9b/imgui_tables.cpp
     ${SOURCE_DIR}/3rd_party/imgui-1.91.9b/imgui_widgets.cpp
     ${SOURCE_DIR}/3rd_party/imgui-1.91.9b/imgui_draw.cpp
+    ${SOURCE_DIR}/3rd_party/imgui-1.91.9b/imgui_demo.cpp
     ${SOURCE_DIR}/3rd_party/imgui-1.91.9b//backends/imgui_impl_sdl3.cpp
     ${SOURCE_DIR}/3rd_party/imgui-1.91.9b//backends/imgui_impl_sdlrenderer3.cpp
 )
