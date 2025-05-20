@@ -1,3 +1,5 @@
 readme/readme.txt eol=crlf
 installer/install.txt eol=crlf
 *.bat eol=crlf
+testdata/test_lf.ini eol=lf
+testdata/test_crlf.ini eol=crlf
