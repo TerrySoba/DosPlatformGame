@@ -29,3 +29,18 @@ TEST(IniFileTestWindows)
     ASSERT_TRUE(ini.getString("mail") == "Some@some.org");
     ASSERT_TRUE(ini.getString("id") == "123456");
 }
+
+TEST(IniFileTestWriteIniFile)
+{
+    {
+        IniFile ini(TEST_DATA_DIR "empty.ini");
+        ini.setString("name", "Some Guy");
+        ini.setString("age", "123");
+        ini.save();
+    }
+    {
+        IniFile ini(TEST_DATA_DIR "empty.ini");
+        ASSERT_TRUE(ini.getString("name") == "Some Guy");
+        ASSERT_TRUE(ini.getString("age") == "123");
+    }
+}

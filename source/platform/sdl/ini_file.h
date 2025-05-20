@@ -9,6 +9,7 @@ class IniFile
 {
 public:
     IniFile(const std::string& fileName);
+
     ~IniFile() = default;
 
     std::optional<std::string> getString(const std::string& key);
