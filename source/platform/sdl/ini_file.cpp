@@ -3,7 +3,6 @@
 #include "exception.h"
 #include <memory>
 #include <cstring>
-#include <iostream>
 #include <vector>
 
 
@@ -131,7 +130,6 @@ std::optional<bool> IniFile::getBool(const std::string &key)
     auto value = getString(key);
     if (value)
     {
-        std::cout << "Value: " << *value << std::endl;
         if (*value == "true" || *value == "True" || *value == "1")
         {
             return true;
