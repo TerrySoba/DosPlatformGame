@@ -86,7 +86,7 @@ void MusicControllerSdl::playMusic(SongIndex index)
             m_currentSongDecoder = std::make_shared<VorbisDecoder>("strange.ogg");
             break;
         case MUSIC_INDEX_INTRO_MUSIC:
-            m_currentSongDecoder = std::make_shared<VorbisDecoder>("intro.ogg");
+            m_currentSongDecoder = std::make_shared<VorbisDecoder>("strange.ogg");
             break;
     }
 }

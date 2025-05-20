@@ -45,6 +45,7 @@ add_library(game_lib STATIC
     ${SOURCE_DIR}/physics.cpp
     ${SOURCE_DIR}/platform/sdl/commandline_parser.cpp
     ${SOURCE_DIR}/platform/sdl/decode_vorbis.cpp
+    ${SOURCE_DIR}/platform/sdl/ini_file.cpp
     ${SOURCE_DIR}/platform/sdl/joystick_sdl.cpp
     ${SOURCE_DIR}/platform/sdl/keyboard_sdl.cpp
     ${SOURCE_DIR}/platform/sdl/music_controller_sdl.cpp
@@ -142,6 +143,7 @@ add_executable(test
     ${SOURCE_DIR}/map_test.cpp
     ${SOURCE_DIR}/physics_test.cpp
     ${SOURCE_DIR}/platform/sdl/decode_vorbis_test.cpp
+    ${SOURCE_DIR}/platform/sdl/ini_file_test.cpp
     ${SOURCE_DIR}/ptr_vector_test.cpp
     ${SOURCE_DIR}/raii_ptr_test.cpp
     ${SOURCE_DIR}/rectangle_test.cpp

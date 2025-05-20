@@ -106,6 +106,7 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
 
     Level level(levelMap.c_str(), 16, 16, -8, -8);
 
+    #ifdef PLATFORM_DOS
     if (level.getCutscene() == 1 && m_storyStatus == STORY_STATUS_INITIAL)
     {
         // play intro music
@@ -124,6 +125,7 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
             m_vgaGfx->vsync();
         }
     }
+    #endif
 
     // load new tileset if it has changed
     if (m_loadedTilesetName != level.getTileset() || level.getCutscene() != 0)
