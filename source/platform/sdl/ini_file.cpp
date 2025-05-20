@@ -88,7 +88,6 @@ IniFile::IniFile(const std::string& fileName) :
 
 std::optional<std::string> IniFile::getString(const std::string &key)
 {
-
     auto it = m_data.find(key);
     if (it != m_data.end())
     {
@@ -102,6 +101,49 @@ void IniFile::setString(const std::string &key, const std::string &value)
 {
     m_data[key] = value;
 }
+
+std::optional<int> IniFile::getInt(const std::string &key)
+{
+    auto value = getString(key);
+    if (value)
+    {
+        try
+        {
+            return std::stoi(*value);
+        }
+        catch (const std::invalid_argument&)
+        {
+            // Handle invalid argument exception
+            return std::nullopt;
+        }
+        catch (const std::out_of_range&)
+        {
+            // Handle out of range exception
+            return std::nullopt;
+        }
+    }
+    return std::nullopt;
+}
+
+
+std::optional<bool> IniFile::getBool(const std::string &key)
+{
+    auto value = getString(key);
+    if (value)
+    {
+        std::cout << "Value: " << *value << std::endl;
+        if (*value == "true" || *value == "True" || *value == "1")
+        {
+            return true;
+        }
+        else if (*value == "false" || *value == "False" || *value == "0")
+        {
+            return false;
+        }
+    }
+    return std::nullopt;
+}
+
 
 void IniFile::save()
 {

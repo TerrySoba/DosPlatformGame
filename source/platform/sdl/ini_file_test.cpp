@@ -19,6 +19,21 @@ TEST(IniFileTestUnix)
     ASSERT_TRUE(ini.getString("age") == "43");
     ASSERT_TRUE(ini.getString("mail") == "Some@some.org");
     ASSERT_TRUE(ini.getString("id") == "123456");
+
+
+    ASSERT_TRUE(ini.getBool("bool1").value() == true);
+    ASSERT_TRUE(ini.getBool("bool2").value() == true);
+    ASSERT_TRUE(ini.getBool("bool3").value() == false);
+    ASSERT_TRUE(ini.getBool("bool4").value() == false);
+    ASSERT_TRUE(ini.getBool("bool5").value() == true);
+    ASSERT_TRUE(ini.getBool("bool6").value() == false);
+    ASSERT_TRUE(!ini.getBool("bool7").has_value());
+    ASSERT_TRUE(!ini.getBool("bool8").has_value());
+ 
+    
+    ASSERT_TRUE(ini.getInt("int1").value() == 123);
+    ASSERT_TRUE(ini.getInt("int2").value() == 0);
+    ASSERT_TRUE(ini.getInt("int3").value() == -123);
 }
 
 TEST(IniFileTestWindows)

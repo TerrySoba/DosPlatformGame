@@ -13,6 +13,8 @@ public:
     ~IniFile() = default;
 
     std::optional<std::string> getString(const std::string& key);
+    std::optional<int> getInt(const std::string& key);
+    std::optional<bool> getBool(const std::string& key);
     void setString(const std::string& key, const std::string& value);
 
     void save();
