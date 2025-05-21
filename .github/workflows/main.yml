@@ -51,6 +51,16 @@ jobs:
       - name: Create Windows installer
         run: ./create_windows_dosbox_package.sh
 
+      - name: Build Native Windows Version
+        run: ./windows_cross_build.sh
+
+      # Now store windows native build
+      - name: Archive windows game zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: win-game-zip
+          path: result/game.zip
+
       # Now store built game as artifact
       - name: Archive game zip
         uses: actions/upload-artifact@v4
@@ -75,3 +85,5 @@ jobs:
             ./zip/game.zip
             image*.img
             DosPlatformGameWin32.zip
+            
+            
