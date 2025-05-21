@@ -1,4 +1,4 @@
 #!/bin/bash
 
 docker build -t w64build .
-docker run -v `pwd`/../:/src -it w64build /cross_build.sh
+docker run -v `pwd`/../:/src -t w64build /cross_build.sh
