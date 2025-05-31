@@ -7,7 +7,6 @@
 #include "game.h"
 #include "credits_scroller.h"
 #include "exception.h"
-#include "sdl_gfx.h"
 #include "commandline_parser.h"
 #include "sdl_context.h"
 

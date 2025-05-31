@@ -51,7 +51,6 @@ add_library(game_lib STATIC
     ${SOURCE_DIR}/platform/sdl/keyboard_sdl.cpp
     ${SOURCE_DIR}/platform/sdl/music_controller_sdl.cpp
     ${SOURCE_DIR}/platform/sdl/sdl_context.cpp
-    ${SOURCE_DIR}/platform/sdl/sdl_gfx.cpp
     ${SOURCE_DIR}/platform/sdl/sound_controller_sdl.cpp
     ${SOURCE_DIR}/rectangle.cpp
     ${SOURCE_DIR}/seeker_enemy.cpp
