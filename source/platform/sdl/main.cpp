@@ -9,18 +9,29 @@
 #include "exception.h"
 #include "sdl_gfx.h"
 #include "commandline_parser.h"
-#include "decode_vorbis.h"
-
-#include "imgui.h"
-#include "backends/imgui_impl_sdl3.h"
-#include "backends/imgui_impl_sdlrenderer3.h"
-
-#include <SDL3/SDL.h>
+#include "sdl_context.h"
 
 #include <memory>
 #include <cmath>
 #include <map>
 #include <vector>
+
+GameAnimations loadGameAnimations()
+{
+    tnd::shared_ptr<Animation> enemy(new Animation("enemy.ani", "enemy.tga"));
+    tnd::shared_ptr<Animation> seekerEnemy(new Animation("enemy2.ani", "enemy2.tga"));
+    tnd::shared_ptr<Animation> guffin(new Animation("guffin.ani", "guffin.tga"));
+    tnd::shared_ptr<Animation> guy(new Animation("guy.ani", "guy.tga"));
+    tnd::shared_ptr<Animation> fireBall(new Animation("fire.ani", "fire.tga"));
+    tnd::shared_ptr<Animation> jetPack(new Animation("jet.ani", "jet.tga"));
+    tnd::shared_ptr<Animation> tentacle(new Animation("tentacle.ani", "tentacle.tga"));
+    tnd::shared_ptr<Animation> projectile(new Animation("bullet.ani", "bullet.tga"));
+    tnd::shared_ptr<Animation> tentacleArm(new Animation("ten_arm.ani", "ten_arm.tga"));
+    tnd::shared_ptr<Animation> eye(new Animation("eye.ani", "eye.tga"));
+
+    GameAnimations animations = {guy, enemy, seekerEnemy, guffin, fireBall, jetPack, tentacle, projectile, tentacleArm, eye};
+    return animations;
+}
 
 class GameWrapper {
 public:
@@ -35,24 +46,11 @@ public:
         m_gfx.reset(new FramebufferGfx());
         
         GameExitCode exitCode = GAME_EXIT_QUIT;
-        {
-            tnd::shared_ptr<Animation> enemy(new Animation("enemy.ani", "enemy.tga"));
-            tnd::shared_ptr<Animation> seekerEnemy(new Animation("enemy2.ani", "enemy2.tga"));
-            tnd::shared_ptr<Animation> guffin(new Animation("guffin.ani", "guffin.tga"));
-            tnd::shared_ptr<Animation> guy(new Animation("guy.ani", "guy.tga"));
-            tnd::shared_ptr<Animation> fireBall(new Animation("fire.ani", "fire.tga"));
-            tnd::shared_ptr<Animation> jetPack(new Animation("jet.ani", "jet.tga"));
-            tnd::shared_ptr<Animation> tentacle(new Animation("tentacle.ani", "tentacle.tga"));
-            tnd::shared_ptr<Animation> projectile(new Animation("bullet.ani", "bullet.tga"));
-            tnd::shared_ptr<Animation> tentacleArm(new Animation("ten_arm.ani", "ten_arm.tga"));
-            tnd::shared_ptr<Animation> eye(new Animation("eye.ani", "eye.tga"));
-
-            tnd::shared_ptr<MusicController> music(new MusicControllerSdl(musicAudioStream));
-
-            GameAnimations animations = {guy, enemy, seekerEnemy, guffin, fireBall, jetPack, tentacle, projectile, tentacleArm, eye};
-
-            m_game.reset(new Game(m_gfx, sound, music, animations, "%02x%02x", LevelNumber(1,1)));
-        }
+    
+        tnd::shared_ptr<MusicController> music(new MusicControllerSdl(musicAudioStream));
+        auto animations = loadGameAnimations();
+        m_game.reset(new Game(m_gfx, sound, music, animations, "%02x%02x", LevelNumber(1,1)));
+        
     }
 
     void drawFrame() {
@@ -137,132 +135,6 @@ private:
 
 };
 
-void setupImGui(SDL_Window* window, SDL_Renderer* renderer)
-{
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO &io = ImGui::GetIO();
-    (void)io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls
-
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-    // ImGui::StyleColorsLight();
-
-    // Setup Platform/Renderer backends
-    ImGui_ImplSDL3_InitForSDLRenderer(window, renderer);
-    ImGui_ImplSDLRenderer3_Init(renderer);
-}
-
-void startImGuiFrame()
-{
-    ImGui_ImplSDLRenderer3_NewFrame();
-    ImGui_ImplSDL3_NewFrame();
-    ImGui::NewFrame();
-}
-
-void renderImGui(SDL_Renderer* renderer)
-{
-    ImGui::Render();
-    ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), renderer);
-}
-
-
-std::vector<std::string> getAvailableRenderDrivers()
-{
-    std::vector<std::string> drivers;
-    int numDrivers = SDL_GetNumRenderDrivers();
-    for (int i = 0; i < numDrivers; i++)
-    {
-        const char* name = SDL_GetRenderDriver(i);
-        if (name)
-        {
-            drivers.push_back(name);
-        }
-    }
-    return drivers;
-}
-
-void displayGameSettingsWindow(
-    std::vector<std::string> &renderDrivers,
-    std::string &selectedRenderer,
-    bool& quitGame,
-    bool& displayMenu)
-{
-    static bool music = true;
-    static bool effects = true;
-    static bool fullscreen = false;
-    static bool settingsOpen = false;
-
-    ImGui::Begin("Game Menu", &displayMenu);
-
-    if (ImGui::Button("Settings"))
-    {
-        settingsOpen = true;
-    }
-
-    if (ImGui::Button("Continue"))
-    {
-        displayMenu = false;
-    }
-
-    ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0, 0.6f, 0.6f));
-    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0, 0.7f, 0.7f));
-    ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0, 0.8f, 0.8f));
-    if (ImGui::Button("Quit Game"))
-    {
-        quitGame = true;
-    }
-    ImGui::PopStyleColor(3);
-
-
-    ImGui::End();
-
-    if (settingsOpen)
-    {
-        ImGui::Begin("Game Settings", &settingsOpen);
-        if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None))
-        {
-            if (ImGui::BeginTabItem("Sound"))
-            {
-                ImGui::Checkbox("Music", &music);
-                ImGui::Checkbox("Effects", &effects);
-                ImGui::EndTabItem();
-            }
-            if (ImGui::BeginTabItem("Graphics"))
-            {
-                ImGui::Checkbox("Fullscreen", &fullscreen);
-
-                if (ImGui::BeginCombo("Renderer", selectedRenderer.c_str()))
-                {
-                    for (const auto &driver : renderDrivers)
-                    {
-                        bool isSelected = (driver == selectedRenderer);
-                        if (ImGui::Selectable(driver.c_str(), isSelected))
-                        {
-                            selectedRenderer = driver;
-                        }
-                        if (isSelected)
-                        {
-                            ImGui::SetItemDefaultFocus();
-                        }
-                    }
-
-                    ImGui::EndCombo();
-                }
-
-                ImGui::Button("Apply");
-                ImGui::EndTabItem();
-            }
-            ImGui::EndTabBar();
-        }
-        ImGui::End();
-    }
-
-    
-}
 
 int main(int argc, char* argv[]) {
     auto params = parseCommandLine(argc, argv);
@@ -272,12 +144,10 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    auto renderDrivers = getAvailableRenderDrivers();
+    auto renderDrivers = SdlContext::getAvailableRenderDrivers();
     
-
     if (params->sdlRenderer == "list") {
         SDL_Log("Available renderer drivers:");
-        // for (int i = 0; i < SDL_GetNumRenderDrivers(); i++)
         int i = 1;
         for (auto renderer : renderDrivers)
         {
@@ -285,7 +155,6 @@ int main(int argc, char* argv[]) {
         }
         return 1;
     }
-
 
     const uint32_t gameWindowResolutionWidth = params->screenWidth;
     const uint32_t gameWindowResolutionHeight = params->screenHeight;
@@ -304,98 +173,17 @@ int main(int argc, char* argv[]) {
             THROW_EXCEPTION("Unknown language: ", params->language.c_str());
         }
 
-        SDL_Log("Initializing SDL.");
-
-        if (!SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
-            THROW_EXCEPTION("SDL_InitSubSystem Error: ", SDL_GetError());
-        }
-
-        std::shared_ptr<void> sdlCleanup(nullptr, [](void*) { SDL_Quit(); });
-
-        SDL_AudioSpec spec;
-        spec.freq = 48000;
-        spec.format = SDL_AUDIO_S16;
-        spec.channels = 2;
-
-        SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec);
-        if (deviceId == 0) {
-            SDL_LogError(1, "SDL_OpenAudioDevice Error: %s", SDL_GetError());
-            THROW_EXCEPTION("SDL_OpenAudioDevice Error: ", SDL_GetError());
-        }
-        SDL_ResumeAudioDevice(deviceId);
-
-        auto bgmStream = std::shared_ptr<SDL_AudioStream>(SDL_CreateAudioStream(&spec, &spec), SDL_DestroyAudioStream);
-        if (!bgmStream) {
-            SDL_LogError(1, "SDL_CreateAudioStream Error: %s", SDL_GetError());
-            THROW_EXCEPTION("SDL_CreateAudioStream Error: ", SDL_GetError());
-        }
-
-        if (!SDL_BindAudioStream(deviceId, bgmStream.get()))
-        {
-            SDL_LogError(1, "SDL_BindAudioStream Error: %s", SDL_GetError());
-            THROW_EXCEPTION("SDL_BindAudioStream Error: ", SDL_GetError());
-        }
-
-        auto sfxStream = std::shared_ptr<SDL_AudioStream>(SDL_CreateAudioStream(&spec, &spec), SDL_DestroyAudioStream);
-        if (!sfxStream) {
-            SDL_LogError(1, "SDL_CreateAudioStream Error: %s", SDL_GetError());
-            THROW_EXCEPTION("SDL_CreateAudioStream Error: ", SDL_GetError());
-        }
-
-        if (!SDL_BindAudioStream(deviceId, sfxStream.get()))
-        {
-            SDL_LogError(1, "SDL_BindAudioStream Error: %s", SDL_GetError());
-            THROW_EXCEPTION("SDL_BindAudioStream Error: ", SDL_GetError());
-        }
-
-
-        // VorbisDecoder decoder("/home/yoshi252/Documents/lmms/projects/opl2_explort_filters.ogg");
-
-        const char *videoDriver = SDL_GetCurrentVideoDriver();
-        if (videoDriver)
-        {
-            SDL_Log("Current video driver: %s", videoDriver);
-        }
-        else
-        {
-            SDL_Log("Failed to get video driver.");
-        }
-
-        SDL_WindowFlags windowFlags = 0;
-        if (params->fullscreen) {
-            windowFlags |= SDL_WINDOW_FULLSCREEN;
-            SDL_HideCursor();
-        }
-
-        std::shared_ptr<SDL_Window> win(SDL_CreateWindow("SdlPlatformGame", gameWindowResolutionWidth, gameWindowResolutionHeight, windowFlags), SDL_DestroyWindow);
-        if (!win) {
-            THROW_EXCEPTION("SDL_CreateWindow Error: ", SDL_GetError());
-        }
-
-        const char* rendererName = params->sdlRenderer.empty() ? nullptr : params->sdlRenderer.c_str();
-
-        std::shared_ptr<SDL_Renderer> ren(SDL_CreateRenderer(win.get(), rendererName), SDL_DestroyRenderer);
-        if (!ren) {
-            THROW_EXCEPTION("SDL_CreateRenderer Error: ", SDL_GetError());
-        }
-
-        // get name of renderer
-        std::string selectedRenderer = SDL_GetRendererName(ren.get());
-
-        std::shared_ptr<SDL_Texture> tex(SDL_CreateTexture(ren.get(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, 320, 200), SDL_DestroyTexture);
-        if (!tex) {
-            THROW_EXCEPTION("SDL_CreateTextureFromSurface Error: ", SDL_GetError());
-        }
-
-        SDL_SetTextureScaleMode(tex.get(), SDL_SCALEMODE_NEAREST);
-
-        setupImGui(win.get(), ren.get());
+        SdlContext sdl(
+            params->fullscreen,
+            gameWindowResolutionWidth,
+            gameWindowResolutionHeight,
+            params->sdlRenderer);
 
         bool quit = false;
         SDL_Event e;
 
 
-        GameWrapper gameWrapper(tex, sfxStream, bgmStream);
+        GameWrapper gameWrapper(sdl.getTexture(), sdl.getSfxStream(), sdl.getBgmStream());
 
         uint32_t targetFps = 70;
 
@@ -428,33 +216,21 @@ int main(int argc, char* argv[]) {
 
             ++frames;
             
-            startImGuiFrame();
-
-            if (displayMenu)
-            {
-                displayGameSettingsWindow(renderDrivers, selectedRenderer, quit, displayMenu);
-            }
-            
-            // ImGui::ShowDemoWindow();
-
             if (!displayMenu)
             {
                 gameWrapper.drawFrame();
             }
             
-            SDL_RenderClear(ren.get());
+            SDL_RenderClear(sdl.getRenderer().get());
             SDL_FRect dst = {
                 (float)screenSizeHelper.getRenderOffsetX(), (float)screenSizeHelper.getRenderOffsetY(),
                 (float)screenSizeHelper.getRenderWidth(), (float)screenSizeHelper.getRenderHeight()};
-            SDL_RenderTexture(ren.get(), tex.get(), nullptr, &dst);
+            SDL_RenderTexture(sdl.getRenderer().get(), sdl.getTexture().get(), nullptr, &dst);
 
-            renderImGui(ren.get());
-
-            SDL_RenderPresent(ren.get());
+            SDL_RenderPresent(sdl.getRenderer().get());
 
             // handle events
             while (SDL_PollEvent(&e)) {
-                ImGui_ImplSDL3_ProcessEvent(&e);
                 switch (e.type) {
                     case SDL_EVENT_QUIT:
                         quit = true;
@@ -476,7 +252,7 @@ int main(int argc, char* argv[]) {
 
             if (s_keyEsc)
             {
-                displayMenu = true;
+                quit = true;
             }
  
             // wait for the next frame
@@ -493,7 +269,7 @@ int main(int argc, char* argv[]) {
         SDL_Log("FPS: %f", fps);
         SDL_Log("Frames: %ld", frames);
 
-        SDL_CloseAudioDevice(deviceId);
+
 
         SDL_Log("Quitting SDL.");
         

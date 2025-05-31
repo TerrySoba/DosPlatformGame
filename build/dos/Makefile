@@ -15,7 +15,8 @@ objects_game_lib = \
 	platform/dos/keyboard_dos.o \
 	platform/dos/joystick_dos.o \
 	platform/dos/sound_controller_dos.o \
-	platform/dos/music_controller_dos.o
+	platform/dos/music_controller_dos.o \
+	convert_to_tga.o
 
 objects_game = \
 	platform/dos/main.o $(objects_game_lib)
@@ -28,12 +29,14 @@ objects_test = \
 	time_tools_test.o compiled_sprite_test.o font_test.o font_writer_test.o credits_loader_test.o
 
 dissolve_objs = \
-	platform/dos/vgagfx.o palette_tools.o image.o tiny_string.o exception.o platform/dos/dissolve.o platform/dos/dos_timer.o platform/dos/keyboard_dos.o tga_image.o
+	platform/dos/vgagfx.o palette_tools.o image.o tiny_string.o exception.o platform/dos/dissolve.o \
+	platform/dos/dos_timer.o platform/dos/keyboard_dos.o tga_image.o \
+	convert_to_tga.o
 
 title_screen = \
     platform/dos/title.o platform/dos/vgagfx.o image.o tga_image.o exception.o rectangle.o platform/dos/keyboard_dos.o \
 	tiny_string.o animation.o platform/dos/compiled_sprite.o font.o font_writer.o \
-	blit.o i18n.o palette_tools.o
+	blit.o i18n.o palette_tools.o convert_to_tga.o
 
 BUILD_DATE=$(shell date -R)
 ABS_SOURCE_DIR=$(realpath $(SRC_DIR))

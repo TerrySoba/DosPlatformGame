@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Download and install SDL3 for Windows
-RUN wget https://github.com/libsdl-org/SDL/releases/download/release-3.2.12/SDL3-devel-3.2.12-mingw.tar.gz -O /tmp/SDL3.tar.gz \
+RUN wget https://github.com/libsdl-org/SDL/releases/download/release-3.2.14/SDL3-devel-3.2.14-mingw.tar.gz -O /tmp/SDL3.tar.gz \
     && mkdir -p /tmp/sdl3 \
     && tar -xzf /tmp/SDL3.tar.gz -C /tmp/sdl3 --strip-components=1 \
     && cd /tmp/sdl3 \

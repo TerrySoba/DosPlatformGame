@@ -26,6 +26,7 @@ add_library(game_lib STATIC
     ${SOURCE_DIR}/blit.cpp
     ${SOURCE_DIR}/boss1.cpp
     ${SOURCE_DIR}/boss2.cpp
+    ${SOURCE_DIR}/convert_to_tga.cpp
     ${SOURCE_DIR}/credits_loader.cpp
     ${SOURCE_DIR}/detect_lines.cpp
     ${SOURCE_DIR}/enemy.cpp
@@ -49,6 +50,7 @@ add_library(game_lib STATIC
     ${SOURCE_DIR}/platform/sdl/joystick_sdl.cpp
     ${SOURCE_DIR}/platform/sdl/keyboard_sdl.cpp
     ${SOURCE_DIR}/platform/sdl/music_controller_sdl.cpp
+    ${SOURCE_DIR}/platform/sdl/sdl_context.cpp
     ${SOURCE_DIR}/platform/sdl/sdl_gfx.cpp
     ${SOURCE_DIR}/platform/sdl/sound_controller_sdl.cpp
     ${SOURCE_DIR}/rectangle.cpp
@@ -62,13 +64,6 @@ add_library(game_lib STATIC
     ${SOURCE_DIR}/tiny_string.cpp
 
     ${SOURCE_DIR}/3rd_party/stb/stb_vorbis.c
-    ${SOURCE_DIR}/3rd_party/imgui-1.91.9b/imgui.cpp
-    ${SOURCE_DIR}/3rd_party/imgui-1.91.9b/imgui_tables.cpp
-    ${SOURCE_DIR}/3rd_party/imgui-1.91.9b/imgui_widgets.cpp
-    ${SOURCE_DIR}/3rd_party/imgui-1.91.9b/imgui_draw.cpp
-    ${SOURCE_DIR}/3rd_party/imgui-1.91.9b/imgui_demo.cpp
-    ${SOURCE_DIR}/3rd_party/imgui-1.91.9b//backends/imgui_impl_sdl3.cpp
-    ${SOURCE_DIR}/3rd_party/imgui-1.91.9b//backends/imgui_impl_sdlrenderer3.cpp
 )
 
 target_link_libraries(game_lib PRIVATE SDL3::SDL3)

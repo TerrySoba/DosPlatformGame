@@ -8,6 +8,7 @@
 
 #include "rgbi_colors.h"
 #include "palette_tools.h"
+#include "convert_to_tga.h"
 
 static const uint16_t DEATH_ANIMATION_PALETTE_FRAMES = 16;
 static const uint16_t DEATH_ANIMATION_PALETTE_ENTRIES = 16;
@@ -242,44 +243,6 @@ void FramebufferGfx::setBackground(const ImageBase& image)
     }
 }
 
-
-
-void write16bit(uint16_t data, FILE* fp)
-{
-    fwrite(&data, 2, 1, fp);
-}
-
-void write8bit(uint8_t data, FILE* fp)
-{
-    fwrite(&data, 1, 1, fp);
-}
-
-void convertToTga(char* data, const char* filename)
-{
-    FILE* fp = fopen(filename, "wb");
-
-    write8bit(0, fp); // id length in bytes
-    write8bit(1, fp); // color map type (1 == color map / palette present)
-    write8bit(1, fp); // image type (1 == uncompressed color-mapped image)
-    write16bit(0, fp); // color map origin
-    write16bit(16, fp); // color map length
-    write8bit(24, fp); // color map depth (bits per palette entry)
-    write16bit(0, fp); // x origin
-    write16bit(0, fp); // y origin
-    write16bit(320, fp); // image width
-    write16bit(200, fp); // image height
-    write8bit(8, fp); // bits per pixel
-    write8bit((1 << 5), fp); // image descriptor
-
-    // we do not have id data, so do not write any
-    fwrite(rgbiColors, 1, 16 * 3, fp);
-
-    // write uncompressed
-    fwrite(data, 1, 320 * 200, fp);
-    
-    fclose(fp);
-}
-
 void FramebufferGfx::saveAsTgaImage(const char* filename)
 {
     convertToTga(m_screenBuffer, filename);
@@ -309,36 +272,14 @@ void FramebufferGfx::renderToMemory(void *buffer, uint32_t pitch, PixelFormat fo
     }
 }
 
-
 uint32_t FramebufferGfx::drawDeathEffect()
 {
     m_deathEffectFramesLeft = DEATH_ANIMATION_FRAMES;
     return m_deathEffectFramesLeft;
 }
 
-void createFadeToBlackPalette(uint8_t* palette, uint8_t frameCount, uint8_t frame)
-{
-   
-}
-
 void FramebufferGfx::fancyWipe(const ImageBase& image)
 {
-}
-
-void FramebufferGfx::renderToRgb(char* rgbBuffer) const
-{
-    // convert to 24 bit rgb
-    for (int y = 0; y < SCREEN_H; ++y)
-    {
-        for (int x = 0; x < SCREEN_W; ++x)
-        {
-            char pixel = m_screenBuffer[y * SCREEN_W + x];
-            char* rgb = rgbBuffer + (y * SCREEN_W + x) * 3;
-            rgb[0] = rgbiColors[pixel * 3 + 2]; // B
-            rgb[1] = rgbiColors[pixel * 3 + 1]; // G
-            rgb[2] = rgbiColors[pixel * 3 + 0]; // R
-        }
-    }
 }
 
 int16_t FramebufferGfx::getScreenWidth() const

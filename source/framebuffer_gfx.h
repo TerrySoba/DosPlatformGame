@@ -37,7 +37,6 @@ public:
 
 	void fancyWipe(const ImageBase &image);
 
-	void renderToRgb(char* rgbBuffer) const;
 	int16_t getScreenWidth() const;
 	int16_t getScreenHeight() const;
 
