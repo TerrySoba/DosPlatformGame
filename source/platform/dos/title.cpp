@@ -69,20 +69,31 @@ int main(int argc, char* argv[])
         VgaGfx vga;
         Animation arrow("arrow2.ani", "arrow2.tga", true);
         TgaImage image("pyramid.tga");
-        Font font("lib18.stf");
-        FontWriter fontWriter(&font);
+        
         
 
         vga.setBackground(image);
 
-        fontWriter.setText(I18N::getString(42).c_str());
-        vga.drawBackground(fontWriter, START_GAME_POS_X + 17, START_GAME_POS_Y - 2);
+        {
+            Font font("lib18.stf");
+            FontWriter fontWriter(&font);
 
-        fontWriter.setText(I18N::getString(43).c_str());
-        vga.drawBackground(fontWriter, DELETE_SAVE_POS_X + 17, DELETE_SAVE_POS_Y - 2);
+            fontWriter.setText(I18N::getString(42).c_str());
+            vga.drawBackground(fontWriter, START_GAME_POS_X + 17, START_GAME_POS_Y - 2);
 
-        fontWriter.setText(I18N::getString(44).c_str());
-        vga.drawBackground(fontWriter, EXIT_POS_X + 17, EXIT_POS_Y - 2);
+            fontWriter.setText(I18N::getString(43).c_str());
+            vga.drawBackground(fontWriter, DELETE_SAVE_POS_X + 17, DELETE_SAVE_POS_Y - 2);
+
+            fontWriter.setText(I18N::getString(44).c_str());
+            vga.drawBackground(fontWriter, EXIT_POS_X + 17, EXIT_POS_Y - 2);
+        }
+
+        {
+            Font font("dejavu8.stf");
+            FontWriter fontWriter(&font);
+            fontWriter.setText(BUILD_VERSION);
+            vga.drawBackground(fontWriter, 320 - fontWriter.width() - 3, 1);
+        }
 
         TitleState state = STATE_INIT;
 

@@ -16,6 +16,7 @@ objects_game_lib = \
 	platform/dos/joystick_dos.o \
 	platform/dos/sound_controller_dos.o \
 	platform/dos/music_controller_dos.o \
+	platform/dos/mda_debug_output.o \
 	convert_to_tga.o
 
 objects_game = \
@@ -47,7 +48,8 @@ TEST_DATA_DIR=..\\\\\\\\testdata\\\\\\\\\
 coptions = -ml -oneatx -xs -xr -zp4 -0 -ad \
 		   -dPLATFORM_DOS \
            -dBUILD_DATE="\"$(BUILD_DATE)\"" \
-		   -dTEST_DATA_DIR="\"$(TEST_DATA_DIR)\""
+		   -dTEST_DATA_DIR="\"$(TEST_DATA_DIR)\"" \
+		   -dBUILD_VERSION="\"$(BUILD_VERSION)\""
 
 coptions_launcher = -ms -oneatx -xd -zp4 -0 -ad -os
 

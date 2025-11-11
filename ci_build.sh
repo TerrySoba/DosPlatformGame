@@ -1,6 +1,17 @@
 #!/bin/bash
 set -e
 
+
+# load version file "version.txt" into environment variable VERSION
+export BUILD_VERSION=$(cat version.txt)
+
+# If GITHUB_RUN_NUMBER is set, replace last part of version with it
+if [ ! -z "$GITHUB_RUN_NUMBER" ]; then
+    export BUILD_VERSION="${BUILD_VERSION%.*}.$GITHUB_RUN_NUMBER"
+fi
+
+echo "Building version $BUILD_VERSION"
+
 DIR=$(dirname $0)
 cd $DIR
 BASE_DIR=$(pwd)
