@@ -169,6 +169,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    printStr(TinyString(I18N::getString(46).c_str()) + BUILD_VERSION + TinyString("\r\n"));
     printStr(BUILD_DATE + TinyString("\r\n") + I18N::getString(3).c_str());
 
     return 0;
