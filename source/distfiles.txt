@@ -180,6 +180,7 @@
 ../text/strings.en
 ../fonts/lib18.stf
 ../fonts/title.stf
+../fonts/dejavu8.stf
 game.exe
 game2.exe
 title.exe
