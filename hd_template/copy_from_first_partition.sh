@@ -4,9 +4,9 @@ set -e
 
 # Check if at least two parameters are provided
 if [ $# -lt 2 ]; then
-    echo "Copies files to the first partition of a hard drive image."
+    echo "Copies files from the first partition of a hard drive image to the local directory."
     echo "The harddrive file must contain a FAT16 partition."
-    echo "Usage: $0 <harddrive_file> <file_to_be_added_to_harddrive> [additional_files]"
+    echo "Usage: $0 <harddrive_file> <file_to_be_copied_from_harddrive> [additional_files...]"
     exit 1
 fi
 
@@ -47,20 +47,9 @@ fi
 
 # Iterate over all parameters and copy the files to the image
 for file in "$@"; do
-    echo "Adding file: $file"
-    # if file is a directory, copy all files in the directory
-    if [ -d "$file" ]; then
-        MTOOLS_NO_VFAT=1 mcopy -o -Q -i $temp_partition_file $file ::$file
-    fi
-
-    # if file is a regular file, copy the file
-    if [ -f "$file" ]; then
-        MTOOLS_NO_VFAT=1 mcopy -o -Q -i $temp_partition_file $file ::
-    fi
+    echo "Copying file: $file"
+    MTOOLS_NO_VFAT=1 mcopy -n -Q -i $temp_partition_file ::$file $file
 done
 
-# Reintegrate the partition into the disk image
-dd if=$temp_partition_file of=$harddrive_file bs=512 seek=$start conv=notrunc  >/dev/null 2>&1
-
 echo
-echo "Finished. Copied $# item(s) to \"$harddrive_file\"."
+echo "Finished. Copied $# item(s) from \"$harddrive_file\"."

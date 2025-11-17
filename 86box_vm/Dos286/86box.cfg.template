@@ -1,0 +1,61 @@
+[PC/AT XTIDE #1]
+bios = at
+
+[General]
+emu_build_num = 8000
+force_43 = 1
+vid_renderer = qt_opengl3
+vid_resize = 1
+video_filter_method = 0
+video_gl_input_scale = 2
+video_gl_input_scale_mode = 2
+
+[Machine]
+cpu_family = 286
+cpu_multi = 1
+cpu_speed = 25000000
+cpu_use_dynarec = 0
+machine = ibmatpx
+mem_size = 1024
+
+[Video]
+gfxcard = vga
+gfxcard_2 = mda
+
+[Input devices]
+keyboard_type = keyboard_at
+mouse_type = none
+
+[Sound]
+sndcard = sbprov2
+
+[Network]
+net_01_link = 0
+net_02_link = 0
+net_03_link = 0
+net_04_link = 0
+
+[Hard disks]
+hdd_01_fn = $PROJECT_BASE_DIR$/hd_image.img
+hdd_01_ide_channel = 0:0
+hdd_01_parameters = 38, 16, 684, 0, ide
+hdd_01_speed = ramdisk
+
+[Floppy and CD-ROM drives]
+fdd_01_audio = Mitsumi
+fdd_01_type = 35_2hd
+fdd_02_audio = Mitsumi
+fdd_02_type = 35_2hd
+
+[PC/XT XTIDE #1]
+bios = xt
+base = 0300
+rom_writes_enabled = 1
+bios_addr = D0000
+
+[Storage controllers]
+hdc_1 = xtide
+
+[IBM MDA]
+rgb_type = 0
+font = 0
