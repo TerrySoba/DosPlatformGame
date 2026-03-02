@@ -11,5 +11,6 @@ mkdir $WINDOWS_GAME_DIR/config
 cp -r release $WINDOWS_GAME_DIR
 cp run_game_windows.dosbox_config $WINDOWS_GAME_DIR/config
 cp tools/dosbox/run_game_german.bat $WINDOWS_GAME_DIR
+cp tools/dosbox/run_game_german_cheats.bat $WINDOWS_GAME_DIR
 cp tools/dosbox/run_game_english.bat $WINDOWS_GAME_DIR
 zip -r DosPlatformGameWin32.zip $WINDOWS_GAME_DIR
