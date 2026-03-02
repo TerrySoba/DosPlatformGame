@@ -28,6 +28,7 @@ struct CommandLineParameters {
     LevelNumber level;
     Language language;
     bool dumpLevelImages; // if set to true the game will dump each map as a graphics image
+    bool enableCheats; // if set to true the game will enable cheats
 };
 
 
@@ -37,6 +38,7 @@ CommandLineParameters parseCommandline(int argc, char* argv[])
     params.language = LANGUAGE_ENGLISH;
     LevelNumber level(1, 1);
     params.dumpLevelImages = false;
+    params.enableCheats = false;
 
     for (int i = 1; i < argc; ++i)
     {
@@ -61,6 +63,10 @@ CommandLineParameters parseCommandline(int argc, char* argv[])
         if (strcmp("--dump-level-images", argv[i]) == 0)
         {
             params.dumpLevelImages = true;
+        }
+        if (strcmp("--enable-cheats", argv[i]) == 0)
+        {
+            params.enableCheats = true;
         }
     }
 
@@ -111,7 +117,7 @@ int main(int argc, char* argv[])
 
             GameAnimations animations = {guy, enemy, seekerEnemy, guffin, fireBall, jetPack, tentacle, projectile, tentacleArm, eye};
 
-            Game game(gfx, sound, music, animations, "%02x%02x", params.level);
+            Game game(gfx, sound, music, animations, "%02x%02x", params.level, params.enableCheats);
 
             if (params.dumpLevelImages)
             {

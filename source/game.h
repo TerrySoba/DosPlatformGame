@@ -93,7 +93,8 @@ public:
 		tnd::shared_ptr<MusicController> music,
 		GameAnimations animations,
 		const char* levelBasename,
-		LevelNumber startLevel);
+		LevelNumber startLevel,
+		bool enableCheats);
 
 	~Game();
 
@@ -158,6 +159,7 @@ private:
 	StoryStatus m_storyStatus;
 	GameExitCode m_exitCode;
 	uint32_t m_deathFramesLeft;
+	bool m_enableCheats;
 };
 
 

@@ -37,7 +37,8 @@ public:
     GameWrapper(
         std::shared_ptr<SDL_Texture> renderTexture,
         std::shared_ptr<SDL_AudioStream> sfxAudioStream,
-        std::shared_ptr<SDL_AudioStream> musicAudioStream) :
+        std::shared_ptr<SDL_AudioStream> musicAudioStream,
+        bool enableCheats) :
         m_renderTexture(renderTexture)
     {
         tnd::shared_ptr<SoundController> sound(new SoundControllerSdl(sfxAudioStream));
@@ -48,7 +49,7 @@ public:
     
         tnd::shared_ptr<MusicController> music(new MusicControllerSdl(musicAudioStream));
         auto animations = loadGameAnimations();
-        m_game.reset(new Game(m_gfx, sound, music, animations, "%02x%02x", LevelNumber(1,1)));
+        m_game.reset(new Game(m_gfx, sound, music, animations, "%02x%02x", LevelNumber(1,1), enableCheats));
         
     }
 
@@ -182,7 +183,7 @@ int main(int argc, char* argv[]) {
         SDL_Event e;
 
 
-        GameWrapper gameWrapper(sdl.getTexture(), sdl.getSfxStream(), sdl.getBgmStream());
+        GameWrapper gameWrapper(sdl.getTexture(), sdl.getSfxStream(), sdl.getBgmStream(), params->enableCheats);
 
         uint32_t targetFps = 70;
 

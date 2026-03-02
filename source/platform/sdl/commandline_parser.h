@@ -12,6 +12,7 @@ struct CommandLineParameters
     std::string sdlRenderer;
     bool fullscreen = false;
     std::string language;
+    bool enableCheats = false;
 };
 
 std::optional<CommandLineParameters> parseCommandLine(int argc, char* argv[]);

@@ -12,6 +12,7 @@ std::optional<CommandLineParameters> parseCommandLine(int argc, char* argv[])
     app.add_option("-y,--height", params.screenHeight, "Screen Height")->default_val(1080);
     app.add_option("-r,--renderer", params.sdlRenderer, "SDL Renderer. Use 'list' to see a list of available renderers");
     app.add_flag("-f,--fullscreen", params.fullscreen, "Enable fullscreen mode");
+    app.add_flag("-c,--enable-cheats", params.enableCheats, "Enable cheats");
     app.add_option("-l,--language", params.language, "Language to use.")->default_val("english");
 
     try
