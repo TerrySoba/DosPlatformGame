@@ -1,1 +1,1 @@
-dosbox-staging\dosbox.exe -conf config/run_game_windows.dosbox_config -fullscreen -c "mount c release" -c "c:" -c "cd release" -c "game.exe --german --enable-cheats" -c "exit"
+dosbox-staging\dosbox.exe -conf config/run_game_windows.dosbox_config -fullscreen -c "mount c release" -c "c:" -c "cd release" -c "game2.exe --german --enable-cheats" -c "exit"
