@@ -164,6 +164,7 @@
 ../music/SECOND.RAD
 ../music/STRANGE.RAD
 ../music/THIRD.RAD
+../music/MYSTCAVE.RAD
 ../music/furexus.rad
 ../readme/readme.txt
 ../scripts/game_de.bat

@@ -41,6 +41,297 @@ class Image:
             other_start = y * img._width
             self._data[self_start:self_start + img._width] = img._data[other_start:other_start+img._width]
 
+    def drawText(self, text, x, y, color_index=15):
+        """Draw simple text using basic character patterns. Uses color_index for text color."""
+        
+        char_patterns = {
+            'A': [
+                "  X  ",
+                " X X ",
+                "XXXXX",
+                "X   X",
+                "X   X"
+            ],
+            'B': [
+                "XXXX ",
+                "X   X",
+                "XXXX ",
+                "X   X",
+                "XXXX "
+            ],
+            'C': [
+                " XXXX",
+                "X    ",
+                "X    ",
+                "X    ",
+                " XXXX"
+            ],
+            'D': [
+                "XXXX ",
+                "X   X",
+                "X   X",
+                "X   X",
+                "XXXX "
+            ],
+            'E': [
+                "XXXXX",
+                "X    ",
+                "XXXX ",
+                "X    ",
+                "XXXXX"
+            ],
+            'F': [
+                "XXXXX",
+                "X    ",
+                "XXXX ",
+                "X    ",
+                "X    "
+            ],
+            'G': [
+                " XXXX",
+                "X    ",
+                "X XXX",
+                "X   X",
+                " XXXX"
+            ],
+            'H': [
+                "X   X",
+                "X   X",
+                "XXXXX",
+                "X   X",
+                "X   X"
+            ],
+            'I': [
+                "XXXXX",
+                "  X  ",
+                "  X  ",
+                "  X  ",
+                "XXXXX"
+            ],
+            'J': [
+                "XXXXX",
+                "    X",
+                "    X",
+                "X   X",
+                " XXX "
+            ],
+            'K': [
+                "X   X",
+                "X  X ",
+                "XXX  ",
+                "X  X ",
+                "X   X"
+            ],
+            'L': [
+                "X    ",
+                "X    ",
+                "X    ",
+                "X    ",
+                "XXXXX"
+            ],
+            'M': [
+                "X   X",
+                "XX XX",
+                "X X X",
+                "X   X",
+                "X   X"
+            ],
+            'N': [
+                "X   X",
+                "XX  X",
+                "X X X",
+                "X  XX",
+                "X   X"
+            ],
+            'O': [
+                " XXX ",
+                "X   X",
+                "X   X",
+                "X   X",
+                " XXX "
+            ],
+            'P': [
+                "XXXX ",
+                "X   X",
+                "XXXX ",
+                "X    ",
+                "X    "
+            ],
+            'Q': [
+                " XXX ",
+                "X   X",
+                "X   X",
+                "X  X ",
+                " XX X"
+            ],
+            'R': [
+                "XXXX ",
+                "X   X",
+                "XXXX ",
+                "X  X ",
+                "X   X"
+            ],
+            'S': [
+                " XXXX",
+                "X    ",
+                " XXX ",
+                "    X",
+                "XXXX "
+            ],
+            'T': [
+                "XXXXX",
+                "  X  ",
+                "  X  ",
+                "  X  ",
+                "  X  "
+            ],
+            'U': [
+                "X   X",
+                "X   X",
+                "X   X",
+                "X   X",
+                " XXX "
+            ],
+            'V': [
+                "X   X",
+                "X   X",
+                "X   X",
+                " X X ",
+                "  X  "
+            ],
+            'W': [
+                "X   X",
+                "X   X",
+                "X X X",
+                "XX XX",
+                "X   X"
+            ],
+            'X': [
+                "X   X",
+                " X X ",
+                "  X  ",
+                " X X ",
+                "X   X"
+            ],
+            'Y': [
+                "X   X",
+                " X X ",
+                "  X  ",
+                "  X  ",
+                "  X  "
+            ],
+            'Z': [
+                "XXXXX",
+                "    X",
+                "  X  ",
+                "X    ",
+                "XXXXX"
+            ],
+            '0': [
+                " XXX ",
+                "X   X",
+                "X   X",
+                "X   X",
+                " XXX "
+            ],
+            '1': [
+                "  X  ",
+                " XX  ",
+                "  X  ",
+                "  X  ",
+                "XXXXX"
+            ],
+            '2': [
+                " XXX ",
+                "X   X",
+                "   X ",
+                "  X  ",
+                "XXXXX"
+            ],
+            '3': [
+                "XXXX ",
+                "    X",
+                " XXX ",
+                "    X",
+                "XXXX "
+            ],
+            '4': [
+                "X   X",
+                "X   X",
+                "XXXXX",
+                "    X",
+                "    X"
+            ],
+            '5': [
+                "XXXXX",
+                "X    ",
+                "XXXX ",
+                "    X",
+                "XXXX "
+            ],
+            '6': [
+                " XXXX",
+                "X    ",
+                "XXXX ",
+                "X   X",
+                " XXX "
+            ],
+            '7': [
+                "XXXXX",
+                "    X",
+                "   X ",
+                "  X  ",
+                " X   "
+            ],
+            '8': [
+                " XXX ",
+                "X   X",
+                " XXX ",
+                "X   X",
+                " XXX "
+            ],
+            '9': [
+                " XXX ",
+                "X   X",
+                " XXXX",
+                "    X",
+                "XXXX "
+            ],
+            ":": [
+                "     ",
+                "  X  ",
+                "     ",
+                "  X  ",
+                "     "
+            ],
+            " ": [
+                "     ",
+                "     ",
+                "     ",
+                "     ",
+                "     "
+            ],
+            ".": [
+                "     ",
+                "     ",
+                "     ",
+                "     ",
+                "  X  "
+            ],
+        }
+
+
+        for i, char in enumerate(text):
+            pattern = char_patterns.get(char.upper())
+            if pattern:
+                for row in range(5):
+                    for col in range(5):
+                        if pattern[row][col] == 'X':
+                            self._data[(y + row) * self._width + (x + i * 6 + col)] = color_index   
+            
+        
+        
+
 
     def saveAsTga(self, filename):
         with open(filename, "wb") as fp:

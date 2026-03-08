@@ -46,6 +46,9 @@ void MusicControllerDos::playMusic(SongIndex index)
     case MUSIC_INDEX_INTRO_MUSIC:
         modulePath = "INTRO.RAD";
         break;
+    case MUSIC_INDEX_MYSTIC_MUSIC:
+        modulePath = "MYSTCAVE.RAD";
+        break;
     case MUSIC_INDEX_NO_MUSIC:
         // fallthrough
     default:

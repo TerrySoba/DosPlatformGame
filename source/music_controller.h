@@ -12,6 +12,7 @@ enum SongIndex
     MUSIC_INDEX_BOSS2_MUSIC = 6,
     MUSIC_INDEX_STRANGE_MUSIC = 7,
     MUSIC_INDEX_INTRO_MUSIC = 8,
+    MUSIC_INDEX_MYSTIC_MUSIC = 9,
 };
 
 class MusicController
