@@ -1,0 +1,100 @@
+{ "frames": {
+   "portal 0.ase": {
+    "frame": { "x": 0, "y": 0, "w": 16, "h": 48 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 48 },
+    "sourceSize": { "w": 16, "h": 48 },
+    "duration": 100
+   },
+   "portal 1.ase": {
+    "frame": { "x": 16, "y": 0, "w": 16, "h": 48 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 48 },
+    "sourceSize": { "w": 16, "h": 48 },
+    "duration": 100
+   },
+   "portal 2.ase": {
+    "frame": { "x": 32, "y": 0, "w": 16, "h": 48 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 48 },
+    "sourceSize": { "w": 16, "h": 48 },
+    "duration": 100
+   },
+   "portal 3.ase": {
+    "frame": { "x": 48, "y": 0, "w": 16, "h": 48 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 48 },
+    "sourceSize": { "w": 16, "h": 48 },
+    "duration": 100
+   },
+   "portal 4.ase": {
+    "frame": { "x": 64, "y": 0, "w": 16, "h": 48 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 48 },
+    "sourceSize": { "w": 16, "h": 48 },
+    "duration": 100
+   },
+   "portal 5.ase": {
+    "frame": { "x": 80, "y": 0, "w": 16, "h": 48 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 48 },
+    "sourceSize": { "w": 16, "h": 48 },
+    "duration": 100
+   },
+   "portal 6.ase": {
+    "frame": { "x": 96, "y": 0, "w": 16, "h": 48 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 48 },
+    "sourceSize": { "w": 16, "h": 48 },
+    "duration": 100
+   },
+   "portal 7.ase": {
+    "frame": { "x": 112, "y": 0, "w": 16, "h": 48 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 48 },
+    "sourceSize": { "w": 16, "h": 48 },
+    "duration": 100
+   },
+   "portal 8.ase": {
+    "frame": { "x": 128, "y": 0, "w": 16, "h": 48 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 48 },
+    "sourceSize": { "w": 16, "h": 48 },
+    "duration": 100
+   },
+   "portal 9.ase": {
+    "frame": { "x": 144, "y": 0, "w": 16, "h": 48 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 48 },
+    "sourceSize": { "w": 16, "h": 48 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.3.17-x64",
+  "image": "portal.png",
+  "format": "RGBA8888",
+  "size": { "w": 160, "h": 48 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   { "name": "BlackBG", "opacity": 255, "blendMode": "normal" },
+   { "name": "Particles", "opacity": 255, "blendMode": "normal" },
+   { "name": "BlackOverlay", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}
