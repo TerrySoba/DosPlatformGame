@@ -3,6 +3,7 @@
 
 #include "rectangle.h"
 #include "button.h"
+#include "portal.h"
 #include "physics_event.h"
 
 #include "sound_controller.h"
@@ -70,6 +71,8 @@ public:
     void setSpawnPoint(const Point& point);
     void setSunPoint(const Point& point);
     void setButtons(const tnd::vector<Button>& buttons);
+    void setPortals(const tnd::vector<Portal>& portals);
+
 
 
     void calc();
@@ -94,7 +97,7 @@ public:
     tnd::vector<Rectangle> m_sunItems;
 
     tnd::vector<Button> m_buttons;
-
+    tnd::vector<Portal> m_portals;
     Rectangle m_rightLevelTransition;
     Rectangle m_leftLevelTransition;
     Rectangle m_bottomLevelTransition;

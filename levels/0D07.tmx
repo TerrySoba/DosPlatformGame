@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="21" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="32">
+<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="21" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="35">
  <tileset firstgid="1" source="tileset4.tsx"/>
  <tileset firstgid="241" source="obj.tsx"/>
  <tileset firstgid="481" source="tileset.tsx"/>
@@ -12,9 +12,9 @@
 183,184,525,525,525,525,525,525,525,23,525,525,525,525,525,525,525,525,525,525,525,
 525,525,525,525,525,525,525,525,525,525,525,525,525,525,525,525,525,525,525,525,525,
 525,525,525,525,525,525,525,525,525,525,525,525,525,525,525,45,11,12,13,14,525,
-525,525,525,525,525,525,525,525,525,525,525,525,525,525,525,45,31,32,33,34,525,
-525,525,525,525,525,525,525,11,12,13,14,525,525,525,525,45,51,52,53,54,525,
-83,84,525,525,525,525,525,31,32,33,34,525,525,5,525,82,83,83,83,83,83,
+525,525,525,525,525,92,525,525,525,525,525,525,525,525,525,45,31,32,33,34,525,
+525,525,525,525,525,112,525,11,12,13,14,525,525,525,525,45,51,52,53,54,525,
+83,84,525,525,525,132,525,31,32,33,34,525,525,5,525,82,83,83,83,83,83,
 103,104,525,82,83,84,525,51,52,53,54,525,85,25,65,102,103,103,103,103,103,
 103,124,83,122,103,124,83,83,83,83,83,83,83,83,83,122,103,103,103,103,103,
 103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103
@@ -41,6 +41,12 @@
   <object id="31" name="Worker text" type="text" x="173.763" y="102.195" width="79.6769" height="36.8763">
    <properties>
     <property name="string_id" type="int" value="37"/>
+   </properties>
+  </object>
+  <object id="33" name="TestPortal" type="portal" x="80.0652" y="112.12" width="15.8913" height="47.7935">
+   <properties>
+    <property name="target_level_x" type="int" value="1"/>
+    <property name="target_level_y" type="int" value="1"/>
    </properties>
   </object>
  </objectgroup>

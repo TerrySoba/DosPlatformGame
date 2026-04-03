@@ -19,6 +19,8 @@
 ../images/jet.ani
 ../images/jet.tga
 ../images/pyramid.tga
+../images/portal.tga
+../images/portal.ani
 ../images/sungrav.tga
 ../images/ten_arm.ani
 ../images/ten_arm.tga

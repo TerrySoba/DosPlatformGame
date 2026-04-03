@@ -36,6 +36,9 @@ Game::Game(tnd::shared_ptr<GfxOutput> vgaGfx, tnd::shared_ptr<SoundController> s
     m_nextLevel.x = -1;
     m_nextLevel.y = -1;
 
+    m_levelWarp.x = -1;
+    m_levelWarp.y = -1;
+
     m_appleString = I18N::getString(2);
     m_deathString = I18N::getString(26);
 
@@ -249,6 +252,16 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
         }
     }
 
+    // now load portals
+    {
+        m_portals.clear();
+        tnd::vector<PortalStruct> portals = level.getPortals();
+        for (int i = 0; i < portals.size(); ++i)
+        {
+            m_portals.push_back(Portal(Rectangle(portals[i].x, portals[i].y, portals[i].w, portals[i].h), portals[i].targetLevelX, portals[i].targetLevelY));
+        }
+    }
+
     m_guffins.clear();
     m_guffins = level.getMacGuffins();
 
@@ -368,6 +381,7 @@ void Game::loadLevel(LevelNumber levelNumber, ActorPosition::ActorPositionT acto
     m_physics->setGuffins(m_guffins);
     m_physics->setJetPacks(m_jetPacks);
     m_physics->setSunItems(m_sunItems);
+    m_physics->setPortals(m_portals);
 
     
     m_physics->setSpawnPoint(Point(actorPosX, actorPosY));
@@ -569,6 +583,13 @@ void Game::drawFrame()
         m_nextLevel.x = -1;
     }
 
+    if (m_levelWarp.x != -1)
+    {
+        loadLevel(m_levelWarp, ActorPosition::UseSpawnPoint);
+        m_levelWarp.x = -1;
+    }
+
+
     if (m_levelMustReload)
     {
         m_levelMustReload = false;
@@ -631,6 +652,13 @@ void Game::drawFrame()
             m_vgaGfx->draw(*m_animations.tentacleArmAnimation, SUBPIXEL_TO_PIXEL(segment.x), SUBPIXEL_TO_PIXEL(segment.y));
         }
 
+    }
+
+    for (int i = 0; i < m_portals.size(); ++i)
+    {
+        Portal& portalPtr = m_portals[i];
+        Rectangle portal = portalPtr.getPos();
+        m_vgaGfx->draw(*m_animations.portalAnimation, SUBPIXEL_TO_PIXEL(portal.x), SUBPIXEL_TO_PIXEL(portal.y));
     }
 
     for (int i = 0; i < m_seekerEnemies.size(); ++i)
@@ -768,6 +796,7 @@ void Game::drawFrame()
         m_animations.jetPackAnimation->nextFrame();
         m_animations.projectileAnimation->nextFrame();
         m_animations.tentacleArmAnimation->nextFrame();
+        m_animations.portalAnimation->nextFrame();
     }
 
     if ((m_frames & 15) == 0)
@@ -800,6 +829,11 @@ void Game::levelTransition(LevelTransition transition)
             m_nextLevel.y -= 1;
             break;
     }
+}
+
+void Game::levelWarp(LevelNumber level)
+{
+    m_levelWarp = level;
 }
 
 GameExitCode Game::runGameLoop()

@@ -100,6 +100,11 @@ void Physics::setButtons(const tnd::vector<Button>& buttons)
     m_buttons = buttons;
 }
 
+void Physics::setPortals(const tnd::vector<Portal>& portals)
+{
+    m_portals = portals;
+}
+
 void Physics::getActorPos(int index, int16_t& x, int16_t& y)
 {
     Actor& actor = m_actors[index];
@@ -294,6 +299,15 @@ void Physics::calc()
             if (intersectRect(button, actor.rect) && m_callback)
             {
                 m_callback->touchButton(button.buttonId, button.buttonType);
+            }
+        }
+
+        for (int n = 0; n < m_portals.size(); ++n)
+        {
+            Portal &portal = m_portals[n];
+            if (intersectRect(portal.getPos(), actor.rect) && m_callback)
+            {
+                m_callback->levelWarp(portal.getTargetLevel());
             }
         }
 

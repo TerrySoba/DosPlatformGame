@@ -14,6 +14,7 @@ std::optional<CommandLineParameters> parseCommandLine(int argc, char* argv[])
     app.add_flag("-f,--fullscreen", params.fullscreen, "Enable fullscreen mode");
     app.add_flag("-c,--enable-cheats", params.enableCheats, "Enable cheats");
     app.add_option("-l,--language", params.language, "Language to use.")->default_val("english");
+    app.add_option("--level", params.level, "Level coordinates")->expected(2);  // exactly 2 values
 
     try
     {

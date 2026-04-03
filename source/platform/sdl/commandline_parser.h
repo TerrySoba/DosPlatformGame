@@ -4,6 +4,7 @@
 #include <optional>
 #include <cstdint>
 #include <string>
+#include <vector>
 
 struct CommandLineParameters
 {
@@ -13,6 +14,7 @@ struct CommandLineParameters
     bool fullscreen = false;
     std::string language;
     bool enableCheats = false;
+    std::vector<uint32_t> level;
 };
 
 std::optional<CommandLineParameters> parseCommandLine(int argc, char* argv[]);

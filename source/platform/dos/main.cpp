@@ -112,10 +112,23 @@ int main(int argc, char* argv[])
             tnd::shared_ptr<Animation> projectile = new Animation("bullet.ani", "bullet.tga");
             tnd::shared_ptr<Animation> tentacleArm = new Animation("ten_arm.ani", "ten_arm.tga");
             tnd::shared_ptr<Animation> eye = new Animation("eye.ani", "eye.tga");
+            tnd::shared_ptr<Animation> portal = new Animation("portal.ani", "portal.tga");
 
             tnd::shared_ptr<MusicController> music(new MusicControllerDos());
 
-            GameAnimations animations = {guy, enemy, seekerEnemy, guffin, fireBall, jetPack, tentacle, projectile, tentacleArm, eye};
+            GameAnimations animations =
+                {
+                    guy,
+                    enemy,
+                    seekerEnemy,
+                    guffin,
+                    fireBall,
+                    jetPack,
+                    tentacle,
+                    projectile,
+                    tentacleArm,
+                    eye,
+                    portal};
 
             Game game(gfx, sound, music, animations, "%02x%02x", params.level, params.enableCheats);
 

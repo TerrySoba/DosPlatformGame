@@ -27,8 +27,9 @@ GameAnimations loadGameAnimations()
     tnd::shared_ptr<Animation> projectile(new Animation("bullet.ani", "bullet.tga"));
     tnd::shared_ptr<Animation> tentacleArm(new Animation("ten_arm.ani", "ten_arm.tga"));
     tnd::shared_ptr<Animation> eye(new Animation("eye.ani", "eye.tga"));
+    tnd::shared_ptr<Animation> portal(new Animation("portal.ani", "portal.tga"));
 
-    GameAnimations animations = {guy, enemy, seekerEnemy, guffin, fireBall, jetPack, tentacle, projectile, tentacleArm, eye};
+    GameAnimations animations = {guy, enemy, seekerEnemy, guffin, fireBall, jetPack, tentacle, projectile, tentacleArm, eye, portal};
     return animations;
 }
 
@@ -38,7 +39,8 @@ public:
         std::shared_ptr<SDL_Texture> renderTexture,
         std::shared_ptr<SDL_AudioStream> sfxAudioStream,
         std::shared_ptr<SDL_AudioStream> musicAudioStream,
-        bool enableCheats) :
+        bool enableCheats,
+        std::vector<uint32_t> level) :
         m_renderTexture(renderTexture)
     {
         tnd::shared_ptr<SoundController> sound(new SoundControllerSdl(sfxAudioStream));
@@ -49,7 +51,14 @@ public:
     
         tnd::shared_ptr<MusicController> music(new MusicControllerSdl(musicAudioStream));
         auto animations = loadGameAnimations();
-        m_game.reset(new Game(m_gfx, sound, music, animations, "%02x%02x", LevelNumber(1,1), enableCheats));
+
+        LevelNumber startLevel(1, 1);
+        if (level.size() == 2) {
+            startLevel.x = level[0];
+            startLevel.y = level[1];
+        }
+
+        m_game.reset(new Game(m_gfx, sound, music, animations, "%02x%02x", startLevel, enableCheats));
         
     }
 
@@ -183,7 +192,7 @@ int main(int argc, char* argv[]) {
         SDL_Event e;
 
 
-        GameWrapper gameWrapper(sdl.getTexture(), sdl.getSfxStream(), sdl.getBgmStream(), params->enableCheats);
+        GameWrapper gameWrapper(sdl.getTexture(), sdl.getSfxStream(), sdl.getBgmStream(), params->enableCheats, params->level);
 
         uint32_t targetFps = 70;
 

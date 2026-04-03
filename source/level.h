@@ -26,6 +26,24 @@ struct MessageBox
     uint16_t h;
 };
 
+struct PortalStruct
+{
+    PortalStruct() :
+        targetLevelX(0), targetLevelY(0), x(0), y(0), w(0), h(0)
+    {}
+
+    PortalStruct(uint16_t _targetLevelX, uint16_t _targetLevelY, uint16_t _x, uint16_t _y, uint16_t _w, uint16_t _h) :
+        targetLevelX(_targetLevelX), targetLevelY(_targetLevelY), x(_x), y(_y), w(_w), h(_h)
+    {}
+
+    uint16_t targetLevelX;
+    uint16_t targetLevelY;
+    uint16_t x;
+    uint16_t y;
+    uint16_t w;
+    uint16_t h;
+};
+
 
 class Level : public Drawable
 {
@@ -62,6 +80,7 @@ public:
     tnd::vector<Rectangle> getCreditsWarps() { return m_creditsWarps; }
     tnd::vector<Button> getButtons() { return m_buttons; }
     tnd::vector<Rectangle> getEyes() { return m_eyes; }
+    tnd::vector<PortalStruct> getPortals() { return m_portals; }
     uint16_t getMusicIndex() { return m_musicIndex; }
     uint16_t getCutscene() { return m_cutscene; }
 
@@ -96,6 +115,7 @@ private:
     tnd::vector<Rectangle> m_jetPacks;
     tnd::vector<Rectangle> m_sunItems;
     tnd::vector<MessageBox> m_messageBoxes;
+    tnd::vector<PortalStruct> m_portals;
     tnd::vector<Rectangle> m_fireBalls;
     tnd::vector<Rectangle> m_seekerEnemies;
     tnd::vector<Rectangle> m_boss1;

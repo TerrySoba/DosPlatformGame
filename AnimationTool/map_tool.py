@@ -25,15 +25,7 @@ class Layer:
         self.data = data
 
 class ObjectLayer:
-    def __init__(self, name, type, text_id, x, y, w, h):
-        self.name = name
-        self.type = type
-        if text_id is not None:
-            self.text_id = int(text_id)
-        self.x = round(float(x))
-        self.y = round(float(y))
-        self.w = round(float(w))
-        self.h = round(float(h))
+    pass
 
 class DataMapper:
     def __init__(self, firstgids):
@@ -99,21 +91,42 @@ if __name__ == "__main__":
 
     objectLayers = []
 
+    # Create object layers
     for objectElement in objectElements:
-        property = objectElement.find("./properties/property[@name='string_id']")
-        try:
-            textId = property.attrib["value"]
-        except:
-            textId = None
+        
+        object_type = objectElement.attrib["type"]
 
-        objectLayers.append(ObjectLayer(
-            objectElement.attrib["name"],
-            objectElement.attrib["type"],
-            textId,
-            objectElement.attrib["x"],
-            objectElement.attrib["y"],
-            objectElement.attrib["width"],
-            objectElement.attrib["height"]))
+        if object_type == "text":
+            try:
+                string_property = objectElement.find("./properties/property[@name='string_id']")
+                textId = string_property.attrib["value"]
+            except:
+                pass
+
+        if object_type == "portal":
+            try:
+                portal_property = objectElement.find("./properties/property[@name='target_level_x']")
+                target_level_x = portal_property.attrib["value"]
+                portal_property = objectElement.find("./properties/property[@name='target_level_y']")
+                target_level_y = portal_property.attrib["value"]
+            except:
+                pass
+
+       
+        object_layer = ObjectLayer()
+        object_layer.name = objectElement.attrib["name"]
+        object_layer.type = objectElement.attrib["type"]
+        if object_layer.type == "text":
+            object_layer.text_id = int(textId)
+        if object_layer.type == "portal":
+            object_layer.target_level_x = int(target_level_x)
+            object_layer.target_level_y = int(target_level_y)
+        object_layer.x = round(float(objectElement.attrib["x"]))
+        object_layer.y = round(float(objectElement.attrib["y"]))
+        object_layer.w = round(float(objectElement.attrib["width"]))
+        object_layer.h = round(float(objectElement.attrib["height"]))
+
+        objectLayers.append(object_layer)
 
 
     # read guffin_gate property
@@ -171,6 +184,7 @@ if __name__ == "__main__":
         "tileset"     : 11,
         "eye"         : 12,
         "cutscene"    : 13,
+        "portal"      : 14
     }
 
     with open(base_name + ".map", "wb") as map_file:
@@ -195,6 +209,9 @@ if __name__ == "__main__":
             layerData = bytearray()
             if objectLayer.type == "text":
                 layerData += struct.pack("<H", objectLayer.text_id)
+            if objectLayer.type == "portal":
+                layerData += struct.pack("<H", objectLayer.target_level_x)
+                layerData += struct.pack("<H", objectLayer.target_level_y)
             layerData += struct.pack("<H", objectLayer.x)
             layerData += struct.pack("<H", objectLayer.y)
             layerData += struct.pack("<H", objectLayer.w)

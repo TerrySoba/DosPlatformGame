@@ -2,6 +2,7 @@
 #define _PHYSICS_EVENT_INCLUDED_H
 
 #include "rectangle.h"
+#include "level_number.h"
 
 enum LevelTransition
 {
@@ -16,6 +17,7 @@ class PhysicsCallback
 {
 public:
     virtual void levelTransition(LevelTransition transition) = 0;
+    virtual void levelWarp(LevelNumber level) = 0;
     virtual void collectApple(Point point) = 0;
     virtual void collectJetPack(Point point) = 0;
     virtual void collectSunItem(Point point) = 0;

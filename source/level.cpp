@@ -29,6 +29,7 @@ enum LayerType
     LAYER_TILESET  = 11,
     LAYER_EYE      = 12,
     LAYER_CUTSCENE = 13,
+    LAYER_PORTAL   = 14,
 };
 
 
@@ -118,6 +119,16 @@ Level::Level(const char* mapFilename,
                 safeRead(&textId, sizeof(textId), 1, fp);
                 readRectangleLayer(fp, rect, offsetX, offsetY);
                 m_messageBoxes.push_back(MessageBox(textId, rect.x, rect.y, rect.width, rect.height));
+                break;
+            }
+            case LAYER_PORTAL:
+            {
+                uint16_t targetLevelX, targetLevelY;
+                safeRead(&targetLevelX, sizeof(targetLevelX), 1, fp);
+                safeRead(&targetLevelY, sizeof(targetLevelY), 1, fp);
+                readRectangleLayer(fp, rect, offsetX, offsetY);
+                rect *= 16;
+                m_portals.push_back(PortalStruct(targetLevelX, targetLevelY, rect.x, rect.y, rect.width, rect.height));
                 break;
             }
             case LAYER_FIREBALL:

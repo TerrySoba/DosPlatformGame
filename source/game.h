@@ -21,6 +21,8 @@
 #include "shared_ptr.h"
 #include "key_mapper.h"
 #include "eye.h"
+#include "portal.h"
+#include "level_number.h"
 
 
 enum StoryStatus
@@ -41,21 +43,6 @@ namespace ActorPosition
 	};
 }
 
-struct LevelNumber
-{
-	LevelNumber() : x(0), y(0) {}
-	LevelNumber(int8_t x, int8_t y) : x(x), y(y) {}
-
-	int8_t x;
-	int8_t y;
-
-	bool operator==(const LevelNumber& other) const
-	{
-		return (x == other.x && y == other.y);
-	}
-};
-
-
 struct GameAnimations
 {
 	tnd::shared_ptr<Animation> actorAnimation;
@@ -68,6 +55,7 @@ struct GameAnimations
 	tnd::shared_ptr<Animation> projectileAnimation;
 	tnd::shared_ptr<Animation> tentacleArmAnimation;
 	tnd::shared_ptr<Animation> eyeAnimation;
+	tnd::shared_ptr<Animation> portalAnimation;
 };
 
 
@@ -109,6 +97,7 @@ public:
 
 	// PhysicsCallback interface
 	virtual void levelTransition(LevelTransition transition);
+	virtual void levelWarp(LevelNumber level);
 	virtual void collectApple(Point point);
 	virtual void collectJetPack(Point point);
 	virtual void collectSunItem(Point point);
@@ -132,6 +121,7 @@ private:
 	tnd::ptr_vector<Tentacle> m_tentacles;
 	tnd::ptr_vector<TentacleArm> m_tentacleArms;
 	tnd::ptr_vector<Eye> m_eyes;
+	tnd::vector<Portal> m_portals;
 	tnd::vector<Rectangle> m_guffins;
 	tnd::vector<Rectangle> m_jetPacks;
 	tnd::vector<Rectangle> m_sunItems;
@@ -141,6 +131,7 @@ private:
 	TinyString m_levelBasename;
 	LevelNumber m_levelNumber;
 	LevelNumber m_nextLevel;
+	LevelNumber m_levelWarp;
 	ActorAnimationController m_animationController;
 	bool m_lastButtonPressed;
 	tnd::vector<CollectedGuffin> m_collectedGuffins;
