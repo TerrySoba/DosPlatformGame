@@ -9,7 +9,8 @@ int16_t JETPACK_THRUST_TABLE[] = {
     5,5,5,5,5,5,5,5,5,5,
 };
 
-#define JETPACK_THRUST_TABLE_SIZE 40
+static const int16_t JETPACK_THRUST_TABLE_SIZE =
+    sizeof(JETPACK_THRUST_TABLE) / sizeof(JETPACK_THRUST_TABLE[0]);
 
 
 Physics::Physics(PhysicsCallback* callback, tnd::shared_ptr<SoundController> sound) :
