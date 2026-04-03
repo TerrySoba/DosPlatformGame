@@ -12,6 +12,7 @@ SoundControllerSdl::SoundControllerSdl(std::shared_ptr<SDL_AudioStream> audioStr
     m_guffinSound = decodeVorbisFile("guffin.ogg");
     m_jetpackSound = decodeVorbisFile("jetpack.ogg");
     m_switchSound = decodeVorbisFile("switch2.ogg");
+    m_portalSound = decodeVorbisFile("portal.ogg");
 }
 
 SoundControllerSdl::~SoundControllerSdl()
@@ -52,6 +53,11 @@ void SoundControllerSdl::playStandSound()
 void SoundControllerSdl::playSwitchSound()
 {
     playSound(m_switchSound, 5);
+};
+
+void SoundControllerSdl::playPortalSound()
+{
+    playSound(m_portalSound, 4);
 };
 
 bool SoundControllerSdl::isPlaying()

@@ -18,6 +18,7 @@ public:
     void playDeathSound();
     void playStandSound();
     void playSwitchSound();
+    void playPortalSound();
 
     bool isPlaying()
     {
@@ -34,6 +35,7 @@ private:
     SbSample m_guffinSound;
     SbSample m_jetpackSound;
     SbSample m_switchSound;
+    SbSample m_portalSound;
     uint16_t m_soundPriority;
 };
 

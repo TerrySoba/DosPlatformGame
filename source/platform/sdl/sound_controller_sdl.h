@@ -20,6 +20,7 @@ public:
     virtual void playDeathSound();
     virtual void playStandSound();
     virtual void playSwitchSound();
+    virtual void playPortalSound();
     virtual bool isPlaying();
 
 private:
@@ -36,6 +37,7 @@ private:
     SampleData m_guffinSound;
     SampleData m_jetpackSound;
     SampleData m_switchSound;
+    SampleData m_portalSound;
     uint16_t m_soundPriority;
 
     int32_t m_lastPriority = 0;

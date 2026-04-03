@@ -3,7 +3,6 @@
 SoundControllerDos::SoundControllerDos() :
     m_soundPriority(0)
 {
-
     m_sbFound = m_sb.soundBlasterFound();
     m_jumpSound = m_sb.loadVocFile("JUMP.VOC");
     m_deathSound = m_sb.loadVocFile("DEATH.VOC");
@@ -12,6 +11,7 @@ SoundControllerDos::SoundControllerDos() :
     m_guffinSound = m_sb.loadVocFile("GUFFIN.VOC");
     m_jetpackSound = m_sb.loadVocFile("JETPACK.VOC");
     m_switchSound = m_sb.loadVocFile("SWITCH2.VOC");
+    m_portalSound = m_sb.loadVocFile("PORTAL.VOC");
 }
 
 SoundControllerDos::~SoundControllerDos()
@@ -23,12 +23,10 @@ SoundControllerDos::~SoundControllerDos()
     m_sb.freeSample(m_guffinSound);
     m_sb.freeSample(m_jetpackSound);
     m_sb.freeSample(m_switchSound);
+    m_sb.freeSample(m_portalSound);
 }
 
-
-
 #define priority(x) ((x) > (m_soundPriority) || !m_sb.isPlaying())
-
 
 void SoundControllerDos::playJumpSound()
 {
@@ -103,5 +101,14 @@ void SoundControllerDos::playDeathSound()
     {
         m_soundPriority = 4;
         m_sb.singlePlay(m_deathSound);
+    }
+}
+
+void SoundControllerDos::playPortalSound()
+{
+    if (m_sbFound)
+    {
+        m_soundPriority = 4;
+        m_sb.singlePlay(m_portalSound);
     }
 }

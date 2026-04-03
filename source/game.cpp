@@ -833,6 +833,7 @@ void Game::levelTransition(LevelTransition transition)
 
 void Game::levelWarp(LevelNumber level)
 {
+    m_sound->playPortalSound();
     m_levelWarp = level;
 }
 

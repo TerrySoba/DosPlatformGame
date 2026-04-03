@@ -13,6 +13,7 @@ public:
     virtual void playDeathSound() = 0;
     virtual void playStandSound() = 0;
     virtual void playSwitchSound() = 0;
+    virtual void playPortalSound() = 0;
     virtual bool isPlaying() = 0;
 };
 

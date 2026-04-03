@@ -175,6 +175,7 @@
 ../sound/guffin.voc
 ../sound/jetpack.voc
 ../sound/jump.voc
+../sound/portal.voc
 ../sound/stand.voc
 ../sound/steps.voc
 ../sound/switch2.voc
