@@ -125,6 +125,9 @@
 ../levels/0D04b1.map
 ../levels/0D07.map
 ../levels/0D07b1.map
+../levels/0D08.map
+../levels/0E08.map
+../levels/0F08.map
 ../levels/0E01.map
 ../levels/0E03.map
 ../levels/0E04.map
