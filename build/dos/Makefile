@@ -17,7 +17,8 @@ objects_game_lib = \
 	platform/dos/sound_controller_dos.o \
 	platform/dos/music_controller_dos.o \
 	platform/dos/mda_debug_output.o \
-	convert_to_tga.o
+	convert_to_tga.o \
+	game_config.o
 
 objects_game = \
 	platform/dos/main.o $(objects_game_lib)
@@ -27,7 +28,8 @@ objects_test = \
 	physics_test.o tga_image_test.o shared_ptr_test.o \
 	blit_test.o vector_test.o rectangle_test.o tiny_string_test.o animation_test.o \
 	text_layout_test.o i18n_test.o level_test.o raii_ptr_test.o ptr_vector_test.o test_class.o \
-	time_tools_test.o compiled_sprite_test.o font_test.o font_writer_test.o credits_loader_test.o
+	time_tools_test.o compiled_sprite_test.o font_test.o font_writer_test.o credits_loader_test.o \
+	game_config_test.o
 
 dissolve_objs = \
 	platform/dos/vgagfx.o palette_tools.o image.o tiny_string.o exception.o platform/dos/dissolve.o \
@@ -41,7 +43,7 @@ title_screen = \
 
 BUILD_DATE=$(shell date -R)
 ABS_SOURCE_DIR=$(realpath $(SRC_DIR))
-TEST_DATA_DIR=..\\\\\\\\testdata\\\\\\\\\
+TEST_DATA_DIR=..\\\\\\\testdata\\\\\\\\
 
 # coptions = -0 -ml -xs -onatx -oh -oi+ -ei -zp8 -fpi87
 # coptions = -0 -ml -xs -onatx -oh -ol -ol+ -ox
