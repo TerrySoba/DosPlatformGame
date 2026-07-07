@@ -7,38 +7,122 @@
 const int WRITE_8BIT_SIZE = 5;
 const int WRITE_16BIT_SIZE = 6;
 
+bool usesNoDisp(uint16_t offset)
+{
+    return offset == 0;
+}
+
+bool usesDisp8(uint16_t offset)
+{
+    return offset <= 127;
+}
+
+int write8BitSize(uint16_t offset)
+{
+    if (usesNoDisp(offset))
+    {
+        return 3;
+    }
+    if (usesDisp8(offset))
+    {
+        return 4;
+    }
+    return WRITE_8BIT_SIZE;
+}
+
+int write16BitSize(uint16_t offset)
+{
+    if (usesNoDisp(offset))
+    {
+        return 4;
+    }
+    if (usesDisp8(offset))
+    {
+        return 5;
+    }
+    return WRITE_16BIT_SIZE;
+}
+
 void write8Bit(char* functionBuffer, size_t functionBufferSize, int& functionPos, uint16_t offset, uint8_t data)
 {
-    if (functionPos + WRITE_8BIT_SIZE + 1 >= functionBufferSize)
+    int opSize = write8BitSize(offset);
+    if (functionPos + opSize + 1 >= functionBufferSize)
     {
         return;
     }
 
-    memcpy(functionBuffer + functionPos, "\xC6\x87", 2); // mov    byte ptr offset[bx],data
-    functionPos += 2;
+    if (usesNoDisp(offset))
+    {
+        memcpy(functionBuffer + functionPos, "\xC6\x07", 2); // mov byte ptr [bx],imm8
+        functionPos += 2;
 
-    memcpy(functionBuffer + functionPos, &offset, 2);
-    functionPos += 2;
+        *(functionBuffer + functionPos) = data;
+        functionPos += 1;
+    }
+    else if (usesDisp8(offset))
+    {
+        int8_t disp = (int8_t)offset;
+        memcpy(functionBuffer + functionPos, "\xC6\x47", 2); // mov byte ptr [bx+disp8],imm8
+        functionPos += 2;
 
-    *(functionBuffer + functionPos) = data;
-    functionPos += 1;
+        *(functionBuffer + functionPos) = disp;
+        functionPos += 1;
+
+        *(functionBuffer + functionPos) = data;
+        functionPos += 1;
+    }
+    else
+    {
+        memcpy(functionBuffer + functionPos, "\xC6\x87", 2); // mov byte ptr [bx+disp16],imm8
+        functionPos += 2;
+
+        memcpy(functionBuffer + functionPos, &offset, 2);
+        functionPos += 2;
+
+        *(functionBuffer + functionPos) = data;
+        functionPos += 1;
+    }
 }
 
 void write16Bit(char* functionBuffer, size_t functionBufferSize, int& functionPos, uint16_t offset, uint16_t data)
 {
-    if (functionPos + WRITE_16BIT_SIZE + 1 >= functionBufferSize)
+    int opSize = write16BitSize(offset);
+    if (functionPos + opSize + 1 >= functionBufferSize)
     {
         return;
     }
 
-    memcpy(functionBuffer + functionPos, "\xC7\x87", 2); // mov    byte ptr offset[bx],data
-    functionPos += 2;
+    if (usesNoDisp(offset))
+    {
+        memcpy(functionBuffer + functionPos, "\xC7\x07", 2); // mov word ptr [bx],imm16
+        functionPos += 2;
 
-    memcpy(functionBuffer + functionPos, &offset, 2);
-    functionPos += 2;
+        memcpy(functionBuffer + functionPos, &data, 2);
+        functionPos += 2;
+    }
+    else if (usesDisp8(offset))
+    {
+        int8_t disp = (int8_t)offset;
+        memcpy(functionBuffer + functionPos, "\xC7\x47", 2); // mov word ptr [bx+disp8],imm16
+        functionPos += 2;
 
-    memcpy(functionBuffer + functionPos, &data, 2);
-    functionPos += 2;
+        *(functionBuffer + functionPos) = disp;
+        functionPos += 1;
+
+        memcpy(functionBuffer + functionPos, &data, 2);
+        functionPos += 2;
+    }
+    else
+    {
+        memcpy(functionBuffer + functionPos, "\xC7\x87", 2); // mov word ptr [bx+disp16],imm16
+        functionPos += 2;
+
+        memcpy(functionBuffer + functionPos, &offset, 2);
+        functionPos += 2;
+
+        memcpy(functionBuffer + functionPos, &data, 2);
+        functionPos += 2;
+    }
 }
 
 /**
@@ -83,10 +167,11 @@ uint32_t compileData(char* dst, uint32_t dstSize, const PixelSource& image, int1
             {
                 if (consecutivePixel == 1)
                 {
-                    functionSize += WRITE_8BIT_SIZE;
+                    uint16_t offset = targetWidth * y + x - 1;
+                    functionSize += write8BitSize(offset);
                     if (dst)
                     {
-                        write8Bit(dst, dstSize, functionPos, targetWidth * y + x - 1, lastPixel);
+                        write8Bit(dst, dstSize, functionPos, offset, lastPixel);
                     }
                     consecutivePixel = 0;
                 }
@@ -97,10 +182,11 @@ uint32_t compileData(char* dst, uint32_t dstSize, const PixelSource& image, int1
                     consecutivePixel++;
                 else
                 {
-                    functionSize += WRITE_16BIT_SIZE;
+                    uint16_t offset = targetWidth * y + x - 1;
+                    functionSize += write16BitSize(offset);
                     if (dst)
                     {
-                        write16Bit(dst, dstSize, functionPos, targetWidth * y + x - 1, lastPixel | pixel << 8);
+                        write16Bit(dst, dstSize, functionPos, offset, lastPixel | pixel << 8);
                     }
                     consecutivePixel = 0;
                 }
@@ -109,10 +195,11 @@ uint32_t compileData(char* dst, uint32_t dstSize, const PixelSource& image, int1
         }
         if (consecutivePixel != 0)
         {
-            functionSize += WRITE_8BIT_SIZE;
+            uint16_t offset = targetWidth * y + image.width() - 1;
+            functionSize += write8BitSize(offset);
             if (dst)
             {
-                write8Bit(dst, dstSize, functionPos, targetWidth * y + image.width() - 1, lastPixel);
+                write8Bit(dst, dstSize, functionPos, offset, lastPixel);
             }
         }
     }
