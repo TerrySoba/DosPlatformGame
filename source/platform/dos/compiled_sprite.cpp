@@ -4,9 +4,6 @@
 
 #include <string.h>
 
-const int WRITE_8BIT_SIZE = 5;
-const int WRITE_16BIT_SIZE = 6;
-
 bool usesNoDisp(uint16_t offset)
 {
     return offset == 0;
@@ -27,7 +24,7 @@ int write8BitSize(uint16_t offset)
     {
         return 4;
     }
-    return WRITE_8BIT_SIZE;
+    return 5;
 }
 
 int write16BitSize(uint16_t offset)
@@ -40,7 +37,7 @@ int write16BitSize(uint16_t offset)
     {
         return 5;
     }
-    return WRITE_16BIT_SIZE;
+    return 6;
 }
 
 void write8Bit(char* functionBuffer, size_t functionBufferSize, int& functionPos, uint16_t offset, uint8_t data)
@@ -142,12 +139,11 @@ uint32_t compileData(char* dst, uint32_t dstSize, const PixelSource& image, int1
     char lastPixel = 0;
 
     const char* functionHeader =
-        "\x87\xCB"  // xchg bx,cx
-        "\x93"      // xchg ax,bx
-        "\x8E\xDA"; // mov ds,dx
+        "\x93"      // xchg ax,bx -- Store offset of target image in bx
+        "\x91"      // xchg ax,cx -- Store line width in cx
+        "\x8E\xDA"; // mov  ds,dx -- Store segment of target image in ds
 
     const char* functionEnd =
-        "\x93"      // xchg ax,bx
         "\xcb";     // retf
 
     char transparentColor = image.transparentColor();
@@ -210,9 +206,9 @@ uint32_t compileData(char* dst, uint32_t dstSize, const PixelSource& image, int1
             if (dst)
             {
                 memcpy(dst + functionPos, "\x01\xCB", 2); // add bx, cx
+                functionPos += 2;
             }
             functionSize += 2;
-            functionPos += 2;
         }
     }
 
@@ -297,14 +293,6 @@ int16_t CompiledSprite::height() const
 {
     return m_height;
 }
-
-
-// void sprite2(char* img)
-// {
-//     img[0 * 320 + 6] = 4;
-//     img[1 * 320 + 3] = 4;
-// }
-
 
 void CompiledSprite::draw(char* target, int16_t targetWidth, int16_t targetHeight, int16_t targetX, int16_t targetY) const
 {
