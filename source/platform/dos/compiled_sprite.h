@@ -38,7 +38,7 @@ private:
     char* m_compiledFunction;
 };
 
-typedef void (*DrawCompiledSpritePtr)(char* img);
+typedef void (*DrawCompiledSpritePtr)(char* img, int16_t targetWidth);
 uint32_t compileData(char* dst, uint32_t dstSize, const PixelSource& image, int16_t targetWidth);
 
 #endif

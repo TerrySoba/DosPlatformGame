@@ -142,6 +142,7 @@ uint32_t compileData(char* dst, uint32_t dstSize, const PixelSource& image, int1
     char lastPixel = 0;
 
     const char* functionHeader =
+        "\x87\xCB"  // xchg bx,cx
         "\x93"      // xchg ax,bx
         "\x8E\xDA"; // mov ds,dx
 
@@ -167,7 +168,7 @@ uint32_t compileData(char* dst, uint32_t dstSize, const PixelSource& image, int1
             {
                 if (consecutivePixel == 1)
                 {
-                    uint16_t offset = targetWidth * y + x - 1;
+                    uint16_t offset = x - 1;
                     functionSize += write8BitSize(offset);
                     if (dst)
                     {
@@ -182,7 +183,7 @@ uint32_t compileData(char* dst, uint32_t dstSize, const PixelSource& image, int1
                     consecutivePixel++;
                 else
                 {
-                    uint16_t offset = targetWidth * y + x - 1;
+                    uint16_t offset = x - 1;
                     functionSize += write16BitSize(offset);
                     if (dst)
                     {
@@ -195,12 +196,23 @@ uint32_t compileData(char* dst, uint32_t dstSize, const PixelSource& image, int1
         }
         if (consecutivePixel != 0)
         {
-            uint16_t offset = targetWidth * y + image.width() - 1;
+            uint16_t offset = image.width() - 1;
             functionSize += write8BitSize(offset);
             if (dst)
             {
                 write8Bit(dst, dstSize, functionPos, offset, lastPixel);
             }
+        }
+        
+        // Add line increment: add bx, cx (increment bx by line width after each line except the last)
+        if (y < image.height() - 1)
+        {
+            if (dst)
+            {
+                memcpy(dst + functionPos, "\x01\xCB", 2); // add bx, cx
+            }
+            functionSize += 2;
+            functionPos += 2;
         }
     }
 
@@ -297,5 +309,5 @@ int16_t CompiledSprite::height() const
 void CompiledSprite::draw(char* target, int16_t targetWidth, int16_t targetHeight, int16_t targetX, int16_t targetY) const
 {
     char* img = target + targetWidth * targetY + targetX;
-    ((DrawCompiledSpritePtr)m_compiledFunction)(img);
+    ((DrawCompiledSpritePtr)m_compiledFunction)(img, targetWidth);
 }
