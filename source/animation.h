@@ -5,9 +5,7 @@
 #include "image.h"
 #include "drawable.h"
 
-#ifdef PLATFORM_DOS
-#include "platform/dos/compiled_sprite.h"
-#else
+#ifndef PLATFORM_DOS
 #include "sprite.h"
 #endif
 
@@ -52,7 +50,7 @@ private:
 
     tnd::vector<Frame> m_frames;
     #ifdef PLATFORM_DOS
-    tnd::vector<tnd::shared_ptr<CompiledSprite> > m_frameSprites;
+    tnd::vector<char*> m_frameSprites;
     #else
     tnd::vector<tnd::shared_ptr<Sprite> > m_frameSprites;
     #endif
@@ -76,7 +74,8 @@ private:
 //   end frame:   uint16_t
 //   tag name length: uint16_t
 //   tag name: length bytes
-
-
+// compiled sprite data: count is the same as frames
+//   compiled sprite data size: uint16_t
+//   compiled sprite data
 
 #endif

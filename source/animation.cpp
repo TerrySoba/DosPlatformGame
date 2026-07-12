@@ -7,11 +7,12 @@
 #include <stdio.h>
 #include <string.h>
 
-
 Animation::Animation(const char* animFilename, const char* tgaFilename, bool transparent) :
     m_transparent(transparent)
 {
+#ifndef PLATFORM_DOS
     TgaImage image(tgaFilename);
+#endif
     
     FILE* fp = fopen(animFilename, "rb");
     if (!fp)
@@ -41,10 +42,9 @@ Animation::Animation(const char* animFilename, const char* tgaFilename, bool tra
         safeRead(&f.height, sizeof(uint16_t), 1, fp);
 
         m_frames.push_back(f);
+
+        #ifndef PLATFORM_DOS
         FrameImage frameImage(image, f.x, f.y, f.width, f.height);
-        #ifdef PLATFORM_DOS
-        m_frameSprites.push_back(new CompiledSprite(frameImage, 320));
-        #else
         m_frameSprites.push_back(tnd::shared_ptr<Sprite>(new Sprite(frameImage, 320)));
         #endif
     }
@@ -77,6 +77,18 @@ Animation::Animation(const char* animFilename, const char* tgaFilename, bool tra
         m_tags.push_back(frameTag);
     }
 
+    #ifdef PLATFORM_DOS
+    m_frameSprites.resize(frameNumber);
+    for (uint16_t i = 0; i < frameNumber; ++i)
+    {
+        uint16_t compiledSpriteSize;
+        safeRead(&compiledSpriteSize, sizeof(uint16_t), 1, fp);
+
+        m_frameSprites[i] = new char[compiledSpriteSize];
+        safeRead(m_frameSprites[i], 1, compiledSpriteSize, fp);
+    }
+    #endif
+
     fclose(fp);
 
     m_minFrame = 0;
@@ -87,6 +99,12 @@ Animation::Animation(const char* animFilename, const char* tgaFilename, bool tra
 
 Animation::~Animation()
 {
+#ifdef PLATFORM_DOS
+    for (int i = 0; i < m_frameSprites.size(); ++i)
+    {
+        delete m_frameSprites[i];
+    }
+#endif
 }
 
 int16_t Animation::width() const
@@ -133,7 +151,14 @@ tnd::vector<FrameTag> Animation::getTags()
     return m_tags;
 }
 
+typedef void (*DrawCompiledSpritePtr)(char* img, int16_t targetWidth);
+
 void Animation::draw(char* target, int16_t targetWidth, int16_t targetHeight, int16_t targetX, int16_t targetY) const
 {
+#ifdef PLATFORM_DOS
+    DrawCompiledSpritePtr drawFunc = (DrawCompiledSpritePtr)m_frameSprites[m_currentFrame];
+    drawFunc(target + targetY * targetWidth + targetX, targetWidth);
+#else
     m_frameSprites[m_currentFrame]->draw(target, targetWidth, targetHeight, targetX, targetY);
+#endif
 }

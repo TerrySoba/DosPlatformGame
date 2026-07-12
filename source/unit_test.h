@@ -53,7 +53,7 @@ bool runTests(const char* filter);
 #define ASSERT_EQ_INT(val1, val2) \
 	if (val1 != val2) \
 	{ \
-		snprintf(s_lastMessageBuffer, s_lastMessageBufferSize, "Assert failed: ASSERT_EQ_INT(%d, %d) " __FILE__ ":%d", (val1), (val2), __LINE__); \
+		snprintf(s_lastMessageBuffer, s_lastMessageBufferSize, "Assert failed: ASSERT_EQ_INT(%ld, %ld) " __FILE__ ":%ld", int32_t(val1), int32_t(val2), int32_t(__LINE__)); \
 		std::cout << s_lastMessageBuffer << "\n"; \
 		s_currentTestResult = TEST_FAILURE; \
 		return; \

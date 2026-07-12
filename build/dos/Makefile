@@ -9,7 +9,6 @@ objects_game_lib = \
 	tentacle.o tentacle_arm.o eye.o boss2.o font.o font_writer.o \
 	credits_loader.o credits_scroller.o palette_tools.o \
 	platform/dos/vgagfx.o \
-	platform/dos/compiled_sprite.o \
 	platform/dos/soundblaster.o \
 	platform/dos/dos_timer.o \
 	platform/dos/keyboard_dos.o \
@@ -28,7 +27,7 @@ objects_test = \
 	physics_test.o tga_image_test.o shared_ptr_test.o \
 	blit_test.o vector_test.o rectangle_test.o tiny_string_test.o animation_test.o \
 	text_layout_test.o i18n_test.o level_test.o raii_ptr_test.o ptr_vector_test.o test_class.o \
-	time_tools_test.o compiled_sprite_test.o font_test.o font_writer_test.o credits_loader_test.o \
+	time_tools_test.o font_test.o font_writer_test.o credits_loader_test.o \
 	game_config_test.o
 
 dissolve_objs = \
@@ -38,7 +37,7 @@ dissolve_objs = \
 
 title_screen = \
     platform/dos/title.o platform/dos/vgagfx.o image.o tga_image.o exception.o rectangle.o platform/dos/keyboard_dos.o \
-	tiny_string.o animation.o platform/dos/compiled_sprite.o font.o font_writer.o \
+	tiny_string.o animation.o font.o font_writer.o \
 	blit.o i18n.o palette_tools.o convert_to_tga.o
 
 BUILD_DATE=$(shell date -R)
@@ -86,14 +85,6 @@ $(dissolve):
 # soundblaster.o : soundblaster.cpp
 # 	wpp $(coptions) soundblaster.cpp
 # 	wdis soundblaster.o > soundblaster.asm
-
-#compiled_sprite.o : compiled_sprite.cpp
-#	wpp $(coptions) compiled_sprite.cpp
-#	wdis compiled_sprite.o > compiled_sprite.asm
-
-# compiled_sprite_test.o : compiled_sprite_test.cpp
-# 	wpp $(coptions) compiled_sprite_test.cpp
-# 	wdis compiled_sprite_test.o > compiled_sprite_test.asm
 
 #joystick.o : joystick.cpp
 #	wpp $(coptions) joystick.cpp

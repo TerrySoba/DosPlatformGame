@@ -11,7 +11,6 @@
 #include "time_tools.h"
 
 #ifdef PLATFORM_DOS
-#include "platform/dos/compiled_sprite.h"
 #include "platform/dos/keyboard_dos.h"
 #endif
 

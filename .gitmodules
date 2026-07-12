@@ -1,3 +1,6 @@
 [submodule "VocTool"]
 	path = VocTool
 	url = https://github.com/TerrySoba/VocTool.git
+[submodule "SpriteCompiler"]
+	path = SpriteCompiler
+	url = https://github.com/TerrySoba/SpriteCompiler.git

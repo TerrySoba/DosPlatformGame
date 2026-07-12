@@ -2,6 +2,8 @@
 
 set -e
 
+# build SpriteCompiler
+SpriteCompiler/build.sh
 
 # build png to tga converter
 mkdir -p Png2Tga/build
@@ -77,7 +79,7 @@ convertAnimation () {
     directory=`dirname $jsonfile`
     filename=`basename $jsonfile .json`
     echo Converting animation \"${directory}/${filename}.json\" to .ani
-    python3 AnimationTool/animation_tool.py ${directory}/${filename}.json ${directory}/${filename}.ani
+    SpriteCompiler/build/sprite_compiler -w 320 -i ${directory}/${filename}.tga -a ${directory}/${filename}.json -o ${directory}/${filename}.ani
 }
 
 # now animations

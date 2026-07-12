@@ -1,10 +1,13 @@
 #ifndef _FRAME_IMAGE_H_INCLUDED
 #define _FRAME_IMAGE_H_INCLUDED
 
-#include "platform/dos/compiled_sprite.h"
 #include "tga_image.h"
 
 #include <stdint.h>
+
+#ifndef PLATFORM_DOS
+#include "pixel_source.h"
+
 
 class FrameImage : public PixelSource
 {
@@ -41,5 +44,7 @@ private:
     int16_t m_w;
     int16_t m_h;
 };
+#endif // PLATFORM_DOS
+
 
 #endif
