@@ -85,12 +85,9 @@ void printStr(const char* str)
 // }
 
 
-int main(int argc, char* argv[])
+int main()
 {
     int ret;
-
-    (void)argc;
-    (void)argv;
 
     ret = spawnWait("title.exe");
     if (ret == 1)
