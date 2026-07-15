@@ -1,1 +1,1 @@
-dosbox-staging\dosbox.exe -conf config/run_game_windows.dosbox_config -fullscreen -c "mount c release" -c "c:" -c "cd release" -c "game.exe --german" -c "exit"
+dosbox-staging\dosbox.exe -conf config/run_game_windows.dosbox_config -fullscreen -c "mount c release" -c "c:" -c "cd release" -c "game --german" -c "exit"

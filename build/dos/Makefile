@@ -5,9 +5,9 @@ objects_game_lib = \
 	rectangle.o tiny_string.o game.o  \
 	enemy.o game_save.o text.o i18n.o fire_ball.o \
 	seeker_enemy.o \
-	boss1.o time_tools.o  key_mapper.o \
-	tentacle.o tentacle_arm.o eye.o boss2.o font.o font_writer.o \
-	credits_loader.o credits_scroller.o palette_tools.o \
+	boss1.o time_tools.o key_mapper.o \
+	tentacle.o tentacle_arm.o eye.o boss2.o \
+	palette_tools.o \
 	platform/dos/vgagfx.o \
 	platform/dos/soundblaster.o \
 	platform/dos/dos_timer.o \
@@ -25,7 +25,8 @@ objects_test = \
 	physics_test.o tga_image_test.o shared_ptr_test.o \
 	blit_test.o vector_test.o rectangle_test.o tiny_string_test.o animation_test.o \
 	text_layout_test.o i18n_test.o level_test.o raii_ptr_test.o ptr_vector_test.o test_class.o \
-	time_tools_test.o font_test.o font_writer_test.o credits_loader_test.o
+	time_tools_test.o font_test.o font_writer_test.o credits_loader_test.o credits_scroller.o \
+	font_writer.o credits_loader.o credits_scroller.o font.o\
 
 dissolve_objs = \
 	platform/dos/vgagfx.o palette_tools.o image.o tiny_string.o exception.o platform/dos/dissolve.o \
@@ -122,11 +123,13 @@ _$(title): $(title_screen)
 	echo "FILE   {$(title_screen)}" >> title.lnk
 	wlink  @title.lnk
 
+
+platform/dos/launcher.o: platform/dos/launcher.c
+	wcc -ms -bt=dos platform/dos/launcher.c -fo=platform/dos/launcher.o
+
 $(launcher): platform/dos/launcher.o
-	echo "NAME   $@" > launcher.lnk
-	echo "SYSTEM DOS" >> launcher.lnk
-	echo "FILE   {platform/dos/launcher.o}" >> launcher.lnk
-	wlink  @launcher.lnk
+	wlink system com file platform/dos/launcher.o name game.com
+
 
 $(radtest): $(rad_tester)
 	echo "NAME   $@" > radtest.lnk

@@ -188,7 +188,7 @@
 ../fonts/lib18.stf
 ../fonts/title.stf
 ../fonts/dejavu8.stf
-game.exe
+game.com
 game2.exe
 title.exe
 credits.txt

@@ -14,7 +14,6 @@
 #include "i18n.h"
 #include "sound_controller.h"
 #include "shared_ptr.h"
-#include "credits_scroller.h"
 #include <dos.h>
 
 #include "exception.h"
@@ -162,13 +161,7 @@ int main(int argc, char* argv[])
                 exitCode = game.runGameLoop();
             }
             frameCounter = game.getFrameCount();
-        }
-
-        if (exitCode == GAME_EXIT_CREDITS)
-        {
-            runCredits(*gfx, "credits.txt");
-        }
-        
+        }        
     }
     catch(const Exception& e)
     {
