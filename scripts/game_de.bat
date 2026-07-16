@@ -1,1 +1,1 @@
-game.exe --german
+game --german
