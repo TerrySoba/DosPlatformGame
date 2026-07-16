@@ -44,13 +44,13 @@ TEST_DATA_DIR=..\\\\\\\testdata\\\\\\\\
 
 # coptions = -0 -ml -xs -onatx -oh -oi+ -ei -zp8 -fpi87
 # coptions = -0 -ml -xs -onatx -oh -ol -ol+ -ox
-coptions = -ml -oneatx -xs -xr -zp4 -0 -ad \
+coptions = -ml -onas -xs -xr -zp4 -0 -ad \
 		   -dPLATFORM_DOS \
            -dBUILD_DATE="\"$(BUILD_DATE)\"" \
 		   -dTEST_DATA_DIR="\"$(TEST_DATA_DIR)\"" \
 		   -dBUILD_VERSION="\"$(BUILD_VERSION)\""
 
-coptions_launcher = -ms -onasx -0 -ad -zls -s -d0
+coptions_launcher = -ms -onas -0 -ad -zls -s -d0
 
 dest     = game2.exe
 test     = gametest.exe
