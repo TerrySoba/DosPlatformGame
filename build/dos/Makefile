@@ -50,12 +50,12 @@ coptions = -ml -oneatx -xs -xr -zp4 -0 -ad \
 		   -dTEST_DATA_DIR="\"$(TEST_DATA_DIR)\"" \
 		   -dBUILD_VERSION="\"$(BUILD_VERSION)\""
 
-coptions_launcher = -ms -oneatx -xd -zp4 -0 -ad -os
+coptions_launcher = -ms -onasx -0 -ad -zls -s -d0
 
 dest     = game2.exe
 test     = gametest.exe
 title    = title.exe
-launcher = game.exe
+launcher = game.com
 dissolve = dissolve.exe
 
 
@@ -125,11 +125,13 @@ _$(title): $(title_screen)
 
 
 platform/dos/launcher.o: platform/dos/launcher.c
-	wcc -ms -bt=dos platform/dos/launcher.c -fo=platform/dos/launcher.o
+	wcc $(coptions_launcher) -bt=dos platform/dos/launcher.c -fo=platform/dos/launcher.o
 
 $(launcher): platform/dos/launcher.o
-	wlink system com file platform/dos/launcher.o name game.com
-
+	echo "NAME   $@" > launcher.lnk
+	echo "SYSTEM COM" >> launcher.lnk
+	echo "FILE   {platform/dos/launcher.o}" >> launcher.lnk
+	wlink  @launcher.lnk
 
 $(radtest): $(rad_tester)
 	echo "NAME   $@" > radtest.lnk
