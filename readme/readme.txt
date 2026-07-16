@@ -1,7 +1,7 @@
 How to run the Game
 -------------------
 Just run:
-    game.exe
+    game
 
 System Requirements
 -------------------
