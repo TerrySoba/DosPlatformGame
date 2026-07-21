@@ -10,7 +10,7 @@ if [ $# -lt 2 ]; then
 fi
 
 WSL_DOSBOX_PATH="/mnt/c/Program Files (x86)/dosbox-staging/DOSBox.exe"
-LINUX_DOSBOX_PATH="dosbox-staging"
+LINUX_DOSBOX_PATH="dosbox-x"
 
 COMMANDS=()
 for i in "${@: 3}"; do
