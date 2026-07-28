@@ -26,7 +26,8 @@ objects_test = \
 	blit_test.o vector_test.o rectangle_test.o tiny_string_test.o animation_test.o \
 	text_layout_test.o i18n_test.o level_test.o raii_ptr_test.o ptr_vector_test.o test_class.o \
 	time_tools_test.o font_test.o font_writer_test.o credits_loader_test.o credits_scroller.o \
-	font_writer.o credits_loader.o credits_scroller.o font.o\
+	font_writer.o credits_loader.o credits_scroller.o font.o platform/dos/rle_sprite_test.o \
+	platform/dos/rle_sprite_asm.o
 
 dissolve_objs = \
 	platform/dos/vgagfx.o palette_tools.o image.o tiny_string.o exception.o platform/dos/dissolve.o \
@@ -90,6 +91,9 @@ $(dissolve):
 
 rad_player_asm.o: 3rd_party/rad_tracker/c_interface.asm 3rd_party/rad_tracker/player_nasm.asm
 	nasm -f obj -i 3rd_party/rad_tracker 3rd_party/rad_tracker/c_interface.asm -o rad_player_asm.o -DRAD_NO_DEFAULT_PLAYER
+
+platform/dos/rle_sprite_asm.o: platform/dos/rle_sprite.asm
+	nasm -f obj -i platform/dos platform/dos/rle_sprite.asm -o platform/dos/rle_sprite_asm.o
 
 FORCE:
 
