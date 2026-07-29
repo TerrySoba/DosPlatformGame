@@ -2,6 +2,7 @@ cpu 8086
 
 global drawRleSprite_
 drawRleSprite_:
+
     ; data is passed in DX:AX
     ; dest is passed in CX:BX
     push ds
@@ -16,9 +17,15 @@ drawRleSprite_:
 
     xor ax,ax ; clear ax for later usage
 
-    ; mov cx, 0x7
-    ; rep movsb
-    ; jmp .done ; for testing purposes
+    ; store the start of the current line for later usage
+    mov dx, di ; store the start of the current line in dx for later usage
+
+    ; put line width in bx for later usage, line width was passed via the stack
+    push bp
+    mov bp, sp
+    mov bx, [bp + 14] ; store line width in bx for later usage
+    pop bp
+
 
 .loop:
     ;mov al, [si]
@@ -61,10 +68,18 @@ drawRleSprite_:
     ; handle skip (transparent pixels)
     ; low 6 bits = count
     and al, 0b00111111
+    jz .handle_line_skip ; if count is zero, we skip to the next line
     mov cx, ax
     add di, cx
     jmp .loop
     
+.handle_line_skip:
+    ; skip to the next line
+    ; the start of the last line is stored in dx, and the line width is stored in bx
+    add dx, bx ; move to the start of the next line
+    mov di, dx ; set di to the start of the next line
+    jmp .loop
+
 .handle_end:
     jmp .done
 
