@@ -31,19 +31,16 @@ drawRleSprite_:
     ;mov al, [si]
     ;inc si
     lodsb
-    
-    ; extract header type (top 2 bits)
-    mov cl, al
-    and cl, 0b11000000
-    
-    ; cmp cl, 0b00000000 ;  this is already done by the previous "and"
-    jz .handle_literal
-    cmp cl, 0b01000000
-    je .handle_repeat
-    cmp cl, 0b10000000
-    je .handle_skip
-    ; cmp cl, 0b11000000  ; we can skip this comparison, as there are only 4 possibilities
-    jmp .handle_end
+
+    ; Branch on header range directly:
+    ; 00xxxxxx = literal, 01xxxxxx = repeat, 10xxxxxx = skip, 11xxxxxx = end
+    cmp al, 0b01000000
+    jb .handle_literal
+    cmp al, 0b10000000
+    jb .handle_repeat
+    cmp al, 0b11000000
+    jb .handle_skip
+    jmp .done
     
 .handle_literal:
     ; handle literal data
@@ -69,8 +66,7 @@ drawRleSprite_:
     ; low 6 bits = count
     and al, 0b00111111
     jz .handle_line_skip ; if count is zero, we skip to the next line
-    mov cx, ax
-    add di, cx
+    add di, ax
     jmp .loop
     
 .handle_line_skip:
@@ -79,9 +75,6 @@ drawRleSprite_:
     add dx, bx ; move to the start of the next line
     mov di, dx ; set di to the start of the next line
     jmp .loop
-
-.handle_end:
-    jmp .done
 
 .done:
     pop di
