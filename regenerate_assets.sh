@@ -79,7 +79,7 @@ convertAnimation () {
     directory=`dirname $jsonfile`
     filename=`basename $jsonfile .json`
     echo Converting animation \"${directory}/${filename}.json\" to .ani
-    SpriteCompiler/build/sprite_compiler -w 320 -i ${directory}/${filename}.tga -a ${directory}/${filename}.json -o ${directory}/${filename}.ani
+    SpriteCompiler/build/sprite_compiler -f rle -w 320 -i ${directory}/${filename}.tga -a ${directory}/${filename}.json -o ${directory}/${filename}.ani
 }
 
 # now animations

@@ -3,6 +3,7 @@
 #include "safe_read.h"
 
 #include "frame_image.h"
+#include "platform/dos/rle_sprite.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -156,8 +157,9 @@ typedef void (*DrawCompiledSpritePtr)(char* img, int16_t targetWidth);
 void Animation::draw(char* target, int16_t targetWidth, int16_t targetHeight, int16_t targetX, int16_t targetY) const
 {
 #ifdef PLATFORM_DOS
-    DrawCompiledSpritePtr drawFunc = (DrawCompiledSpritePtr)m_frameSprites[m_currentFrame];
-    drawFunc(target + targetY * targetWidth + targetX, targetWidth);
+    // DrawCompiledSpritePtr drawFunc = (DrawCompiledSpritePtr)m_frameSprites[m_currentFrame];
+    // drawFunc(target + targetY * targetWidth + targetX, targetWidth);
+    drawRleSprite(m_frameSprites[m_currentFrame], target + targetY * targetWidth + targetX, targetWidth);
 #else
     m_frameSprites[m_currentFrame]->draw(target, targetWidth, targetHeight, targetX, targetY);
 #endif

@@ -2,9 +2,9 @@ cpu 8086
 
 global drawRleSprite_
 drawRleSprite_:
-
     ; data is passed in DX:AX
     ; dest is passed in CX:BX
+    ; line width is passed on the stack (2 bytes)
     push ds
     push es
     push si
@@ -89,4 +89,4 @@ drawRleSprite_:
     pop es
     pop ds
 
-    retf
+    retf 2
