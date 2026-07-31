@@ -80,13 +80,19 @@ Animation::Animation(const char* animFilename, const char* tgaFilename, bool tra
 
     #ifdef PLATFORM_DOS
     m_frameSprites.resize(frameNumber);
+    
     for (uint16_t i = 0; i < frameNumber; ++i)
     {
         uint16_t compiledSpriteSize;
         safeRead(&compiledSpriteSize, sizeof(uint16_t), 1, fp);
 
-        m_frameSprites[i] = new char[compiledSpriteSize];
-        safeRead(m_frameSprites[i], 1, compiledSpriteSize, fp);
+        uint8_t compiledSpriteType;
+        safeRead(&compiledSpriteType, sizeof(uint8_t), 1, fp);
+
+        m_spriteFormat = static_cast<SpriteFormat>(compiledSpriteType);
+
+        m_frameSprites[i] = new char[compiledSpriteSize - 1];
+        safeRead(m_frameSprites[i], 1, compiledSpriteSize - 1, fp);
     }
     #endif
 
@@ -157,9 +163,15 @@ typedef void (*DrawCompiledSpritePtr)(char* img, int16_t targetWidth);
 void Animation::draw(char* target, int16_t targetWidth, int16_t targetHeight, int16_t targetX, int16_t targetY) const
 {
 #ifdef PLATFORM_DOS
-    // DrawCompiledSpritePtr drawFunc = (DrawCompiledSpritePtr)m_frameSprites[m_currentFrame];
-    // drawFunc(target + targetY * targetWidth + targetX, targetWidth);
-    drawRleSprite(m_frameSprites[m_currentFrame], target + targetY * targetWidth + targetX, targetWidth);
+    if (m_spriteFormat == SPRITE_TYPE_COMPILED)
+    {
+        DrawCompiledSpritePtr drawFunc = (DrawCompiledSpritePtr)m_frameSprites[m_currentFrame];
+        drawFunc(target + targetY * targetWidth + targetX, targetWidth);
+    }
+    else if (m_spriteFormat == SPRITE_TYPE_RLE)
+    {
+        drawRleSprite(m_frameSprites[m_currentFrame], target + targetY * targetWidth + targetX, targetWidth);
+    }
 #else
     m_frameSprites[m_currentFrame]->draw(target, targetWidth, targetHeight, targetX, targetY);
 #endif

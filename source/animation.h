@@ -27,6 +27,13 @@ struct FrameTag
     TinyString name;
 };
 
+enum SpriteFormat
+{
+    SPRITE_TYPE_COMPILED = 'C',
+    SPRITE_TYPE_RLE = 'R'
+};
+
+
 class Animation : public Drawable
 {
 public:
@@ -60,6 +67,7 @@ private:
     int m_minFrame;
     int m_maxFrame;
     bool m_transparent;
+    SpriteFormat m_spriteFormat;
 };
 
 /// Animation file format
