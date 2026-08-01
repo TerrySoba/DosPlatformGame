@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="21" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="32">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="21" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="32">
  <tileset firstgid="1" source="tileset4.tsx"/>
  <tileset firstgid="241" source="obj.tsx"/>
  <tileset firstgid="481" source="tileset.tsx"/>
@@ -38,9 +38,9 @@
 </data>
  </layer>
  <objectgroup id="3" name="obj">
-  <object id="31" name="Mountainer text" type="text" x="170.867" y="41.0742" width="79.6769" height="36.8763">
+  <object id="31" name="Mountainer text" type="text" x="153.851" y="34.1869" width="90.6156" height="36.8763">
    <properties>
-    <property name="string_id" type="int" value="38"/>
+    <property name="string_id" type="int" value="49"/>
    </properties>
   </object>
  </objectgroup>

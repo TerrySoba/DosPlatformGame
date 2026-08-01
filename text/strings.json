@@ -88,7 +88,7 @@
         "de": "Achtung: Wartungsbereich. Schutzhelme erforderlich."
     },
     "23": {
-        "en": "Reactor area ahead. Weare protective clothing.",
+        "en": "Reactor area ahead. Wear protective clothing.",
         "de": "Reaktorbereich voraus. Tragen Sie Schutzkleidung."
     },
     "24": {
@@ -186,6 +186,22 @@
     "47": {
         "en": "Try jumping and then hold the jump button. If you step of a ledge while holding the jump button, you will hover in the air for a short time.",
         "de": "Versuche zu springen und dann die Sprungtaste gedrückt zu halten. Wenn du von einer Kante läufst, während du die Sprungtaste gedrückt hältst, wirst du für kurze Zeit in der Luft schweben."
+    },
+    "48": {
+        "en": "Thank you for saving us from the emprisonment in the crystals. We are forever in your debt.",
+        "de": "Danke, dass du uns aus der Gefangenschaft in den Kristallen befreit hast. Dafür sind wir dir ewig dankbar."
+    },
+    "49": {
+        "en": "Now I can finally climb the mountain in peace again. I hope to see you again, stranger.",
+        "de": "Jetzt kann ich endlich wieder in Frieden den Berg erklimmen. Ich hoffe wir sehen uns wieder, Fremder."
+    },
+    "50": {
+        "en": "By the Crystal of Light, you saved us. We will include you in our prayers from now on.",
+        "de": "Beim Kristall des Lichts, du hast uns gerettet. Wir werden dich von nun an in unsere Gebete einschließen."
+    },
+    "51": {
+        "en": "Our colleague told us that you defeated our mad boss. We are currently planning how to safely dismantle the reactor to prevent another incident. Thank you for your help.",
+        "de": "Unser Kollege hat uns davon erzählt, dass du unseren verrückten Boss besiegt hast. Wir planen gerade wie wir den Reaktor sicher abbauen können um einen weiteren Vorfall zu verhindern. Danke für deine Hilfe."
     },
     "65": {
         "en": "Welcome to the game!",
@@ -558,6 +574,18 @@
     "524": {
         "en": "Crash?",
         "de": "Crash?"
+    },
+    "525": {
+        "en": "Glad village dwellers",
+        "de": "Fröhliche Dorfbewohner"
+    },
+    "526": {
+        "en": "Happy ascent",
+        "de": "Fröhlicher Aufstieg"
+    },
+    "527": {
+        "en": "Shiny... again!",
+        "de": "Glänzend... jetzt für immer!"
     },
     "588": {
         "en": "Where are we?",

@@ -153,8 +153,10 @@
 ../levels/1104.map
 ../levels/1104b1.map
 ../levels/1201.map
+../levels/1203.map
 ../levels/1204.map
 ../levels/1301.map
+../levels/1303.map
 ../levels/1304.map
 ../levels/1401.map
 ../levels/1401b1.map
