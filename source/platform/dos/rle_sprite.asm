@@ -26,6 +26,8 @@ drawRleSprite_:
     mov bx, [bp + 14] ; store line width in bx for later usage
     pop bp
 
+    cld ; make sure we are moving forward in memory,
+        ; this is important for the rep movsb and rep stosb instructions
 
 .loop:
     ;mov al, [si]
