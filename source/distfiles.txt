@@ -37,12 +37,14 @@
 ../levels/0104.map
 ../levels/0105.map
 ../levels/0106.map
+../levels/0107.map
 ../levels/0201.map
 ../levels/0202.map
 ../levels/0203.map
 ../levels/0204.map
 ../levels/0205.map
 ../levels/0206.map
+../levels/0207.map
 ../levels/0301.map
 ../levels/0302.map
 ../levels/0303.map
