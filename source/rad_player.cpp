@@ -58,7 +58,6 @@ void RadPlayer::radLoadModuleInternal(const char* filename)
 	if (!radInitPlayer((uint8_t*)m_songData))
 	{
 		printStr("Could not initialize RAD player. Maybe file is corrupted.\r\n");
-		fclose(fp);
 	}
 
 	fclose(fp);
