@@ -12,17 +12,7 @@
 #include <exception>
 #include <string.h>
 
-
-enum TitleState
-{
-    STATE_INIT,
-    STATE_START_GAME,
-    STATE_START_GAME_SELECTED,
-    STATE_DELETE_SAVEGAME,
-    STATE_DELETE_SAVEGAME_SELECTED,
-    STATE_EXIT,
-    STATE_EXIT_SELECTED,
-};
+#include <vector>
 
 enum ExitCode
 {
@@ -31,21 +21,181 @@ enum ExitCode
     EXIT_CODE_QUIT = 2
 };
 
-
-#define START_GAME_POS_X 162
-#define START_GAME_POS_Y 88
-
-#define DELETE_SAVE_POS_X 162
-#define DELETE_SAVE_POS_Y 108
-
-#define EXIT_POS_X 162
-#define EXIT_POS_Y 128
+// Global variables
+bool s_exitRequested = false;
+ExitCode s_exitCode = EXIT_CODE_NONE;
 
 
 void deleteSavegame()
 {
     remove("GAME.SAV");
 }
+
+void requestExit()
+{
+    s_exitRequested = true;
+    s_exitCode = EXIT_CODE_QUIT;
+}
+
+void startGame()
+{
+    s_exitCode = EXIT_CODE_START_GAME;
+    s_exitRequested = true;
+}
+
+typedef void (*ActionFunction)();
+
+struct MenuItem
+{
+    uint16_t stringId;
+    ActionFunction action;
+};
+
+
+const MenuItem menuItems[] = {
+    { 42, startGame }, // start game
+    // { 52, NULL }, // settings
+    { 43, deleteSavegame }, // delete savegame
+    { 44, requestExit }, // exit
+    { 0, NULL } // must end with a NULL entry
+};
+
+
+class MenuSystem
+{
+public:
+    enum MenuState
+    {   
+        MENU_STATE_MAIN,
+        MENU_STATE_ARROW_ANIMATION,
+    };
+
+    MenuSystem(VgaGfx& gfx, FontWriter& fontWriter, Drawable& indicator, const MenuItem* menuItems) :
+        m_gfx(gfx),
+        m_fontWriter(fontWriter),
+        m_indicator(indicator),
+        m_menuItems(menuItems),
+        m_activeMenuItemIndex(0),
+        m_lastKeyUp(0),
+        m_lastKeyDown(0),
+        m_lastKeyAction(0),
+        m_state(MENU_STATE_MAIN),
+        m_indicatorOffsetX(0),
+        m_nextAction(NULL) {}
+
+    void drawBackground(uint16_t x, uint16_t y)
+    {
+        m_menuItemPositionsX = x;
+        const MenuItem* menuItem = m_menuItems;
+        while (menuItem->stringId != 0)
+        {
+            m_fontWriter.setText(I18N::getString(menuItem->stringId).c_str());
+            m_gfx.drawBackground(m_fontWriter, x, y);
+            m_menuItemPositionsY.push_back(y);
+            y += m_fontWriter.height();
+            ++menuItem;
+        }
+    }
+
+    void drawActiveItemIndicator()
+    {
+        if (m_state == MENU_STATE_ARROW_ANIMATION)
+        {
+            if (m_indicatorOffsetX == 0)
+            {
+                m_indicatorOffsetX = 16;
+            }
+            else
+            {
+                m_indicatorOffsetX *= 1.15;
+            }
+
+            if ((m_indicatorOffsetX >> 2) > 120)
+            {
+                m_indicatorOffsetX = 0;
+                m_state = MENU_STATE_MAIN;
+                if (m_nextAction != NULL)
+                {
+                    m_nextAction();
+                }
+            }
+        }
+
+
+        if (m_activeMenuItemIndex < m_menuItemPositionsY.size())
+        {
+            uint16_t y = m_menuItemPositionsY[m_activeMenuItemIndex];
+            m_gfx.draw(m_indicator, m_menuItemPositionsX - 15 + (m_indicatorOffsetX >> 2), y - 1);
+        }
+    }
+
+    void handleKeyboardInputs()
+    {
+        if (m_state == MENU_STATE_ARROW_ANIMATION)
+        {
+            return;
+        }
+
+        uint8_t keyUp = s_keyUp;
+        uint8_t keyDown = s_keyDown;
+        uint8_t keyAction = s_keySpace | s_keyCtrl | s_keyAlt;
+
+        if (keyUp && !m_lastKeyUp)
+        {
+            if (m_activeMenuItemIndex > 0)
+            {
+                --m_activeMenuItemIndex;
+            }
+        }
+        else if (keyDown && !m_lastKeyDown)
+        {
+            if (m_activeMenuItemIndex + 1 < m_menuItemPositionsY.size())
+            {
+                ++m_activeMenuItemIndex;
+            }
+        }
+        else if (keyAction && !m_lastKeyAction)
+        {
+            const MenuItem* menuItem = &m_menuItems[m_activeMenuItemIndex];
+            if (menuItem->action != NULL)
+            {
+                m_nextAction = menuItem->action;
+                m_state = MENU_STATE_ARROW_ANIMATION;
+            }
+        }
+
+        m_lastKeyUp = keyUp;
+        m_lastKeyDown = keyDown;
+        m_lastKeyAction = keyAction;
+    }
+
+private:
+    VgaGfx& m_gfx;
+    FontWriter& m_fontWriter;
+    Drawable& m_indicator;
+    const MenuItem* m_menuItems;
+    uint16_t m_activeMenuItemIndex;
+    std::vector<uint16_t> m_menuItemPositionsY;
+    uint16_t m_menuItemPositionsX;
+
+    uint8_t m_lastKeyUp;
+    uint8_t m_lastKeyDown;
+    uint8_t m_lastKeyAction;
+
+    MenuState m_state;
+    uint16_t m_indicatorOffsetX;
+
+    ActionFunction m_nextAction;
+};
+
+void drawVersionNumber(VgaGfx& gfx)
+{
+    Font font8("geo10.stf");
+    FontWriter fontWriter2(&font8);
+    fontWriter2.setText(BUILD_VERSION);
+    gfx.drawBackground(fontWriter2, 320 - fontWriter2.width() - 3, 1);
+}
+
 
 
 int main(int argc, char* argv[])
@@ -69,135 +219,34 @@ int main(int argc, char* argv[])
         VgaGfx vga;
         Animation arrow("arrow2.ani", "arrow2.tga", true);
         TgaImage image("pyramid.tga");
+        Font font("a13.stf");
+        FontWriter fontWriter(&font);
+        MenuSystem menu(vga, fontWriter, arrow, menuItems);
         
-        
-
         vga.setBackground(image);
 
-        {
-            Font font("lib18.stf");
-            FontWriter fontWriter(&font);
+        menu.drawBackground(190, 87);
 
-            fontWriter.setText(I18N::getString(42).c_str());
-            vga.drawBackground(fontWriter, START_GAME_POS_X + 17, START_GAME_POS_Y - 2);
-
-            fontWriter.setText(I18N::getString(43).c_str());
-            vga.drawBackground(fontWriter, DELETE_SAVE_POS_X + 17, DELETE_SAVE_POS_Y - 2);
-
-            fontWriter.setText(I18N::getString(44).c_str());
-            vga.drawBackground(fontWriter, EXIT_POS_X + 17, EXIT_POS_Y - 2);
-        }
-
-        {
-            Font font("dejavu8.stf");
-            FontWriter fontWriter(&font);
-            fontWriter.setText(BUILD_VERSION);
-            vga.drawBackground(fontWriter, 320 - fontWriter.width() - 3, 1);
-        }
-
-        TitleState state = STATE_INIT;
-
-        int arrowX = 0;
-        int arrowY = 0;
-
-        bool up = false;
-        bool lastUp = false;
-        bool down = false;
-        bool lastDown = false;
-
-        float arrowSpeed = 1;
+        drawVersionNumber(vga);
 
         uint8_t counter = 0;
-
-        ExitCode exitCode = EXIT_CODE_NONE;
-
-        while (exitCode == EXIT_CODE_NONE)
-        {
-            up = s_keyUp;
-            down = s_keyDown;
-
+        while (!s_keyEsc && !s_exitRequested)
+        { 
             vga.clear();
-            vga.draw(arrow, arrowX, arrowY);
+            menu.drawActiveItemIndicator();
             vga.drawScreen();
+            
+            menu.handleKeyboardInputs();
 
-
-            if (counter++ & 4)
+            ++counter;
+            if (counter > 1)
             {
                 arrow.nextFrame();
+                counter = 0;
             }
-
-            int actionButton = s_keySpace || s_keyAlt;
-            int exitButton = s_keyEsc;
-
-            switch(state)
-            {
-                case STATE_INIT:
-                    state = STATE_START_GAME;
-                    break;
-                case STATE_START_GAME:
-                    arrowSpeed = 1;
-                    arrowX = START_GAME_POS_X;
-                    arrowY = START_GAME_POS_Y;
-                    if (up && !lastUp) state = STATE_EXIT;
-                    if (down && !lastDown) state = STATE_DELETE_SAVEGAME;
-                    if (actionButton) state = STATE_START_GAME_SELECTED;
-                    break;
-                case STATE_START_GAME_SELECTED:
-                    arrowX += arrowSpeed;
-                    arrowSpeed *= 1.1;
-                    if (arrowX > 320)
-                    {
-                        // return 0;
-                        exitCode = EXIT_CODE_START_GAME;
-                    }
-                    break;
-                case STATE_DELETE_SAVEGAME:
-                    arrowSpeed = 1;
-                    arrowX = DELETE_SAVE_POS_X;
-                    arrowY = DELETE_SAVE_POS_Y;
-                    if (up && !lastUp) state = STATE_START_GAME;
-                    if (down && !lastDown) state = STATE_EXIT;
-                    if (actionButton) {
-                        deleteSavegame();
-                        state = STATE_DELETE_SAVEGAME_SELECTED;
-                    }
-                    break;
-                case STATE_DELETE_SAVEGAME_SELECTED:
-                    arrowX += arrowSpeed;
-                    arrowSpeed *= 1.1;
-                    if (arrowX > 320)
-                    {
-                        state = STATE_DELETE_SAVEGAME;
-                    }
-                    break;
-                case STATE_EXIT:
-                    arrowSpeed = 1;
-                    arrowX = EXIT_POS_X;
-                    arrowY = EXIT_POS_Y;
-                    if (up && !lastUp) state = STATE_DELETE_SAVEGAME;
-                    if (down && !lastDown) state = STATE_START_GAME;
-                    if (actionButton) state = STATE_EXIT_SELECTED;
-                    break;
-                case STATE_EXIT_SELECTED:
-                    arrowX += arrowSpeed;
-                    arrowSpeed *= 1.1;
-                    if (arrowX > 320)
-                    {
-                        return 0;
-                    }
-                    break;
-                default:
-                    state = STATE_INIT;
-                    break;
-            }
-
-            lastDown = down;
-            lastUp = up;
-
-            if (exitButton) exitCode = EXIT_CODE_QUIT;
         }
 
-        return exitCode;
+        return s_exitCode;
     }
     catch(const Exception& e)
     {

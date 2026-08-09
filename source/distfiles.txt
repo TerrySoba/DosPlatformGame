@@ -191,7 +191,9 @@
 ../text/strings.en
 ../fonts/lib18.stf
 ../fonts/title.stf
-../fonts/dejavu8.stf
+../fonts/a13.stf
+../fonts/geo10.stf
+
 game.com
 game2.exe
 title.exe
