@@ -31,8 +31,10 @@ zip -r -9 zip/game.zip release
 rm -f zip/gamesfx.exe zip/game.lzh
 
 pushd release
-lha a -o ../zip/game.lzh *.*
+../tools/x86_64/lha a -o ../zip/game.lzh *.*
 popd
+
+# create self extracting lha archive for 16bit dos
 cat tools/dos/lha_sfx_stub zip/game.lzh > zip/gamesfx.exe
 
 
