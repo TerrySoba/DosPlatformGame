@@ -24,6 +24,32 @@ echo `git rev-parse HEAD` >> release/readme.txt
 mkdir -p zip
 
 rm -f zip/game.zip
-zip -r zip/game.zip release
+zip -r -9 zip/game.zip release
+
+# create self extracting lha archive
+
+rm -f zip/gamesfx.exe zip/game.lzh
+
+pushd release
+lha a -o ../zip/game.lzh *.*
+popd
+cat tools/dos/lha_sfx_stub zip/game.lzh > zip/gamesfx.exe
+
+
+# dosbox \
+#     --conf tools/dos/lharc.dosbox_config \
+#     -c "mount c `pwd`/tools/dos" \
+#     -c "mount d `pwd`/zip" \
+#     -c "mount e `pwd`/release" \
+#     -c "d:" \
+#     -c "dir" \
+#     -c "c:\\lharc s d:\\gameinst.lzh" 
+
+
+
+    #-c "c:\\lharc a d:\\gameinst.lzh e:\\*.*" \
+
+
+
 
 

@@ -193,6 +193,7 @@
 ../fonts/title.stf
 ../fonts/a13.stf
 ../fonts/geo10.stf
+../fonts/com10.stf
 
 game.com
 game2.exe
