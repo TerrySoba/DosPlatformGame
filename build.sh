@@ -31,27 +31,8 @@ zip -r -9 zip/game.zip release
 rm -f zip/gamesfx.exe zip/game.lzh
 
 pushd release
-../tools/x86_64/lha a -o ../zip/game.lzh *.*
+lha a -o ../zip/game.lzh *.*
 popd
 
 # create self extracting lha archive for 16bit dos
 cat tools/dos/lha_sfx_stub zip/game.lzh > zip/gamesfx.exe
-
-
-# dosbox \
-#     --conf tools/dos/lharc.dosbox_config \
-#     -c "mount c `pwd`/tools/dos" \
-#     -c "mount d `pwd`/zip" \
-#     -c "mount e `pwd`/release" \
-#     -c "d:" \
-#     -c "dir" \
-#     -c "c:\\lharc s d:\\gameinst.lzh" 
-
-
-
-    #-c "c:\\lharc a d:\\gameinst.lzh e:\\*.*" \
-
-
-
-
-
