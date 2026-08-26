@@ -36,7 +36,7 @@ jobs:
 
       # Now store test results as artifact
       #- name: Archive test results
-      #  uses: actions/upload-artifact@v3
+      #  uses: actions/upload-artifact@v7
       #  with:
       #    name: JUnit-XML
       #    path: JUNIT.XML
@@ -58,21 +58,21 @@ jobs:
 
       # Now store windows native build
       - name: Archive windows game zip
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: win-game-zip
           path: result/game.zip
 
       # Now store built game as artifact
       - name: Archive game zip
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: game-zip
           path: zip/game.*
       
       # Store built disk images as artifacts
       - name: Archive disk images
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: disk-images
           path: image*.img
