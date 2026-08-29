@@ -28,7 +28,7 @@ objects_test = \
 	physics_test.o tga_image_test.o shared_ptr_test.o \
 	blit_test.o vector_test.o rectangle_test.o tiny_string_test.o animation_test.o \
 	text_layout_test.o i18n_test.o level_test.o raii_ptr_test.o ptr_vector_test.o test_class.o \
-	time_tools_test.o font_test.o font_writer_test.o credits_loader_test.o credits_scroller.o \
+	time_tools_test.o font_test.o font_writer_test.o credits_loader_test.o \
 	font_writer.o credits_loader.o credits_scroller.o font.o platform/dos/rle_sprite_test.o \
 	config_test.o
 	
