@@ -2,7 +2,8 @@
 
 #include "rad_player.h"
 
-MusicControllerDos::MusicControllerDos() :
+MusicControllerDos::MusicControllerDos(bool enableMusic) :
+    m_enableMusic(enableMusic),
     m_currentSong(MUSIC_INDEX_NO_MUSIC)
 {
 }
@@ -13,6 +14,11 @@ MusicControllerDos::~MusicControllerDos()
 
 void MusicControllerDos::playMusic(SongIndex index)
 {
+    if (!m_enableMusic)
+    {
+        return;
+    }
+
     // do not reload music if it is already playing
     if (index == MUSIC_INDEX_NO_CHANGE || index == m_currentSong)
     {

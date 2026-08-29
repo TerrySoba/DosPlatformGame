@@ -24,15 +24,17 @@ echo `git rev-parse HEAD` >> release/readme.txt
 mkdir -p zip
 
 rm -f zip/game.zip
-zip -r -9 zip/game.zip release
+echo "Creating zip archive..."
+zip -q -r -9 zip/game.zip release
 
 # create self extracting lha archive
 
 rm -f zip/gamesfx.exe zip/game.lzh
 
-pushd release
-../tools/x86_64/lha a -o ../zip/game.lzh *.*
-popd
+cd release
+echo "Creating lha archive..."
+../tools/x86_64/lha a -q2 -o ../zip/game.lzh *.*
+cd ..
 
 # create self extracting lha archive for 16bit dos
 cat tools/dos/lha_sfx_stub zip/game.lzh > zip/gamesfx.exe

@@ -13,6 +13,9 @@
 #include "text.h"
 #include "i18n.h"
 #include "sound_controller.h"
+#include "sound_controller_null.h"
+#include "game_config.h"
+
 #include "shared_ptr.h"
 #include <dos.h>
 
@@ -80,7 +83,18 @@ int main(int argc, char* argv[])
 
     try
     {
-        tnd::shared_ptr<SoundController> sound = new SoundControllerDos();
+        GameConfig config = parseGameConfig("config.ini");
+
+        tnd::shared_ptr<SoundController> sound;
+        
+        if (config.enableSound)
+        {
+            sound = new SoundControllerDos();
+        }
+        else
+        {
+            sound = new SoundControllerNull();
+        }
 
         CommandLineParameters params = parseCommandline(argc, argv);
         calibrateJoystick();
@@ -113,7 +127,7 @@ int main(int argc, char* argv[])
             tnd::shared_ptr<Animation> eye = new Animation("eye.ani", "eye.tga");
             tnd::shared_ptr<Animation> portal = new Animation("portal.ani", "portal.tga");
 
-            tnd::shared_ptr<MusicController> music(new MusicControllerDos());
+            tnd::shared_ptr<MusicController> music(new MusicControllerDos(config.enableMusic));
 
             GameAnimations animations =
                 {

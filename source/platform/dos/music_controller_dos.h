@@ -9,7 +9,7 @@
 class MusicControllerDos : public MusicController
 {
 public:
-    MusicControllerDos();
+    MusicControllerDos(bool enableMusic);
     ~MusicControllerDos();
 
     void playMusic(SongIndex index);
@@ -17,6 +17,7 @@ public:
     SongIndex getCurrentSong() const { return m_currentSong; }
 
 private:
+    bool m_enableMusic;
     SongIndex m_currentSong;
     RadPlayer m_player;
 };

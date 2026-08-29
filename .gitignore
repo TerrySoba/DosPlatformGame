@@ -5,6 +5,7 @@
 *.lnk
 *.lst
 *.d
+*.VHD
 compiler
 release/
 .qmake.stash

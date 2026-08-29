@@ -6,21 +6,22 @@ output=openglnb
 
 [dosbox]
 machine=vgaonly
-# vertical retrace poll debug line=false
+#vertical retrace poll debug line=true
 
 [mixer]
 nosound=false
 
 [render]
 aspect=true
-glshader = crt/vga-4k
+# glshader = /usr/share/dosbox-x/glshaders/crt-lottes.glsl
 
 [cpu]
 core=auto
-cputype=auto
+cputype=8086
 cycles=fixed 30000
 cycleup=10
 cycledown=20
+fpu=false
 
 [joystick]
 joysticktype=auto

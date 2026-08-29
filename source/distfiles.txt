@@ -194,6 +194,7 @@
 ../fonts/a13.stf
 ../fonts/geo10.stf
 ../fonts/com10.stf
+../config/config.ini
 
 game.com
 game2.exe

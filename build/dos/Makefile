@@ -16,7 +16,9 @@ objects_game_lib = \
 	platform/dos/sound_controller_dos.o \
 	platform/dos/music_controller_dos.o \
 	convert_to_tga.o \
-	platform/dos/rle_sprite_asm.o
+	platform/dos/rle_sprite_asm.o \
+	game_config.o
+
 
 objects_game = \
 	platform/dos/main.o $(objects_game_lib)

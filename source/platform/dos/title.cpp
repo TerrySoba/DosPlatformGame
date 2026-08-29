@@ -26,6 +26,17 @@ bool s_exitRequested = false;
 ExitCode s_exitCode = EXIT_CODE_NONE;
 
 
+enum TitleScreenState
+{
+    TITLE_SCREEN_STATE_INITIAL,
+    TITLE_SCREEN_STATE_MAIN,
+    TITLE_SCREEN_STATE_SETTINGS,
+};
+
+TitleScreenState s_previousTitleScreenState = TITLE_SCREEN_STATE_INITIAL;
+TitleScreenState s_titleScreenState = TITLE_SCREEN_STATE_MAIN;
+
+
 void deleteSavegame()
 {
     remove("GAME.SAV");
@@ -43,7 +54,22 @@ void startGame()
     s_exitRequested = true;
 }
 
+void showSettings()
+{
+    s_titleScreenState = TITLE_SCREEN_STATE_SETTINGS;
+}
+
+void showMainMenu()
+{
+    s_titleScreenState = TITLE_SCREEN_STATE_MAIN;
+}
+
+
 typedef void (*ActionFunction)();
+
+
+
+
 
 struct MenuItem
 {
@@ -52,9 +78,18 @@ struct MenuItem
 };
 
 
-const MenuItem menuItems[] = {
+
+
+const MenuItem settingsMenuItems[] = {
+    { 54, NULL }, // configure keyboard
+    { 53, showMainMenu }, // back
+    { 0, NULL } // must end with a NULL entry
+};
+
+
+const MenuItem mainMenuItems[] = {
     { 42, startGame }, // start game
-    // { 52, NULL }, // settings
+    { 52, showSettings }, // settings
     { 43, deleteSavegame }, // delete savegame
     { 44, requestExit }, // exit
     { 0, NULL } // must end with a NULL entry
@@ -70,7 +105,7 @@ public:
         MENU_STATE_ARROW_ANIMATION,
     };
 
-    MenuSystem(VgaGfx& gfx, FontWriter& fontWriter, Drawable& indicator, const MenuItem* menuItems) :
+    MenuSystem(VgaGfx& gfx, FontWriter& fontWriter, Drawable& indicator, const MenuItem* menuItems, uint16_t x, uint16_t y) :
         m_gfx(gfx),
         m_fontWriter(fontWriter),
         m_indicator(indicator),
@@ -81,18 +116,29 @@ public:
         m_lastKeyAction(0),
         m_state(MENU_STATE_MAIN),
         m_indicatorOffsetX(0),
-        m_nextAction(NULL) {}
-
-    void drawBackground(uint16_t x, uint16_t y)
+        m_nextAction(NULL),
+        m_menuPositionX(x),
+        m_menuPositionY(y)
     {
-        m_menuItemPositionsX = x;
-        const MenuItem* menuItem = m_menuItems;
+        const MenuItem *menuItem = m_menuItems;
         while (menuItem->stringId != 0)
         {
             m_fontWriter.setText(I18N::getString(menuItem->stringId).c_str());
-            m_gfx.drawBackground(m_fontWriter, x, y);
             m_menuItemPositionsY.push_back(y);
             y += m_fontWriter.height();
+            ++menuItem;
+        }
+    }
+
+    void drawBackground()
+    {
+        const MenuItem *menuItem = m_menuItems;
+        size_t menuItemIndex = 0;
+        while (menuItem->stringId != 0)
+        {
+            m_fontWriter.setText(I18N::getString(menuItem->stringId).c_str());
+            m_gfx.drawBackground(m_fontWriter, m_menuPositionX, m_menuItemPositionsY[menuItemIndex]);
+            ++menuItemIndex;
             ++menuItem;
         }
     }
@@ -125,7 +171,7 @@ public:
         if (m_activeMenuItemIndex < m_menuItemPositionsY.size())
         {
             uint16_t y = m_menuItemPositionsY[m_activeMenuItemIndex];
-            m_gfx.draw(m_indicator, m_menuItemPositionsX - 15 + (m_indicatorOffsetX >> 2), y - 1);
+            m_gfx.draw(m_indicator, m_menuPositionX - 15 + (m_indicatorOffsetX >> 2), y - 1);
         }
     }
 
@@ -176,7 +222,8 @@ private:
     const MenuItem* m_menuItems;
     uint16_t m_activeMenuItemIndex;
     std::vector<uint16_t> m_menuItemPositionsY;
-    uint16_t m_menuItemPositionsX;
+    uint16_t m_menuPositionX;
+    uint16_t m_menuPositionY;
 
     uint8_t m_lastKeyUp;
     uint8_t m_lastKeyDown;
@@ -219,25 +266,54 @@ int main(int argc, char* argv[])
         VgaGfx vga;
         Animation arrow("arrow2.ani", "arrow2.tga", true);
         TgaImage image("pyramid.tga");
-        Font font("a13.stf");
-        FontWriter fontWriter(&font);
-        MenuSystem menu(vga, fontWriter, arrow, menuItems);
+        Font mainFont("a13.stf");
+        FontWriter mainFontWriter(&mainFont);
+        Font settingsFont("com10.stf");
+        FontWriter settingsFontWriter(&settingsFont);
+
+        MenuSystem menu(vga, mainFontWriter, arrow, mainMenuItems, 190, 87);
+        MenuSystem settingsMenu(vga, settingsFontWriter , arrow, settingsMenuItems, 190, 87);
         
-        vga.setBackground(image);
-
-        menu.drawBackground(190, 87);
-
-        drawVersionNumber(vga);
-
         uint8_t counter = 0;
         while (!s_keyEsc && !s_exitRequested)
         { 
             vga.clear();
-            menu.drawActiveItemIndicator();
+
+            if (s_titleScreenState != s_previousTitleScreenState)
+            {
+                // clear screen when state changes
+                vga.setBackground(image);
+                drawVersionNumber(vga);
+
+                switch (s_titleScreenState)
+                {
+                case TITLE_SCREEN_STATE_MAIN:
+                    menu.drawBackground();
+                    break;
+                case TITLE_SCREEN_STATE_SETTINGS:
+                    settingsMenu.drawBackground();
+                    break;
+                }
+
+
+                s_previousTitleScreenState = s_titleScreenState;
+            }
+
+            switch (s_titleScreenState)
+            {
+            case TITLE_SCREEN_STATE_MAIN:
+                menu.drawActiveItemIndicator();
+                menu.handleKeyboardInputs();
+                break;
+            case TITLE_SCREEN_STATE_SETTINGS:
+                settingsMenu.drawActiveItemIndicator();
+                settingsMenu.handleKeyboardInputs();
+                break;
+            }
+            
             vga.drawScreen();
             
-            menu.handleKeyboardInputs();
-
+            
             ++counter;
             if (counter > 1)
             {
