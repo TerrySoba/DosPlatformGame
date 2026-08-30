@@ -6,6 +6,8 @@
 *.lst
 *.d
 *.VHD
+*.com.map
+*.exe.map
 compiler
 release/
 .qmake.stash

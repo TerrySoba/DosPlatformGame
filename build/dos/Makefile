@@ -114,6 +114,7 @@ _$(dest): $(objects_game)
 	echo "SYSTEM DOS" >> game.lnk
 	echo "OPTION STACK=20000" >> game.lnk
 	echo "FILE   {$(objects_game)}" >> game.lnk
+	echo "OPTION MAP=$(dest).map" >> game.lnk
 	wlink  @game.lnk
 
 $(test): $(objects_test) 
@@ -127,8 +128,9 @@ $(test): $(objects_test)
 _$(title): $(title_screen)
 	echo "NAME   $@" > title.lnk
 	echo "SYSTEM DOS" >> title.lnk
-	echo "OPTION STACK=16000" >> title.lnk
+	echo "OPTION STACK=20000" >> title.lnk
 	echo "FILE   {$(title_screen)}" >> title.lnk
+	echo "OPTION MAP=$(title).map" >> title.lnk
 	wlink  @title.lnk
 
 
@@ -139,6 +141,7 @@ $(launcher): platform/dos/launcher.o
 	echo "NAME   $@" > launcher.lnk
 	echo "SYSTEM COM" >> launcher.lnk
 	echo "FILE   {platform/dos/launcher.o}" >> launcher.lnk
+	echo "OPTION MAP=$(launcher).map" >> launcher.lnk
 	wlink  @launcher.lnk
 
 $(radtest): $(rad_tester)
