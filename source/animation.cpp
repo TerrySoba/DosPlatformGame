@@ -109,7 +109,7 @@ Animation::~Animation()
 #ifdef PLATFORM_DOS
     for (int i = 0; i < m_frameSprites.size(); ++i)
     {
-        delete m_frameSprites[i];
+        delete[] m_frameSprites[i];
     }
 #endif
 }
