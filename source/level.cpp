@@ -199,6 +199,7 @@ Level::Level(const char* mapFilename,
                 safeRead(tilesetFilename, tilesetFilenameLength, 1, fp);
                 tilesetFilename[tilesetFilenameLength] = 0;
                 m_tileset = tilesetFilename;
+                break;
             }
             default: // skip unknown layers
             {

@@ -61,7 +61,7 @@ public:
 
         if (abs(dy) < 2)
         {
-            if (m_lastDirection == DIR_DOWN || m_airFrames++ > 4)
+            if (m_lastDirection == DIR_DOWN || m_airFrames > 4)
             {
                 m_airFrames = 0;
                 if (dx > 0)
