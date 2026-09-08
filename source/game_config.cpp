@@ -164,7 +164,7 @@ void setIniValue(const char* fileName, const char* section, const char* key, con
                 // about to leave the target section, insert the key at its end if still missing
                 if (inTargetSection && !keyWritten)
                 {
-                    fprintf(out, "%s = %s\r\n", key, value);
+                    fprintf(out, "%s = %s\n", key, value);
                     keyWritten = true;
                 }
 
@@ -195,7 +195,7 @@ void setIniValue(const char* fileName, const char* section, const char* key, con
                 parseKeyValue(workLine, &lineKey, &lineValue);
                 if (lineKey && compareStrCaseInsensitive(lineKey, key))
                 {
-                    fprintf(out, "%s = %s\r\n", key, value);
+                    fprintf(out, "%s = %s\n", key, value);
                     keyWritten = true;
                     continue;
                 }
@@ -208,13 +208,13 @@ void setIniValue(const char* fileName, const char* section, const char* key, con
 
     if (inTargetSection && !keyWritten)
     {
-        fprintf(out, "%s = %s\r\n", key, value);
+        fprintf(out, "%s = %s\n", key, value);
         keyWritten = true;
     }
 
     if (!sectionFound)
     {
-        fprintf(out, "[%s]\r\n%s = %s\r\n", section, key, value);
+        fprintf(out, "[%s]\n%s = %s\n", section, key, value);
     }
 
     fclose(out);
