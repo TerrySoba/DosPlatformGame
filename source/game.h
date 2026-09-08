@@ -83,8 +83,7 @@ public:
 		GameAnimations animations,
 		const char* levelBasename,
 		LevelNumber startLevel,
-		bool enableCheats,
-		const GameConfig& gameConfig);
+		bool enableCheats);
 
 	~Game();
 
@@ -112,7 +111,6 @@ private:
     virtual void drawDeathCount();
 
 private:
-	GameConfig m_gameConfig;
 	tnd::shared_ptr<GfxOutput> m_vgaGfx;
 	tnd::shared_ptr<ImageBase> m_tiles;
 	GameAnimations m_animations;

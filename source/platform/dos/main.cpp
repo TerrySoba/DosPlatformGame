@@ -143,7 +143,7 @@ int main(int argc, char* argv[])
                     eye,
                     portal};
 
-            Game game(gfx, sound, music, animations, "%02x%02x", params.level, params.enableCheats, config);
+            Game game(gfx, sound, music, animations, "%02x%02x", params.level, params.enableCheats);
 
             if (params.dumpLevelImages)
             {
