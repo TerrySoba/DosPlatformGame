@@ -186,7 +186,6 @@
 ../sound/stand.voc
 ../sound/steps.voc
 ../sound/switch2.voc
-../source/dissolve.exe
 ../text/strings.de
 ../text/strings.en
 ../fonts/lib18.stf

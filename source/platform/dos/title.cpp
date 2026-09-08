@@ -6,6 +6,7 @@
 #include "animation.h"
 #include "exception.h"
 #include "i18n.h"
+#include "game_config.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,6 +32,10 @@ enum TitleScreenState
     TITLE_SCREEN_STATE_INITIAL,
     TITLE_SCREEN_STATE_MAIN,
     TITLE_SCREEN_STATE_SETTINGS,
+    TITLE_SCREEN_STATE_CONFIGURE_KEYBOARD_INITIAL,
+    TITLE_SCREEN_STATE_CONFIGURE_KEYBOARD_WAIT_FOR_KEYPRESS,
+    TITLE_SCREEN_STATE_CONFIGURE_KEYBOARD_NEXT_KEY,
+    TITLE_SCREEN_STATE_CONFIGURE_KEYBOARD_DONE,
 };
 
 TitleScreenState s_previousTitleScreenState = TITLE_SCREEN_STATE_INITIAL;
@@ -65,10 +70,12 @@ void showMainMenu()
 }
 
 
+void showConfigureKeyboard()
+{
+    s_titleScreenState = TITLE_SCREEN_STATE_CONFIGURE_KEYBOARD_INITIAL;
+}
+
 typedef void (*ActionFunction)();
-
-
-
 
 
 struct MenuItem
@@ -78,10 +85,8 @@ struct MenuItem
 };
 
 
-
-
 const MenuItem settingsMenuItems[] = {
-    { 54, NULL }, // configure keyboard
+    { 54, showConfigureKeyboard }, // configure keyboard
     { 53, showMainMenu }, // back
     { 0, NULL } // must end with a NULL entry
 };
@@ -235,6 +240,80 @@ private:
     ActionFunction m_nextAction;
 };
 
+struct KeyMapping
+{
+    const char* text;
+    uint8_t* keyStorage;
+};
+
+
+KeyboardConfig s_keyboardConfig;
+
+const KeyMapping keyMappings[] = {
+    {"Up", &s_keyboardConfig.keyUp},
+    {"Down", &s_keyboardConfig.keyDown},
+    {"Left", &s_keyboardConfig.keyLeft},
+    {"Right", &s_keyboardConfig.keyRight},
+    {"Jump", &s_keyboardConfig.keyJump},
+    {"Item", &s_keyboardConfig.keyAction},
+    {0, 0}
+};
+
+class ConfigureKeyboard
+{
+public:
+    ConfigureKeyboard(VgaGfx& gfx, FontWriter& fontWriterText, FontWriter& fontWriterAction, uint16_t x, uint16_t y) :
+        m_gfx(gfx),
+        m_fontWriterText(fontWriterText),
+        m_fontWriterAction(fontWriterAction),
+        m_x(x),
+        m_y(y)
+    {
+    }
+
+    void drawBackground()
+    {
+        m_fontWriterText.setText("Press key for action:");
+        m_gfx.drawBackground(m_fontWriterText, m_x, m_y);
+        m_fontWriterAction.setText(keyMappings[m_currentKeyMappingIndex].text);
+        m_gfx.drawBackground(m_fontWriterAction, m_x + 30, m_y + 15);
+    }
+
+    void handleKeyboardInputs()
+    {
+        if (s_keyIsPressed)
+        {
+            *keyMappings[m_currentKeyMappingIndex].keyStorage = s_scancode;
+            m_currentKeyMappingIndex++;
+            if (keyMappings[m_currentKeyMappingIndex].keyStorage != 0)
+            {
+                s_titleScreenState = TITLE_SCREEN_STATE_CONFIGURE_KEYBOARD_NEXT_KEY;
+            }
+            else
+            {
+                m_currentKeyMappingIndex = 0;
+                s_titleScreenState = TITLE_SCREEN_STATE_CONFIGURE_KEYBOARD_DONE;
+                writeKeyboardConfig(DEFAULT_CONFIG_NAME, s_keyboardConfig);
+            }
+        }
+    }
+    
+    void reset()
+    {
+        m_currentKeyMappingIndex = 0;
+    }
+
+private:
+    VgaGfx& m_gfx;
+    FontWriter& m_fontWriterText;
+    FontWriter& m_fontWriterAction;
+    uint16_t m_x;
+    uint16_t m_y;
+    size_t m_currentKeyMappingIndex;
+};
+
+
+
 void drawVersionNumber(VgaGfx& gfx)
 {
     Font font8("geo10.stf");
@@ -243,7 +322,7 @@ void drawVersionNumber(VgaGfx& gfx)
     gfx.drawBackground(fontWriter2, 320 - fontWriter2.width() - 3, 1);
 }
 
-
+#define NEW_KEY_WAIT_FRAMES 20
 
 int main(int argc, char* argv[])
 {
@@ -273,8 +352,12 @@ int main(int argc, char* argv[])
 
         MenuSystem menu(vga, mainFontWriter, arrow, mainMenuItems, 190, 87);
         MenuSystem settingsMenu(vga, settingsFontWriter , arrow, settingsMenuItems, 190, 87);
+        ConfigureKeyboard configureKeyboard(vga, settingsFontWriter, mainFontWriter, 190, 87);
         
         uint8_t counter = 0;
+
+        uint16_t newKeyWaitFrames = NEW_KEY_WAIT_FRAMES;
+
         while (!s_keyEsc && !s_exitRequested)
         { 
             vga.clear();
@@ -293,8 +376,15 @@ int main(int argc, char* argv[])
                 case TITLE_SCREEN_STATE_SETTINGS:
                     settingsMenu.drawBackground();
                     break;
+                case TITLE_SCREEN_STATE_CONFIGURE_KEYBOARD_INITIAL:
+                    configureKeyboard.reset();
+                    configureKeyboard.drawBackground();
+                    s_titleScreenState = TITLE_SCREEN_STATE_CONFIGURE_KEYBOARD_WAIT_FOR_KEYPRESS;
+                    break;
+                case TITLE_SCREEN_STATE_CONFIGURE_KEYBOARD_WAIT_FOR_KEYPRESS:
+                    configureKeyboard.drawBackground();
+                    break;
                 }
-
 
                 s_previousTitleScreenState = s_titleScreenState;
             }
@@ -309,8 +399,32 @@ int main(int argc, char* argv[])
                 settingsMenu.drawActiveItemIndicator();
                 settingsMenu.handleKeyboardInputs();
                 break;
+            case TITLE_SCREEN_STATE_CONFIGURE_KEYBOARD_WAIT_FOR_KEYPRESS:
+                configureKeyboard.handleKeyboardInputs();
+                break;
+            case TITLE_SCREEN_STATE_CONFIGURE_KEYBOARD_NEXT_KEY:
+                if (newKeyWaitFrames == 0)
+                {
+                    newKeyWaitFrames = NEW_KEY_WAIT_FRAMES;
+                    s_titleScreenState = TITLE_SCREEN_STATE_CONFIGURE_KEYBOARD_WAIT_FOR_KEYPRESS;
+                }
+                else
+                {
+                    --newKeyWaitFrames;
+                }
+                break;
+            case TITLE_SCREEN_STATE_CONFIGURE_KEYBOARD_DONE:
+                if (newKeyWaitFrames == 0)
+                {
+                    newKeyWaitFrames = NEW_KEY_WAIT_FRAMES;
+                    s_titleScreenState = TITLE_SCREEN_STATE_SETTINGS;
+                }
+                else
+                {
+                    --newKeyWaitFrames;
+                }
+                break;
             }
-            
             vga.drawScreen();
             
             

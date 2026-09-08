@@ -3,7 +3,10 @@
 
 #include <stdint.h>
 
-volatile extern uint8_t s_scancode;
+extern volatile uint8_t s_scancode;
+
+// True if any key is currently pressed
+extern volatile uint8_t s_keyIsPressed;
 
 extern volatile uint8_t s_keyLeft;
 extern volatile uint8_t s_keyRight;

@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
 
     try
     {
-        GameConfig config = parseGameConfig("config.ini");
+        GameConfig config = parseGameConfig(DEFAULT_CONFIG_NAME);
 
         tnd::shared_ptr<SoundController> sound;
         

@@ -5,6 +5,8 @@
 
 volatile uint8_t s_scancode;
 
+volatile uint8_t s_keyIsPressed;
+
 volatile uint8_t s_keyLeft;
 volatile uint8_t s_keyRight;
 volatile uint8_t s_keyUp;
@@ -31,6 +33,7 @@ volatile uint8_t s_keyEsc;
 void __interrupt __far handleScancode( void )
 {
     uint8_t code;
+
     __asm   {
         cli
         in    al, 060h       /* read scan code */
@@ -44,13 +47,11 @@ void __interrupt __far handleScancode( void )
 
         mov   al, 020h       /* reset PIC */
         out   020h, al
-
-        /* end of re-set code */
-
         sti
     }
 
-    s_scancode = code;
+    s_scancode = code & SCANCODE_MASK;
+    s_keyIsPressed = (code & PRESS_MASK) == 0;
 
     switch (code & SCANCODE_MASK)
     {
@@ -80,6 +81,7 @@ void __interrupt __far handleScancode( void )
             break;
     }
 
+    
 }
 
 #define KEYBOARD_INTERRUPT 9

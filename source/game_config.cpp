@@ -96,27 +96,27 @@ GameConfig parseGameConfig(const char* fileName)
         {
             if (compareStrCaseInsensitive(key, "up"))
             {
-                config.keyUp = (uint8_t)atoi(value);
+                config.keyboard.keyUp = (uint8_t)atoi(value);
             }
             else if (compareStrCaseInsensitive(key, "down"))
             {
-                config.keyDown = (uint8_t)atoi(value);
+                config.keyboard.keyDown = (uint8_t)atoi(value);
             }
             else if (compareStrCaseInsensitive(key, "left"))
             {
-                config.keyLeft = (uint8_t)atoi(value);
+                config.keyboard.keyLeft = (uint8_t)atoi(value);
             }
             else if (compareStrCaseInsensitive(key, "right"))
             {
-                config.keyRight = (uint8_t)atoi(value);
+                config.keyboard.keyRight = (uint8_t)atoi(value);
             }
             else if (compareStrCaseInsensitive(key, "jump"))
             {
-                config.keyJump = (uint8_t)atoi(value);
+                config.keyboard.keyJump = (uint8_t)atoi(value);
             }
             else if (compareStrCaseInsensitive(key, "action"))
             {
-                config.keyAction = (uint8_t)atoi(value);
+                config.keyboard.keyAction = (uint8_t)atoi(value);
             }
         }
 
@@ -221,4 +221,21 @@ void setIniValue(const char* fileName, const char* section, const char* key, con
 
     remove(fileName);
     rename(tempFileName, fileName);
+}
+
+void writeKeyboardConfig(const char* fileName, const KeyboardConfig& keyboard)
+{
+    char buf[8];
+    sprintf(buf, "%d", keyboard.keyUp);
+    setIniValue(fileName, "Keyboard", "UP", buf);
+    sprintf(buf, "%d", keyboard.keyDown);
+    setIniValue(fileName, "Keyboard", "DOWN", buf);
+    sprintf(buf, "%d", keyboard.keyLeft);
+    setIniValue(fileName, "Keyboard", "LEFT", buf);
+    sprintf(buf, "%d", keyboard.keyRight);
+    setIniValue(fileName, "Keyboard", "RIGHT", buf);
+    sprintf(buf, "%d", keyboard.keyJump);
+    setIniValue(fileName, "Keyboard", "JUMP", buf);
+    sprintf(buf, "%d", keyboard.keyAction);
+    setIniValue(fileName, "Keyboard", "ACTION", buf);
 }

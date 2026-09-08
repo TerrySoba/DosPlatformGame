@@ -8,6 +8,7 @@
 *.VHD
 *.com.map
 *.exe.map
+debug_env/
 compiler
 release/
 .qmake.stash

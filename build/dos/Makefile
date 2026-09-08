@@ -36,12 +36,12 @@ objects_test = \
 dissolve_objs = \
 	platform/dos/vgagfx.o palette_tools.o image.o tiny_string.o exception.o platform/dos/dissolve.o \
 	platform/dos/dos_timer.o platform/dos/keyboard_dos.o tga_image.o \
-	convert_to_tga.o
+	convert_to_tga.o tiny_string.o
 
 title_screen = \
     platform/dos/title.o platform/dos/vgagfx.o image.o tga_image.o exception.o rectangle.o platform/dos/keyboard_dos.o \
 	tiny_string.o animation.o font.o font_writer.o platform/dos/rle_sprite_asm.o \
-	blit.o i18n.o palette_tools.o convert_to_tga.o
+	blit.o i18n.o palette_tools.o convert_to_tga.o game_config.o
 
 BUILD_DATE=$(shell date -R)
 ABS_SOURCE_DIR=$(realpath $(SRC_DIR))
@@ -128,7 +128,7 @@ $(test): $(objects_test)
 _$(title): $(title_screen)
 	echo "NAME   $@" > title.lnk
 	echo "SYSTEM DOS" >> title.lnk
-	echo "OPTION STACK=20000" >> title.lnk
+	echo "OPTION STACK=23000" >> title.lnk
 	echo "FILE   {$(title_screen)}" >> title.lnk
 	echo "OPTION MAP=$(title).map" >> title.lnk
 	wlink  @title.lnk

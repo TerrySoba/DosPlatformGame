@@ -1,6 +1,7 @@
 #include "joystick_dos.h"
 
 #include "tiny_string.h"
+#include "bios_functions.h"
 
 #include <conio.h>
 
@@ -69,23 +70,6 @@ RawJoystickState readJoystickRaw()
     
     return status;
 }
-
-
-extern void disableCursor();
-#pragma aux disableCursor =    \
-    "mov ah, 01h"              \
-    "mov ch, 3Fh"              \
-    "int 10h"                  \
-    modify [ah ch];
-
-
-extern void setCursor(uint8_t row, uint8_t col);
-#pragma aux setCursor =   \
-        "mov ah, 02h" \
-		"mov bh, 00h" \
-		"int 10h" \
-        modify[ah bh dx] \
-        parm [dh] [dl];
 
 uint8_t readJoystick()
 {

@@ -182,12 +182,7 @@ int intToString(int32_t value, int base, char* buffer, int bufferSize, int minLe
 
 #ifdef __WATCOMC__
 
-void printCh(char ch);
-#pragma aux printCh = \
-    "mov ah, 02h"   \
-    "int 0x21"      \
-    parm    [dl]    \
-    modify  [ax];
+#include "platform/dos/bios_functions.h"
 
 #else
 
