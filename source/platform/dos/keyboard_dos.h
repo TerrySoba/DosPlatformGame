@@ -1,6 +1,8 @@
 #ifndef KEYBOARD_H_INCLUDED
 #define KEYBOARD_H_INCLUDED
 
+#include "game_config.h"
+
 #include <stdint.h>
 
 extern volatile uint8_t s_scancode;
@@ -21,7 +23,7 @@ extern volatile uint8_t s_keyEsc;
 class Keyboard
 {
 public:
-    Keyboard();
+    Keyboard(GameConfig* config = 0);
     ~Keyboard();
 private:
     void __interrupt __far (*m_oldInterrupt)();

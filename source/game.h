@@ -23,6 +23,7 @@
 #include "eye.h"
 #include "portal.h"
 #include "level_number.h"
+#include "game_config.h"
 
 
 enum StoryStatus
@@ -82,7 +83,8 @@ public:
 		GameAnimations animations,
 		const char* levelBasename,
 		LevelNumber startLevel,
-		bool enableCheats);
+		bool enableCheats,
+		const GameConfig& gameConfig);
 
 	~Game();
 
@@ -110,6 +112,7 @@ private:
     virtual void drawDeathCount();
 
 private:
+	GameConfig m_gameConfig;
 	tnd::shared_ptr<GfxOutput> m_vgaGfx;
 	tnd::shared_ptr<ImageBase> m_tiles;
 	GameAnimations m_animations;

@@ -18,6 +18,7 @@ volatile uint8_t s_keySpace;
 volatile uint8_t s_keyEsc;
 
 
+// Default key mappings
 #define LEFT_KEY  0x4b
 #define RIGHT_KEY 0x4d
 #define UP_KEY    0x48
@@ -26,6 +27,17 @@ volatile uint8_t s_keyEsc;
 #define ALT_KEY   0x38
 #define SPACE_KEY 0x39
 #define ESC_KEY   0x01
+
+
+uint8_t s_keyLeftScancode = LEFT_KEY;
+uint8_t s_keyRightScancode = RIGHT_KEY;
+uint8_t s_keyUpScancode = UP_KEY;
+uint8_t s_keyDownScancode = DOWN_KEY;
+uint8_t s_keyCtrlScancode = CTRL_KEY;
+uint8_t s_keyAltScancode = ALT_KEY;
+uint8_t s_keySpaceScancode = SPACE_KEY;
+uint8_t s_keyEscScancode = ESC_KEY;
+
 
 #define SCANCODE_MASK 127
 #define PRESS_MASK 128
@@ -53,40 +65,45 @@ void __interrupt __far handleScancode( void )
     s_scancode = code & SCANCODE_MASK;
     s_keyIsPressed = (code & PRESS_MASK) == 0;
 
-    switch (code & SCANCODE_MASK)
-    {
-        case LEFT_KEY:
-            s_keyLeft = !(code & PRESS_MASK);
-            break;
-        case RIGHT_KEY:
-            s_keyRight = !(code & PRESS_MASK);
-            break;
-        case UP_KEY:
-            s_keyUp = !(code & PRESS_MASK);
-            break;
-        case DOWN_KEY:
-            s_keyDown = !(code & PRESS_MASK);
-            break;
-        case CTRL_KEY:
-            s_keyCtrl = !(code & PRESS_MASK);
-            break;
-        case ALT_KEY:
-            s_keyAlt = !(code & PRESS_MASK);
-            break;
-        case SPACE_KEY:
-            s_keySpace = !(code & PRESS_MASK);
-            break;
-        case ESC_KEY:
-            s_keyEsc = !(code & PRESS_MASK);
-            break;
-    }
 
+    if (s_scancode == s_keyLeftScancode)
+    {
+        s_keyLeft = !(code & PRESS_MASK);
+    }
+    else if (s_scancode == s_keyRightScancode)
+    {
+        s_keyRight = !(code & PRESS_MASK);
+    }
+    else if (s_scancode == s_keyUpScancode)
+    {
+        s_keyUp = !(code & PRESS_MASK);
+    }
+    else if (s_scancode == s_keyDownScancode)
+    {
+        s_keyDown = !(code & PRESS_MASK);
+    }
+    else if (s_scancode == s_keyCtrlScancode)
+    {
+        s_keyCtrl = !(code & PRESS_MASK);
+    }
+    else if (s_scancode == s_keyAltScancode)
+    {
+        s_keyAlt = !(code & PRESS_MASK);
+    }
+    else if (s_scancode == s_keySpaceScancode)
+    {
+        s_keySpace = !(code & PRESS_MASK);
+    }
+    else if (s_scancode == s_keyEscScancode)
+    {
+        s_keyEsc = !(code & PRESS_MASK);
+    }
     
 }
 
 #define KEYBOARD_INTERRUPT 9
 
-Keyboard::Keyboard()
+Keyboard::Keyboard(GameConfig* config)
 {
     s_keyLeft = 0;
     s_keyRight = 0;
@@ -96,6 +113,16 @@ Keyboard::Keyboard()
     s_keyAlt = 0;
     s_keySpace = 0;
     s_keyEsc = 0;
+
+    if (config)
+    {
+        s_keyLeftScancode = config->keyboard.keyLeft;
+        s_keyRightScancode = config->keyboard.keyRight;
+        s_keyUpScancode = config->keyboard.keyUp;
+        s_keyDownScancode = config->keyboard.keyDown;
+        s_keyCtrlScancode = config->keyboard.keyAction;
+        s_keyAltScancode = config->keyboard.keyJump;
+    }
 
     m_oldInterrupt = _dos_getvect(KEYBOARD_INTERRUPT);
     _dos_setvect(KEYBOARD_INTERRUPT, handleScancode);

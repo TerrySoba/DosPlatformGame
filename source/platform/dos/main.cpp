@@ -110,7 +110,7 @@ int main(int argc, char* argv[])
         }
 
         tnd::shared_ptr<GfxOutput> gfx(new VgaGfx());
-        Keyboard keyboard;
+        Keyboard keyboard(&config);
     
         GameExitCode exitCode = GAME_EXIT_QUIT;
 
@@ -143,7 +143,7 @@ int main(int argc, char* argv[])
                     eye,
                     portal};
 
-            Game game(gfx, sound, music, animations, "%02x%02x", params.level, params.enableCheats);
+            Game game(gfx, sound, music, animations, "%02x%02x", params.level, params.enableCheats, config);
 
             if (params.dumpLevelImages)
             {
