@@ -42,6 +42,26 @@ uint8_t s_keyEscScancode = ESC_KEY;
 #define SCANCODE_MASK 127
 #define PRESS_MASK 128
 
+// Indexed by scancode (0-127); points at the flag to update, or null if unmapped.
+volatile uint8_t* s_scancodeTable[SCANCODE_MASK + 1];
+
+static void rebuildScancodeTable( void )
+{
+    for (int i = 0; i <= SCANCODE_MASK; ++i)
+    {
+        s_scancodeTable[i] = 0;
+    }
+
+    s_scancodeTable[s_keySpaceScancode] = &s_keySpace;
+    s_scancodeTable[s_keyLeftScancode] = &s_keyLeft;
+    s_scancodeTable[s_keyRightScancode] = &s_keyRight;
+    s_scancodeTable[s_keyUpScancode] = &s_keyUp;
+    s_scancodeTable[s_keyDownScancode] = &s_keyDown;
+    s_scancodeTable[s_keyCtrlScancode] = &s_keyCtrl;
+    s_scancodeTable[s_keyAltScancode] = &s_keyAlt;
+    s_scancodeTable[s_keyEscScancode] = &s_keyEsc;
+}
+
 void __interrupt __far handleScancode( void )
 {
     uint8_t code;
@@ -65,40 +85,11 @@ void __interrupt __far handleScancode( void )
     s_scancode = code & SCANCODE_MASK;
     s_keyIsPressed = (code & PRESS_MASK) == 0;
 
-
-    if (s_scancode == s_keyLeftScancode)
+    volatile uint8_t* target = s_scancodeTable[s_scancode];
+    if (target)
     {
-        s_keyLeft = !(code & PRESS_MASK);
+        *target = !(code & PRESS_MASK);
     }
-    else if (s_scancode == s_keyRightScancode)
-    {
-        s_keyRight = !(code & PRESS_MASK);
-    }
-    else if (s_scancode == s_keyUpScancode)
-    {
-        s_keyUp = !(code & PRESS_MASK);
-    }
-    else if (s_scancode == s_keyDownScancode)
-    {
-        s_keyDown = !(code & PRESS_MASK);
-    }
-    else if (s_scancode == s_keyCtrlScancode)
-    {
-        s_keyCtrl = !(code & PRESS_MASK);
-    }
-    else if (s_scancode == s_keyAltScancode)
-    {
-        s_keyAlt = !(code & PRESS_MASK);
-    }
-    else if (s_scancode == s_keySpaceScancode)
-    {
-        s_keySpace = !(code & PRESS_MASK);
-    }
-    else if (s_scancode == s_keyEscScancode)
-    {
-        s_keyEsc = !(code & PRESS_MASK);
-    }
-    
 }
 
 #define KEYBOARD_INTERRUPT 9
@@ -123,6 +114,8 @@ Keyboard::Keyboard(GameConfig* config)
         s_keyCtrlScancode = config->keyboard.keyAction;
         s_keyAltScancode = config->keyboard.keyJump;
     }
+
+    rebuildScancodeTable();
 
     m_oldInterrupt = _dos_getvect(KEYBOARD_INTERRUPT);
     _dos_setvect(KEYBOARD_INTERRUPT, handleScancode);
