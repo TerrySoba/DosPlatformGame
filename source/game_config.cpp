@@ -12,18 +12,18 @@ bool isspace(char c)
     return c == ' ' || c == '\t' || c == '\r' || c == '\n';
 }
 
-void parseKeyValue(const char* line, char** key, char** value)
+void parseKeyValue(char* line, char** key, char** value)
 {
-    const char* p = line;
-    *key = (char*)p;
+    char* p = line;
+    *key = p;
     while (*p && *p != '=' && !isspace(*p)) p++;
     if (*p == '\0') return; // no '=' found
-    *((char*)p) = '\0'; // terminate key
+    *p = '\0'; // terminate key
     p++;
     while (*p && (isspace(*p) || *p == '=')) p++; // skip whitespace and '=' before value
-    *value = (char*)p;
+    *value = p;
     while (*p && *p != '\n' && *p != '\r') p++;
-    *((char*)p) = '\0'; // terminate value
+    *p = '\0'; // terminate value
 }
 
 bool compareStrCaseInsensitive(const char* a, const char* b)
@@ -226,16 +226,16 @@ void setIniValue(const char* fileName, const char* section, const char* key, con
 void writeKeyboardConfig(const char* fileName, const KeyboardConfig& keyboard)
 {
     char buf[8];
-    sprintf(buf, "%d", keyboard.keyUp);
+    snprintf(buf, sizeof(buf), "%d", keyboard.keyUp);
     setIniValue(fileName, "Keyboard", "UP", buf);
-    sprintf(buf, "%d", keyboard.keyDown);
+    snprintf(buf, sizeof(buf), "%d", keyboard.keyDown);
     setIniValue(fileName, "Keyboard", "DOWN", buf);
-    sprintf(buf, "%d", keyboard.keyLeft);
+    snprintf(buf, sizeof(buf), "%d", keyboard.keyLeft);
     setIniValue(fileName, "Keyboard", "LEFT", buf);
-    sprintf(buf, "%d", keyboard.keyRight);
+    snprintf(buf, sizeof(buf), "%d", keyboard.keyRight);
     setIniValue(fileName, "Keyboard", "RIGHT", buf);
-    sprintf(buf, "%d", keyboard.keyJump);
+    snprintf(buf, sizeof(buf), "%d", keyboard.keyJump);
     setIniValue(fileName, "Keyboard", "JUMP", buf);
-    sprintf(buf, "%d", keyboard.keyAction);
+    snprintf(buf, sizeof(buf), "%d", keyboard.keyAction);
     setIniValue(fileName, "Keyboard", "ACTION", buf);
 }
