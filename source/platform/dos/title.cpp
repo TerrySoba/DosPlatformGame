@@ -242,7 +242,7 @@ private:
 
 struct KeyMapping
 {
-    const char* text;
+    uint16_t textId;
     uint8_t* keyStorage;
 };
 
@@ -250,12 +250,12 @@ struct KeyMapping
 KeyboardConfig s_keyboardConfig;
 
 const KeyMapping keyMappings[] = {
-    {"Up", &s_keyboardConfig.keyUp},
-    {"Down", &s_keyboardConfig.keyDown},
-    {"Left", &s_keyboardConfig.keyLeft},
-    {"Right", &s_keyboardConfig.keyRight},
-    {"Jump", &s_keyboardConfig.keyJump},
-    {"Item", &s_keyboardConfig.keyAction},
+    {55, &s_keyboardConfig.keyUp},
+    {56, &s_keyboardConfig.keyDown},
+    {57, &s_keyboardConfig.keyLeft},
+    {58, &s_keyboardConfig.keyRight},
+    {59, &s_keyboardConfig.keyJump},
+    {60, &s_keyboardConfig.keyAction},
     {0, 0}
 };
 
@@ -273,9 +273,9 @@ public:
 
     void drawBackground()
     {
-        m_fontWriterText.setText("Press key for action:");
+        m_fontWriterText.setText(I18N::getString(61).c_str()); // "Press key for action:"
         m_gfx.drawBackground(m_fontWriterText, m_x, m_y);
-        m_fontWriterAction.setText(keyMappings[m_currentKeyMappingIndex].text);
+        m_fontWriterAction.setText(I18N::getString(keyMappings[m_currentKeyMappingIndex].textId).c_str());
         m_gfx.drawBackground(m_fontWriterAction, m_x + 30, m_y + 15);
     }
 

@@ -215,6 +215,34 @@
         "en": "Configure Keyboard",
         "de": "Tastatur konfigurieren"
     },
+    "55": {
+        "en": "Up",
+        "de": "Oben"
+    },
+    "56": {
+        "en": "Down",
+        "de": "Unten"
+    },
+    "57": {
+        "en": "Left",
+        "de": "Links"
+    },
+    "58": {
+        "en": "Right",
+        "de": "Rechts"
+    },
+    "59": {
+        "en": "Jump",
+        "de": "Springen"
+    },
+    "60": {
+        "en": "Item",   
+        "de": "Gegenstand"
+    },
+    "61": {
+        "en": "Key for action:",
+        "de": "Taste für Aktion:"
+    },
     "65": {
         "en": "Welcome to the game!",
         "de": "Willkommen im Spiel!"
