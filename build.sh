@@ -33,7 +33,7 @@ rm -f zip/gamesfx.exe zip/game.lzh
 
 cd release
 echo "Creating lha archive..."
-../tools/x86_64/lha a -q2 -o ../zip/game.lzh *.*
+../tools/x86_64/lha a -o ../zip/game.lzh *.*
 cd ..
 
 # create self extracting lha archive for 16bit dos

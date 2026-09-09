@@ -87,6 +87,7 @@ jobs:
             --prerelease \
             --generate-notes \
             ./zip/game.zip \
+            ./zip/game.lzh \
             image*.img \
             DosPlatformGameWin32.zip
             
