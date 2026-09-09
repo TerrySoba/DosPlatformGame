@@ -36,7 +36,7 @@ objects_test = \
 dissolve_objs = \
 	platform/dos/vgagfx.o palette_tools.o image.o tiny_string.o exception.o platform/dos/dissolve.o \
 	platform/dos/dos_timer.o platform/dos/keyboard_dos.o tga_image.o \
-	convert_to_tga.o tiny_string.o
+	convert_to_tga.o
 
 title_screen = \
     platform/dos/title.o platform/dos/vgagfx.o image.o tga_image.o exception.o rectangle.o platform/dos/keyboard_dos.o \
