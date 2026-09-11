@@ -28,13 +28,7 @@ echo "Creating zip archive..."
 zip -q -r -9 zip/game.zip release
 
 # create self extracting lha archive
-
 rm -f zip/gamesfx.exe zip/game.lzh
 
-cd release
-echo "Creating lha archive..."
-../tools/x86_64/lha a -0 -g -o ../zip/game.lzh *.*
-cd ..
-
-# create self extracting lha archive for 16bit dos
-cat tools/dos/lha_sfx_stub zip/game.lzh > zip/gamesfx.exe
+tools/dos/lha.sh zip/game.lzh release
+mv zip/game.exe zip/gamesfx.exe

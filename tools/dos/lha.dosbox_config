@@ -1,0 +1,36 @@
+[sdl]
+priority=highest,highest
+autolock=false
+
+[dosbox]
+machine=cga
+memsize=16
+
+[cpu]
+core=dynamic
+cputype=auto
+cycles=max
+cycleup=10
+cycledown=20
+
+[mixer]
+nosound=true
+
+[midi]
+mpu401=none
+mididevice=none
+
+[sblaster]
+sbtype=none
+
+[gus]
+gus=false
+
+[speaker]
+pcspeaker=false
+tandy=off
+disney=false
+
+[autoexec]
+# Lines in this section will be run at startup.
+# You can put your MOUNT lines here.
