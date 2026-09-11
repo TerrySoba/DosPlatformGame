@@ -26,7 +26,7 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Install dependencies
-        run:  DEBIAN_FRONTEND=noninteractive sudo apt install -y nasm mtools # dosbox xvfb
+        run:  DEBIAN_FRONTEND=noninteractive sudo apt install -y nasm mtools dosbox # xvfb
 
       - name: Build
         run: ./build.sh
