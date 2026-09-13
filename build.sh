@@ -2,6 +2,8 @@
 
 set -e
 
+script_dir="$(dirname "$0")"
+artifacts_dir="$script_dir"/artifacts
 
 if [ $(uname -m) = "aarch64" ]
 then
@@ -9,8 +11,6 @@ then
     # non x86 platforms like arm.
     docker run --privileged --rm tonistiigi/binfmt --install 386
 fi
-
-# ./create_docker_image.sh
 
 # rm -f source/*.o source/*.exe
 # docker run --user $(id -u):$(id -g) -v `pwd`/source/:/build open_watcom /build
@@ -21,14 +21,14 @@ cat source/distfiles.txt | xargs -I FILENAME cp source/FILENAME release
 # append git hash to readme.txt
 echo `git rev-parse HEAD` >> release/readme.txt
 
-mkdir -p zip
+mkdir -p "$artifacts_dir"
 
-rm -f zip/game.zip
+rm -f "$artifacts_dir"/game.zip
 echo "Creating zip archive..."
-zip -q -r -9 zip/game.zip release
+zip -q -r -9 "$artifacts_dir"/game.zip "$script_dir"/release
 
 # create self extracting lha archive
-rm -f zip/gamesfx.exe zip/game.lzh
+rm -f "$artifacts_dir"/gamesfx.exe "$artifacts_dir"/game.lzh
 
-tools/dos/lha.sh zip/game.lzh release
-mv zip/game.exe zip/gamesfx.exe
+tools/dos/lha.sh "$artifacts_dir"/game.lzh "$script_dir"/release
+mv "$artifacts_dir"/game.exe "$artifacts_dir"/gamesfx.exe

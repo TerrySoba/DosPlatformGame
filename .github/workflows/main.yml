@@ -45,10 +45,10 @@ jobs:
       #  run: python3 parse_junit_xml.py
 
       - name: Build installer
-        run: ./build_installer.sh
+        run: ./scripts/build_installer.sh
 
       - name: Create disk images
-        run: ./create_disk_image.sh
+        run: ./scripts/create_disk_image.sh
 
       - name: Create Windows installer
         run: ./create_windows_dosbox_package.sh
@@ -86,10 +86,10 @@ jobs:
             --title "Development Build" \
             --prerelease \
             --generate-notes \
-            ./zip/game.zip \
-            ./zip/game.lzh \
+            ./artifacts/game.zip \
+            ./artifacts/game.lzh \
             ./installer/gamesfx.exe \
-            image*.img \
+            ./artifacts/image*.img \
             DosPlatformGameWin32.zip
             
             
