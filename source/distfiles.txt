@@ -175,9 +175,10 @@
 ../music/THIRD.RAD
 ../music/MYSTCAVE.RAD
 ../music/furexus.rad
-../readme/readme.txt
-../scripts/game_de.bat
-../scripts/game_en.bat
+../dos_assets/readme.txt
+../dos_assets/game_de.bat
+../dos_assets/game_en.bat
+../dos_assets/config.ini
 ../sound/death.voc
 ../sound/guffin.voc
 ../sound/jetpack.voc
@@ -193,7 +194,6 @@
 ../fonts/a13.stf
 ../fonts/geo10.stf
 ../fonts/com10.stf
-../config/config.ini
 
 game.com
 game2.exe

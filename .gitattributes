@@ -1,4 +1,4 @@
-readme/readme.txt eol=crlf
+dos_assets/readme.txt eol=crlf
 installer/install.txt eol=crlf
 *.bat eol=crlf
 testdata/test_lf.ini eol=lf
