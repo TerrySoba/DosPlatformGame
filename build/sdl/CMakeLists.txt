@@ -102,7 +102,7 @@ install(DIRECTORY "${GAME_BASE_DIR}/levels/"
     FILES_MATCHING PATTERN "*.map"
 )
 
-install(DIRECTORY "${GAME_BASE_DIR}/images/"
+install(DIRECTORY "${GAME_BASE_DIR}/gfx/"
     DESTINATION bin
     FILES_MATCHING PATTERN "*.tga" PATTERN "*.ani" 
 )

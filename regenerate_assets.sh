@@ -72,7 +72,7 @@ convertImage () {
 }
 
 # now convert png images to tga
-for pngfile in images/*.png; do  convertImage "$pngfile" ; done
+for pngfile in gfx/*.png; do  convertImage "$pngfile" ; done
 
 convertAnimation () {
     local jsonfile=$1
@@ -83,7 +83,7 @@ convertAnimation () {
 }
 
 # now animations
-for jsonfile in images/*.json; do  convertAnimation "$jsonfile" ; done
+for jsonfile in gfx/*.json; do  convertAnimation "$jsonfile" ; done
 
 # generate level data
 pushd levels
