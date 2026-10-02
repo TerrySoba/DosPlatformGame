@@ -41,7 +41,7 @@ dissolve_objs = \
 title_screen = \
     platform/dos/title.o platform/dos/vgagfx.o image.o tga_image.o exception.o rectangle.o platform/dos/keyboard_dos.o \
 	tiny_string.o animation.o font.o font_writer.o platform/dos/rle_sprite_asm.o \
-	blit.o i18n.o palette_tools.o convert_to_tga.o game_config.o
+	blit.o i18n.o palette_tools.o convert_to_tga.o game_config.o platform/dos/joystick_dos.o
 
 BUILD_DATE=$(shell date -R)
 ABS_SOURCE_DIR=$(realpath $(SRC_DIR))

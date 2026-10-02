@@ -97,6 +97,7 @@ int main(int argc, char* argv[])
         }
 
         CommandLineParameters params = parseCommandline(argc, argv);
+        KeyMapper::setJoystickButtons(config.joystick.joyJump, config.joystick.joyAction);
         calibrateJoystick();
         
         switch(params.language)

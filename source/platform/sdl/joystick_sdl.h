@@ -10,7 +10,9 @@ enum JoystickState
     JOY_UP = 4,
     JOY_DOWN = 8,
     JOY_BUTTON_1 = 16,
-    JOY_BUTTON_2 = 32
+    JOY_BUTTON_2 = 32,
+    JOY_BUTTON_3 = 64,
+    JOY_BUTTON_4 = 128
 };
 
 void calibrateJoystick();

@@ -35,5 +35,6 @@ struct GameConfig
 GameConfig parseGameConfig(const char* fileName);
 void setIniValue(const char* fileName, const char* section, const char* key, const char* value);
 void writeKeyboardConfig(const char* fileName, const KeyboardConfig& keyboard);
+void writeJoystickConfig(const char* fileName, const JoystickConfig& joystick);
 
 #endif // GAME_CONFIG_H

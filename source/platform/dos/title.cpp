@@ -1,6 +1,7 @@
 #include "platform/dos/vgagfx.h"
 #include "tga_image.h"
 #include "platform/dos/keyboard_dos.h"
+#include "platform/dos/joystick_dos.h"
 #include "font.h"
 #include "font_writer.h"
 #include "animation.h"
@@ -36,6 +37,10 @@ enum TitleScreenState
     TITLE_SCREEN_STATE_CONFIGURE_KEYBOARD_WAIT_FOR_KEYPRESS,
     TITLE_SCREEN_STATE_CONFIGURE_KEYBOARD_NEXT_KEY,
     TITLE_SCREEN_STATE_CONFIGURE_KEYBOARD_DONE,
+    TITLE_SCREEN_STATE_CONFIGURE_JOYSTICK_INITIAL,
+    TITLE_SCREEN_STATE_CONFIGURE_JOYSTICK_WAIT_FOR_BUTTON,
+    TITLE_SCREEN_STATE_CONFIGURE_JOYSTICK_NEXT_BUTTON,
+    TITLE_SCREEN_STATE_CONFIGURE_JOYSTICK_DONE,
 };
 
 TitleScreenState s_previousTitleScreenState = TITLE_SCREEN_STATE_INITIAL;
@@ -75,6 +80,11 @@ void showConfigureKeyboard()
     s_titleScreenState = TITLE_SCREEN_STATE_CONFIGURE_KEYBOARD_INITIAL;
 }
 
+void showConfigureJoystick()
+{
+    s_titleScreenState = TITLE_SCREEN_STATE_CONFIGURE_JOYSTICK_INITIAL;
+}
+
 typedef void (*ActionFunction)();
 
 
@@ -87,6 +97,7 @@ struct MenuItem
 
 const MenuItem settingsMenuItems[] = {
     { 54, showConfigureKeyboard }, // configure keyboard
+    { 62, showConfigureJoystick }, // configure joystick
     { 53, showMainMenu }, // back
     { 0, NULL } // must end with a NULL entry
 };
@@ -314,6 +325,86 @@ private:
 
 
 
+struct JoystickMapping
+{
+    uint16_t textId;
+    uint8_t* buttonStorage;
+};
+
+JoystickConfig s_joystickConfig;
+
+const JoystickMapping joystickMappings[] = {
+    {59, &s_joystickConfig.joyJump},
+    {60, &s_joystickConfig.joyAction},
+    {0, 0}
+};
+
+class ConfigureJoystick
+{
+public:
+    ConfigureJoystick(VgaGfx& gfx, FontWriter& fontWriterText, FontWriter& fontWriterAction, uint16_t x, uint16_t y) :
+        m_gfx(gfx),
+        m_fontWriterText(fontWriterText),
+        m_fontWriterAction(fontWriterAction),
+        m_x(x),
+        m_y(y),
+        m_currentMappingIndex(0),
+        m_lastButtons(0)
+    {
+    }
+
+    void drawBackground()
+    {
+        m_fontWriterText.setText(I18N::getString(63).c_str()); // "Button for action:"
+        m_gfx.drawBackground(m_fontWriterText, m_x, m_y);
+        m_fontWriterAction.setText(I18N::getString(joystickMappings[m_currentMappingIndex].textId).c_str());
+        m_gfx.drawBackground(m_fontWriterAction, m_x + 30, m_y + 15);
+    }
+
+    void handleJoystickInputs()
+    {
+        // only react to newly pressed buttons
+        uint8_t buttons = readJoystickButtons();
+        uint8_t pressed = buttons & ~m_lastButtons;
+        m_lastButtons = buttons;
+        if (pressed == 0)
+        {
+            return;
+        }
+
+        uint8_t index = 0;
+        while (!(pressed & (JOY_BUTTON_1 << index))) ++index;
+        *joystickMappings[m_currentMappingIndex].buttonStorage = index;
+
+        m_currentMappingIndex++;
+        if (joystickMappings[m_currentMappingIndex].buttonStorage != 0)
+        {
+            s_titleScreenState = TITLE_SCREEN_STATE_CONFIGURE_JOYSTICK_NEXT_BUTTON;
+        }
+        else
+        {
+            m_currentMappingIndex = 0;
+            s_titleScreenState = TITLE_SCREEN_STATE_CONFIGURE_JOYSTICK_DONE;
+            writeJoystickConfig(DEFAULT_CONFIG_NAME, s_joystickConfig);
+        }
+    }
+
+    void reset()
+    {
+        m_currentMappingIndex = 0;
+        m_lastButtons = readJoystickButtons();
+    }
+
+private:
+    VgaGfx& m_gfx;
+    FontWriter& m_fontWriterText;
+    FontWriter& m_fontWriterAction;
+    uint16_t m_x;
+    uint16_t m_y;
+    size_t m_currentMappingIndex;
+    uint8_t m_lastButtons;
+};
+
 void drawVersionNumber(VgaGfx& gfx)
 {
     Font font8("geo10.stf");
@@ -353,6 +444,7 @@ int main(int argc, char* argv[])
         MenuSystem menu(vga, mainFontWriter, arrow, mainMenuItems, 190, 87);
         MenuSystem settingsMenu(vga, settingsFontWriter , arrow, settingsMenuItems, 190, 87);
         ConfigureKeyboard configureKeyboard(vga, settingsFontWriter, mainFontWriter, 190, 87);
+        ConfigureJoystick configureJoystick(vga, settingsFontWriter, mainFontWriter, 190, 87);
         
         uint8_t counter = 0;
 
@@ -384,6 +476,14 @@ int main(int argc, char* argv[])
                 case TITLE_SCREEN_STATE_CONFIGURE_KEYBOARD_WAIT_FOR_KEYPRESS:
                     configureKeyboard.drawBackground();
                     break;
+                case TITLE_SCREEN_STATE_CONFIGURE_JOYSTICK_INITIAL:
+                    configureJoystick.reset();
+                    configureJoystick.drawBackground();
+                    s_titleScreenState = TITLE_SCREEN_STATE_CONFIGURE_JOYSTICK_WAIT_FOR_BUTTON;
+                    break;
+                case TITLE_SCREEN_STATE_CONFIGURE_JOYSTICK_WAIT_FOR_BUTTON:
+                    configureJoystick.drawBackground();
+                    break;
                 }
 
                 s_previousTitleScreenState = s_titleScreenState;
@@ -401,6 +501,31 @@ int main(int argc, char* argv[])
                 break;
             case TITLE_SCREEN_STATE_CONFIGURE_KEYBOARD_WAIT_FOR_KEYPRESS:
                 configureKeyboard.handleKeyboardInputs();
+                break;
+            case TITLE_SCREEN_STATE_CONFIGURE_JOYSTICK_WAIT_FOR_BUTTON:
+                configureJoystick.handleJoystickInputs();
+                break;
+            case TITLE_SCREEN_STATE_CONFIGURE_JOYSTICK_NEXT_BUTTON:
+                if (newKeyWaitFrames == 0)
+                {
+                    newKeyWaitFrames = NEW_KEY_WAIT_FRAMES;
+                    s_titleScreenState = TITLE_SCREEN_STATE_CONFIGURE_JOYSTICK_WAIT_FOR_BUTTON;
+                }
+                else
+                {
+                    --newKeyWaitFrames;
+                }
+                break;
+            case TITLE_SCREEN_STATE_CONFIGURE_JOYSTICK_DONE:
+                if (newKeyWaitFrames == 0)
+                {
+                    newKeyWaitFrames = NEW_KEY_WAIT_FRAMES;
+                    s_titleScreenState = TITLE_SCREEN_STATE_SETTINGS;
+                }
+                else
+                {
+                    --newKeyWaitFrames;
+                }
                 break;
             case TITLE_SCREEN_STATE_CONFIGURE_KEYBOARD_NEXT_KEY:
                 if (newKeyWaitFrames == 0)

@@ -51,6 +51,8 @@ GameConfig parseGameConfig(const char* fileName)
     }
 
     GameConfig config;
+    config.joystick.joyJump = 0;
+    config.joystick.joyAction = 1;
 
     // read the file line by line and parse the configuration
     char line[128];
@@ -119,7 +121,17 @@ GameConfig parseGameConfig(const char* fileName)
                 config.keyboard.keyAction = (uint8_t)atoi(value);
             }
         }
-
+        else if (compareStrCaseInsensitive(section, "joystick"))
+        {
+            if (compareStrCaseInsensitive(key, "jump"))
+            {
+                config.joystick.joyJump = (uint8_t)atoi(value);
+            }
+            else if (compareStrCaseInsensitive(key, "action"))
+            {
+                config.joystick.joyAction = (uint8_t)atoi(value);
+            }
+        }
     }
 
     fclose(fp);
@@ -238,4 +250,13 @@ void writeKeyboardConfig(const char* fileName, const KeyboardConfig& keyboard)
     setIniValue(fileName, "Keyboard", "JUMP", buf);
     snprintf(buf, sizeof(buf), "%d", keyboard.keyAction);
     setIniValue(fileName, "Keyboard", "ACTION", buf);
+}
+
+void writeJoystickConfig(const char* fileName, const JoystickConfig& joystick)
+{
+    char buf[8];
+    snprintf(buf, sizeof(buf), "%d", joystick.joyJump);
+    setIniValue(fileName, "Joystick", "JUMP", buf);
+    snprintf(buf, sizeof(buf), "%d", joystick.joyAction);
+    setIniValue(fileName, "Joystick", "ACTION", buf);
 }

@@ -21,6 +21,9 @@ class KeyMapper
 {
 public:
     KeyBits getKeys() const;
+
+    // button indices are 0..3
+    static void setJoystickButtons(uint8_t jump, uint8_t action);
 };
 
 
