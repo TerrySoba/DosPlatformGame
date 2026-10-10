@@ -5,3 +5,4 @@ find source -name "*.o" -type f -delete
 find source -name "*.lnk" -type f -delete
 find source -name "*.exe" -type f -delete
 find source -name "*.err" -type f -delete
+rm -f source/dos_build_flags.stamp

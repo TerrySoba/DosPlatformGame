@@ -5,6 +5,7 @@
 *.lnk
 *.lst
 *.d
+*.stamp
 *.VHD
 *.com.map
 *.exe.map

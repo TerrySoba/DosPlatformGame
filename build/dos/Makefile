@@ -43,19 +43,36 @@ title_screen = \
 	tiny_string.o animation.o font.o font_writer.o platform/dos/rle_sprite_asm.o \
 	blit.o i18n.o palette_tools.o convert_to_tga.o game_config.o platform/dos/joystick_dos.o
 
+this_makefile := $(lastword $(MAKEFILE_LIST))
+
+all_objects = $(sort $(objects_game) $(objects_test) $(dissolve_objs) $(title_screen) \
+	platform/dos/launcher.o)
+
 BUILD_DATE=$(shell date -R)
 ABS_SOURCE_DIR=$(realpath $(SRC_DIR))
 TEST_DATA_DIR=..\\\\\\\testdata\\\\\\\\
 
 # coptions = -0 -ml -xs -onatx -oh -oi+ -ei -zp8 -fpi87
 # coptions = -0 -ml -xs -onatx -oh -ol -ol+ -ox
-coptions = -ml -onas -xs -xr -zp4 -0 -ad \
+# BUILD_DATE is left out of coptions_tracked, otherwise every build would be a full rebuild.
+coptions_tracked = -ml -onas -xs -xr -zp4 -0 \
 		   -dPLATFORM_DOS \
-           -dBUILD_DATE="\"$(BUILD_DATE)\"" \
 		   -dTEST_DATA_DIR="\"$(TEST_DATA_DIR)\"" \
 		   -dBUILD_VERSION="\"$(BUILD_VERSION)\""
 
-coptions_launcher = -ms -onas -0 -ad -zls -s -d0
+coptions = $(coptions_tracked) -dBUILD_DATE="\"$(BUILD_DATE)\""
+
+coptions_launcher = -ms -onas -0 -zls -s -d0
+
+# Write the dependency file next to the object, so files with the same name in
+# different directories do not overwrite each other's dependency file.
+depoptions = -ad=$(@:.o=.d) -adt=$@ -add=$<
+
+# The flags stamp is only rewritten when the compiler flags change (e.g. a new
+# BUILD_VERSION), which then triggers a rebuild of all objects.
+flags_stamp = dos_build_flags.stamp
+current_flags := $(coptions_tracked) | $(coptions_launcher)
+$(shell [ "$$(cat $(flags_stamp) 2>/dev/null)" = '$(current_flags)' ] || printf '%s\n' '$(current_flags)' > $(flags_stamp))
 
 dest     = game2.exe
 test     = gametest.exe
@@ -76,9 +93,15 @@ $(dissolve):
 
 %.o : %.cpp
 	@mkdir -p $(dir $@)
-	wpp $(coptions) -fo=$@ $<
+	wpp $(coptions) $(depoptions) -fo=$@ $<
 
--include *.d
+$(all_objects): $(flags_stamp)
+
+# nasm options and linker options are only stored in this Makefile
+platform/dos/rle_sprite_asm.o rad_player_asm.o: $(this_makefile)
+_$(dest) $(test) _$(title) $(launcher) $(dissolve): $(this_makefile)
+
+-include $(all_objects:.o=.d)
 
 
 #launcher.o: launcher.cpp
@@ -135,7 +158,7 @@ _$(title): $(title_screen)
 
 
 platform/dos/launcher.o: platform/dos/launcher.c
-	wcc $(coptions_launcher) -bt=dos platform/dos/launcher.c -fo=platform/dos/launcher.o
+	wcc $(coptions_launcher) $(depoptions) -bt=dos platform/dos/launcher.c -fo=platform/dos/launcher.o
 
 $(launcher): platform/dos/launcher.o
 	echo "NAME   $@" > launcher.lnk
@@ -162,3 +185,4 @@ clean:
 	find . -name "*.lnk" -type f -delete
 	find . -name "*.exe" -type f -delete
 	find . -name "*.err" -type f -delete
+	rm -f $(flags_stamp)
