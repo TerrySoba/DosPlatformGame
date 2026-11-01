@@ -115,13 +115,10 @@ void Physics::getActorPos(int index, int16_t& x, int16_t& y)
 }
 
 
-Rectangle extendRectangle(Rectangle rect, int16_t horizontal, int16_t vertical)
+// Returns the index of the first rectangle in rects starting at index start that intersects bounds, or -1.
+static int nextIntersectingRect(const tnd::vector<Rectangle>& rects, int start, const RectBounds& bounds)
 {
-    rect.x -= horizontal;
-    rect.width += horizontal * 2;
-    rect.y -= vertical;
-    rect.height += vertical * 2;
-    return rect;
+    return findIntersectingRect(rects.data(), rects.size(), start, bounds);
 }
 
 static bool containsRect(const tnd::vector<Rectangle>& rects, const Rectangle& rect)
@@ -178,15 +175,10 @@ void Physics::calc()
             }
         }
 
-        bool touchesFallThrough = false;
-        for (int n = 0; n < m_fallThrough.size(); ++n)
-        {
-            if (intersectRect(m_fallThrough[n], actor.rect))
-            {
-                touchesFallThrough = true;
-                break;
-            }
-        }
+        // needs to be updated whenever actor.rect changes
+        RectBounds actorBounds(actor.rect);
+
+        bool touchesFallThrough = nextIntersectingRect(m_fallThrough, 0, actorBounds) >= 0;
 
         // falling through is over as soon as the actor does not touch any fall through platform anymore
         if (!touchesFallThrough)
@@ -197,59 +189,61 @@ void Physics::calc()
         bool fallThrough = actor.isDucking && touchesFallThrough;
         bool isOnSolidGround = false;
 
-        for (int n = 0; n < m_walls.size(); ++n)
+        for (int n = nextIntersectingRect(m_walls, 0, actorBounds);
+             n >= 0;
+             n = nextIntersectingRect(m_walls, n + 1, actorBounds))
         {
             Rectangle& wall = m_walls[n];
-            if (intersectRect(wall, actor.rect))
+            // fall through platforms are also part of the walls, only those may be fallen through
+            bool isFallThroughWall = touchesFallThrough && containsRect(m_fallThrough, wall);
+            bool ignoreWall = isFallThroughWall && actor.isFallingThrough;
+
+            IntersectionType wallType = getIntersectionType(wall, 0, actor.rect.height - 32, actor.rect);
+            if (!ignoreWall)
             {
-                // fall through platforms are also part of the walls, only those may be fallen through
-                bool isFallThroughWall = touchesFallThrough && containsRect(m_fallThrough, wall);
-                bool ignoreWall = isFallThroughWall && actor.isFallingThrough;
-
-                IntersectionType wallType = getIntersectionType(extendRectangle(wall, 0, actor.rect.height - 32), actor.rect);
-                if (!ignoreWall)
+                switch(wallType)
                 {
-                    switch(wallType)
-                    {
-                        case INTERSECTION_LEFT:
-                            actor.dx = 0;
-                            actor.rect.x = wall.x - actor.rect.width;
-                            break;
-                        case INTERSECTION_RIGHT:
-                            actor.dx = 0;
-                            actor.rect.x = wall.x + wall.width;
-                            break;
-                    }
-                }
-
-                IntersectionType groundType = getIntersectionType(extendRectangle(wall, actor.rect.width - 32, 0), actor.rect);
-                switch(groundType)
-                {
-                    case INTERSECTION_TOP:
-                        if (isFallThroughWall && fallThrough)
-                        {
-                            actor.isFallingThrough = true;
-                            ignoreWall = true;
-                        }
-                        if (!ignoreWall)
-                        {
-                            actor.rect.y = wall.y - actor.rect.height;
-                            actor.dy = 0;
-                            actor.isOnGround = true;
-                            actor.jetpackFrames = JETPACK_THRUST_TABLE_SIZE - 1; // reload jetpack after touching ground
-                            if (!isFallThroughWall)
-                            {
-                                isOnSolidGround = true;
-                            }
-                        }
+                    case INTERSECTION_LEFT:
+                        actor.dx = 0;
+                        actor.rect.x = wall.x - actor.rect.width;
                         break;
-                    case INTERSECTION_BOTTOM:
-                        actor.isFallingThrough = false;
-                        actor.rect.y = wall.y + wall.height;
-                        actor.dy = abs(actor.dy);
+                    case INTERSECTION_RIGHT:
+                        actor.dx = 0;
+                        actor.rect.x = wall.x + wall.width;
                         break;
                 }
             }
+
+            IntersectionType groundType = getIntersectionType(wall, actor.rect.width - 32, 0, actor.rect);
+            switch(groundType)
+            {
+                case INTERSECTION_TOP:
+                    if (isFallThroughWall && fallThrough)
+                    {
+                        actor.isFallingThrough = true;
+                        ignoreWall = true;
+                    }
+                    if (!ignoreWall)
+                    {
+                        actor.rect.y = wall.y - actor.rect.height;
+                        actor.dy = 0;
+                        actor.isOnGround = true;
+                        actor.jetpackFrames = JETPACK_THRUST_TABLE_SIZE - 1; // reload jetpack after touching ground
+                        if (!isFallThroughWall)
+                        {
+                            isOnSolidGround = true;
+                        }
+                    }
+                    break;
+                case INTERSECTION_BOTTOM:
+                    actor.isFallingThrough = false;
+                    actor.rect.y = wall.y + wall.height;
+                    actor.dy = abs(actor.dy);
+                    break;
+            }
+
+            // the actor may have been moved by the collision handling above
+            actorBounds = RectBounds(actor.rect);
         }
 
         // standing on solid ground without ducking, so do not fall through any platform touched later
@@ -258,78 +252,72 @@ void Physics::calc()
             actor.isFallingThrough = false;
         }
 
-        for (int n = 0; n < m_creditsWarps.size(); ++n)
+        for (int n = nextIntersectingRect(m_creditsWarps, 0, actorBounds);
+             n >= 0;
+             n = nextIntersectingRect(m_creditsWarps, n + 1, actorBounds))
         {
-            Rectangle& creditsWarp = m_creditsWarps[n];
-            if (intersectRect(creditsWarp, actor.rect))
+            if (m_callback)
             {
-                if (m_callback)
-                {
-                    m_callback->onCreditsWarp();
-                }
+                m_callback->onCreditsWarp();
             }
         }
 
-        for (int n = 0; n < m_death.size(); ++n)
+        for (int n = nextIntersectingRect(m_death, 0, actorBounds);
+             n >= 0;
+             n = nextIntersectingRect(m_death, n + 1, actorBounds))
         {
-            Rectangle& death = m_death[n];
-            if (intersectRect(death, actor.rect))
+            actor.rect.x = m_spawn.x;
+            actor.rect.y = m_spawn.y;
+            actor.dx = 0;
+            actor.dy = 0;
+            actor.isFallingThrough = false;
+            actorBounds = RectBounds(actor.rect);
+            m_sound->playDeathSound();
+            if (m_callback)
             {
-                actor.rect.x = m_spawn.x;
-                actor.rect.y = m_spawn.y;
-                actor.dx = 0;
-                actor.dy = 0;
-                actor.isFallingThrough = false;
-                m_sound->playDeathSound();
-                if (m_callback)
-                {
-                    m_callback->onDeath();
-                }
+                m_callback->onDeath();
             }
         }
 
-        for (int n = 0; n < m_enemyDeath.size(); ++n)
+        for (int n = nextIntersectingRect(m_enemyDeath, 0, actorBounds);
+             n >= 0;
+             n = nextIntersectingRect(m_enemyDeath, n + 1, actorBounds))
         {
-            Rectangle& death = m_enemyDeath[n];
-            if (intersectRect(death, actor.rect))
+            actor.rect.x = m_spawn.x;
+            actor.rect.y = m_spawn.y;
+            actor.dx = 0;
+            actor.dy = 0;
+            actor.isFallingThrough = false;
+            actorBounds = RectBounds(actor.rect);
+            m_sound->playDeathSound();
+            if (m_callback)
             {
-                actor.rect.x = m_spawn.x;
-                actor.rect.y = m_spawn.y;
-                actor.dx = 0;
-                actor.dy = 0;
-                actor.isFallingThrough = false;
-                m_sound->playDeathSound();
-                if (m_callback)
-                {
-                    m_callback->onDeath();
-                }
+                m_callback->onDeath();
             }
         }
 
-        for (int n = 0; n < m_guffins.size(); ++n)
+        // The collect callbacks remove the item from the list, so the vector is read again for every search.
+        if (m_callback)
         {
-            Rectangle& guffin = m_guffins[n];
-            if (intersectRect(guffin, actor.rect) && m_callback)
+            for (int n = nextIntersectingRect(m_guffins, 0, actorBounds);
+                 n >= 0;
+                 n = nextIntersectingRect(m_guffins, n + 1, actorBounds))
             {
-                m_callback->collectApple(Point(guffin.x, guffin.y));
+                m_callback->collectApple(Point(m_guffins[n].x, m_guffins[n].y));
             }
-        }
 
-        for (int n = 0; n < m_jetPacks.size(); ++n)
-        {
-            Rectangle& jetPack = m_jetPacks[n];
-            if (intersectRect(jetPack, actor.rect) && m_callback)
+            for (int n = nextIntersectingRect(m_jetPacks, 0, actorBounds);
+                 n >= 0;
+                 n = nextIntersectingRect(m_jetPacks, n + 1, actorBounds))
             {
-                m_callback->collectJetPack(Point(jetPack.x, jetPack.y));
+                m_callback->collectJetPack(Point(m_jetPacks[n].x, m_jetPacks[n].y));
             }
-        }
 
-        for (int n = 0; n < m_sunItems.size(); ++n)
-        {
-            Rectangle& sunItem = m_sunItems[n];
-            if (intersectRect(sunItem, actor.rect) && m_callback)
+            for (int n = nextIntersectingRect(m_sunItems, 0, actorBounds);
+                 n >= 0;
+                 n = nextIntersectingRect(m_sunItems, n + 1, actorBounds))
             {
-                m_callback->collectSunItem(Point(sunItem.x, sunItem.y));
+                m_callback->collectSunItem(Point(m_sunItems[n].x, m_sunItems[n].y));
             }
         }
 
@@ -453,36 +441,54 @@ bool Physics::intersectRect(const Rectangle &r1, const Rectangle &r2)
              r2.y + r2.height < r1.y);
 }
 
-bool pointIntersect(const Rectangle& r, int16_t x, int16_t y)
+/**
+ * Classifies which corners of r2 lie inside the rectangle given by its edges (edges included).
+ *
+ * A corner is inside if both its x and its y coordinate are inside, so instead of testing
+ * all four corners separately, only the two x and the two y coordinates of r2 are tested.
+ */
+static IntersectionType classifyIntersection(int left, int top, int right, int bottom, const Rectangle &r2)
 {
-    return (x >= r.x && x <= r.x + r.width) &&
-           (y >= r.y && y <= r.y + r.height);
+    // truncated to 16 bit like the corner coordinates in the original corner tests
+    int16_t r2Right = r2.x + r2.width;
+    int16_t r2Bottom = r2.y + r2.height;
+
+    bool leftInside   = r2.x >= left && r2.x <= right;
+    bool rightInside  = r2Right >= left && r2Right <= right;
+    bool topInside    = r2.y >= top && r2.y <= bottom;
+    bool bottomInside = r2Bottom >= top && r2Bottom <= bottom;
+
+    if (leftInside && rightInside && bottomInside && !topInside)
+    {
+        return INTERSECTION_TOP; // only both bottom corners are inside
+    }
+    if (leftInside && !rightInside && topInside && bottomInside)
+    {
+        return INTERSECTION_RIGHT; // only both left corners are inside
+    }
+    if (!leftInside && rightInside && topInside && bottomInside)
+    {
+        return INTERSECTION_LEFT; // only both right corners are inside
+    }
+    if (leftInside && rightInside && topInside && !bottomInside)
+    {
+        return INTERSECTION_BOTTOM; // only both top corners are inside
+    }
+
+    return INTERSECTION_OTHER;
 }
 
 IntersectionType Physics::getIntersectionType(const Rectangle &r1, const Rectangle &r2)
 {
-    bool topLeft = pointIntersect(r1, r2.x, r2.y);
-    bool topRight = pointIntersect(r1, r2.x + r2.width, r2.y);
-    bool bottomLeft = pointIntersect(r1, r2.x, r2.y + r2.height);
-    bool bottomRight = pointIntersect(r1, r2.x + r2.width, r2.y + r2.height);
+    return classifyIntersection(r1.x, r1.y, r1.x + r1.width, r1.y + r1.height, r2);
+}
 
-    if (bottomLeft && bottomRight && !topLeft && !topRight)
-    {
-        return INTERSECTION_TOP;
-    }
-    if (bottomLeft && !bottomRight && topLeft && !topRight)
-    {
-        return INTERSECTION_RIGHT;
-    }
-    if (!bottomLeft && bottomRight && !topLeft && topRight)
-    {
-        return INTERSECTION_LEFT;
-    }
-    if (!bottomLeft && !bottomRight && topLeft && topRight)
-    {
-        return INTERSECTION_BOTTOM;
-    }
-
-
-    return INTERSECTION_OTHER;
+IntersectionType Physics::getIntersectionType(const Rectangle &r1, int16_t extendHorizontal, int16_t extendVertical, const Rectangle &r2)
+{
+    // 16 bit variables, so the results match a Rectangle that was extended in place
+    int16_t x = r1.x - extendHorizontal;
+    int16_t y = r1.y - extendVertical;
+    int16_t width = r1.width + extendHorizontal * 2;
+    int16_t height = r1.height + extendVertical * 2;
+    return classifyIntersection(x, y, x + width, y + height, r2);
 }

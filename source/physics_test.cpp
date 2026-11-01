@@ -149,3 +149,106 @@ TEST(DeathWhileFallingThroughResetsFallThrough)
     ASSERT_EQ_INT(physics.m_actors[0].rect.y, spawnPlatform.y - TEST_ACTOR_HEIGHT);
     ASSERT_TRUE(physics.m_actors[0].isOnGround);
 }
+
+// Reference implementations of the collision code before it was optimized,
+// used to make sure that the optimized versions give identical results.
+static bool referencePointIntersect(const Rectangle& r, int16_t x, int16_t y)
+{
+    return (x >= r.x && x <= r.x + r.width) &&
+           (y >= r.y && y <= r.y + r.height);
+}
+
+static IntersectionType referenceIntersectionType(const Rectangle &r1, const Rectangle &r2)
+{
+    bool topLeft = referencePointIntersect(r1, r2.x, r2.y);
+    bool topRight = referencePointIntersect(r1, r2.x + r2.width, r2.y);
+    bool bottomLeft = referencePointIntersect(r1, r2.x, r2.y + r2.height);
+    bool bottomRight = referencePointIntersect(r1, r2.x + r2.width, r2.y + r2.height);
+
+    if (bottomLeft && bottomRight && !topLeft && !topRight) return INTERSECTION_TOP;
+    if (bottomLeft && !bottomRight && topLeft && !topRight) return INTERSECTION_RIGHT;
+    if (!bottomLeft && bottomRight && !topLeft && topRight) return INTERSECTION_LEFT;
+    if (!bottomLeft && !bottomRight && topLeft && topRight) return INTERSECTION_BOTTOM;
+    return INTERSECTION_OTHER;
+}
+
+static Rectangle referenceExtendRectangle(Rectangle rect, int16_t horizontal, int16_t vertical)
+{
+    rect.x -= horizontal;
+    rect.width += horizontal * 2;
+    rect.y -= vertical;
+    rect.height += vertical * 2;
+    return rect;
+}
+
+// small deterministic pseudo random generator, so that failures are reproducible
+static uint16_t s_testRandomState = 12345;
+static int16_t testRandom(int16_t min, int16_t max)
+{
+    s_testRandomState = s_testRandomState * 25173u + 13849u;
+    return min + (int16_t)(s_testRandomState % (uint16_t)(max - min + 1));
+}
+
+static Rectangle randomTestRect()
+{
+    // small area, so that a good share of the rectangles intersect or touch
+    return Rectangle(testRandom(-200, 600), testRandom(-200, 600), testRandom(0, 400), testRandom(0, 400));
+}
+
+TEST(GetIntersectionTypeMatchesReference)
+{
+    for (int i = 0; i < 3000; ++i)
+    {
+        Rectangle r1 = randomTestRect();
+        Rectangle r2 = randomTestRect();
+        int16_t extendHorizontal = testRandom(-32, 300);
+        int16_t extendVertical = testRandom(-32, 300);
+
+        ASSERT_EQ_INT(Physics::getIntersectionType(r1, r2), referenceIntersectionType(r1, r2));
+        ASSERT_EQ_INT(Physics::getIntersectionType(r1, extendHorizontal, extendVertical, r2),
+                      referenceIntersectionType(referenceExtendRectangle(r1, extendHorizontal, extendVertical), r2));
+    }
+
+    // exact touching edges and corners
+    Rectangle ref(100, 100, 100, 100);
+    for (int16_t x = 80; x <= 220; x += 10)
+    {
+        for (int16_t y = 80; y <= 220; y += 10)
+        {
+            Rectangle r(x, y, 20, 20);
+            ASSERT_EQ_INT(Physics::getIntersectionType(ref, r), referenceIntersectionType(ref, r));
+        }
+    }
+}
+
+TEST(FindIntersectingRectMatchesIntersectRect)
+{
+    const int rectCount = 40;
+    Rectangle rects[rectCount];
+
+    for (int round = 0; round < 50; ++round)
+    {
+        for (int i = 0; i < rectCount; ++i)
+        {
+            rects[i] = randomTestRect();
+        }
+        Rectangle probe = randomTestRect();
+        RectBounds bounds(probe);
+
+        // walking through all hits must find exactly the rectangles intersectRect reports
+        int expected = 0;
+        for (int i = 0; i < rectCount; ++i)
+        {
+            if (Physics::intersectRect(rects[i], probe))
+            {
+                ASSERT_EQ_INT(findIntersectingRect(rects, rectCount, expected, bounds), i);
+                expected = i + 1;
+            }
+        }
+        ASSERT_EQ_INT(findIntersectingRect(rects, rectCount, expected, bounds), -1);
+    }
+
+    // empty ranges
+    ASSERT_EQ_INT(findIntersectingRect(rects, 0, 0, RectBounds(rects[0])), -1);
+    ASSERT_EQ_INT(findIntersectingRect(rects, rectCount, rectCount, RectBounds(rects[0])), -1);
+}

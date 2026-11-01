@@ -135,4 +135,27 @@ struct Rectangle
 	int16_t width, height;
 };
 
+/**
+ * Edges of a rectangle with precomputed right and bottom edge,
+ * for repeated intersection tests against the same rectangle.
+ */
+struct RectBounds
+{
+	RectBounds(const Rectangle& r) :
+		left(r.x), top(r.y),
+		right(r.x + r.width), bottom(r.y + r.height)
+	{}
+
+	int left, top, right, bottom;
+};
+
+/**
+ * Returns the index of the first rectangle of rects[start] to rects[count - 1] that intersects bounds,
+ * or -1 if there is none. Rectangles that only touch at their edges count as intersecting,
+ * the same as Physics::intersectRect().
+ *
+ * Scanning a whole array in one call is much faster than calling an intersection function per rectangle.
+ */
+int findIntersectingRect(const Rectangle* rects, int count, int start, const RectBounds& bounds);
+
 #endif

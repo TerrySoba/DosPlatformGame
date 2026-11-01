@@ -128,14 +128,6 @@ void Boss1::appendProjectiles(tnd::vector<Rectangle>& rects) const
 }
 
 
-bool intersectRect(const Rectangle &r1, const Rectangle &r2)
-{
-    return !(r2.x > r1.x + r1.width ||
-             r2.x + r2.width < r1.x ||
-             r2.y > r1.y + r1.height ||
-             r2.y + r2.height < r1.y);
-}
-
 void Boss1::moveProjectiles()
 {
     for (size_t i = 0; i < m_projectiles.size(); ++i)
@@ -167,14 +159,10 @@ void Boss1::moveProjectiles()
 
         projectile.shrink(PIXEL_TO_SUBPIXEL(2));
 
-        for (size_t j = 0; j < m_walls.size(); ++j)
+        if (findIntersectingRect(m_walls.data(), m_walls.size(), 0, RectBounds(projectile)) >= 0)
         {
-            if (intersectRect(projectile, m_walls[j]))
-            {
-                m_projectiles.erase(i);
-                --i;
-                break;
-            }
+            m_projectiles.erase(i);
+            --i;
         }
     }
 

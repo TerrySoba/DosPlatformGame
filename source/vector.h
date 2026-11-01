@@ -132,6 +132,11 @@ public:
         return m_data;
     }
 
+    const ValueT* data() const
+    {
+        return m_data;
+    }
+
     void erase(int pos)
     {
         if (pos < m_size)

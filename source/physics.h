@@ -86,6 +86,12 @@ public:
      */
     static IntersectionType getIntersectionType(const Rectangle &r1, const Rectangle &r2);
 
+    /**
+     * Same as getIntersectionType(), but r1 is first extended by extendHorizontal on the left and right
+     * side and by extendVertical on the top and bottom side. Negative values shrink r1.
+     */
+    static IntersectionType getIntersectionType(const Rectangle &r1, int16_t extendHorizontal, int16_t extendVertical, const Rectangle &r2);
+
 public:
     tnd::vector<Rectangle> m_walls;
     tnd::vector<Rectangle> m_death;
