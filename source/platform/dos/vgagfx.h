@@ -36,6 +36,10 @@ public:
 	void fancyWipe(const ImageBase& image);
 
 private:
+	// not copyable, as the class owns raw buffers
+	VgaGfx(const VgaGfx&);
+	VgaGfx& operator=(const VgaGfx&);
+
 	char* m_backgroundImage;
 	char* m_screenBuffer;
 	tnd::vector<Rectangle> m_undrawnRects;

@@ -2,16 +2,13 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 #include <dos.h>
 #include <conio.h>
-#include <stdio.h>
 
 #include "rgbi_colors.h"
 #include "palette_tools.h"
 #include "convert_to_tga.h"
 
-#define inport(px) inpw(px)
 #define inportb(px) inp(px)
 
 
@@ -34,16 +31,20 @@ extern void videoInit(uint8_t mode);
     modify [ax]            \
     parm [al];
 
-int compareRectangles(const void* a, const void* b) {
-   return ( ((Rectangle*)a)->y > ((Rectangle*)b)->y );
-}
-
-
-void sortRects(tnd::vector<Rectangle>& rects)
+/**
+ * Writes the 16 RGBI colors to the VGA DAC, starting at the current DAC write index.
+ */
+static void writeRgbiPalette()
 {
-    qsort(&rects[0], rects.size(), sizeof(Rectangle), compareRectangles);
+    for (int i = 0; i < 16; ++i)
+    {
+        // Colors need to be set in RGB order. As rgbiColors is in BGR order, we need to reverse the order.
+        // As VGA only supports 6 bits per color, we need to shift the values by 2 bits.
+        outp(0x3C9, rgbiColors[i * 3 + 2] >> 2);
+        outp(0x3C9, rgbiColors[i * 3 + 1] >> 2);
+        outp(0x3C9, rgbiColors[i * 3 + 0] >> 2);
+    }
 }
-
 
 /**
  * Sets the default VGA palette.
@@ -54,14 +55,7 @@ void sortRects(tnd::vector<Rectangle>& rects)
 void setDefaultVgaPalette()
 {
     outp(0x3C8, 0);
-    for (int i = 0; i < 16; ++i)
-    {
-        // Colors need to be set in RGB order. As rgbiColors is in BGR order, we need to reverse the order.
-        // As VGA only supports 6 bits per color, we need to shift the values by 2 bits.
-        outp(0x3C9, rgbiColors[i * 3 + 2] >> 2);
-        outp(0x3C9, rgbiColors[i * 3 + 1] >> 2);
-        outp(0x3C9, rgbiColors[i * 3 + 0] >> 2);
-    }
+    writeRgbiPalette();
 
     // set the following 16 colors to an inverted grayscale versions of the first 16 colors
     // This pallette is used by the death animation of the game.
@@ -141,8 +135,10 @@ VgaGfx::~VgaGfx()
 #define VERTICAL_RETRACE_BIT 0x08
 
 #define waitForVsync() \
-    while (inportb(CGA_STATUS_REG) & VERTICAL_RETRACE_BIT); \
-    while (!(inportb(CGA_STATUS_REG) & VERTICAL_RETRACE_BIT))
+    do { \
+        while (inportb(CGA_STATUS_REG) & VERTICAL_RETRACE_BIT); \
+        while (!(inportb(CGA_STATUS_REG) & VERTICAL_RETRACE_BIT)); \
+    } while (0)
 
 #define LINE_BYTES SCREEN_W
 
@@ -164,8 +160,11 @@ void VgaGfx::draw(const Drawable& image, int16_t x, int16_t y)
         x, y,
         image.width(), image.height());
     rect = rect.intersection(Rectangle(0, 0, SCREEN_W, SCREEN_H));
-    m_dirtyRects.push_back(rect);
-    m_undrawnRects.push_back(rect);
+    if (!rect.empty())
+    {
+        m_dirtyRects.push_back(rect);
+        m_undrawnRects.push_back(rect);
+    }
 
     image.draw(m_screenBuffer, SCREEN_W, SCREEN_H, x, y);
 }
@@ -176,7 +175,10 @@ void VgaGfx::drawBackground(const Drawable& image, int16_t x, int16_t y)
         x, y,
         image.width(), image.height());
     rect = rect.intersection(Rectangle(0, 0, SCREEN_W, SCREEN_H));
-    m_dirtyRects.push_back(rect);
+    if (!rect.empty())
+    {
+        m_dirtyRects.push_back(rect);
+    }
 
     image.draw(m_backgroundImage, SCREEN_W, SCREEN_H, x, y);
 }
@@ -205,8 +207,9 @@ void VgaGfx::drawScreen()
     vsync();
     if (m_greyFramesLeft > 0)
     {
-        setInBetweenPalette(m_greyFramesLeft, m_greyPaletteAnimation);
+        // decrement first, so that the last step sets frame 0, which is the original palette
         --m_greyFramesLeft;
+        setInBetweenPalette(m_greyFramesLeft, m_greyPaletteAnimation);
     }
 
     // todo: Create minimal set of rectangles to redraw.
@@ -276,24 +279,10 @@ uint32_t VgaGfx::drawDeathEffect()
 
 void setFancyWipePalette()
 {
+    // colors 0-15 and 16-31 both get the normal RGBI palette
     outp(0x3C8, 0);
-    for (int i = 0; i < 16; ++i)
-    {
-        // Colors need to be set in RGB order. As rgbiColors is in BGR order, we need to reverse the order.
-        // As VGA only supports 6 bits per color, we need to shift the values by 2 bits.
-        outp(0x3C9, rgbiColors[i * 3 + 2] >> 2);
-        outp(0x3C9, rgbiColors[i * 3 + 1] >> 2);
-        outp(0x3C9, rgbiColors[i * 3 + 0] >> 2);
-    }
-    for (int i = 0; i < 16; ++i)
-    {
-        // Colors need to be set in RGB order. As rgbiColors is in BGR order, we need to reverse the order.
-        // As VGA only supports 6 bits per color, we need to shift the values by 2 bits.
-        outp(0x3C9, rgbiColors[i * 3 + 2] >> 2);
-        outp(0x3C9, rgbiColors[i * 3 + 1] >> 2);
-        outp(0x3C9, rgbiColors[i * 3 + 0] >> 2);
-    }
-
+    writeRgbiPalette();
+    writeRgbiPalette();
 }
 
 
@@ -313,7 +302,9 @@ void fadeSecondPalette(uint8_t frameCount, bool fadeToBlack)
     uint8_t palette[CGA_COLOR_COUNT * 3];
     for (int frame = 0; frame < frameCount; ++frame)
     {
-        createFadeToBlackPalette(palette, frameCount, fadeToBlack?(frameCount - frame - 1):frame);
+        // fade out goes from (frameCount - 1) / frameCount down to black,
+        // fade in goes from 1 / frameCount up to full brightness
+        createFadeToBlackPalette(palette, frameCount, fadeToBlack?(frameCount - frame - 1):(frame + 1));
         waitForVsync();
         outp(0x3C8, 16);
         for (int i = 0; i < CGA_COLOR_COUNT; ++i)
@@ -346,6 +337,12 @@ void calcNthRectangle(Rectangle& rect, uint16_t n)
 
 void VgaGfx::fancyWipe(const ImageBase& image)
 {
+    if (image.width() != SCREEN_W ||
+        image.height() != SCREEN_H)
+    {
+        return;
+    }
+
     setFancyWipePalette();
 
     char* imgData = image.data();
@@ -408,4 +405,10 @@ void VgaGfx::fancyWipe(const ImageBase& image)
 
     // restore normal palette
     setDefaultVgaPalette();
+
+    // keep the buffers in sync with what is now on screen
+    memcpy(m_backgroundImage, imgData, SCREEN_W * SCREEN_H);
+    memcpy(m_screenBuffer, imgData, SCREEN_W * SCREEN_H);
+    m_dirtyRects.clear();
+    m_undrawnRects.clear();
 }
