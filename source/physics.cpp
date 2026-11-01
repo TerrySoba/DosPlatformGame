@@ -123,6 +123,18 @@ Rectangle extendRectangle(Rectangle rect, int16_t horizontal, int16_t vertical)
     return rect;
 }
 
+static bool containsRect(const tnd::vector<Rectangle>& rects, const Rectangle& rect)
+{
+    for (int i = 0; i < rects.size(); ++i)
+    {
+        if (rects[i] == rect)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void Physics::calc()
 {
     m_lastFrameJetpackActive = m_jetpackActive;
@@ -162,26 +174,36 @@ void Physics::calc()
             }
         }
 
-        bool fallThrough = false;
-
-        if (actor.isDucking)
+        bool touchesFallThrough = false;
+        for (int n = 0; n < m_fallThrough.size(); ++n)
         {
-            for (int n = 0; n < m_fallThrough.size(); ++n)
+            if (intersectRect(m_fallThrough[n], actor.rect))
             {
-                if (intersectRect(m_fallThrough[n], actor.rect))
-                {
-                    fallThrough = true;
-                }
+                touchesFallThrough = true;
+                break;
             }
         }
+
+        // falling through is over as soon as the actor does not touch any fall through platform anymore
+        if (!touchesFallThrough)
+        {
+            actor.isFallingThrough = false;
+        }
+
+        bool fallThrough = actor.isDucking && touchesFallThrough;
+        bool isOnSolidGround = false;
 
         for (int n = 0; n < m_walls.size(); ++n)
         {
             Rectangle& wall = m_walls[n];
             if (intersectRect(wall, actor.rect))
             {
+                // fall through platforms are also part of the walls, only those may be fallen through
+                bool isFallThroughWall = touchesFallThrough && containsRect(m_fallThrough, wall);
+                bool ignoreWall = isFallThroughWall && actor.isFallingThrough;
+
                 IntersectionType wallType = getIntersectionType(extendRectangle(wall, 0, actor.rect.height - 32), actor.rect);
-                if (!actor.isFallingThrough)
+                if (!ignoreWall)
                 {
                     switch(wallType)
                     {
@@ -200,16 +222,21 @@ void Physics::calc()
                 switch(groundType)
                 {
                     case INTERSECTION_TOP:
-                        if (fallThrough)
+                        if (isFallThroughWall && fallThrough)
                         {
                             actor.isFallingThrough = true;
+                            ignoreWall = true;
                         }
-                        if (!fallThrough && !actor.isFallingThrough)
+                        if (!ignoreWall)
                         {
                             actor.rect.y = wall.y - actor.rect.height;
                             actor.dy = 0;
                             actor.isOnGround = true;
                             actor.jetpackFrames = JETPACK_THRUST_TABLE_SIZE - 1; // reload jetpack after touching ground
+                            if (!isFallThroughWall)
+                            {
+                                isOnSolidGround = true;
+                            }
                         }
                         break;
                     case INTERSECTION_BOTTOM:
@@ -219,6 +246,12 @@ void Physics::calc()
                         break;
                 }
             }
+        }
+
+        // standing on solid ground without ducking, so do not fall through any platform touched later
+        if (isOnSolidGround && !fallThrough)
+        {
+            actor.isFallingThrough = false;
         }
 
         for (int n = 0; n < m_creditsWarps.size(); ++n)
@@ -242,6 +275,7 @@ void Physics::calc()
                 actor.rect.y = m_spawn.y;
                 actor.dx = 0;
                 actor.dy = 0;
+                actor.isFallingThrough = false;
                 m_sound->playDeathSound();
                 if (m_callback)
                 {
@@ -259,6 +293,7 @@ void Physics::calc()
                 actor.rect.y = m_spawn.y;
                 actor.dx = 0;
                 actor.dy = 0;
+                actor.isFallingThrough = false;
                 m_sound->playDeathSound();
                 if (m_callback)
                 {
