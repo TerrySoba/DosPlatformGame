@@ -17,8 +17,9 @@ static const uint16_t DEATH_ANIMATION_PALETTE_ENTRIES = 16;
 static const uint16_t DEATH_ANIMATION_PALETTE_BYTES = DEATH_ANIMATION_PALETTE_ENTRIES * 3;
 
 
-#define SCREEN_W 320L
-#define SCREEN_H 200L
+// unsigned, so that all offset calculations are done with fast 16 bit arithmetic
+#define SCREEN_W 320u
+#define SCREEN_H 200u
 
 
 #define CGA_COLOR_COUNT 16
@@ -30,6 +31,31 @@ extern void videoInit(uint8_t mode);
     "int 10h"              \
     modify [ax]            \
     parm [al];
+
+/**
+ * Copies a rectangular block of bytes between two buffers with a line pitch of SCREEN_W bytes.
+ * Width and height must not be 0.
+ */
+extern void copyRect(char far* dest, const char far* src, uint16_t width, uint16_t height);
+#pragma aux copyRect =         \
+    "push ds"                  \
+    "mov ds, dx"               \
+    "mov dx, 320"              \
+    "sub dx, ax"               \
+    "cld"                      \
+    "copy_line:"               \
+    "mov cx, ax"               \
+    "shr cx, 1"                \
+    "rep movsw"                \
+    "adc cx, cx"               \
+    "rep movsb"                \
+    "add si, dx"               \
+    "add di, dx"               \
+    "dec bx"                   \
+    "jnz copy_line"            \
+    "pop ds"                   \
+    parm [es di] [dx si] [ax] [bx] \
+    modify [bx cx dx si di es];
 
 /**
  * Writes the 16 RGBI colors to the VGA DAC, starting at the current DAC write index.
@@ -61,7 +87,8 @@ void setDefaultVgaPalette()
     // This pallette is used by the death animation of the game.
     for (int i = 0; i < 16; ++i)
     {
-        uint8_t gray = (255 - rgbToGray(rgbiColors[i * 3 + 2], rgbiColors[i * 3 + 1], rgbiColors[i * 3 + 0])) * 0.75;
+        // integer version of "* 0.75", avoids slow floating point emulation
+        uint8_t gray = ((255 - rgbToGray(rgbiColors[i * 3 + 2], rgbiColors[i * 3 + 1], rgbiColors[i * 3 + 0])) * 3) >> 2;
         outp(0x3C9, gray >> 2);
         outp(0x3C9, gray >> 2);
         outp(0x3C9, gray >> 2);
@@ -85,18 +112,25 @@ void setInBetweenPalette(uint8_t frame, uint8_t* paletteAnimation)
 
 void createDeathAnimationPaletteAnimation(uint8_t* paletteAnimation)
 {
-    uint16_t pos = 0;
-    for (int frame = 0; frame < DEATH_ANIMATION_PALETTE_FRAMES; ++frame)
+    uint8_t grays[DEATH_ANIMATION_PALETTE_ENTRIES];
+    for (int i = 0; i < DEATH_ANIMATION_PALETTE_ENTRIES; ++i)
     {
-        float f1 = frame / (float)DEATH_ANIMATION_PALETTE_FRAMES;
-        float f2 = 1.0f - f1;
+        grays[i] = rgbToGray(rgbiColors[i * 3 + 2], rgbiColors[i * 3 + 1], rgbiColors[i * 3 + 0]);
+    }
+
+    // Blends from color to gray using integer math only, as floating point is emulated in software.
+    uint16_t pos = 0;
+    for (uint16_t frame = 0; frame < DEATH_ANIMATION_PALETTE_FRAMES; ++frame)
+    {
+        uint16_t grayFactor = frame;
+        uint16_t colorFactor = DEATH_ANIMATION_PALETTE_FRAMES - frame;
 
         for (int i = 0; i < DEATH_ANIMATION_PALETTE_ENTRIES; ++i)
         {
-            uint8_t gray = rgbToGray(rgbiColors[i * 3 + 2], rgbiColors[i * 3 + 1], rgbiColors[i * 3 + 0]);
-            paletteAnimation[pos++] = (uint8_t(gray * f1) + uint8_t(rgbiColors[i * 3 + 2] * f2)) >> 2;
-            paletteAnimation[pos++] = (uint8_t(gray * f1) + uint8_t(rgbiColors[i * 3 + 1] * f2)) >> 2;
-            paletteAnimation[pos++] = (uint8_t(gray * f1) + uint8_t(rgbiColors[i * 3 + 0] * f2)) >> 2;
+            uint8_t gray = (grays[i] * grayFactor) / DEATH_ANIMATION_PALETTE_FRAMES;
+            paletteAnimation[pos++] = (gray + (rgbiColors[i * 3 + 2] * colorFactor) / DEATH_ANIMATION_PALETTE_FRAMES) >> 2;
+            paletteAnimation[pos++] = (gray + (rgbiColors[i * 3 + 1] * colorFactor) / DEATH_ANIMATION_PALETTE_FRAMES) >> 2;
+            paletteAnimation[pos++] = (gray + (rgbiColors[i * 3 + 0] * colorFactor) / DEATH_ANIMATION_PALETTE_FRAMES) >> 2;
         }
     }
 }
@@ -106,7 +140,7 @@ VgaGfx::VgaGfx() :
 {
     m_greyPaletteAnimation = new uint8_t[DEATH_ANIMATION_PALETTE_BYTES * DEATH_ANIMATION_PALETTE_FRAMES];
     createDeathAnimationPaletteAnimation(m_greyPaletteAnimation);
-    long int screenBytes = SCREEN_W * SCREEN_H;
+    uint16_t screenBytes = SCREEN_W * SCREEN_H;
 
     m_backgroundImage = new char[screenBytes];
     m_screenBuffer = new char[screenBytes];
@@ -145,8 +179,8 @@ VgaGfx::~VgaGfx()
 static char far* screen = (char far*)(0xA0000000L);
 
 #define getScreenLine(line) (screen + LINE_BYTES * (line))
-#define getBackBufferLine(line) (m_screenBuffer + LINE_BYTES * (line))
-#define getBackgroundImageLine(line) (m_backgroundImage + LINE_BYTES * (line))
+
+#define getRectOffset(rect) ((uint16_t)(rect).y * SCREEN_W + (uint16_t)(rect).x)
 
 void VgaGfx::vsync()
 {
@@ -188,16 +222,14 @@ void VgaGfx::clear()
 {
     for (int i = 0; i < m_dirtyRects.size(); ++i)
     {
-        m_undrawnRects.push_back(m_dirtyRects[i]);
         const Rectangle& rect = m_dirtyRects[i];
-        int16_t rectHeight = rect.height;
-        int16_t rectWidth = rect.width;
-        int16_t rectY = rect.y;
-        int16_t rectX = rect.x;
-        for (int16_t y = 0; y < rectHeight; ++y)
+        if (rect.empty())
         {
-            memcpy(getBackBufferLine(y + rectY) + rectX, getBackgroundImageLine(y + rectY) + rectX, rectWidth);
+            continue;
         }
+        m_undrawnRects.push_back(rect);
+        uint16_t offset = getRectOffset(rect);
+        copyRect(m_screenBuffer + offset, m_backgroundImage + offset, rect.width, rect.height);
     }
     m_dirtyRects.clear();
 }
@@ -216,15 +248,13 @@ void VgaGfx::drawScreen()
 
     for (int i = 0; i < m_undrawnRects.size(); ++i)
     {
-        Rectangle& rect = m_undrawnRects[i];
-        int16_t rectHeight = rect.height;
-        int16_t rectWidth = rect.width;
-        int16_t rectY = rect.y;
-        int16_t rectX = rect.x;
-        for (int16_t y = 0; y < rectHeight; ++y)
+        const Rectangle& rect = m_undrawnRects[i];
+        if (rect.empty())
         {
-            memcpy(getScreenLine(y + rectY) + rectX, getBackBufferLine(y + rectY) + rectX, rectWidth);
+            continue;
         }
+        uint16_t offset = getRectOffset(rect);
+        copyRect(screen + offset, m_screenBuffer + offset, rect.width, rect.height);
     }
 
     m_undrawnRects.clear();
@@ -249,30 +279,35 @@ void VgaGfx::saveAsTgaImage(const char* filename)
     convertToTga(screen, filename);
 }
 
+/**
+ * Adds delta to every word of the screen, waiting for vsync every 15 lines.
+ *
+ * Processing two pixels at once is safe, as long as adding / subtracting 16
+ * does not overflow / underflow the low byte, which is the case for the color ranges 0-31 used here.
+ */
+static void addToScreenWords(uint16_t delta)
+{
+    for (uint16_t y = 0; y < SCREEN_H; ++y)
+    {
+        if ((y % 15) == 0) waitForVsync();
+        uint16_t far* pos = (uint16_t far*)getScreenLine(y);
+        uint16_t far* lineEnd = pos + SCREEN_W / 2;
+
+        for (; pos != lineEnd; ++pos)
+        {
+            *pos += delta;
+        }
+    }
+}
+
 uint32_t VgaGfx::drawDeathEffect()
 {
-    for (int y = 0; y < SCREEN_H; ++y)
-    {
-        if ((y % 15) == 0) vsync();
-        char *line = getScreenLine(y);
-
-        for (int x = 0; x < SCREEN_W; ++x)
-        {
-            line[x] = (line[x] + 16);
-        }
-    }
+    // switch to the inverted grayscale colors 16-31
+    addToScreenWords(0x1010);
     setInBetweenPalette(DEATH_ANIMATION_PALETTE_FRAMES - 1, m_greyPaletteAnimation);
     m_greyFramesLeft = DEATH_ANIMATION_PALETTE_FRAMES - 1;
-    for (int y = 0; y < SCREEN_H; ++y)
-    {
-        if ((y % 15) == 0) vsync();
-        char *line = getScreenLine(y);
-
-        for (int x = 0; x < SCREEN_W; ++x)
-        {
-            line[x] = (line[x] - 16);
-        }
-    }
+    // switch back to colors 0-15, which now hold the gray palette
+    addToScreenWords((uint16_t)-0x1010);
 
     return 0;
 }
@@ -346,7 +381,10 @@ void VgaGfx::fancyWipe(const ImageBase& image)
     setFancyWipePalette();
 
     char* imgData = image.data();
-    char* screenData = getScreenLine(0);
+    // Tiles are 16 pixels wide and start at x positions divisible by 16, so two pixels can be processed at once.
+    // Adding 16 to each byte is safe, as the colors are in the range 0-15.
+    uint16_t far* screenWords = (uint16_t far*)screen;
+    const uint16_t far* imgWords = (const uint16_t far*)imgData;
 
     uint16_t rectangleNumber = 0;
 
@@ -358,13 +396,14 @@ void VgaGfx::fancyWipe(const ImageBase& image)
         {
             Rectangle rect;
             calcNthRectangle(rect, randomShuffle[rectangleNumber + n]);
+            uint16_t offset = getRectOffset(rect) / 2;
             for (uint16_t y = 0; y < rect.height; ++y)
             {
-                uint16_t offset = (rect.y + y) * SCREEN_W + rect.x;
-                for (uint16_t x = 0; x < rect.width; ++x)
+                for (uint16_t x = 0; x < rect.width / 2; ++x)
                 {
-                    screenData[offset + x] += 16;
+                    screenWords[offset + x] += 0x1010;
                 }
+                offset += SCREEN_W / 2;
             }
         }
         fadeSecondPalette(SCREEN_FADE_FRAMES, true);
@@ -374,13 +413,14 @@ void VgaGfx::fancyWipe(const ImageBase& image)
         {
             Rectangle rect;
             calcNthRectangle(rect, randomShuffle[rectangleNumber + n]);
+            uint16_t offset = getRectOffset(rect) / 2;
             for (uint16_t y = 0; y < rect.height; ++y)
             {
-                uint16_t offset = (rect.y + y) * SCREEN_W + rect.x;
-                for (uint16_t x = 0; x < rect.width; ++x)
+                for (uint16_t x = 0; x < rect.width / 2; ++x)
                 {
-                    screenData[offset + x] = imgData[offset + x] + 16;
+                    screenWords[offset + x] = imgWords[offset + x] + 0x1010;
                 }
+                offset += SCREEN_W / 2;
             }
         }
         fadeSecondPalette(SCREEN_FADE_FRAMES, false);
@@ -390,13 +430,14 @@ void VgaGfx::fancyWipe(const ImageBase& image)
         {
             Rectangle rect;
             calcNthRectangle(rect, randomShuffle[rectangleNumber + n]);
+            uint16_t offset = getRectOffset(rect) / 2;
             for (uint16_t y = 0; y < rect.height; ++y)
             {
-                uint16_t offset = (rect.y + y) * SCREEN_W + rect.x;
-                for (uint16_t x = 0; x < rect.width; ++x)
+                for (uint16_t x = 0; x < rect.width / 2; ++x)
                 {
-                    screenData[offset + x] -= 16;
+                    screenWords[offset + x] -= 0x1010;
                 }
+                offset += SCREEN_W / 2;
             }
         }
 
