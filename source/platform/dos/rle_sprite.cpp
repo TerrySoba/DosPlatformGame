@@ -2,44 +2,48 @@
 
 #include <string.h>
 
+// C version of the RLE sprite drawing routine in rle_sprite.asm, see there for the data format.
 void drawRleSprite(char* spriteData, char* dst, uint16_t lineWidth)
 {
-    uint8_t* lastLineStart = (uint8_t*)dst; // store the start of the current line
-    for (uint16_t y = 0; y < lineWidth; y++)
+    const uint8_t* data = (const uint8_t*)spriteData;
+    uint8_t* out = (uint8_t*)dst;
+    uint8_t* lineStart = out; // start of the current line
+
+    for (;;)
     {
-        uint8_t rleType = *spriteData & 0xC0;
-        uint8_t length = *spriteData & 0x3F;
-        spriteData++;
+        uint8_t rleType = *data & 0xC0;
+        uint8_t length = *data & 0x3F;
+        data++;
 
         switch (rleType)
         {
             case RLE_TYPE_CONSECUTIVE:
-                memcpy(dst, spriteData, length);
-                dst += length;
-                spriteData += length;
+                memcpy(out, data, length);
+                out += length;
+                data += length;
                 break;
 
             case RLE_TYPE_REPEAT:
-                memset(dst, *spriteData, length);
-                dst += length;
-                spriteData++;
+                memset(out, *data, length);
+                out += length;
+                data++;
                 break;
 
             case RLE_TYPE_SKIP:
                 if (length == 0)
                 {
-                    dst = (char*)lastLineStart + lineWidth;  // skip to the end of the line
-                    lastLineStart = (uint8_t*)dst; // update the lastLineStart to the new line
+                    // skip to the start of the next line
+                    lineStart += lineWidth;
+                    out = lineStart;
                 }
                 else
                 {
-                    dst += length;
+                    out += length;
                 }
-                
                 break;
 
             case RLE_TYPE_END:
-                return; // return from the function
+                return;
         }
     }
 }
