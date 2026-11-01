@@ -80,7 +80,7 @@ void Tentacle::act()
 
 }
 
-tnd::vector<Rectangle> Tentacle::getProjectiles() const
+const tnd::vector<Rectangle>& Tentacle::getProjectiles() const
 {
     return m_projectiles;
 }

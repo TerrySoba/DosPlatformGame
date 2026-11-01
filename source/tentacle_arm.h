@@ -12,7 +12,7 @@ public:
 
     void act(int actorPosX, int actorPosY);
 
-    tnd::vector<Rectangle> getSegments();
+    const tnd::vector<Rectangle>& getSegments() const;
 
     void reset();
 

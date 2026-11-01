@@ -58,7 +58,8 @@ void Physics::setCreditsWarps(const tnd::vector<Rectangle>& creditsWarps)
 
 void Physics::setEnemyDeath(const tnd::vector<Rectangle>& death)
 {
-    m_enemyDeath = death;
+    // called every frame, so reuse the existing buffer
+    m_enemyDeath.assign(death);
 }
 
 void Physics::setFallThrough(const tnd::vector<Rectangle>& fallThrough)
@@ -147,8 +148,11 @@ void Physics::calc()
         actor.rect.x += actor.dx;
         actor.rect.y += actor.dy;
 
-        actor.dx *= 0.8;
-        actor.dy *= 0.99;
+        // Integer versions of "dx *= 0.8" and "dy *= 0.99" with identical results, as floating point
+        // is emulated in software on machines without FPU. dx is only ever set to small values,
+        // so 16 bit math can not overflow. dy is not limited in negative direction, so it uses 32 bit math.
+        actor.dx = (actor.dx * 4) / 5;
+        actor.dy = (int16_t)(((int32_t)actor.dy * 99) / 100);
 
         actor.isOnGround = false;
 
@@ -400,7 +404,7 @@ void Physics::activateSunPull(int index)
         int32_t dy = m_sun.y * 16 - actor.rect.y;
 
         // calculate length of vector using 1 norm (euclidean 2 norm is too slow, as it requires a square root)
-        int32_t length = abs(dx) + abs(dy);
+        int32_t length = labs(dx) + labs(dy);
 
         if (length == 0)
         {

@@ -50,6 +50,30 @@ public:
         }
     }
 
+    /**
+     * Like operator=, but keeps the existing buffer if it is large enough instead of reallocating it.
+     * Meant for vectors that are reassigned every frame. Elements beyond the new size are not
+     * destroyed, so only use this for element types that do not own resources.
+     */
+    void assign(const vector& other)
+    {
+        if (this == &other)
+        {
+            return;
+        }
+        if (other.m_size > m_capacity)
+        {
+            delete[] m_data;
+            m_capacity = other.m_size;
+            m_data = new ValueT[m_capacity];
+        }
+        m_size = other.m_size;
+        for (int i = 0; i < m_size; ++i)
+        {
+            m_data[i] = other.m_data[i];
+        }
+    }
+
     void push_back(const ValueT& val)
     {
         if (m_size + 1 > m_capacity)

@@ -77,7 +77,7 @@ void TentacleArm::act(int actorPosX, int actorPosY)
     
 }
 
-tnd::vector<Rectangle> TentacleArm::getSegments()
+const tnd::vector<Rectangle>& TentacleArm::getSegments() const
 {
     return m_segments;
 }

@@ -126,6 +126,8 @@ private:
 	tnd::vector<Rectangle> m_guffins;
 	tnd::vector<Rectangle> m_jetPacks;
 	tnd::vector<Rectangle> m_sunItems;
+	// rebuilt every frame, kept as member so its memory is reused instead of reallocated each frame
+	tnd::vector<Rectangle> m_enemyDeath;
     tnd::shared_ptr<Physics> m_physics;
     long int m_frames;
     int m_player;

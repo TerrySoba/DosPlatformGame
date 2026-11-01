@@ -27,7 +27,8 @@ public:
 
     void walk(const Rectangle& playerPos);
 
-    tnd::vector<Rectangle> getProjectiles() const;
+    // appends the collision rectangles of all projectiles to rects
+    void appendProjectiles(tnd::vector<Rectangle>& rects) const;
 
     void reset();
 

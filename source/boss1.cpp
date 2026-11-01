@@ -114,9 +114,8 @@ void Boss1::walk(const Rectangle& playerPos)
     m_lastPlayerPosY = playerPos.y;
 }
 
-tnd::vector<Rectangle> Boss1::getProjectiles() const
+void Boss1::appendProjectiles(tnd::vector<Rectangle>& rects) const
 {
-    tnd::vector<Rectangle> projectiles;
     for (size_t i = 0; i < m_projectiles.size(); ++i)
     {
         Rectangle projectile;
@@ -124,10 +123,8 @@ tnd::vector<Rectangle> Boss1::getProjectiles() const
         projectile.y = m_projectiles[i].y;
         projectile.width = PIXEL_TO_SUBPIXEL(m_animation->width());
         projectile.height = PIXEL_TO_SUBPIXEL(m_animation->height());
-        projectiles.push_back(projectile);
+        rects.push_back(projectile);
     }
-    return projectiles;
-
 }
 
 

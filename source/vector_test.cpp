@@ -67,3 +67,35 @@ TEST(VectorResizeTest)
     // elements 2, 3, 4 are undefined
 
 }
+
+TEST(VectorAssignReusesBuffer)
+{
+    tnd::vector<int> big;
+    big.push_back(1);
+    big.push_back(2);
+    big.push_back(3);
+    tnd::vector<int> small;
+    small.push_back(9);
+
+    tnd::vector<int> vec;
+    vec.assign(big);
+    ASSERT_TRUE(vec.size() == 3);
+    ASSERT_TRUE(vec[0] == 1 && vec[1] == 2 && vec[2] == 3);
+
+    // a smaller vector must not cause a reallocation
+    int* buffer = vec.data();
+    vec.assign(small);
+    ASSERT_TRUE(vec.size() == 1);
+    ASSERT_TRUE(vec[0] == 9);
+    ASSERT_TRUE(vec.data() == buffer);
+
+    // growing again within the capacity must not reallocate either
+    vec.assign(big);
+    ASSERT_TRUE(vec.size() == 3);
+    ASSERT_TRUE(vec[0] == 1 && vec[1] == 2 && vec[2] == 3);
+    ASSERT_TRUE(vec.data() == buffer);
+
+    vec.assign(vec);
+    ASSERT_TRUE(vec.size() == 3);
+    ASSERT_TRUE(vec[2] == 3);
+}

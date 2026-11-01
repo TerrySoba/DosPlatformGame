@@ -15,7 +15,7 @@ public:
     void act();
 
     Rectangle getPos();
-    tnd::vector<Rectangle> getProjectiles() const;
+    const tnd::vector<Rectangle>& getProjectiles() const;
 
     void reset();
 

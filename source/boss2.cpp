@@ -186,16 +186,14 @@ void Boss2::walk(const Rectangle& playerPos)
     }
 }
 
-tnd::vector<Rectangle> Boss2::getProjectiles() const
+void Boss2::appendProjectiles(tnd::vector<Rectangle>& rects) const
 {
-    tnd::vector<Rectangle> generatedRectangles;
     for (int i = 0; i < m_projectiles.size(); ++i)
     {
         const Boss2Projectile& projectile = m_projectiles[i];
         Rectangle rect(projectile.x, projectile.y, PIXEL_TO_SUBPIXEL(m_animation->width()), PIXEL_TO_SUBPIXEL(m_animation->height()));
-        generatedRectangles.push_back(rect);
+        rects.push_back(rect);
     }
-    return generatedRectangles;
 }
 
 void Boss2::reset()
