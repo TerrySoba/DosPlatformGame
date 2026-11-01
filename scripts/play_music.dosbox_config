@@ -1,0 +1,30 @@
+[sdl]
+fullscreen=false
+windowresolution=original
+output=openglnb
+
+[dosbox]
+machine=vgaonly
+
+[mixer]
+nosound=false
+
+[render]
+aspect=true
+
+[cpu]
+core=auto
+cputype=8086
+cycles=fixed 30000
+
+[sblaster]
+sbtype  = sbpro2
+sbbase  = 220
+irq     = 7
+dma     = 1
+hdma    = 5
+sbmixer = true
+oplmode = auto
+oplemu  = default
+
+[autoexec]

@@ -175,6 +175,8 @@
 ../music/THIRD.RAD
 ../music/MYSTCAVE.RAD
 ../music/furexus.rad
+../music/wind.rad
+../music/penult.rad
 ../dos_assets/readme.txt
 ../dos_assets/game_de.bat
 ../dos_assets/game_en.bat
