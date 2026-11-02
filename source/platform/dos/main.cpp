@@ -18,6 +18,7 @@
 
 #include "shared_ptr.h"
 #include <dos.h>
+#include <conio.h>
 
 #include "exception.h"
 
@@ -85,21 +86,9 @@ int main(int argc, char* argv[])
     {
         GameConfig config = parseGameConfig(DEFAULT_CONFIG_NAME);
 
-        tnd::shared_ptr<SoundController> sound;
-        
-        if (config.enableSound)
-        {
-            sound = new SoundControllerDos();
-        }
-        else
-        {
-            sound = new SoundControllerNull();
-        }
-
         CommandLineParameters params = parseCommandline(argc, argv);
-        KeyMapper::setJoystickButtons(config.joystick.joyJump, config.joystick.joyAction);
-        calibrateJoystick();
-        
+
+        // load translations first, so that the sound initialization can show messages
         switch(params.language)
         {
             case LANGUAGE_GERMAN:
@@ -109,6 +98,29 @@ int main(int argc, char* argv[])
             default:
                 I18N::loadTranslations("strings.en");
         }
+
+        tnd::shared_ptr<SoundController> sound;
+
+        if (config.enableSound)
+        {
+            SoundControllerDos* soundDos = new SoundControllerDos();
+            sound = soundDos;
+
+            if (soundDos->soundBlasterFound() && !soundDos->irqWorks())
+            {
+                char irqBuf[4];
+                intToString(soundDos->getIRQ(), 10, irqBuf, sizeof(irqBuf));
+                printStr(I18N::getString(1000) + irqBuf + I18N::getString(1001));
+                getch();
+            }
+        }
+        else
+        {
+            sound = new SoundControllerNull();
+        }
+
+        KeyMapper::setJoystickButtons(config.joystick.joyJump, config.joystick.joyAction);
+        calibrateJoystick();
 
         tnd::shared_ptr<GfxOutput> gfx(new VgaGfx());
         Keyboard keyboard(&config);

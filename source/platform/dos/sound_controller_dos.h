@@ -25,6 +25,10 @@ public:
         return m_sb.isPlaying();
     }
 
+    bool soundBlasterFound() { return m_sbFound; }
+    bool irqWorks() { return m_sb.irqWorks(); }
+    uint8_t getIRQ() { return m_sb.getIRQ(); }
+
 private:
     SoundBlaster m_sb;
     bool m_sbFound;

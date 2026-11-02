@@ -59,6 +59,13 @@ public:
 
     bool soundBlasterFound() { return m_sbFound; }
 
+    /**
+     * Returns true if the test playback at startup triggered the configured IRQ.
+     * If not, the IRQ setting (BLASTER environment variable) does not match the card.
+     * Sound effects still play, but are cut short if they cross a 64k memory page.
+     */
+    bool irqWorks() { return m_irqWorks; }
+
     uint16_t getBasePort() { return s_base; }
     uint8_t getIRQ() { return s_irq; }
     uint8_t getDMA() { return s_dma; }
@@ -81,6 +88,7 @@ private: // methods
     static uint8_t readDsp();
     void initIrq();
     void deinitIrq();
+    bool testIrq();
 
     static void singlePlayData(uint8_t __far * data, uint32_t size, uint8_t playCommand);
 
@@ -94,6 +102,7 @@ private: // member variables
     static volatile bool s_playing;
 
     bool m_sbFound;
+    bool m_irqWorks;
 
     void __interrupt (*m_oldIrq)();
 

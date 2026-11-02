@@ -266,11 +266,17 @@ DmaChunk calcDmaChunk(uint8_t __far* data, uint32_t len)
 
     chunk.dmaPage = linearAddress >> 16;
     chunk.dmaOffset = linearAddress & 0xFFFF;
-    uint16_t maxSize = 0xffff - chunk.dmaOffset;
-    chunk.toBePlayed = min(len, maxSize);
-    chunk.restLen = len - (chunk.toBePlayed);
-    chunk.restData = data + chunk.toBePlayed + 1;
-    chunk.toBePlayed -= 1; // this is required by DMA, size must be size - 1
+
+    // a DMA transfer can not cross a 64k page boundary, so only play up to the end of the page
+    uint32_t bytesToPageEnd = 0x10000ul - chunk.dmaOffset;
+    uint32_t chunkLength = min(len, bytesToPageEnd);
+    chunk.toBePlayed = chunkLength - 1; // this is required by DMA, size must be size - 1
+    chunk.restLen = len - chunkLength;
+
+    // Build the pointer from the linear address, adding to the far pointer
+    // would wrap around within its segment.
+    uint32_t restAddress = linearAddress + chunkLength;
+    chunk.restData = (uint8_t __far*)MK_FP(restAddress >> 4, restAddress & 0xF);
     return chunk;
 }
 
@@ -313,6 +319,12 @@ void SoundBlaster::singlePlayData(uint8_t __far * data, uint32_t length, uint8_t
 
 void SoundBlaster::singlePlay(const SbSample& sample)
 {
+    if (sample.length == 0)
+    {
+        // a DMA length of 0 - 1 would play 64k of random memory
+        return;
+    }
+
     disableInterrupts();
     if (s_playing)
     {
@@ -383,11 +395,49 @@ SoundBlaster::SoundBlaster()
     // printf("Found Soundblaster: base:0x%x irq:%d dma:%d type:%d\n", config.base, config.irq, config.dma, config.type);
 
     m_sbFound = reset_dsp(s_base);
+    m_irqWorks = false;
 
     if (m_sbFound) {
         initIrq();
         writeDsp(SB_ENABLE_SPEAKER);
+        m_irqWorks = testIrq();
     }
+}
+
+// 256 - 1000000 / 8000 Hz
+#define IRQ_TEST_TIME_CONSTANT 131
+
+// BIOS timer ticks (18.2 Hz) to wait for the test interrupt, at least 55ms
+#define IRQ_TEST_TIMEOUT_TICKS 2
+
+bool SoundBlaster::testIrq()
+{
+    // two bytes of silence, playing them takes 0.25ms
+    static uint8_t silence[] = {0x80, 0x80};
+
+    writeDsp(SB_SET_PLAYBACK_FREQUENCY);
+    writeDsp(IRQ_TEST_TIME_CONSTANT);
+
+    disableInterrupts();
+    s_nextPlaybackCommand = SB_SINGLE_CYCLE_PLAYBACK;
+    singlePlayData(silence, sizeof(silence), SB_SINGLE_CYCLE_PLAYBACK);
+    enableInterrupts();
+
+    // sbIrqHandler clears s_playing at the end of the transfer
+    volatile uint16_t __far* biosTicks = (volatile uint16_t __far*)MK_FP(0x40, 0x6C);
+    uint16_t startTicks = *biosTicks;
+    while (s_playing && (uint16_t)(*biosTicks - startTicks) < IRQ_TEST_TIMEOUT_TICKS);
+
+    if (s_playing)
+    {
+        // The interrupt arrived on another IRQ or not at all. Acknowledge it at
+        // the DSP, so that the card is in a clean state for the next playback.
+        inp(s_base + SB_READ_DATA_STATUS);
+        s_playing = false;
+        return false;
+    }
+
+    return true;
 }
 
 
