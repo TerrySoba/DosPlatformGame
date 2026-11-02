@@ -38,6 +38,17 @@ Game::Game(tnd::shared_ptr<GfxOutput> vgaGfx, tnd::shared_ptr<SoundController> s
     m_levelWarp.x = -1;
     m_levelWarp.y = -1;
 
+    // masks for the pixel perfect collision check between the player and enemies
+    m_animations.actorAnimation->createCollisionMasks();
+    m_animations.enemyAnimation->createCollisionMasks();
+    m_animations.seekerEnemyAnimation->createCollisionMasks();
+    m_animations.fireBallAnimation->createCollisionMasks();
+    m_animations.tentacleAnimation->createCollisionMasks();
+    m_animations.projectileAnimation->createCollisionMasks();
+    m_animations.tentacleArmAnimation->createCollisionMasks();
+    m_animations.eyeAnimation->createCollisionMasks();
+    m_playerMask = m_animations.actorAnimation->currentCollisionMask();
+
     m_appleString = I18N::getString(2);
     m_deathString = I18N::getString(26);
 
@@ -565,6 +576,30 @@ void Game::onCreditsWarp()
     m_exitCode = GAME_EXIT_CREDITS;
 }
 
+void Game::addEnemyDeath(const Rectangle& rect, const Animation& animation, int16_t x, int16_t y)
+{
+    m_enemyDeath.push_back(rect);
+
+    // The animations advance before the physics runs, so the mask of the drawn frame is stored now.
+    EnemyMask enemyMask;
+    enemyMask.mask = animation.currentCollisionMask();
+    enemyMask.x = x;
+    enemyMask.y = y;
+    m_enemyDeathMasks.push_back(enemyMask);
+}
+
+bool Game::confirmEnemyCollision(int enemyIndex, const Rectangle& actorRect)
+{
+    if (enemyIndex >= m_enemyDeathMasks.size())
+    {
+        return true;
+    }
+
+    const EnemyMask& enemy = m_enemyDeathMasks[enemyIndex];
+    return masksOverlap(m_playerMask, SUBPIXEL_TO_PIXEL(actorRect.x), SUBPIXEL_TO_PIXEL(actorRect.y),
+                        enemy.mask, enemy.x, enemy.y);
+}
+
 void Game::drawFrame()
 {
     if (m_deathFramesLeft > 0)
@@ -604,13 +639,14 @@ void Game::drawFrame()
     m_animationController.setPos(playerX, playerY, m_physics->jetpackIsActive());
     
     m_enemyDeath.clear();
+    m_enemyDeathMasks.clear();
 
     for (int i = 0; i < m_enemies.size(); ++i)
     {
         Enemy* enemyPtr = m_enemies[i];
         enemyPtr->walk();
         Rectangle enemy = enemyPtr->getPos();
-        m_enemyDeath.push_back(enemy);
+        addEnemyDeath(enemy, *m_animations.enemyAnimation, SUBPIXEL_TO_PIXEL(enemy.x), SUBPIXEL_TO_PIXEL(enemy.y));
         m_vgaGfx->draw(*m_animations.enemyAnimation, SUBPIXEL_TO_PIXEL(enemy.x), SUBPIXEL_TO_PIXEL(enemy.y));
     }
 
@@ -619,9 +655,11 @@ void Game::drawFrame()
         Tentacle* tentaclePtr = m_tentacles[i];
         tentaclePtr->act();
         Rectangle tentacle = tentaclePtr->getPos();
-        m_vgaGfx->draw(*m_animations.tentacleAnimation, SUBPIXEL_TO_PIXEL(tentacle.x), SUBPIXEL_TO_PIXEL(tentacle.y));
+        int16_t tentacleX = SUBPIXEL_TO_PIXEL(tentacle.x);
+        int16_t tentacleY = SUBPIXEL_TO_PIXEL(tentacle.y);
+        m_vgaGfx->draw(*m_animations.tentacleAnimation, tentacleX, tentacleY);
         tentacle.shrink(32);
-        m_enemyDeath.push_back(tentacle);
+        addEnemyDeath(tentacle, *m_animations.tentacleAnimation, tentacleX, tentacleY);
 
 
         const tnd::vector<Rectangle>& projectiles = tentaclePtr->getProjectiles();
@@ -630,7 +668,7 @@ void Game::drawFrame()
         for (int j = 0; j < projectiles.size(); ++j)
         {
             const Rectangle& projectile = projectiles[j];
-            m_enemyDeath.push_back(projectile);
+            addEnemyDeath(projectile, *m_animations.projectileAnimation, SUBPIXEL_TO_PIXEL(projectile.x), SUBPIXEL_TO_PIXEL(projectile.y));
             m_vgaGfx->draw(*m_animations.projectileAnimation, SUBPIXEL_TO_PIXEL(projectile.x), SUBPIXEL_TO_PIXEL(projectile.y));
         }
 
@@ -647,7 +685,7 @@ void Game::drawFrame()
         for (int j = 0; j < tentacleArmSegments.size(); ++j)
         {
             const Rectangle& segment = tentacleArmSegments[j];
-            m_enemyDeath.push_back(segment);
+            addEnemyDeath(segment, *m_animations.tentacleArmAnimation, SUBPIXEL_TO_PIXEL(segment.x), SUBPIXEL_TO_PIXEL(segment.y));
             m_vgaGfx->draw(*m_animations.tentacleArmAnimation, SUBPIXEL_TO_PIXEL(segment.x), SUBPIXEL_TO_PIXEL(segment.y));
         }
 
@@ -665,7 +703,7 @@ void Game::drawFrame()
         SeekerEnemy* enemyPtr = m_seekerEnemies[i];
         enemyPtr->walk(Rectangle(playerX, playerY, 1, 1));
         Rectangle enemy = enemyPtr->getPos();
-        m_enemyDeath.push_back(enemy);
+        addEnemyDeath(enemy, *m_animations.seekerEnemyAnimation, SUBPIXEL_TO_PIXEL(enemy.x), SUBPIXEL_TO_PIXEL(enemy.y));
         m_vgaGfx->draw(*m_animations.seekerEnemyAnimation, SUBPIXEL_TO_PIXEL(enemy.x), SUBPIXEL_TO_PIXEL(enemy.y));
     }
 
@@ -674,7 +712,7 @@ void Game::drawFrame()
         Eye* eyePtr = m_eyes[i];
         eyePtr->walk(Rectangle(playerX, playerY, 1, 1));
         Rectangle enemy = eyePtr->getPos();
-        m_enemyDeath.push_back(enemy);
+        addEnemyDeath(enemy, *m_animations.eyeAnimation, SUBPIXEL_TO_PIXEL(enemy.x), SUBPIXEL_TO_PIXEL(enemy.y));
         m_vgaGfx->draw(*m_animations.eyeAnimation, SUBPIXEL_TO_PIXEL(enemy.x), SUBPIXEL_TO_PIXEL(enemy.y));
     }
 
@@ -683,7 +721,7 @@ void Game::drawFrame()
         FireBall* enemyPtr = m_fireBalls[i];
         enemyPtr->walk();
         Rectangle enemy = enemyPtr->getPos();
-        m_enemyDeath.push_back(enemy);
+        addEnemyDeath(enemy, *m_animations.fireBallAnimation, SUBPIXEL_TO_PIXEL(enemy.x), SUBPIXEL_TO_PIXEL(enemy.y));
         m_vgaGfx->draw(*m_animations.fireBallAnimation, SUBPIXEL_TO_PIXEL(enemy.x), SUBPIXEL_TO_PIXEL(enemy.y));
     }
 
@@ -717,7 +755,12 @@ void Game::drawFrame()
         for (int j = firstProjectile; j < m_enemyDeath.size(); ++j)
         {
             const Rectangle& projectile = m_enemyDeath[j];
-            m_vgaGfx->draw(*m_animations.fireBallAnimation, SUBPIXEL_TO_PIXEL(projectile.x), SUBPIXEL_TO_PIXEL(projectile.y));
+            EnemyMask enemyMask;
+            enemyMask.mask = m_animations.fireBallAnimation->currentCollisionMask();
+            enemyMask.x = SUBPIXEL_TO_PIXEL(projectile.x);
+            enemyMask.y = SUBPIXEL_TO_PIXEL(projectile.y);
+            m_enemyDeathMasks.push_back(enemyMask);
+            m_vgaGfx->draw(*m_animations.fireBallAnimation, enemyMask.x, enemyMask.y);
         }
     }
 
@@ -733,10 +776,16 @@ void Game::drawFrame()
         for (int j = firstProjectile; j < m_enemyDeath.size(); ++j)
         {
             const Rectangle& projectile = m_enemyDeath[j];
-            m_vgaGfx->draw(*m_animations.fireBallAnimation, SUBPIXEL_TO_PIXEL(projectile.x), SUBPIXEL_TO_PIXEL(projectile.y));
+            EnemyMask enemyMask;
+            enemyMask.mask = m_animations.fireBallAnimation->currentCollisionMask();
+            enemyMask.x = SUBPIXEL_TO_PIXEL(projectile.x);
+            enemyMask.y = SUBPIXEL_TO_PIXEL(projectile.y);
+            m_enemyDeathMasks.push_back(enemyMask);
+            m_vgaGfx->draw(*m_animations.fireBallAnimation, enemyMask.x, enemyMask.y);
         }
     }
 
+    m_playerMask = m_animations.actorAnimation->currentCollisionMask();
     m_vgaGfx->draw(*m_animations.actorAnimation, SUBPIXEL_TO_PIXEL(playerX), SUBPIXEL_TO_PIXEL(playerY));
 
     m_vgaGfx->drawScreen();

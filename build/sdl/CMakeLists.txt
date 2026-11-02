@@ -26,6 +26,7 @@ add_library(game_lib STATIC
     ${SOURCE_DIR}/blit.cpp
     ${SOURCE_DIR}/boss1.cpp
     ${SOURCE_DIR}/boss2.cpp
+    ${SOURCE_DIR}/collision_mask.cpp
     ${SOURCE_DIR}/convert_to_tga.cpp
     ${SOURCE_DIR}/credits_loader.cpp
     ${SOURCE_DIR}/detect_lines.cpp
@@ -128,6 +129,7 @@ set(TEST_DATA_DIR "${GAME_BASE_DIR}/testdata/")
 # Create test executable target
 add_executable(test
     ${SOURCE_DIR}/blit_test.cpp
+    ${SOURCE_DIR}/collision_mask_test.cpp
     ${SOURCE_DIR}/credits_loader_test.cpp
     ${SOURCE_DIR}/exception_test.cpp
     ${SOURCE_DIR}/font_test.cpp

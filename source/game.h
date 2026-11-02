@@ -60,6 +60,13 @@ struct GameAnimations
 };
 
 
+// Collision mask of an enemy sprite and the pixel position it was drawn at.
+struct EnemyMask
+{
+	CollisionMask mask;
+	int16_t x, y;
+};
+
 struct CollectedGuffin
 {
 	LevelNumber level;
@@ -105,10 +112,12 @@ public:
 	virtual void touchButton(uint16_t id, ButtonType type);
 	virtual void onDeath();
 	virtual void onCreditsWarp();
+	virtual bool confirmEnemyCollision(int enemyIndex, const Rectangle& actorRect);
 
 private:
 	virtual void drawAppleCount();
     virtual void drawDeathCount();
+	void addEnemyDeath(const Rectangle& rect, const Animation& animation, int16_t x, int16_t y);
 
 private:
 	tnd::shared_ptr<GfxOutput> m_vgaGfx;
@@ -128,6 +137,9 @@ private:
 	tnd::vector<Rectangle> m_sunItems;
 	// rebuilt every frame, kept as member so its memory is reused instead of reallocated each frame
 	tnd::vector<Rectangle> m_enemyDeath;
+	// same indices as m_enemyDeath, used for the pixel perfect check after the rectangle test
+	tnd::vector<EnemyMask> m_enemyDeathMasks;
+	CollisionMask m_playerMask; // of the player frame that was drawn last
     tnd::shared_ptr<Physics> m_physics;
     long int m_frames;
     int m_player;

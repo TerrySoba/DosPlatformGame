@@ -7,7 +7,7 @@ objects_game_lib = \
 	seeker_enemy.o \
 	boss1.o time_tools.o key_mapper.o \
 	tentacle.o tentacle_arm.o eye.o boss2.o \
-	palette_tools.o \
+	palette_tools.o collision_mask.o \
 	platform/dos/vgagfx.o \
 	platform/dos/soundblaster.o \
 	platform/dos/dos_timer.o \
@@ -30,7 +30,7 @@ objects_test = \
 	text_layout_test.o i18n_test.o level_test.o raii_ptr_test.o ptr_vector_test.o test_class.o \
 	time_tools_test.o font_test.o font_writer_test.o credits_loader_test.o \
 	font_writer.o credits_loader.o credits_scroller.o font.o platform/dos/rle_sprite_test.o \
-	config_test.o
+	config_test.o collision_mask_test.o
 	
 
 dissolve_objs = \

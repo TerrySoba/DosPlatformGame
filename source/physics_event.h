@@ -24,6 +24,13 @@ public:
     virtual void touchButton(uint16_t id, ButtonType type) = 0;
     virtual void onDeath() = 0;
     virtual void onCreditsWarp() = 0;
+
+    /**
+     * Called when the actor rectangle intersects an enemy rectangle, enemyIndex is the index in the
+     * vector passed to Physics::setEnemyDeath(). Return false to ignore the collision, e.g. because
+     * no opaque pixels overlap.
+     */
+    virtual bool confirmEnemyCollision(int enemyIndex, const Rectangle& actorRect) { return true; }
 };
 
 #endif

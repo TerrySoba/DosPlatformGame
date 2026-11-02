@@ -283,6 +283,11 @@ void Physics::calc()
              n >= 0;
              n = nextIntersectingRect(m_enemyDeath, n + 1, actorBounds))
         {
+            if (m_callback && !m_callback->confirmEnemyCollision(n, actor.rect))
+            {
+                continue;
+            }
+
             actor.rect.x = m_spawn.x;
             actor.rect.y = m_spawn.y;
             actor.dx = 0;
