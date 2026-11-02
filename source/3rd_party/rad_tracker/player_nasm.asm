@@ -253,6 +253,17 @@ InitPlayer:
 
 		call	EndPlayer	; clear Adlib ready for tune
 
+	; forget the register values of the previous tune, otherwise its
+	; frequencies (and KEY-ON bits) are written back by the first
+	; key-off or slide on a channel
+		mov	si,8
+		xor	al,al
+	.lz:	mov	[cs:Old43+si],al
+		mov	[cs:OldA0+si],al
+		mov	[cs:OldB0+si],al
+		dec	si
+		jns	.lz
+
 	; initialise certain Adlib registers that aren't changed
 		mov	ax,0120h	; allow waveforms
 		call	Adlib
@@ -340,7 +351,24 @@ InitPlayer:
 ;ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 EndPlayer:	push	ax
 		mov	ax,020h << 8
-	.la:	call	Adlib
+	; Writing 0 everywhere would leave notes hanging: total level 0 is the
+	; loudest volume and release rate 0 means the envelope never releases.
+	; So the operators get the lowest volume and the fastest release instead.
+	; Registers are written in ascending order, so both are set before the
+	; key-off in B0..B8.
+	.la:	xor	al,al
+		cmp	ah,40h
+		jb	.lb
+		cmp	ah,56h
+		jae	.lc
+		mov	al,3fh		; 40..55: lowest volume
+		jmp	.lb
+	.lc:	cmp	ah,80h
+		jb	.lb
+		cmp	ah,96h
+		jae	.lb
+		mov	al,0fh		; 80..95: sustain level 0, fastest release
+	.lb:	call	Adlib
 		inc	ah
 		cmp	ah,00f6h
 		jb	.la
