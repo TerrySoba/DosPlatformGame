@@ -76,7 +76,7 @@ $(shell [ "$$(cat $(flags_stamp) 2>/dev/null)" = '$(current_flags)' ] || printf 
 
 dest     = game2.exe
 test     = gametest.exe
-title    = title.exe
+title    = sgtitle.exe
 launcher = game.com
 dissolve = dissolve.exe
 
@@ -149,12 +149,12 @@ $(test): $(objects_test)
 	wlink  @gametest.lnk
 
 _$(title): $(title_screen)
-	echo "NAME   $@" > title.lnk
-	echo "SYSTEM DOS" >> title.lnk
-	echo "OPTION STACK=23000" >> title.lnk
-	echo "FILE   {$(title_screen)}" >> title.lnk
-	echo "OPTION MAP=$(title).map" >> title.lnk
-	wlink  @title.lnk
+	echo "NAME   $@" > sgtitle.lnk
+	echo "SYSTEM DOS" >> sgtitle.lnk
+	echo "OPTION STACK=23000" >> sgtitle.lnk
+	echo "FILE   {$(title_screen)}" >> sgtitle.lnk
+	echo "OPTION MAP=$(title).map" >> sgtitle.lnk
+	wlink  @sgtitle.lnk
 
 
 platform/dos/launcher.o: platform/dos/launcher.c

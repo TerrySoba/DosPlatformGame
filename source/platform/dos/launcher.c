@@ -89,7 +89,7 @@ int main()
 {
     int ret;
 
-    ret = spawnWait("title.exe");
+    ret = spawnWait("sgtitle.exe");
     if (ret == 1)
     {
         printStr("Launching game, please wait...\r\n");

@@ -199,5 +199,5 @@
 
 game.com
 game2.exe
-title.exe
+sgtitle.exe
 credits.txt
