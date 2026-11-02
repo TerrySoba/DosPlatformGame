@@ -162,21 +162,26 @@ SbConfig parseBlasterString()
     return config;
 }
 
+// Functions called from sbIrqHandler must not contain stack checks. Inside the interrupt SS:SP
+// may point to any stack (e.g. the one of DOS), the check would fail and abort the program
+// from within the interrupt, which hangs the machine.
+#pragma off (check_stack)
 void SoundBlaster::writeDsp(uint8_t command)
 {
     while ((inp(s_base + SB_WRITE_DATA) & 0x80) == 0x80);
     outp(s_base + SB_WRITE_DATA, command);
 }
 
+bool isHighIrq(uint8_t irq)
+{
+    return (irq == 2 || irq == 10 || irq == 11);
+}
+#pragma on (check_stack)
+
 uint8_t SoundBlaster::readDsp()
 {
     while ((inp(s_base + SB_READ_DATA_STATUS) & 0x80) != 0x80);
     return inp(s_base + SB_READ_DATA);
-}
-
-bool isHighIrq(uint8_t irq)
-{
-    return (irq == 2 || irq == 10 || irq == 11);
 }
 
 uint8_t highIrqToVector(uint8_t irq)
@@ -213,24 +218,25 @@ void SoundBlaster::initIrq()
         _dos_setvect(s_irq + 8, sbIrqHandler);
         
         // enable IRQ with the mainboard's PIC
-        outp(0x21, inp(0x21) & !(1 << s_irq)); 
+        outp(0x21, inp(0x21) & ~(1 << s_irq));
     }
 }
 
 void SoundBlaster::deinitIrq()
 {
-    // save and replace IRQ vector
+    // disable the IRQ with the mainboard's PIC first, then restore the IRQ vector
     if (isHighIrq(s_irq)) {
-        _dos_setvect(highIrqToVector(s_irq), m_oldIrq);
-
-        // enable IRQ with the mainboard's PIC
         if(s_irq == 2) outp( 0xA1, inp( 0xA1 ) | 2 );
         if(s_irq == 10) outp( 0xA1, inp( 0xA1 ) | 4 );
         if(s_irq == 11) outp( 0xA1, inp( 0xA1 ) | 8 );
-        outp(0x21, inp(0x21) | 4 );
+        // IRQ 2 of the first PIC stays enabled, it is the cascade for all IRQs of the second PIC
+        // (e.g. IRQ 14 of the hard disk).
+
+        _dos_setvect(highIrqToVector(s_irq), m_oldIrq);
     } else {
+        outp(0x21, inp(0x21) | (1 << s_irq));
+
         _dos_setvect(s_irq + 8, m_oldIrq);
-        outp(0x21, inp(0x21) & (1 << s_irq)); 
     }
 }
 
@@ -249,6 +255,8 @@ struct DmaChunk {
 #define min(x,y) (((x) < (y))?(x):(y))
 
 
+// called from sbIrqHandler, see writeDsp
+#pragma off (check_stack)
 DmaChunk calcDmaChunk(uint8_t __far* data, uint32_t len)
 {
     DmaChunk chunk;
@@ -301,6 +309,7 @@ void SoundBlaster::singlePlayData(uint8_t __far * data, uint32_t length, uint8_t
     writeDsp(chunk.toBePlayed & 0xFF);
     writeDsp(chunk.toBePlayed >> 8);
 }
+#pragma on (check_stack)
 
 void SoundBlaster::singlePlay(const SbSample& sample)
 {
@@ -496,6 +505,7 @@ SbSample SoundBlaster::loadVocFile(const char* filename)
 }
 
 
+#pragma off (check_stack)
 void __interrupt SoundBlaster::sbIrqHandler()
 {
     disableInterrupts();
@@ -516,3 +526,4 @@ void __interrupt SoundBlaster::sbIrqHandler()
 
     enableInterrupts();
 }
+#pragma on (check_stack)

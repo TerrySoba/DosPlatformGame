@@ -63,10 +63,13 @@ void RadPlayer::radLoadModuleInternal(const char* filename)
 	fclose(fp);
 }
 
+// Called from the timer interrupt, so it must not contain a stack check (see dos_timer.cpp).
+#pragma off (check_stack)
 static void timerFunction()
 {
 	radPlayMusic();
 }
+#pragma on (check_stack)
 
 RadPlayer::RadPlayer() :
 	m_songDataOrigBlock(0),
