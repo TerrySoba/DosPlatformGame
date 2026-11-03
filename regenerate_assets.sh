@@ -44,14 +44,14 @@ wav2adpcm=VocTool/build/voctool
 encodevorbis="oggenc --resample 48000 -b 128"
 
 
-$wav2adpcm -i sound/death.wav -f 8000 -c ADPCM4 -o sound/death.voc -n 0.7
-$wav2adpcm -i sound/jump.wav -f 8000 -c ADPCM4 -o sound/jump.voc -n 0.2
-$wav2adpcm -i sound/steps.wav -f 8000 -c ADPCM4 -o sound/steps.voc -n 0.2
-$wav2adpcm -i sound/stand.wav -f 8000 -c ADPCM4 -o sound/stand.voc -n 0.2
-# $wav2adpcm -i sound/guffin.wav -f 10000 -c ADPCM4 -o sound/guffin.voc -l 7 -n 0.5
-# $wav2adpcm -i sound/jetpack.wav -f 8000 -c ADPCM2 -o sound/jetpack.voc -n 0.9 -l 10
-$wav2adpcm -i sound/switch2.wav -f 11000 -c ADPCM4 -o sound/switch2.voc -n 0.9
-$wav2adpcm -i sound/portal.wav -f 8000  -c ADPCM4 -o sound/portal.voc -n 0.9
+$wav2adpcm -i sound/death.wav -f 8000 -c ADPCM4 -o sound/death.voc -n 0.7 -s dynamic
+$wav2adpcm -i sound/jump.wav -f 8000 -c ADPCM4 -o sound/jump.voc -n 0.2 -s dynamic
+$wav2adpcm -i sound/steps.wav -f 8000 -c ADPCM4 -o sound/steps.voc -n 0.2 -s dynamic
+$wav2adpcm -i sound/stand.wav -f 8000 -c ADPCM4 -o sound/stand.voc -n 0.2 -s dynamic
+$wav2adpcm -i sound/guffin.wav -f 10000 -c ADPCM4 -o sound/guffin.voc -n 0.8 -s dynamic
+$wav2adpcm -i sound/jetpack.wav -f 8000 -c ADPCM2 -o sound/jetpack.voc -n 0.9 -s dynamic
+$wav2adpcm -i sound/switch2.wav -f 11000 -c ADPCM4 -o sound/switch2.voc -n 0.9 -s dynamic
+$wav2adpcm -i sound/portal.wav -f 8000  -c ADPCM4 -o sound/portal.voc -n 0.9 -s dynamic
 
 
 # $encodevorbis sound/death.wav -o sound/death.ogg
