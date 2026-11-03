@@ -703,6 +703,22 @@
         "en": ".\r\nPlease check the IRQ setting of the BLASTER environment variable,\r\ne.g. SET BLASTER=A220 I7 D1 T3\r\nSound effects may be cut short.\r\n\r\nPress any key to continue.\r\n",
         "de": " ausgelöst.\r\nBitte die IRQ-Einstellung der Umgebungsvariable BLASTER prüfen,\r\nz.B. SET BLASTER=A220 I7 D1 T3\r\nSoundeffekte können abgeschnitten werden.\r\n\r\nWeiter mit beliebiger Taste.\r\n"
     },
+    "1002": {
+        "en": "Music",
+        "de": "Musik"
+    },
+    "1003": {
+        "en": "Sound Effects",
+        "de": "Soundeffekte"
+    },
+    "1004": {
+        "en": "On",
+        "de": "An"
+    },
+    "1005": {
+        "en": "Off",
+        "de": "Aus"
+    },
     "12345": {
         "en": "This is a test",
         "de": "Dies ist ein Test"

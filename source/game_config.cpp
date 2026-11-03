@@ -51,6 +51,8 @@ GameConfig parseGameConfig(const char* fileName)
     }
 
     GameConfig config;
+    config.enableSound = true;
+    config.enableMusic = true;
     config.joystick.joyJump = 0;
     config.joystick.joyAction = 1;
 

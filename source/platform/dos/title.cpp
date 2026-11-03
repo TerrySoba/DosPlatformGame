@@ -85,6 +85,29 @@ void showConfigureJoystick()
     s_titleScreenState = TITLE_SCREEN_STATE_CONFIGURE_JOYSTICK_INITIAL;
 }
 
+bool s_enableMusic = true;
+bool s_enableSound = true;
+
+void forceRedraw()
+{
+    // a state change triggers redrawing the background, so pretend we came from somewhere else
+    s_previousTitleScreenState = TITLE_SCREEN_STATE_INITIAL;
+}
+
+void toggleMusic()
+{
+    s_enableMusic = !s_enableMusic;
+    setIniValue(DEFAULT_CONFIG_NAME, "sound", "ENABLE_MUSIC", s_enableMusic ? "true" : "false");
+    forceRedraw();
+}
+
+void toggleSound()
+{
+    s_enableSound = !s_enableSound;
+    setIniValue(DEFAULT_CONFIG_NAME, "sound", "ENABLE_SOUND", s_enableSound ? "true" : "false");
+    forceRedraw();
+}
+
 typedef void (*ActionFunction)();
 
 
@@ -92,12 +115,27 @@ struct MenuItem
 {
     uint16_t stringId;
     ActionFunction action;
+    // If set, the item is an on/off toggle: its label shows the current state
+    // and the action is executed immediately (without the arrow animation).
+    const bool* toggleState;
 };
+
+TinyString menuItemLabel(const MenuItem& item)
+{
+    TinyString label = I18N::getString(item.stringId);
+    if (item.toggleState != NULL)
+    {
+        label = label + ": " + I18N::getString(*item.toggleState ? 1004 : 1005); // "On" / "Off"
+    }
+    return label;
+}
 
 
 const MenuItem settingsMenuItems[] = {
     { 54, showConfigureKeyboard }, // configure keyboard
     { 62, showConfigureJoystick }, // configure joystick
+    { 1002, toggleMusic, &s_enableMusic }, // music on/off
+    { 1003, toggleSound, &s_enableSound }, // sound effects on/off
     { 53, showMainMenu }, // back
     { 0, NULL } // must end with a NULL entry
 };
@@ -139,7 +177,7 @@ public:
         const MenuItem *menuItem = m_menuItems;
         while (menuItem->stringId != 0)
         {
-            m_fontWriter.setText(I18N::getString(menuItem->stringId).c_str());
+            m_fontWriter.setText(menuItemLabel(*menuItem).c_str());
             m_menuItemPositionsY.push_back(y);
             y += m_fontWriter.height();
             ++menuItem;
@@ -152,7 +190,7 @@ public:
         size_t menuItemIndex = 0;
         while (menuItem->stringId != 0)
         {
-            m_fontWriter.setText(I18N::getString(menuItem->stringId).c_str());
+            m_fontWriter.setText(menuItemLabel(*menuItem).c_str());
             m_gfx.drawBackground(m_fontWriter, m_menuPositionX, m_menuItemPositionsY[menuItemIndex]);
             ++menuItemIndex;
             ++menuItem;
@@ -219,7 +257,11 @@ public:
         else if (keyAction && !m_lastKeyAction)
         {
             const MenuItem* menuItem = &m_menuItems[m_activeMenuItemIndex];
-            if (menuItem->action != NULL)
+            if (menuItem->action != NULL && menuItem->toggleState != NULL)
+            {
+                menuItem->action();
+            }
+            else if (menuItem->action != NULL)
             {
                 m_nextAction = menuItem->action;
                 m_state = MENU_STATE_ARROW_ANIMATION;
@@ -431,6 +473,17 @@ int main(int argc, char* argv[])
     {
         if (useGerman) I18N::loadTranslations("strings.de");
         else I18N::loadTranslations("strings.en");
+
+        try
+        {
+            GameConfig config = parseGameConfig(DEFAULT_CONFIG_NAME);
+            s_enableMusic = config.enableMusic;
+            s_enableSound = config.enableSound;
+        }
+        catch (...)
+        {
+            // no config file yet, keep defaults
+        }
 
         Keyboard keys;
         VgaGfx vga;
